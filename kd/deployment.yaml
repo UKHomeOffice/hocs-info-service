@@ -2,14 +2,14 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: hocs-casework
+  name: hocs-document
   labels:
     version: {{.VERSION}}
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      name: hocs-casework
+      name: hocs-document
   strategy:
     rollingUpdate:
       maxUnavailable: 0
@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       labels:
-        name: hocs-casework
+        name: hocs-document
         version: {{.VERSION}}
     spec:
       imagePullSecrets:
@@ -35,7 +35,7 @@ spec:
           args:
             - --certs=/certs
             - --command=/usr/bin/create-keystore.sh /certs/tls.pem /certs/tls-key.pem /etc/ssl/certs/acp-root.crt
-            - --domain=hocs-casework.${KUBE_NAMESPACE}.svc.cluster.local
+            - --domain=hocs-document.${KUBE_NAMESPACE}.svc.cluster.local
             - --domain=localhost
             - --onetime=true
           env:
@@ -62,7 +62,7 @@ spec:
                 - SETGID
           args:
             - --certs=/certs
-            - --domain=hocs-casework.${KUBE_NAMESPACE}.svc.cluster.local
+            - --domain=hocs-document.${KUBE_NAMESPACE}.svc.cluster.local
             - --expiry=8760h
             - --command=/usr/local/scripts/trigger_nginx_reload.sh
           env:
@@ -121,8 +121,8 @@ spec:
             - name: https
               containerPort: 10443
 
-        - name: hocs-casework
-          image: quay.io/ukhomeofficedigital/hocs-casework:{{.VERSION}}
+        - name: hocs-document
+          image: quay.io/ukhomeofficedigital/hocs-document:{{.VERSION}}
           imagePullPolicy: Always
           securityContext:
             runAsNonRoot: true
