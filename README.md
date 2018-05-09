@@ -1,1 +1,1 @@
-# kube-hocs-document
+# kube-hocs-docs
