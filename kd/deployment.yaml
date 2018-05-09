@@ -2,14 +2,14 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: hocs-document
+  name: hocs-docs
   labels:
     version: {{.VERSION}}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: hocs-document
+      name: hocs-docs
   strategy:
     rollingUpdate:
       maxUnavailable: 0
@@ -35,7 +35,7 @@ spec:
           args:
             - --certs=/certs
             - --command=/usr/bin/create-keystore.sh /certs/tls.pem /certs/tls-key.pem /etc/ssl/certs/acp-root.crt
-            - --domain=hocs-document.${KUBE_NAMESPACE}.svc.cluster.local
+            - --domain=hocs-docs.${KUBE_NAMESPACE}.svc.cluster.local
             - --domain=localhost
             - --onetime=true
           env:
@@ -62,7 +62,7 @@ spec:
                 - SETGID
           args:
             - --certs=/certs
-            - --domain=hocs-document.${KUBE_NAMESPACE}.svc.cluster.local
+            - --domain=hocs-docs.${KUBE_NAMESPACE}.svc.cluster.local
             - --expiry=8760h
             - --command=/usr/local/scripts/trigger_nginx_reload.sh
           env:
@@ -121,8 +121,8 @@ spec:
             - name: https
               containerPort: 10443
 
-        - name: hocs-document
-          image: quay.io/ukhomeofficedigital/hocs-document:{{.VERSION}}
+        - name: hocs-docs
+          image: quay.io/ukhomeofficedigital/hocs-docs:{{.VERSION}}
           imagePullPolicy: Always
           securityContext:
             runAsNonRoot: true
