@@ -1,0 +1,20 @@
+package uk.gov.digital.ho.hocs.info.entities;
+
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "member")
+@NoArgsConstructor
+public class Member {
+
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(name = "display-name")
+    private String displayName;
+
+}
