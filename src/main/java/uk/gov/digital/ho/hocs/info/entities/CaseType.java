@@ -1,14 +1,16 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "case-type")
+@Table(name = "case_type")
 @NoArgsConstructor
+@Getter
 public class CaseType {
 
     @Id
@@ -16,10 +18,10 @@ public class CaseType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "display-name")
+    @Column(name = "display_name")
     private String displayName;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "sla_id", referencedColumnName = "id")
-    private Set<SLA> slas = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "case_type_id", referencedColumnName = "id")
+    private List<SLA> slas = new ArrayList<>();
 }

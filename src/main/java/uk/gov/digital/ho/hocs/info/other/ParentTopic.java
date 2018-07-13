@@ -1,6 +1,7 @@
-package uk.gov.digital.ho.hocs.info.entities;
+package uk.gov.digital.ho.hocs.info.other;
 
 import lombok.NoArgsConstructor;
+import uk.gov.digital.ho.hocs.info.other.Topic;
 
 import javax.persistence.*;
 import java.util.HashSet;

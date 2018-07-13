@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.entities;
+package uk.gov.digital.ho.hocs.info.other;
 
 import lombok.NoArgsConstructor;
 

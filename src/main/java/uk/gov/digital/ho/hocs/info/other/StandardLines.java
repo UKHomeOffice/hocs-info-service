@@ -1,13 +1,13 @@
-package uk.gov.digital.ho.hocs.info.entities;
+package uk.gov.digital.ho.hocs.info.other;
 
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "template")
+@Table(name = "standard-lines")
 @NoArgsConstructor
-public class Template {
+public class StandardLines {
 
     @Id
     @Column(name = "id")

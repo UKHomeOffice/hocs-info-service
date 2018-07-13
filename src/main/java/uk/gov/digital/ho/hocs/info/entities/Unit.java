@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.info.entities;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import uk.gov.digital.ho.hocs.info.other.Topic;
 
 import javax.persistence.*;
 import java.util.HashSet;
