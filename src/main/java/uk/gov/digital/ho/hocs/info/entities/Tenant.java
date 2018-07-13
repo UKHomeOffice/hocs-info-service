@@ -28,15 +28,11 @@ public class Tenant {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "tenant_id", referencedColumnName = "id")
     private List<CaseType> caseTypes = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "tenant_id", referencedColumnName = "id")
+    private Set<Unit> units = new HashSet<>();
 }
-
-
-
-
-//
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JoinColumn(name = "tenant_id", referencedColumnName = "id")
-//    private Set<Unit> units = new HashSet<>();
 //
 //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //    @JoinColumn(name = "tenant_id", referencedColumnName = "id")

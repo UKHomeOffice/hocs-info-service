@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.digital.ho.hocs.info.dto.GetDeadlinesRequest;
 import uk.gov.digital.ho.hocs.info.dto.GetDeadlinesResponse;
-import uk.gov.digital.ho.hocs.info.model.Deadline;
+import uk.gov.digital.ho.hocs.info.dto.Deadline;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -27,7 +27,7 @@ public class DeadlinesResource {
         }
 
         @RequestMapping(value = "/deadlines", method = RequestMethod.POST, produces = APPLICATION_JSON_UTF8_VALUE)
-        public ResponseEntity<GetDeadlinesResponse> getCaseTypes(@RequestBody GetDeadlinesRequest getDeadlineRequest) {
+        public ResponseEntity<GetDeadlinesResponse> getDeadlines(@RequestBody GetDeadlinesRequest getDeadlineRequest) {
             try {
                 Set<Deadline> deadlines = deadlinesService.getDeadlines(getDeadlineRequest.getCaseType(),getDeadlineRequest.getDate());
                 return ResponseEntity.ok(GetDeadlinesResponse.from(deadlines));

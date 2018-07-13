@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.info.entities;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -9,7 +10,8 @@ import javax.persistence.*;
 @Table(name = "sla")
 @NoArgsConstructor
 @Getter
-public class SLA {
+@Setter
+public class Sla {
 
     @Id
     @Column(name = "id")

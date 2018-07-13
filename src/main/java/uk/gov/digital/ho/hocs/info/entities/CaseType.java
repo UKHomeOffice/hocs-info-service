@@ -23,5 +23,5 @@ public class CaseType {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "case_type_id", referencedColumnName = "id")
-    private List<SLA> slas = new ArrayList<>();
+    private List<Sla> slas = new ArrayList<>();
 }

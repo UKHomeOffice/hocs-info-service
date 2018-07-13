@@ -1,0 +1,143 @@
+package uk.gov.digital.ho.hocs.info.deadline;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.entities.Holiday;
+import uk.gov.digital.ho.hocs.info.entities.Sla;
+import uk.gov.digital.ho.hocs.info.dto.Deadline;
+import uk.gov.digital.ho.hocs.info.repositories.HolidayRepository;
+import uk.gov.digital.ho.hocs.info.repositories.SlaRepository;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class DeadlinesServiceTest {
+
+    @Mock
+    private HolidayRepository holidayRepository;
+
+    @Mock
+    private SlaRepository slaRepository;
+
+    private DeadlinesService deadlinesService;
+
+    @Before
+    public void setUp() {
+        this.deadlinesService = new DeadlinesService(slaRepository, holidayRepository);
+    }
+
+    @Test
+    public void shouldCalculateDeadlinesWhenThreeDaySlaNotSpanningOverWeekend() {
+
+        when(holidayRepository.findAllByCaseType(any())).thenReturn(getHolidays());
+        when(slaRepository.findSLACaseType(any())).thenReturn(get3DaySla());
+
+        Set<Deadline> deadlines =  deadlinesService.getDeadlines(any(), LocalDate.of(2018, 01, 02));
+
+        List<Deadline> deadlinesAsList = new ArrayList<>(deadlines);
+
+        verify(holidayRepository, times(1)).findAllByCaseType(any());
+        verify(slaRepository, times(1)).findSLACaseType(any());
+
+        assertThat(deadlinesAsList.get(0).getDate()).isEqualTo(LocalDate.of(2018, 01, 05));
+        assertThat(deadlinesAsList.get(0).getType()).isEqualTo("dispatch");
+    }
+    @Test
+    public void shouldCalculateDeadlinesWhenThreeDaySlaSpanningOverTwoWeekendDays() {
+
+        when(holidayRepository.findAllByCaseType(any())).thenReturn(getHolidays());
+        when(slaRepository.findSLACaseType(any())).thenReturn(get3DaySla());
+
+        Set<Deadline> deadlines =  deadlinesService.getDeadlines(any(), LocalDate.of(2018, 01, 05));
+
+        List<Deadline> deadlinesAsList = new ArrayList<>(deadlines);
+
+        verify(holidayRepository, times(1)).findAllByCaseType(any());
+        verify(slaRepository, times(1)).findSLACaseType(any());
+        assertThat(deadlinesAsList.get(0).getDate()).isEqualTo(LocalDate.of(2018, 01, 10));
+        assertThat(deadlinesAsList.get(0).getType()).isEqualTo("dispatch");
+
+    }
+
+    @Test
+    public void shouldCalculateDeadlinesWhenThreeDaySlaSpanningOverTwoWeekendAndOneHolidayMonday() {
+
+        when(holidayRepository.findAllByCaseType(any())).thenReturn(getHolidays());
+        when(slaRepository.findSLACaseType(any())).thenReturn(get3DaySla());
+
+        Set<Deadline> deadlines =  deadlinesService.getDeadlines(any(), LocalDate.of(2018, 01, 12));
+
+        List<Deadline> deadlinesAsList = new ArrayList<>(deadlines);
+
+        verify(holidayRepository, times(1)).findAllByCaseType(any());
+        verify(slaRepository, times(1)).findSLACaseType(any());
+        assertThat(deadlinesAsList.get(0).getDate()).isEqualTo(LocalDate.of(2018, 01, 18));
+        assertThat(deadlinesAsList.get(0).getType()).isEqualTo("dispatch");
+    }
+
+    @Test
+    public void shouldCalculateDeadlinesWhenTenDaySlaSpanningOverSixWeekendDaysAndTwoHolidayDays() {
+
+        when(holidayRepository.findAllByCaseType(any())).thenReturn(getHolidays());
+        when(slaRepository.findSLACaseType(any())).thenReturn(get10DaySla());
+
+        Set<Deadline> deadlines =  deadlinesService.getDeadlines(any(), LocalDate.of(2018, 12, 13));
+
+        List<Deadline> deadlinesAsList = new ArrayList<>(deadlines);
+
+        verify(holidayRepository, times(1)).findAllByCaseType(any());
+        verify(slaRepository, times(1)).findSLACaseType(any());
+        assertThat(deadlinesAsList.get(0).getDate()).isEqualTo(LocalDate.of(2018, 12, 31));
+        assertThat(deadlinesAsList.get(0).getType()).isEqualTo("dispatch");
+    }
+
+    private List<Holiday> getHolidays() {
+        List<Holiday> holidays = new ArrayList<>();
+        Holiday holiday1 = new Holiday();
+        holiday1.setId(1);
+        holiday1.setDate(LocalDate.of(2018, 01, 15));
+        Holiday holiday2 = new Holiday();
+        holiday2.setId(2);
+        holiday2.setDate(LocalDate.of(2018, 12, 25));
+        Holiday holiday3 = new Holiday();
+        holiday3.setId(3);
+        holiday3.setDate(LocalDate.of(2018, 12, 26));
+        holidays.add(holiday1);
+        holidays.add(holiday2);
+        holidays.add(holiday3);
+        return holidays;
+    }
+    private List<Sla> get3DaySla() {
+        List<Sla> slas = new ArrayList<>();
+        Sla sla1 = new Sla();
+        sla1.setId(1);
+        sla1.setType("dispatch");
+        sla1.setValue(3);
+        slas.add(sla1);
+        return slas;
+    }
+
+    private List<Sla> get10DaySla() {
+        List<Sla> slas = new ArrayList<>();
+        Sla sla1 = new Sla();
+        sla1.setId(1);
+        sla1.setType("dispatch");
+        sla1.setValue(10);
+        slas.add(sla1);
+        return slas;
+    }
+
+
+}
