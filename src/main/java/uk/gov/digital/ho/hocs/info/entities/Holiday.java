@@ -28,7 +28,7 @@ public class Holiday {
     @Setter
     private LocalDate date;
 
-    @ManyToMany()
+    @ManyToMany
     @JoinTable(
             name = "tenants_holidays",
             joinColumns = { @JoinColumn(name = "tenant_id") },

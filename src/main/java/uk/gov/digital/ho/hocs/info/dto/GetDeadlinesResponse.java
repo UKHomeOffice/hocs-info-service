@@ -12,11 +12,11 @@ import java.util.Set;
 @Getter
 public class GetDeadlinesResponse {
 
-    @JsonProperty("deadlines")
-    Set<Deadline> deadlines;
+    @JsonProperty("deadlineDtos")
+    Set<DeadlineDto> deadlineDtos;
 
-    public static GetDeadlinesResponse from(Set<Deadline> deadlines) {
-        return new GetDeadlinesResponse(deadlines);
+    public static GetDeadlinesResponse from(Set<DeadlineDto> deadlineDtos) {
+        return new GetDeadlinesResponse(deadlineDtos);
     }
 
 }

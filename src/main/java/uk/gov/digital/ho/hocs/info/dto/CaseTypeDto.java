@@ -4,19 +4,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
-public class Deadline {
+public class CaseTypeDto {
 
-    @JsonProperty("type")
+
+    @JsonProperty("requiredRole")
+    private String tenant;
+
+    @JsonProperty("label")
+    private String displayName;
+
+    @JsonProperty("value")
     private String type;
 
-    @JsonProperty("date")
-    private LocalDate date;
 }

@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.digital.ho.hocs.info.dto.DeadlineDto;
 import uk.gov.digital.ho.hocs.info.dto.GetDeadlinesRequest;
 import uk.gov.digital.ho.hocs.info.dto.GetDeadlinesResponse;
-import uk.gov.digital.ho.hocs.info.dto.Deadline;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Set;
@@ -28,9 +28,11 @@ public class DeadlinesResource {
 
         @RequestMapping(value = "/deadlines", method = RequestMethod.POST, produces = APPLICATION_JSON_UTF8_VALUE)
         public ResponseEntity<GetDeadlinesResponse> getDeadlines(@RequestBody GetDeadlinesRequest getDeadlineRequest) {
+            log.info("requesting deadlines for casetype {} with received date of {} ", getDeadlineRequest.getCaseType(),getDeadlineRequest.getDate());
+
             try {
-                Set<Deadline> deadlines = deadlinesService.getDeadlines(getDeadlineRequest.getCaseType(),getDeadlineRequest.getDate());
-                return ResponseEntity.ok(GetDeadlinesResponse.from(deadlines));
+                Set<DeadlineDto> deadlineDtos = deadlinesService.getDeadlines(getDeadlineRequest.getCaseType(),getDeadlineRequest.getDate());
+                return ResponseEntity.ok(GetDeadlinesResponse.from(deadlineDtos));
             } catch (EntityNotFoundException e) {
                 return ResponseEntity.badRequest().build();
             }

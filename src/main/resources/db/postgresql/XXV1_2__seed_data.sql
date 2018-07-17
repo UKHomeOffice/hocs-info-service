@@ -6,25 +6,25 @@ VALUES ('RSH'),
   ('HMPOCOR'),
   ('HMPOCOL');
 
-Insert INTO case_type (display_name, tenant_id)
-VALUES ('RSH', 1),
-  ('MIN', 2),
-  ('TRO', 2),
-  ('DTEN', 2),
-  ('IMCB', 3),
-  ('IMCM', 3),
-  ('UTEN', 3),
-  ('FOI', 4),
-  ('FTC', 4),
-  ('FTCI', 4),
-  ('FSC', 4),
-  ('FSCI', 4),
-  ('COM', 5),
-  ('COM1', 5),
-  ('COM2', 5),
-  ('DGEN', 5),
-  ('GNR', 5),
-  ('COL', 6);
+Insert INTO case_type (display_name, type, tenant_id)
+VALUES ('RSH', 'RSH', 1),
+  ('DCU Ministerial','MIN', 2),
+  ('DCU Treat Official','TRO', 2),
+  ('DCU Number 10','DTEN', 2),
+  ('UKVI B REF','IMCB', 3),
+  ('UKVI Ministerial REF','IMCM', 3),
+  ('UKVI Number 10','UTEN', 3),
+  ('FOI Request','FOI', 4),
+  ('FOI Time Complaint','FTC', 4),
+  ('FOI Internal Review: Time Complaint','FTCI', 4),
+  ('FOI Substantive Complaint','FSC', 4),
+  ('FOI Internal Review: Substantive Complaint','FSCI', 4),
+  ('HMPO Complaint','COM', 5),
+  ('HMPO Complaint Stage 1','COM1', 5),
+  ('HMPO Compalint Stage 2','COM2', 5),
+  ('HMPO Director General','DGEN', 5),
+  ('HMPO General','GNR', 5),
+  ('HMPO Collectives','COL', 6);
 
 Insert INTO sla (type, value, case_type_id)
 
