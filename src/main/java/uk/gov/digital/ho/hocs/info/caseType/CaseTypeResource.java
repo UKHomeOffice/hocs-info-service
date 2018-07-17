@@ -28,11 +28,11 @@ public class CaseTypeResource {
     }
 
     @RequestMapping(value = "/getcasetypes", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetCaseTypesResponse> getAllCaseTypes(@RequestHeader("X-Auth-Rolls") String[] rolls) {
-        if (rolls.length > 0) {
-            log.info("requesting all case types for Tenants {}", Arrays.toString(rolls));
+    public ResponseEntity<GetCaseTypesResponse> getAllCaseTypes(@RequestHeader("X-Auth-Roles") String[] roles) {
+        if (roles.length > 0) {
+            log.info("requesting all case types for Tenants {}", Arrays.toString(roles));
             try {
-                List<CaseTypeDto> caseTypes = caseTypeService.getCaseTypes(Arrays.asList(rolls));
+                List<CaseTypeDto> caseTypes = caseTypeService.getCaseTypes(Arrays.asList(roles));
                 return ResponseEntity.ok(new GetCaseTypesResponse(caseTypes));
             } catch (EntityNotFoundException e) {
                 return ResponseEntity.badRequest().build();

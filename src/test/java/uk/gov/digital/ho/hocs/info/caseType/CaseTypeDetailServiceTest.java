@@ -85,7 +85,7 @@ public class CaseTypeDetailServiceTest {
     }
 
     @Test
-    public void shouldGetCaseTypesSingleTenantRequestedWithNoneTenantsInXAuthRollsHeader() {
+    public void shouldGetCaseTypesSingleTenantRequestedWithNoneTenantsInXAuthRolesHeader() {
 
         when(tenantRepository.findAll()).thenReturn(getTenants());
         when(caseTypeRepository.findCaseTypesByTenant("DCU")).thenReturn(getDCUCaseType());

@@ -24,9 +24,9 @@ public class CaseTypeService {
         this.tenantRepository = tenantRepository;
     }
 
-    public List<CaseTypeDto> getCaseTypes(List<String> rolls) {
-        if (rolls != null) {
-            List<String> tenants = getTenantsFromRolls(rolls);
+    public List<CaseTypeDto> getCaseTypes(List<String> roles) {
+        if (roles != null) {
+            List<String> tenants = getTenantsFromRoles(roles);
 
             List<CaseTypeDto> caseTypeDtos = new ArrayList<>();
             tenants.forEach(tenant -> {
@@ -39,16 +39,16 @@ public class CaseTypeService {
             });
             return caseTypeDtos;
         } else {
-            throw new EntityNotFoundException("Rolls is Null!");
+            throw new EntityNotFoundException("Roles is Null!");
         }
     }
 
-    private List<String> getTenantsFromRolls(List<String> rolls) {
+    private List<String> getTenantsFromRoles(List<String> roles) {
         List<Tenant> allTenants = (List<Tenant>) tenantRepository.findAll();
         List<String> tenants = new ArrayList<>();
-        rolls.forEach(roll -> {
-            allTenants.stream().filter(x -> roll.equals(x.getDisplayName())).forEach(x -> {
-                tenants.add(roll);
+        roles.forEach(role -> {
+            allTenants.stream().filter(x -> role.equals(x.getDisplayName())).forEach(x -> {
+                tenants.add(role);
             });
         });
         return tenants;
