@@ -9,7 +9,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.dto.CaseTypeDto;
-import uk.gov.digital.ho.hocs.info.dto.GetCaseTypesRequest;
 import uk.gov.digital.ho.hocs.info.dto.GetCaseTypesResponse;
 
 import java.util.ArrayList;
@@ -20,12 +19,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CaseTypeResourceTest {
+public class CaseTypeDetailResourceTest {
 
     @Mock
     private CaseTypeService caseTypeService;
 
     private CaseTypeResource caseTypeResource;
+
+
+    private final String[] CASE_TYPE_SINGLE = {"DCU"};
+    private final String[] CASE_TYPE_MULTI = {"DCU","UKVI"};
 
     @Before
     public void setUp() {
@@ -39,9 +42,7 @@ public class CaseTypeResourceTest {
         when(caseTypeService.getCaseTypes(any())).thenReturn(getMockCaseTypesSingleTenant());
 
         ResponseEntity<GetCaseTypesResponse> response =
-                caseTypeResource.getAllCaseTypes(new GetCaseTypesRequest(new ArrayList<String>() {{
-                    add("DCU");
-                }}));
+                caseTypeResource.getAllCaseTypes(CASE_TYPE_SINGLE);
 
         verify(caseTypeService, times(1)).getCaseTypes(new ArrayList<String>() {{
             add("DCU");
@@ -72,10 +73,7 @@ public class CaseTypeResourceTest {
         when(caseTypeService.getCaseTypes(any())).thenReturn(getMockCaseTypesMultipleTenant());
 
         ResponseEntity<GetCaseTypesResponse> response =
-                caseTypeResource.getAllCaseTypes(new GetCaseTypesRequest(new ArrayList<String>() {{
-                    add("DCU");
-                    add("UKVI");
-                }}));
+                caseTypeResource.getAllCaseTypes(CASE_TYPE_MULTI);
 
         verify(caseTypeService, times(1)).getCaseTypes(new ArrayList<String>() {{
             add("DCU");

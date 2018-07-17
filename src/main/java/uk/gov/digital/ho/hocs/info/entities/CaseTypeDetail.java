@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class CaseType {
+public class CaseTypeDetail {
 
     @Id
     @Column(name = "id")

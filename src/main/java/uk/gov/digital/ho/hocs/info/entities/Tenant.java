@@ -1,6 +1,8 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -11,6 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "tenant", schema = "info")
+@AllArgsConstructor
 @NoArgsConstructor
 public class Tenant {
 
@@ -20,6 +23,7 @@ public class Tenant {
     private int id;
 
     @Column(name = "display_name")
+    @Getter
     private String displayName;
 
     @ManyToMany(mappedBy = "tenants", fetch = FetchType.LAZY)
@@ -27,11 +31,11 @@ public class Tenant {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "tenant_id", referencedColumnName = "id")
-    private List<CaseType> caseTypes = new ArrayList<>();
+    private List<CaseTypeDetail> caseTypeDetails = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "tenant_id", referencedColumnName = "id")
-    private Set<Unit> units = new HashSet<>();
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinColumn(name = "tenant_id", referencedColumnName = "id")
+//    private Set<Unit> unit = new HashSet<>();
 }
 //
 //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

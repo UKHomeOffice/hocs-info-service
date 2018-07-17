@@ -23,5 +23,8 @@ public class HocsInfoServiceApplication {
     public static boolean isNullOrEmpty(LocalDate value) {
         return value == null;
     }
+    public static boolean isNullOrEmpty(Long value) {
+        return value == null;
+    }
 
 }

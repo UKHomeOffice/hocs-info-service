@@ -161,7 +161,7 @@ public class DeadlinesServiceTest {
         Sla sla1 = new Sla();
         sla1.setId(1);
         sla1.setType("dispatch");
-        sla1.setValue(3);
+        sla1.setValue(3l);
         slas.add(sla1);
         return slas;
     }
@@ -171,7 +171,7 @@ public class DeadlinesServiceTest {
         Sla sla1 = new Sla();
         sla1.setId(1);
         sla1.setType("dispatch");
-        sla1.setValue(10);
+        sla1.setValue(10l);
         slas.add(sla1);
         return slas;
     }

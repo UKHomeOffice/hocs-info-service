@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
+@SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
 public class DeadlinesResourceTest {
 
     @Mock
@@ -36,12 +37,16 @@ public class DeadlinesResourceTest {
     }
 
     @Test
-    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
-    public void shouldReturnDeadlineDates() {
+    public void shouldReturnDeadlineDatesforCaseType() {
 
-        when(deadlinesService.getDeadlines(any(), any())).thenReturn(getMockDeadlines());
+        when(deadlinesService.getDeadlines(any(), any())).thenReturn(getMockDeadlinesForCaseTypeRequest());
 
-        ResponseEntity<GetDeadlinesResponse> response = deadlinesResource.getDeadlines(new GetDeadlinesRequest("MIN",LocalDate.of(2018, 01, 18)));
+        ResponseEntity<GetDeadlinesResponse> response =
+                deadlinesResource.getDeadlines(
+                        new GetDeadlinesRequest(
+                                "MIN",
+                                LocalDate.of(2018, 01, 18
+                                )));
 
         verify(deadlinesService, times(1)).getDeadlines("MIN",LocalDate.of(2018, 01, 18));
 
@@ -60,10 +65,47 @@ public class DeadlinesResourceTest {
 
     }
 
-    private Set<DeadlineDto> getMockDeadlines() {
+    @Test
+    public void shouldReturnDeadlineDateWhenFiveDaySlaRequested(){
+        when(deadlinesService.getDeadlinesForRequestedSLA(any(), any(), any())).thenReturn(getMockDeadlinesForRequestedSLAFiveDay());
+        ResponseEntity<DeadlineDto> response =
+                deadlinesResource.getDeadlinesForRequestedSLA(
+                        new GetDeadlinesRequest(
+                                "HMPOCOR",
+                                LocalDate.of(2018, 01, 18),
+                                5l
+                        ));
+
+        assertThat(response).isNotNull();
+        assertThat(response.getBody().getDate()).isEqualTo(LocalDate.of(2018, 01, 25));
+        assertThat(response.getBody().getType()).isEqualTo("Final");
+
+    }
+
+    @Test
+    public void shouldReturnDeadlineDateWhenTenDaySlaRequested(){
+        when(deadlinesService.getDeadlinesForRequestedSLA(any(), any(), any())).thenReturn(getMockDeadlinesForRequestedSLATenDay());
+        ResponseEntity<DeadlineDto> response =
+                deadlinesResource.getDeadlinesForRequestedSLA(
+                        new GetDeadlinesRequest(
+                                "HMPOCOR",
+                                LocalDate.of(2018, 01, 18),
+                                10l
+                        ));
+
+        assertThat(response).isNotNull();
+        assertThat(response.getBody().getDate()).isEqualTo(LocalDate.of(2018, 02, 1));
+        assertThat(response.getBody().getType()).isEqualTo("Final");
+    }
+
+    private Set<DeadlineDto> getMockDeadlinesForCaseTypeRequest() {
         Set<DeadlineDto> deadlineDtos = new HashSet<>();
         deadlineDtos.add(new DeadlineDto("draft", LocalDate.of(2018, 01, 18)));
         deadlineDtos.add(new DeadlineDto("dispatch",LocalDate.of(2018, 01, 25)));
         return deadlineDtos;
     }
+    private DeadlineDto getMockDeadlinesForRequestedSLAFiveDay(){
+    return new DeadlineDto("Final", LocalDate.of(2018, 01, 25));}
+    private DeadlineDto getMockDeadlinesForRequestedSLATenDay(){
+    return new DeadlineDto("Final", LocalDate.of(2018, 02, 1));}
 }
