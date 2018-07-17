@@ -1,1 +1,1 @@
-# kube-hocs-docs
+# kube-hocs-info-service
