@@ -3,12 +3,12 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    name: hocs-docs
-  name: hocs-docs
+    name: hocs-info-service
+  name: hocs-info-service
 spec:
   ports:
   - name: https
     port: 443
     targetPort: 10443
   selector:
-    name: hocs-docs
+    name: hocs-info-service
