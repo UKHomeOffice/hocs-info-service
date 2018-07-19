@@ -79,7 +79,7 @@ spec:
               readOnly: true
 
         - name: proxy
-          image: quay.io/ukhomeofficedigital/nginx-proxy:v3.2.9
+          image: quay.io/ukhomeofficedigital/nginx-proxy:v3.2.11
           imagePullPolicy: Always
           securityContext:
             runAsNonRoot: true
@@ -137,9 +137,6 @@ spec:
               drop:
                 - SETUID
                 - SETGID
-          #envFrom:
-          #  - configMapRef:
-          #    name: hocs-queue-config
           env:
             - name: JAVA_OPTS
               value: '-Xms150m -Xmx768m -Djavax.net.ssl.trustStore=/etc/keystore/truststore.jks -Dhttps.proxyHost=hocs-outbound-proxy.{{.KUBE_NAMESPACE}}.svc.cluster.local -Dhttps.proxyPort=31290 -Dhttps.nonProxyHosts=*.{{.KUBE_NAMESPACE}}.svc.cluster.local'
@@ -179,7 +176,7 @@ spec:
                   key: password
           resources:
             limits:
-              cpu: 400m
+              cpu: 350m
               memory: 1024Mi
             requests:
               cpu: 100m
