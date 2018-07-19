@@ -12,7 +12,6 @@ import uk.gov.digital.ho.hocs.info.dto.GetDeadlinesRequest;
 import uk.gov.digital.ho.hocs.info.dto.GetDeadlinesResponse;
 
 import javax.persistence.EntityNotFoundException;
-import java.time.LocalDate;
 import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;

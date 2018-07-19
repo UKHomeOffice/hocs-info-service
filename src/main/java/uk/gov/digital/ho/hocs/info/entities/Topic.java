@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,10 +9,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "unit")
+@Table(name = "topic")
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class Unit {
+public class Topic {
 
     @Id
     @Column(name = "id")
@@ -20,5 +22,4 @@ public class Unit {
 
     @Column(name = "displayName")
     private String displayName;
-
 }
