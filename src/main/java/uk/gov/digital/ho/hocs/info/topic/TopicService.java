@@ -2,11 +2,10 @@ package uk.gov.digital.ho.hocs.info.topic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.tenant.TenantService;
 import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
-import uk.gov.digital.ho.hocs.info.entities.Tenant;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.repositories.ParentTopicRepository;
-import uk.gov.digital.ho.hocs.info.repositories.TenantRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,18 +15,18 @@ public class TopicService {
 
 
     private final ParentTopicRepository parentTopicRepository;
-    private final TenantRepository tenantRepository;
 
+    private final TenantService tenantService;
 
     @Autowired
-    public TopicService(ParentTopicRepository parentTopicRepository, TenantRepository tenantRepository) {
+    public TopicService(ParentTopicRepository parentTopicRepository, TenantService tenantService) {
         this.parentTopicRepository = parentTopicRepository;
-        this.tenantRepository = tenantRepository;
+        this.tenantService = tenantService;
     }
 
     public List<ParentTopic> getTopics(List<String> roles) {
         if (roles != null) {
-            List<String> tenants = getTenantsFromRoles(roles);
+            List<String> tenants = tenantService.getTenantsFromRoles(roles);
 
             List<ParentTopic> parentTopics = new ArrayList<>();
             for (String tenant : tenants) {
@@ -37,16 +36,5 @@ public class TopicService {
         } else {
             throw new EntityNotFoundException("Roles is Null!");
         }
-    }
-
-    private List<String> getTenantsFromRoles(List<String> roles) {
-        List<Tenant> allTenants = (List<Tenant>) tenantRepository.findAll();
-        List<String> tenants = new ArrayList<>();
-        roles.forEach(role ->
-                allTenants.stream().filter(x -> role.equals(x.getDisplayName())).forEach(x ->
-                        tenants.add(role)
-
-                ));
-        return tenants;
     }
 }

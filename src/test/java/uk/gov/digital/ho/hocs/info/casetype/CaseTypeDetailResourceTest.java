@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.caseType;
+package uk.gov.digital.ho.hocs.info.casetype;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.Before;
