@@ -1,13 +1,13 @@
-package uk.gov.digital.ho.hocs.info.other;
+package uk.gov.digital.ho.hocs.info.entities;
 
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "minister")
+@Table(name = "member")
 @NoArgsConstructor
-public class Minister {
+public class Member {
 
     @Id
     @Column(name = "id")
@@ -16,4 +16,5 @@ public class Minister {
 
     @Column(name = "display_name")
     private String displayName;
+
 }

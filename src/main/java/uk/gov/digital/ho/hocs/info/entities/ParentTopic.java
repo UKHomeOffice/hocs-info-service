@@ -1,5 +1,7 @@
-package uk.gov.digital.ho.hocs.info.other;
+package uk.gov.digital.ho.hocs.info.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -8,7 +10,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "parent-topic")
+@AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class ParentTopic {
 
     @Id
@@ -16,7 +20,7 @@ public class ParentTopic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "default_name")
+    @Column(name = "displayName")
     private String displayName;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

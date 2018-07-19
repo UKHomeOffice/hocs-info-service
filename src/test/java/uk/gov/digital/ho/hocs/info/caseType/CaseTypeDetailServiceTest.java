@@ -38,7 +38,7 @@ public class CaseTypeDetailServiceTest {
     }
 
     @Test(expected = EntityNotFoundException.class)
-    public void shouldGetCaseTypes() throws EntityNotFoundException {
+    public void shouldThrowExceptionWhenGetCaseTypesWithNoRoles() throws EntityNotFoundException {
         caseTypeService.getCaseTypes(null);
     }
 

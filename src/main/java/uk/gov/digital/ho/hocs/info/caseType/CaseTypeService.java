@@ -29,14 +29,14 @@ public class CaseTypeService {
             List<String> tenants = getTenantsFromRoles(roles);
 
             List<CaseTypeDto> caseTypeDtos = new ArrayList<>();
-            tenants.forEach(tenant -> {
+            for (String tenant : tenants) {
                 List<CaseTypeDetail> caseTypeDetails = caseTypeRepository.findCaseTypesByTenant(tenant);
                 if (caseTypeDetails != null) {
                     caseTypeDetails.stream().map(caseTypeDetail -> new CaseTypeDto(tenant, caseTypeDetail.getDisplayName(), caseTypeDetail.getType())).forEach(caseTypeDtos::add);
                 } else {
                     throw new EntityNotFoundException("Tenant not Found!");
                 }
-            });
+            }
             return caseTypeDtos;
         } else {
             throw new EntityNotFoundException("Roles is Null!");
