@@ -11,6 +11,7 @@ import uk.gov.digital.ho.hocs.info.entities.Topic;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.repositories.ParentTopicRepository;
 import uk.gov.digital.ho.hocs.info.repositories.TenantRepository;
+import uk.gov.digital.ho.hocs.info.tenant.TenantService;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,13 +31,13 @@ public class TopicServiceTest {
     private ParentTopicRepository parentTopicRepository;
 
     @Mock
-    private TenantRepository tenantRepository;
-    
+    private TenantService tenantService;
+
     private TopicService topicService;
 
     @Before
     public void setUp() { 
-        this.topicService = new TopicService(parentTopicRepository,tenantRepository );
+        this.topicService = new TopicService(parentTopicRepository,tenantService );
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -47,7 +48,7 @@ public class TopicServiceTest {
     @Test
     public void shouldGetTopicsByTenant(){
 
-        when(tenantRepository.findAll()).thenReturn(getTenants());
+        when(tenantService.getTenantsFromRoles(any())).thenReturn(new ArrayList<String>() {{ add("DCU");}});
         when(parentTopicRepository.findParentTopicByTenant("DCU")).thenReturn(getTopics());
 
         List<ParentTopic> parentTopics = topicService.getTopics(new ArrayList<String>() {{
@@ -80,17 +81,6 @@ public class TopicServiceTest {
 
         return new ArrayList<ParentTopic>() {{
             add(new ParentTopic(1,"Parent Topic 1", topics));
-        }};
-    }
-
-    private List<Tenant> getTenants() {
-        return new ArrayList<Tenant>() {{
-            add(new Tenant(1, "RSH", new HashSet<>(), new ArrayList<>()));
-            add(new Tenant(2, "DCU", new HashSet<>(), new ArrayList<>()));
-            add(new Tenant(3, "UKVI", new HashSet<>(), new ArrayList<>()));
-            add(new Tenant(4, "FOI", new HashSet<>(), new ArrayList<>()));
-            add(new Tenant(5, "HMPOCOR", new HashSet<>(), new ArrayList<>()));
-            add(new Tenant(6, "HMPOCOL", new HashSet<>(), new ArrayList<>()));
         }};
     }
 }

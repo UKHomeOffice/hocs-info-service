@@ -30,11 +30,11 @@ public class DeadlinesService {
         this.holidayRepository = holidayRepository;
     }
 
-    public Set<DeadlineDto> getDeadlines(String CaseType, LocalDate receivedDate) {
-        if (!isNullOrEmpty(CaseType) && !isNullOrEmpty(receivedDate)) {
-            List<Holiday> holidays = holidayRepository.findAllByCaseType(CaseType);
+    public Set<DeadlineDto> getDeadlines(String caseType, LocalDate receivedDate) {
+        if (!isNullOrEmpty(caseType) && !isNullOrEmpty(receivedDate)) {
+            List<Holiday> holidays = holidayRepository.findAllByCaseType(caseType);
 
-            List<Sla> slas = slaRepository.findSLACaseType(CaseType);
+            List<Sla> slas = slaRepository.findSLACaseType(caseType);
 
             if (holidays != null && slas != null) {
                 return calculateDeadline(receivedDate, slas, holidays);
