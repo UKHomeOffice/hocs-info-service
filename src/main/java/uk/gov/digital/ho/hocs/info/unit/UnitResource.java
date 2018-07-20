@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.topic;
+package uk.gov.digital.ho.hocs.info.unit;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.digital.ho.hocs.info.dto.GetTopicsResponse;
-import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
+import uk.gov.digital.ho.hocs.info.dto.GetUnitsResponse;
+import uk.gov.digital.ho.hocs.info.entities.Unit;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 
 import java.util.Arrays;
@@ -18,22 +18,23 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @Slf4j
 @RestController
-public class TopicResource {
+public class UnitResource {
 
-    private final TopicService topicService;
+    private final UnitService unitService;
 
     @Autowired
-    public TopicResource(TopicService topicService) {
-        this.topicService = topicService;
+    public UnitResource(UnitService unitService) {
+        this.unitService = unitService;
     }
 
-    @RequestMapping(value = "/topics", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetTopicsResponse> getAllTopics(@RequestHeader("X-Auth-Roles") String[] roles) {
+    @RequestMapping(value = "/units", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetUnitsResponse> getAllUnits(@RequestHeader("X-Auth-Roles") String[] roles) {
+
         if (roles.length > 0) {
-            log.info("requesting all topics for Tenants {}", Arrays.toString(roles));
+            log.info("requesting all units for Tenants {}", Arrays.toString(roles));
             try {
-                List<ParentTopic> topics = topicService.getTopics(Arrays.asList(roles));
-                return ResponseEntity.ok(new GetTopicsResponse(topics));
+                List<Unit> units = unitService.getUnits(Arrays.asList(roles));
+                return ResponseEntity.ok(new GetUnitsResponse(units));
             } catch (EntityNotFoundException e) {
                 return ResponseEntity.badRequest().build();
             }

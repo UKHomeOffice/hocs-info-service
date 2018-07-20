@@ -7,14 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.entities.CaseTypeDetail;
-import uk.gov.digital.ho.hocs.info.entities.Tenant;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.repositories.CaseTypeRepository;
-import uk.gov.digital.ho.hocs.info.repositories.TenantRepository;
 import uk.gov.digital.ho.hocs.info.tenant.TenantService;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,10 +28,6 @@ public class CaseTypeDetailServiceTest {
     private TenantService tenantService;
 
     private CaseTypeService caseTypeService;
-
-    private final List<String> ROLES_DCU = new ArrayList<String>(){{add("Created"); add("DCU");}};
-    private final List<String> ROLES_DCU_UKVI = new ArrayList<String>(){{add("Created"); add("DCU");}};
-    private final List<String> ROLES_EMPTY = new ArrayList<>();
 
     @Before
     public void setUp() {
