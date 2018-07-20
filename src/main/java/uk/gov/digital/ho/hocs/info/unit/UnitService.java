@@ -23,7 +23,6 @@ public class UnitService {
         this.tenantService = tenantService;
     }
 
-
     public List<Unit> getUnits(List<String> roles) {
         if (roles != null) {
             List<String> tenants = tenantService.getTenantsFromRoles(roles);

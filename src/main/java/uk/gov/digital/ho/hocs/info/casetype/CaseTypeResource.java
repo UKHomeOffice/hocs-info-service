@@ -27,7 +27,7 @@ public class CaseTypeResource {
         this.caseTypeService = caseTypeService;
     }
 
-    @RequestMapping(value = "/getcasetypes", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/casetypes", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetCaseTypesResponse> getAllCaseTypes(@RequestHeader("X-Auth-Roles") String[] roles) {
         if (roles.length > 0) {
             log.info("requesting all case types for Tenants {}", Arrays.toString(roles));
