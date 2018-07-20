@@ -1,29 +1,22 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "sla")
+@Table(name = "template")
 @NoArgsConstructor
-@Getter
-@Setter
-public class Sla {
+public class Template {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Getter
-    @Column(name = "type")
-    private String type;
+    @Column(name = "display_name")
+    private String displayName;
 
-    @Getter
-    @Column(name = "value")
-    private Long value;
-
+    @Column(name = "s3_link")
+    private String s3Link;
 }

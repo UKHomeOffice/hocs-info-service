@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.caseType;
+package uk.gov.digital.ho.hocs.info.casetype;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.Before;
@@ -27,8 +27,8 @@ public class CaseTypeDetailResourceTest {
     private CaseTypeResource caseTypeResource;
 
 
-    private final String[] CASE_TYPE_SINGLE = {"DCU"};
-    private final String[] CASE_TYPE_MULTI = {"DCU","UKVI"};
+    private final String[] ROLE_SINGLE = {"DCU"};
+    private final String[] ROLE_MULTI = {"DCU","UKVI"};
 
     @Before
     public void setUp() {
@@ -42,7 +42,7 @@ public class CaseTypeDetailResourceTest {
         when(caseTypeService.getCaseTypes(any())).thenReturn(getMockCaseTypesSingleTenant());
 
         ResponseEntity<GetCaseTypesResponse> response =
-                caseTypeResource.getAllCaseTypes(CASE_TYPE_SINGLE);
+                caseTypeResource.getAllCaseTypes(ROLE_SINGLE);
 
         verify(caseTypeService, times(1)).getCaseTypes(new ArrayList<String>() {{
             add("DCU");
@@ -73,7 +73,7 @@ public class CaseTypeDetailResourceTest {
         when(caseTypeService.getCaseTypes(any())).thenReturn(getMockCaseTypesMultipleTenant());
 
         ResponseEntity<GetCaseTypesResponse> response =
-                caseTypeResource.getAllCaseTypes(CASE_TYPE_MULTI);
+                caseTypeResource.getAllCaseTypes(ROLE_MULTI);
 
         verify(caseTypeService, times(1)).getCaseTypes(new ArrayList<String>() {{
             add("DCU");

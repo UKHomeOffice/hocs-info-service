@@ -1,22 +1,23 @@
-package uk.gov.digital.ho.hocs.info.other;
+package uk.gov.digital.ho.hocs.info.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "standard-lines")
+@Table(name = "topic")
+@AllArgsConstructor
 @NoArgsConstructor
-public class StandardLines {
+@Getter
+public class Topic {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "display_name")
+    @Column(name = "displayName")
     private String displayName;
-
-    @Column(name = "s3_link")
-    private String s3Link;
 }

@@ -1,13 +1,13 @@
-package uk.gov.digital.ho.hocs.info.other;
+package uk.gov.digital.ho.hocs.info.entities;
 
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "template")
+@Table(name = "minister")
 @NoArgsConstructor
-public class Template {
+public class Minister {
 
     @Id
     @Column(name = "id")
@@ -16,7 +16,4 @@ public class Template {
 
     @Column(name = "display_name")
     private String displayName;
-
-    @Column(name = "s3_link")
-    private String s3Link;
 }

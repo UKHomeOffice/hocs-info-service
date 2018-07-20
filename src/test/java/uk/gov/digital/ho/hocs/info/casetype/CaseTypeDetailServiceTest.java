@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.caseType;
+package uk.gov.digital.ho.hocs.info.casetype;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,14 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.entities.CaseTypeDetail;
-import uk.gov.digital.ho.hocs.info.entities.Holiday;
-import uk.gov.digital.ho.hocs.info.entities.Tenant;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.repositories.CaseTypeRepository;
-import uk.gov.digital.ho.hocs.info.repositories.TenantRepository;
+import uk.gov.digital.ho.hocs.info.tenant.TenantService;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,24 +25,24 @@ public class CaseTypeDetailServiceTest {
     @Mock
     private CaseTypeRepository caseTypeRepository;
     @Mock
-    private TenantRepository tenantRepository;
+    private TenantService tenantService;
 
     private CaseTypeService caseTypeService;
 
     @Before
     public void setUp() {
-        this.caseTypeService = new CaseTypeService(caseTypeRepository, tenantRepository);
+        this.caseTypeService = new CaseTypeService(caseTypeRepository, tenantService);
     }
 
     @Test(expected = EntityNotFoundException.class)
-    public void shouldGetCaseTypes() throws EntityNotFoundException {
+    public void shouldThrowExceptionWhenGetCaseTypesWithNoRoles() throws EntityNotFoundException {
         caseTypeService.getCaseTypes(null);
     }
 
     @Test
     public void shouldGetCaseTypesSingleTenantRequested() {
 
-        when(tenantRepository.findAll()).thenReturn(getTenants());
+        when(tenantService.getTenantsFromRoles(any())).thenReturn(new ArrayList<String>() {{ add("DCU");}});
         when(caseTypeRepository.findCaseTypesByTenant("DCU")).thenReturn(getDCUCaseType());
 
         List<CaseTypeDto> caseTypeDtos = caseTypeService.getCaseTypes(new ArrayList<String>() {{
@@ -64,7 +61,7 @@ public class CaseTypeDetailServiceTest {
 
     @Test
     public void shouldGetCaseTypesMultipleTenantRequested() {
-        when(tenantRepository.findAll()).thenReturn(getTenants());
+        when(tenantService.getTenantsFromRoles(any())).thenReturn(new ArrayList<String>() {{ add("DCU");add("UKVI");}});
         when(caseTypeRepository.findCaseTypesByTenant("DCU")).thenReturn(getDCUCaseType());
         when(caseTypeRepository.findCaseTypesByTenant("UKVI")).thenReturn(getUKVICaseType());
 
@@ -87,14 +84,14 @@ public class CaseTypeDetailServiceTest {
     @Test
     public void shouldGetCaseTypesSingleTenantRequestedWithNoneTenantsInXAuthRolesHeader() {
 
-        when(tenantRepository.findAll()).thenReturn(getTenants());
+        when(tenantService.getTenantsFromRoles(anyList())).thenReturn(new ArrayList<String>() {{ add("DCU");}});
         when(caseTypeRepository.findCaseTypesByTenant("DCU")).thenReturn(getDCUCaseType());
 
         List<CaseTypeDto> caseTypeDtos = caseTypeService.getCaseTypes(new ArrayList<String>() {{
             add("Create");add("Document");add("Draft");add("DCU");
         }});
 
-        verify(caseTypeRepository, times(1)).findCaseTypesByTenant(any());
+        verify(caseTypeRepository, times(1)).findCaseTypesByTenant("DCU");
 
         assertThat(caseTypeDtos.size()).isEqualTo(3);
 
@@ -128,14 +125,5 @@ public class CaseTypeDetailServiceTest {
             add(new CaseTypeDetail(3, "UKVI Number 10", "UTEN", new ArrayList<>()));
         }};
     }
-    private List<Tenant> getTenants() {
-        return new ArrayList<Tenant>() {{
-            add(new Tenant(1, "RSH", new HashSet<>(), new ArrayList<>()));
-            add(new Tenant(2, "DCU", new HashSet<>(), new ArrayList<>()));
-            add(new Tenant(3, "UKVI", new HashSet<>(), new ArrayList<>()));
-            add(new Tenant(4, "FOI", new HashSet<>(), new ArrayList<>()));
-            add(new Tenant(5, "HMPOCOR", new HashSet<>(), new ArrayList<>()));
-            add(new Tenant(6, "HMPOCOL", new HashSet<>(), new ArrayList<>()));
-        }};
-    }
+
 }

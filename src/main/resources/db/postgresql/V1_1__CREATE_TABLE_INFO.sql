@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS minister
    minister_id     BIGSERIAL NOT NULL,
 
    CONSTRAINT fk_parent_topic_id FOREIGN KEY (parent_topic_id) REFERENCES parent_topic (id),
-   CONSTRAINT fk_team_id FOREIGN KEY (team_id) REFERENCES unit (id),
+   CONSTRAINT fk_team_id FOREIGN KEY (team_id) REFERENCES team (id),
    CONSTRAINT fk_minister_id FOREIGN KEY (minister_id) REFERENCES minister (id)
  );
 
@@ -139,6 +139,6 @@ CREATE TABLE IF NOT EXISTS minister
    display_name TEXT NOT NULL,
    team_id BIGSERIAL NOT NULL,
 
-   CONSTRAINT fk_member_id FOREIGN KEY (team_id) REFERENCES team (id)
+   CONSTRAINT fk_team_id FOREIGN KEY (team_id) REFERENCES team (id)
  );
 

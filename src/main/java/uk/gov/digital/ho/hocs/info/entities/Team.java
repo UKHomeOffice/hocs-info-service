@@ -1,7 +1,8 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import uk.gov.digital.ho.hocs.info.other.Member;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -9,7 +10,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "team")
+@AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class Team {
 
     @Id
