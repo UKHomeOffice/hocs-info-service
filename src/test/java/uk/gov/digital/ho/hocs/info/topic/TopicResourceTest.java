@@ -12,17 +12,12 @@ import uk.gov.digital.ho.hocs.info.dto.GetTopicsResponse;
 import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
 import uk.gov.digital.ho.hocs.info.entities.Topic;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
@@ -55,12 +50,12 @@ public class TopicResourceTest {
 
         List<Topic> responseTopicAsList = new ArrayList<>(response.getBody().getTopics().get(0).getTopic());
 
-        Topic result1 = responseTopicAsList.stream().filter(x -> "Topic1".equals(x.getDisplayName())).findAny().orElse(null);
+        Topic result1 = responseTopicAsList.stream().filter(x -> Objects.equals(1 ,x.getId())).findAny().orElse(null);
         assertThat(result1).isNotNull();
-        assertThat(result1.getId()).isEqualTo(1);
-        Topic result2 = responseTopicAsList.stream().filter(x -> "Topic2".equals(x.getDisplayName())).findAny().orElse(null);
+        assertThat(result1.getDisplayName()).isEqualTo("Topic1");
+        Topic result2 = responseTopicAsList.stream().filter(x -> Objects.equals(2,x.getId())).findAny().orElse(null);
         assertThat(result2).isNotNull();
-        assertThat(result2.getId()).isEqualTo(2);
+        assertThat(result2.getDisplayName()).isEqualTo("Topic2");
     }
 
     private List<ParentTopic> getTopics() {

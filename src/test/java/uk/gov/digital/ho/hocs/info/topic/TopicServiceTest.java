@@ -6,11 +6,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
-import uk.gov.digital.ho.hocs.info.entities.Tenant;
 import uk.gov.digital.ho.hocs.info.entities.Topic;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.repositories.ParentTopicRepository;
-import uk.gov.digital.ho.hocs.info.repositories.TenantRepository;
 import uk.gov.digital.ho.hocs.info.tenant.TenantService;
 
 import java.util.ArrayList;
@@ -20,9 +18,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TopicServiceTest {
@@ -41,12 +37,12 @@ public class TopicServiceTest {
     }
 
     @Test(expected = EntityNotFoundException.class)
-    public void shouldThrowExceptionWhenGetCaseTypesWithNoRoles() throws EntityNotFoundException {
+    public void shouldThrowExceptionWhenGetTopicsWithNoRoles() throws EntityNotFoundException {
         topicService.getTopics(null);
     }
     
     @Test
-    public void shouldGetTopicsByTenant(){
+    public void shouldReturnTopicsByTenant(){
 
         when(tenantService.getTenantsFromRoles(any())).thenReturn(new ArrayList<String>() {{ add("DCU");}});
         when(parentTopicRepository.findParentTopicByTenant("DCU")).thenReturn(getTopics());
