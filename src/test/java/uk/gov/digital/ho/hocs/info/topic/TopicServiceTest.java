@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.entities.Minister;
 import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
 import uk.gov.digital.ho.hocs.info.entities.Topic;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
@@ -71,8 +72,8 @@ public class TopicServiceTest {
 
     private List<ParentTopic> getTopics() {
         Set<Topic> topics = new HashSet<Topic>() {{
-            add(new Topic(1, "Topic1"));
-            add(new Topic(2, "Topic2"));
+            add(new Topic(1, "Topic1", new Minister(1, "Minister1")));
+            add(new Topic(2, "Topic2", new Minister(2, "Minister2")));
         }};
 
         return new ArrayList<ParentTopic>() {{

@@ -20,4 +20,7 @@ public class Topic {
 
     @Column(name = "displayName")
     private String displayName;
+
+    @OneToOne
+    private Minister minister;
 }
