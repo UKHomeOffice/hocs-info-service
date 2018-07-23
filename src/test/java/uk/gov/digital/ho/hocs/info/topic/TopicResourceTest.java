@@ -9,6 +9,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.dto.GetTopicsResponse;
+import uk.gov.digital.ho.hocs.info.entities.Minister;
 import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
 import uk.gov.digital.ho.hocs.info.entities.Topic;
 
@@ -60,8 +61,8 @@ public class TopicResourceTest {
 
     private List<ParentTopic> getTopics() {
         Set<Topic> topics = new HashSet<Topic>() {{
-                add(new Topic(1, "Topic1"));
-                add(new Topic(2, "Topic2"));
+                add(new Topic(1, "Topic1", new Minister(1, "Minister1")));
+                add(new Topic(2, "Topic2", new Minister(2, "Minister2")));
             }};
 
         return new ArrayList<ParentTopic>() {{
