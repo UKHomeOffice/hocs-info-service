@@ -33,7 +33,7 @@ public class TopicServiceTest {
 
     @Before
     public void setUp() { 
-        this.topicService = new TopicService(parentTopicRepository,tenantService );
+        this.topicService = new TopicService(parentTopicRepository, tenantService);
     }
 
     @Test(expected = EntityNotFoundException.class)

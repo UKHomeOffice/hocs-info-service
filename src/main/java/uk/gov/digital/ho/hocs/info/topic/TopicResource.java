@@ -3,11 +3,10 @@ package uk.gov.digital.ho.hocs.info.topic;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import uk.gov.digital.ho.hocs.info.dto.GetMinisterResponse;
 import uk.gov.digital.ho.hocs.info.dto.GetTopicsResponse;
+import uk.gov.digital.ho.hocs.info.entities.Minister;
 import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 
