@@ -2,7 +2,6 @@ package uk.gov.digital.ho.hocs.info.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -11,7 +10,6 @@ import java.util.Set;
 @Entity
 @Table(name = "team")
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class Team {
 
@@ -26,4 +24,8 @@ public class Team {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Set<Member> members = new HashSet<>();
+
+//    @ManyToOne(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JsonIgnoreProperties({"team"}) // prevent infinite recursion (FIXME)
+//    private Unit unit;
 }
