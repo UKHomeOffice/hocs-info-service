@@ -12,15 +12,14 @@ import uk.gov.digital.ho.hocs.info.dto.GetUnitsResponse;
 import uk.gov.digital.ho.hocs.info.entities.Member;
 import uk.gov.digital.ho.hocs.info.entities.Team;
 import uk.gov.digital.ho.hocs.info.entities.Unit;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
@@ -61,6 +60,20 @@ public class UnitResourceTest {
         assertThat(result2).isNotNull();
         assertThat(result2.getDisplayName()).isEqualTo("Team2");
         assertThat(result2.getMembers().size()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldErrorOnNoTopics() {
+        when(unitService.getUnits(any())).thenThrow(new EntityNotFoundException("shan't"));
+        ResponseEntity<GetUnitsResponse> response = unitResource.getAllUnits(ROLES);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    public void shouldErrorOnNoRoles() {
+        String[] EMPTY_ROLES = {};
+        ResponseEntity<GetUnitsResponse> response = unitResource.getAllUnits(EMPTY_ROLES);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     private List<Unit> getUnits() {
