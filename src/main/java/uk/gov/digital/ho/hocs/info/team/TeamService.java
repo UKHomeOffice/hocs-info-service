@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.entities.Team;
 import uk.gov.digital.ho.hocs.info.repositories.TeamRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,6 +23,10 @@ public class TeamService {
 
     public Optional<Team> getTeamFromId(int id){
         return teamRepository.findById(id);
+    }
+
+    public Team getTeamForTopic(int topicId) {
+        return teamRepository.getTeamFromTopicId(topicId);
     }
 
 }

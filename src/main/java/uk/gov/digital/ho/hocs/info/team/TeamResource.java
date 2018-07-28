@@ -1,20 +1,15 @@
 package uk.gov.digital.ho.hocs.info.team;
 
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.jetty.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.dto.GetMembersResponse;
 import uk.gov.digital.ho.hocs.info.dto.GetTeamResponse;
-import uk.gov.digital.ho.hocs.info.entities.Member;
 import uk.gov.digital.ho.hocs.info.entities.Team;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
-import uk.gov.digital.ho.hocs.info.member.MemberService;
 
-import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -45,14 +40,27 @@ public class TeamResource {
     }
 
     @RequestMapping(value = "/member/{memberId}/team", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetTeamResponse> getTeamFromMemberId(@PathVariable int memberId) {
+    public ResponseEntity getTeamFromMemberId(@PathVariable int memberId) {
         try {
             Team team = teamService.getTeamForMember(memberId);
-
-            String location = "/team/".concat(String.valueOf(team.getId()));
-            return ResponseEntity.status(HttpStatus.FOUND_302).header("Location", location).build();
+            return redirectToTeam(team);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @RequestMapping(value="/topic/{topicId}/team", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity getTeamFromTopicId(@PathVariable int topicId) {
+        try {
+            Team team = teamService.getTeamForTopic(topicId);
+            return redirectToTeam(team);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    private ResponseEntity redirectToTeam(Team team) {
+        String location = "/team/".concat(String.valueOf(team.getId()));
+        return ResponseEntity.status(HttpStatus.FOUND).header("Location", location).build();
     }
 }

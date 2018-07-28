@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.dto.GetTopicsResponse;
 import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
 import uk.gov.digital.ho.hocs.info.entities.Topic;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 
 import java.util.*;
 
@@ -56,6 +57,20 @@ public class TopicResourceTest {
         Topic result2 = responseTopicAsList.stream().filter(x -> Objects.equals(2,x.getId())).findAny().orElse(null);
         assertThat(result2).isNotNull();
         assertThat(result2.getDisplayName()).isEqualTo("Topic2");
+    }
+
+    @Test
+    public void shouldErrorOnNoTopics() {
+        when(topicService.getTopics(any())).thenThrow(new EntityNotFoundException("shan't"));
+        ResponseEntity<GetTopicsResponse> response = topicResource.getAllTopics(ROLES);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    public void shouldErrorOnNoRoles() {
+        String[] EMPTY_ROLES = {};
+        ResponseEntity<GetTopicsResponse> response = topicResource.getAllTopics(EMPTY_ROLES);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     private List<ParentTopic> getTopics() {
