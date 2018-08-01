@@ -1,8 +1,8 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Table(name = "sla")
 @NoArgsConstructor
 @Getter
-@Setter
 public class Sla {
 
     @Id
@@ -19,11 +18,21 @@ public class Sla {
     private int id;
 
     @Getter
-    @Column(name = "type")
-    private String type;
+    @Column(name = "stage_type")
+    private String stageType;
 
     @Getter
     @Column(name = "value")
-    private Long value;
+    private int value;
+
+    @Getter
+    @Column(name = "case_type")
+    private String caseType;
+
+    public Sla( String stageType, int value, String caseType){
+        this.stageType = stageType;
+        this.value = value;
+        this.caseType = caseType;
+    }
 
 }

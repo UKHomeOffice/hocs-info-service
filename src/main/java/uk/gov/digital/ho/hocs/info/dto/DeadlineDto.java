@@ -1,22 +1,22 @@
 package uk.gov.digital.ho.hocs.info.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import uk.gov.digital.ho.hocs.info.entities.Deadline;
 
 import java.time.LocalDate;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-@Setter
 public class DeadlineDto {
+
+    @JsonProperty("date")
+    private LocalDate date;
 
     @JsonProperty("type")
     private String type;
 
-    @JsonProperty("date")
-    private LocalDate date;
+    public static DeadlineDto from(Deadline deadline){
+        return new DeadlineDto(deadline.getDate(), deadline.getType());
+    }
 }

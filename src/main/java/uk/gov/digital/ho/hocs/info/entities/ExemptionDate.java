@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "holiday")
+@Table(name = "exemption_date")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Holiday {
+public class ExemptionDate {
 
     @Id
     @Column(name = "id")
@@ -27,13 +27,5 @@ public class Holiday {
     @Getter
     @Setter
     private LocalDate date;
-
-    @ManyToMany
-    @JoinTable(
-            name = "tenants_holidays",
-            joinColumns = { @JoinColumn(name = "tenant_id") },
-            inverseJoinColumns = { @JoinColumn(name = "holiday_id") }
-    )
-    private List<Tenant> tenants = new ArrayList<>();
 
 }

@@ -32,12 +32,12 @@ public class UnitResource {
 
         if (roles.length > 0) {
             log.info("requesting all units for Tenants {}", Arrays.toString(roles));
-            try {
+            //try {
                 List<Unit> units = unitService.getUnits(Arrays.asList(roles));
                 return ResponseEntity.ok(new GetUnitsResponse(units));
-            } catch (EntityNotFoundException e) {
-                return ResponseEntity.badRequest().build();
-            }
+          //  } catch (EntityNotFoundException e) {
+           //     return ResponseEntity.badRequest().build();
+          //  }
         } else {
             return ResponseEntity.badRequest().build();
         }

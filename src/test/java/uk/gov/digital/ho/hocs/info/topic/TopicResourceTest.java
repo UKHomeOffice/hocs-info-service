@@ -1,6 +1,5 @@
 package uk.gov.digital.ho.hocs.info.topic;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.dto.GetTopicsResponse;
 import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
 import uk.gov.digital.ho.hocs.info.entities.Topic;
-import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 
 import java.util.*;
 
@@ -21,7 +19,6 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-@SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
 public class TopicResourceTest {
 
     @Mock

@@ -31,12 +31,12 @@ public class TopicResource {
     public ResponseEntity<GetTopicsResponse> getAllTopics(@RequestHeader("X-Auth-Roles") String[] roles) {
         if (roles.length > 0) {
             log.info("requesting all topics for Tenants {}", Arrays.toString(roles));
-            try {
+            //try {
                 List<ParentTopic> topics = topicService.getTopics(Arrays.asList(roles));
                 return ResponseEntity.ok(new GetTopicsResponse(topics));
-            } catch (EntityNotFoundException e) {
-                return ResponseEntity.badRequest().build();
-            }
+           // } catch (EntityNotFoundException e) {
+           //     return ResponseEntity.badRequest().build();
+           // }
         } else {
             return ResponseEntity.badRequest().build();
         }

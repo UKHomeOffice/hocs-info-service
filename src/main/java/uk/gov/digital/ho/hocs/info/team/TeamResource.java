@@ -41,22 +41,22 @@ public class TeamResource {
 
     @RequestMapping(value = "/member/{memberId}/team", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity getTeamFromMemberId(@PathVariable int memberId) {
-        try {
+        //try {
             Team team = teamService.getTeamForMember(memberId);
             return redirectToTeam(team);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        //} catch (EntityNotFoundException e) {
+        //    return ResponseEntity.notFound().build();
+        //}
     }
 
     @RequestMapping(value="/topic/{topicId}/team", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity getTeamFromTopicId(@PathVariable int topicId) {
-        try {
+        //try {
             Team team = teamService.getTeamForTopic(topicId);
             return redirectToTeam(team);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        //} catch (EntityNotFoundException e) {
+        //    return ResponseEntity.notFound().build();
+        //}
     }
 
     private ResponseEntity redirectToTeam(Team team) {

@@ -1,6 +1,5 @@
 package uk.gov.digital.ho.hocs.info.unit;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +11,6 @@ import uk.gov.digital.ho.hocs.info.dto.GetUnitsResponse;
 import uk.gov.digital.ho.hocs.info.entities.Member;
 import uk.gov.digital.ho.hocs.info.entities.Team;
 import uk.gov.digital.ho.hocs.info.entities.Unit;
-import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 
 import java.util.*;
 
@@ -22,7 +20,6 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-@SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
 public class UnitResourceTest {
 
     @Mock

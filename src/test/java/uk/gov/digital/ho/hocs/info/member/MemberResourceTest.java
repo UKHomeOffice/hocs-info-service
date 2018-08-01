@@ -1,6 +1,5 @@
 package uk.gov.digital.ho.hocs.info.member;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,10 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.dto.GetMembersResponse;
 import uk.gov.digital.ho.hocs.info.entities.Member;
-import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -35,12 +33,11 @@ public class MemberResourceTest {
     }
 
     @Test
-    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public void shouldReturnAllMembers() {
 
         when(memberService.getMembers()).thenReturn(memberList());
 
-        ResponseEntity<GetMembersResponse> response = memberResource.getAllMembers(ROLE_SINGLE);
+        ResponseEntity<GetMembersResponse> response = memberResource.getAllMembers();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getMembers().size()).isEqualTo(5);
@@ -51,15 +48,15 @@ public class MemberResourceTest {
 
         when(memberService.getMembers()).thenThrow(new EntityNotFoundException("No members!"));
 
-        ResponseEntity<GetMembersResponse> response = memberResource.getAllMembers(ROLE_SINGLE);
+        ResponseEntity<GetMembersResponse> response = memberResource.getAllMembers();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
 
 
-    private List<Member> memberList() {
-        return new ArrayList<Member>(){{
+    private Set<Member> memberList() {
+        return new HashSet<Member>(){{
             add(new Member(1,"member1"));
             add(new Member(2,"member2"));
             add(new Member(3,"member3"));

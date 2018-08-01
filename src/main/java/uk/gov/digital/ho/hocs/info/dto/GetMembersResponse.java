@@ -1,22 +1,22 @@
 package uk.gov.digital.ho.hocs.info.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import uk.gov.digital.ho.hocs.info.entities.Member;
 
 import java.util.List;
+import java.util.Set;
 
-@NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access =  AccessLevel.PRIVATE)
 @Getter
 public class GetMembersResponse {
 
     @JsonProperty("members")
-    List<Member> members;
+    Set<Member> members;
 
-    public static GetMembersResponse from(final List<Member> members) {
+    public static GetMembersResponse from(Set<Member> members) {
         return new GetMembersResponse(members);
     }
 

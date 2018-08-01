@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.dto.GetTeamResponse;
 import uk.gov.digital.ho.hocs.info.entities.Member;
 import uk.gov.digital.ho.hocs.info.entities.Team;
-import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 
 import java.util.Arrays;
 import java.util.HashSet;

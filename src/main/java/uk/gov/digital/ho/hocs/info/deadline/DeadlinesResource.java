@@ -1,22 +1,19 @@
 package uk.gov.digital.ho.hocs.info.deadline;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import uk.gov.digital.ho.hocs.info.dto.DeadlineDto;
-import uk.gov.digital.ho.hocs.info.dto.GetDeadlinesRequest;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.dto.GetDeadlinesResponse;
+import uk.gov.digital.ho.hocs.info.entities.Deadline;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
+import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 
-import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
-@Slf4j
 @RestController
 public class DeadlinesResource {
 
@@ -27,25 +24,16 @@ public class DeadlinesResource {
         this.deadlinesService = deadlinesService;
     }
 
-    @RequestMapping(value = "/deadlines", method = RequestMethod.POST, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetDeadlinesResponse> getDeadlines(@RequestBody GetDeadlinesRequest getDeadlineRequest) {
-        log.info("requesting deadlines for casetype {} with received date of {} ", getDeadlineRequest.getCaseType(), getDeadlineRequest.getDate());
+    @RequestMapping(value = "/casetype/{caseType}/deadlines/{received}", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetDeadlinesResponse> getDeadlines(@PathVariable String caseType, @PathVariable String received) {
         try {
-            Set<DeadlineDto> deadlineDtos = deadlinesService.getDeadlines(getDeadlineRequest.getCaseType(), getDeadlineRequest.getDate());
+            LocalDate receivedDate = LocalDate.parse(received);
+            Set<Deadline> deadlineDtos = deadlinesService.getDeadlines(caseType, receivedDate);
             return ResponseEntity.ok(GetDeadlinesResponse.from(deadlineDtos));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @RequestMapping(value = "/deadline", method = RequestMethod.POST, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<DeadlineDto> getDeadlinesForRequestedSLA(@RequestBody GetDeadlinesRequest getDeadlineRequest) {
-        log.info("requesting deadline with received date of {} and SLA of {} days", getDeadlineRequest.getDate(), getDeadlineRequest.getSla());
-        try {
-            DeadlineDto deadlineDtos = deadlinesService.getDeadlinesForRequestedSLA(getDeadlineRequest.getCaseType(), getDeadlineRequest.getDate(), getDeadlineRequest.getSla());
-            return ResponseEntity.ok(deadlineDtos);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.badRequest().build();
+        } catch (EntityNotFoundException  e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch ( EntityPermissionException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build() ;
         }
     }
 }

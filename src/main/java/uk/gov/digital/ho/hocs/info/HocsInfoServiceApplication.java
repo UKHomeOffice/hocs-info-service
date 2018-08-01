@@ -12,19 +12,4 @@ public class HocsInfoServiceApplication {
         SpringApplication.run(HocsInfoServiceApplication.class, args);
     }
 
-
-    public static boolean isNullOrEmpty(String value) {
-        if (value == null) {
-            return true;
-        } else {
-            return value.trim().equals("");
-        }
-    }
-    public static boolean isNullOrEmpty(LocalDate value) {
-        return value == null;
-    }
-    public static boolean isNullOrEmpty(Long value) {
-        return value == null;
-    }
-
 }
