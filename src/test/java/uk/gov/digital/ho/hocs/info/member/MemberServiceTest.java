@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.RequestData;
-import uk.gov.digital.ho.hocs.info.dto.GetMembersResponse;
 import uk.gov.digital.ho.hocs.info.entities.Member;
 import uk.gov.digital.ho.hocs.info.repositories.MemberRepository;
 
@@ -37,7 +36,7 @@ public class MemberServiceTest {
 
         when(memberRepository.findAll()).thenReturn(memberList());
 
-        Set<Member> repoResponse = memberService.getMembers();
+        Set<Member> repoResponse = memberService.getActiveMembersByCaseType();
 
         verify(memberRepository, times(1)).findAll();
 

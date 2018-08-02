@@ -29,7 +29,7 @@ public class CaseTypeService {
 
     public boolean hasPermissionForCaseType(String caseType)
     {
-        CaseTypeEntity caseTypeEntity = caseTypeRepository.findCaseTypeEntityByTenant(caseType, requestData.roles());
+        String caseTypeEntity = caseTypeRepository.findCaseTypeEntityByTenant(caseType, requestData.roles());
         return  caseTypeEntity != null;
     }
 }

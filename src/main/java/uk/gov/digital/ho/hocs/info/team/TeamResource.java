@@ -31,7 +31,7 @@ public class TeamResource {
     }
 
     @RequestMapping(value = "/team/{id}", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetTeamResponse> getTeamFromId(@PathVariable int id) {
+    public ResponseEntity<GetTeamResponse> getTeamFromId(@PathVariable String id) {
             Optional<Team> team = teamService.getTeamFromId(id);
             if (team.isPresent()) {
                 return ResponseEntity.ok(new GetTeamResponse(team.get()));

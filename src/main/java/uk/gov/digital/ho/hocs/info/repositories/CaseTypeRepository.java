@@ -8,12 +8,13 @@ import uk.gov.digital.ho.hocs.info.entities.CaseTypeEntity;
 import java.util.Set;
 
 @Repository
-public interface CaseTypeRepository extends CrudRepository<CaseTypeEntity, Long> {
+public interface CaseTypeRepository extends CrudRepository<CaseTypeEntity, String> {
 
-    @Query(value = "SELECT ct.* FROM case_type ct WHERE ct.type = ?1 AND ct.active = TRUE AND ct.tenant_role IN (?2);", nativeQuery = true)
-    CaseTypeEntity findCaseTypeEntityByTenant(String caseType, String[] tenant);
+    // This is used as a permission check, if we return null here you do not have permissions on that case type
+    @Query(value = "SELECT ct.type FROM case_type ct WHERE ct.tenant_role IN (?2) AND ct.type = ?1 AND ct.active = TRUE", nativeQuery = true)
+    String findCaseTypeEntityByTenant(String caseType, String[] tenant);
 
-    @Query(value = "SELECT c.* FROM case_type c WHERE c.active = TRUE AND c.tenant_role IN (?1)", nativeQuery = true)
+    @Query(value = "SELECT ct.* FROM case_type ct WHERE ct.tenant_role IN (?1) AND ct.active = TRUE", nativeQuery = true)
     Set<CaseTypeEntity> findAllCaseTypesByTenant(String[] tenant);
 
 }

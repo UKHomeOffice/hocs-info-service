@@ -9,9 +9,9 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Repository
-public interface ExemptionDateRepository extends CrudRepository<ExemptionDate, Long> {
+public interface ExemptionDateRepository extends CrudRepository<ExemptionDate, String> {
 
-    @Query(value ="select e.date from exemption_date e join case_type ct on e.tenant_role = ct.tenant_role where ct.type = ?1 and e.tenant_role in (?2);", nativeQuery = true )
-    Set<LocalDate> findAllByCaseType(String caseTypeDisplayName, String[] tenant);
+    @Query(value ="SELECT ed.date FROM exemption_date ed WHERE ed.case_type = ?1", nativeQuery = true )
+    Set<LocalDate> findAllByCaseType(String caseType);
 
 }

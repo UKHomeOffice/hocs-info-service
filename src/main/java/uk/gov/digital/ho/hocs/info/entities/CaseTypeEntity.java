@@ -4,12 +4,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "case_type")
 @NoArgsConstructor
 @Getter
-public class CaseTypeEntity {
+public class CaseTypeEntity implements Serializable {
 
     @Id
     @Column(name = "id")

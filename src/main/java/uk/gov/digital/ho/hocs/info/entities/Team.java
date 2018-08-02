@@ -1,17 +1,16 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "team")
-@AllArgsConstructor
+@NoArgsConstructor
 @Getter
-public class Team {
+public class Team implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -21,11 +20,10 @@ public class Team {
     @Column(name = "display_name")
     private String displayName;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "team_id", referencedColumnName = "id")
-    private Set<Member> members = new HashSet<>();
+    @Column(name = "uuid")
+    private String uuid;
 
-//    @ManyToOne(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JsonIgnoreProperties({"team"}) // prevent infinite recursion (FIXME)
-//    private Unit unit;
+    @Column(name = "unit_uuid")
+    private String unitUUID;
+
 }

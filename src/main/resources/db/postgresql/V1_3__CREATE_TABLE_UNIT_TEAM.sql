@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS unit
   id           BIGSERIAL PRIMARY KEY,
   display_name TEXT NOT NULL,
   uuid         UUID NOT NULL,
+  active      boolean NOT NULL,
 
   CONSTRAINT unit_uuid_idempotent UNIQUE (uuid),
   CONSTRAINT unit_name_idempotent UNIQUE (display_name)
@@ -13,8 +14,9 @@ CREATE TABLE IF NOT EXISTS unit
 
 CREATE INDEX idx_unit_uuid
   ON unit (uuid);
-CREATE INDEX idx_unit_all
-  ON unit (display_name, uuid);
+
+CREATE INDEX idx_unit_active
+  ON unit (active);
 
 
 DROP TABLE IF EXISTS team;
@@ -33,22 +35,26 @@ CREATE TABLE IF NOT EXISTS team
 
 CREATE INDEX idx_team_uuid
   ON team (uuid);
-CREATE INDEX idx_team_all
-  ON team (display_name, uuid, unit_uuid);
 
-DROP TABLE IF EXISTS tenant_unit;
+CREATE INDEX idx_team_unit_uuid
+  ON team (unit_uuid);
 
-CREATE TABLE IF NOT EXISTS tenant_unit
+DROP TABLE IF EXISTS unit_case_type;
+
+CREATE TABLE IF NOT EXISTS unit_case_type
 (
   id          BIGSERIAL PRIMARY KEY,
-  tenant_role TEXT NOT NULL,
   unit_uuid   UUID    NOT NULL,
-  active      boolean NOT NULL,
+  case_type TEXT NOT NULL,
 
-  CONSTRAINT fk_tenant_unit_tenant_role FOREIGN KEY (tenant_role) REFERENCES tenant (role),
+  CONSTRAINT fk_tenant_unit_case_type FOREIGN KEY (case_type) REFERENCES case_type (type),
   CONSTRAINT fk_tenant_unit_unit_uuid FOREIGN KEY (unit_uuid) REFERENCES unit (uuid)
 
 );
 
-CREATE INDEX idx_team_active
-  ON tenant_unit (tenant_role, unit_uuid, active);
+CREATE INDEX idx_tenant_team_unit_uuid
+  ON unit_case_type(unit_uuid);
+
+CREATE INDEX idx_tenant_team_case_type
+  ON unit_case_type(case_type);
+

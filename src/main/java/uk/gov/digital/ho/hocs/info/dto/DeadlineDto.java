@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Getter
 public class DeadlineDto {
 
-    @JsonProperty("date")
+    @JsonProperty("displayName")
     private LocalDate date;
 
     @JsonProperty("type")

@@ -8,9 +8,9 @@ import uk.gov.digital.ho.hocs.info.entities.Sla;
 import java.util.Set;
 
 @Repository
-public interface SlaRepository extends CrudRepository<Sla, Long> {
+public interface SlaRepository extends CrudRepository<Sla, String> {
 
-    @Query(value ="select s.* from sla s join case_type c on s.case_type = c.type where c.type = ?1 and c.tenant_role in (?2)" , nativeQuery = true )
-    Set<Sla> findSLACaseType(String caseType, String[] roles);
+    @Query(value ="SELECT s.* FROM sla s WHERE s.case_type = ?1" , nativeQuery = true )
+    Set<Sla> findAllByCaseType(String caseType);
 
 }

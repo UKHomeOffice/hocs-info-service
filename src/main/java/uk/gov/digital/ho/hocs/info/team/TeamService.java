@@ -21,7 +21,7 @@ public class TeamService {
         return teamRepository.getTeamFromMemberId(memberId);
     }
 
-    public Optional<Team> getTeamFromId(int id){
+    public Optional<Team> getTeamFromId(String id){
         return teamRepository.findById(id);
     }
 

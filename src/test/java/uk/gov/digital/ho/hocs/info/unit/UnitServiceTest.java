@@ -58,11 +58,11 @@ public class UnitServiceTest {
       ///  Team result1 = responseTeamAsList.stream().filter(x -> Objects.equals(1 ,x.getId())).findAny().orElse(null);
       ///  assertThat(result1).isNotNull();
       ///  assertThat(result1.getDisplayName()).isEqualTo("Team1");
-      ///  assertThat(result1.getMembers().size()).isEqualTo(2);
+      ///  assertThat(result1.getActiveMembersByCaseType().size()).isEqualTo(2);
       ///  Team result2 = responseTeamAsList.stream().filter(x -> Objects.equals(2,x.getId())).findAny().orElse(null);
       ///  assertThat(result2).isNotNull();
       ///  assertThat(result2.getDisplayName()).isEqualTo("Team2");
-      ///  assertThat(result2.getMembers().size()).isEqualTo(2);
+      ///  assertThat(result2.getActiveMembersByCaseType().size()).isEqualTo(2);
     }
 
     private List<Unit> getUnits() {

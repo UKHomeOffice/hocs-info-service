@@ -35,7 +35,7 @@ public class MemberResourceTest {
     @Test
     public void shouldReturnAllMembers() {
 
-        when(memberService.getMembers()).thenReturn(memberList());
+        when(memberService.getActiveMembersByCaseType()).thenReturn(memberList());
 
         ResponseEntity<GetMembersResponse> response = memberResource.getAllMembers();
 
@@ -46,7 +46,7 @@ public class MemberResourceTest {
     @Test
     public void shouldErrorOnNoMembers() {
 
-        when(memberService.getMembers()).thenThrow(new EntityNotFoundException("No members!"));
+        when(memberService.getActiveMembersByCaseType()).thenThrow(new EntityNotFoundException("No members!"));
 
         ResponseEntity<GetMembersResponse> response = memberResource.getAllMembers();
 

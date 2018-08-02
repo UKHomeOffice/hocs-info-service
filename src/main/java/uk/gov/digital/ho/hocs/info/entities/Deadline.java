@@ -2,12 +2,13 @@ package uk.gov.digital.ho.hocs.info.entities;
 
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
-public class Deadline {
+public class Deadline implements Serializable {
 
     private String type;
 

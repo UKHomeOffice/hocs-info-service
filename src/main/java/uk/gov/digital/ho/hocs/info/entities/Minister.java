@@ -3,11 +3,12 @@ package uk.gov.digital.ho.hocs.info.entities;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "minister")
 @NoArgsConstructor
-public class Minister {
+public class Minister implements Serializable {
 
     @Id
     @Column(name = "id")

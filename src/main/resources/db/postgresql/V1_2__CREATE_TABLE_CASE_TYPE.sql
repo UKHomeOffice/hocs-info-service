@@ -16,6 +16,9 @@ CREATE TABLE IF NOT EXISTS case_type
 CREATE INDEX idx_case_type_tenant_role
   ON case_type (tenant_role);
 
+CREATE INDEX idx_case_type_active
+  ON case_type (active);
+
 DROP TABLE IF EXISTS sla;
 
 CREATE TABLE IF NOT EXISTS sla
@@ -24,6 +27,7 @@ CREATE TABLE IF NOT EXISTS sla
   stage_type   TEXT      NOT NULL,
   value        int       NOT NULL,
   case_type    TEXT   NOT NULL,
+
   CONSTRAINT sla_sla_idempotent UNIQUE (stage_type,case_type),
   CONSTRAINT fk_sla_id FOREIGN KEY (case_type) REFERENCES case_type (type)
 );
@@ -37,10 +41,10 @@ CREATE TABLE IF NOT EXISTS exemption_date
 (
   id          BIGSERIAL PRIMARY KEY,
   date        date      NOT NULL,
-  tenant_role TEXT  NOT NULL,
-  CONSTRAINT exemption_date_sla_idempotent UNIQUE (date,tenant_role),
-  CONSTRAINT fk_exemption_id FOREIGN KEY (tenant_role) REFERENCES tenant (role)
+  case_type   TEXT  NOT NULL,
+  CONSTRAINT exemption_date_sla_idempotent UNIQUE (date,case_type),
+  CONSTRAINT fk_exemption_id FOREIGN KEY (case_type) REFERENCES case_type (type)
 );
 
-CREATE INDEX idx_exemption_data_tenant_role
-  ON exemption_date (tenant_role);
+CREATE INDEX idx_exemption_data_case_type
+  ON exemption_date (case_type);
