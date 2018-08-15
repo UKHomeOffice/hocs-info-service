@@ -11,6 +11,8 @@ import uk.gov.digital.ho.hocs.info.dto.DeadlineDto;
 import uk.gov.digital.ho.hocs.info.dto.GetDeadlinesResponse;
 import uk.gov.digital.ho.hocs.info.entities.Deadline;
 import uk.gov.digital.ho.hocs.info.entities.Sla;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
+import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ public class DeadlinesResourceTest {
     }
 
     @Test
-    public void shouldReturnDeadlineDatesforCaseType() {
+    public void shouldReturnDeadlineDatesforCaseType() throws EntityPermissionException, EntityNotFoundException {
 
         when(deadlinesService.getDeadlines(any(), any())).thenReturn(getMockDeadlinesForCaseTypeRequest());
 
@@ -63,8 +65,8 @@ public class DeadlinesResourceTest {
     private static Set<Deadline> getMockDeadlinesForCaseTypeRequest() {
         Set<Deadline> deadLines = new HashSet<>();
 
-        deadLines.add(new Deadline(LocalDate.of(2018, 01, 18), new Sla(0,"draft", 0), new HashSet<>()));
-        deadLines.add(new Deadline(LocalDate.of(2018, 01, 25), new Sla(0,"dispatch", 0), new HashSet<>()));
+        deadLines.add(new Deadline(LocalDate.of(2018, 01, 18), new Sla("draft", 0,"MIN"), new HashSet<>()));
+        deadLines.add(new Deadline(LocalDate.of(2018, 01, 25), new Sla("dispatch", 0,"MIN"), new HashSet<>()));
         return deadLines;
     }
 }

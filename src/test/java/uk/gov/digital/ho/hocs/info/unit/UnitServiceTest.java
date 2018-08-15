@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.entities.Member;
 import uk.gov.digital.ho.hocs.info.entities.Team;
 import uk.gov.digital.ho.hocs.info.entities.Unit;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.repositories.UnitRepository;
 
 import java.util.*;
@@ -25,9 +26,9 @@ public class UnitServiceTest {
     private UnitService unitService;
 
     @Before
-    public void setUp() {
-        this.unitService = new UnitService(unitRepository);
-    }
+//    public void setUp() {
+//        this.unitService = new UnitService(unitRepository);
+//    }
 
    // @Test(expected = EntityNotFoundException.class)
     public void shouldThrowExceptionWhenGetUnitsWithNoRoles() throws EntityNotFoundException {
@@ -65,22 +66,22 @@ public class UnitServiceTest {
       ///  assertThat(result2.getActiveMembersByCaseType().size()).isEqualTo(2);
     }
 
-    private List<Unit> getUnits() {
-        Set<Member> members1 = new HashSet<Member>() {{
-            add(new Member(1, "Member1"));
-            add(new Member(2, "Member2"));
-        }};
-        Set<Member> members2 = new HashSet<Member>() {{
-            add(new Member(3, "Member3"));
-            add(new Member(4, "Member4"));
-        }};
-        Set<Team> teams = new HashSet<Team>() {{
-            add(new Team(1, "Team1", members1));
-            add(new Team(2, "Team2", members2));
-        }};
-
-        return new ArrayList<Unit>() {{
-            add(new Unit(1, "Unit 1", teams));
-        }};
-    }
+//    private List<Unit> getUnits() {
+//        Set<Member> members1 = new HashSet<Member>() {{
+//            add(new Member(1, "Member1"));
+//            add(new Member(2, "Member2"));
+//        }};
+//        Set<Member> members2 = new HashSet<Member>() {{
+//            add(new Member(3, "Member3"));
+//            add(new Member(4, "Member4"));
+//        }};
+//        Set<Team> teams = new HashSet<Team>() {{
+//            add(new Team(1, "Team1", members1));
+//            add(new Team(2, "Team2", members2));
+//        }};
+//
+//        return new ArrayList<Unit>() {{
+//            add(new Unit(1, "Unit 1", teams));
+//        }};
+//    }
 }

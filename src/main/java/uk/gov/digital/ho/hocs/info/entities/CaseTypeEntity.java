@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "case_type")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class CaseTypeEntity implements Serializable {
 

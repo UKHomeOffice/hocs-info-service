@@ -35,16 +35,16 @@ CREATE TABLE IF NOT EXISTS sla
 CREATE INDEX idx_sla_case_type
   ON sla (case_type);
 
-DROP TABLE IF EXISTS exemption_date;
+DROP TABLE IF EXISTS holiday_date;
 
-CREATE TABLE IF NOT EXISTS exemption_date
+CREATE TABLE IF NOT EXISTS holiday_date
 (
   id          BIGSERIAL PRIMARY KEY,
   date        date      NOT NULL,
   case_type   TEXT  NOT NULL,
-  CONSTRAINT exemption_date_sla_idempotent UNIQUE (date,case_type),
-  CONSTRAINT fk_exemption_id FOREIGN KEY (case_type) REFERENCES case_type (type)
+  CONSTRAINT holiday_date_sla_idempotent UNIQUE (date,case_type),
+  CONSTRAINT fk_holiday_id FOREIGN KEY (case_type) REFERENCES case_type (type)
 );
 
-CREATE INDEX idx_exemption_data_case_type
-  ON exemption_date (case_type);
+CREATE INDEX idx_holiday_data_case_type
+  ON holiday_date (case_type);

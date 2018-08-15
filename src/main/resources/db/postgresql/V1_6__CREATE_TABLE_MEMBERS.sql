@@ -1,18 +1,18 @@
 DROP TABLE IF EXISTS member;
 
-DROP TABLE IF EXISTS legislature;
+DROP TABLE IF EXISTS house;
 
-CREATE TABLE IF NOT EXISTS legislature
+CREATE TABLE IF NOT EXISTS house
 (
   id           BIGSERIAL PRIMARY KEY,
   display_name TEXT    NOT NULL,
   type         TEXT    NOT NULL,
 
-  CONSTRAINT legislature_idempotent UNIQUE (type)
+  CONSTRAINT house_idempotent UNIQUE (type)
 );
 
-Create INDEX idx_legislature_legislature
-  ON legislature(type);
+Create INDEX idx_house_house
+  ON house(type);
 
 CREATE TABLE IF NOT EXISTS member
 (
@@ -20,18 +20,18 @@ CREATE TABLE IF NOT EXISTS member
   display_name TEXT    NOT NULL,
   letter_name  TEXT    ,
   external_id  TEXT    NOT NULL,
-  legislature  TEXT    NOT NULL,
+  house  TEXT    NOT NULL,
   uuid         UUID    NOT NULL,
   active       boolean NOT NULL,
 
-  CONSTRAINT member_external_id_idempotent UNIQUE (external_id, legislature),
+  CONSTRAINT member_external_id_idempotent UNIQUE (external_id, house),
   CONSTRAINT member_uuid_idempotent UNIQUE (uuid),
   CONSTRAINT member_name_idempotent UNIQUE (display_name),
-  CONSTRAINT fk_ember_role FOREIGN KEY (legislature) REFERENCES legislature (type)
+  CONSTRAINT fk_member_role FOREIGN KEY (house) REFERENCES house (type)
 );
 
-CREATE INDEX idx_member_legislature
-  ON member (legislature);
+CREATE INDEX idx_member_house
+  ON member (house);
 
 CREATE INDEX idx_member_active
   ON member (active);
@@ -52,21 +52,21 @@ CREATE TABLE IF NOT EXISTS member_team
 
 );
 
-DROP TABLE IF EXISTS legislature_case_type;
+DROP TABLE IF EXISTS house_case_type;
 
-CREATE TABLE IF NOT EXISTS legislature_case_type
+CREATE TABLE IF NOT EXISTS house_case_type
 (
   id          BIGSERIAL PRIMARY KEY,
-  legislature TEXT NOT NULL,
+  house TEXT NOT NULL,
   case_type   TEXT NOT NULL,
 
-  CONSTRAINT legislature_legislature_idempotent UNIQUE (legislature, case_type),
-  CONSTRAINT fk_legislature_tenant_legislature FOREIGN KEY (legislature) REFERENCES legislature (type),
-  CONSTRAINT fk_legislature_case_type FOREIGN KEY (case_type) REFERENCES case_type (type)
+  CONSTRAINT house_house_idempotent UNIQUE (house, case_type),
+  CONSTRAINT fk_house_tenant_house FOREIGN KEY (house) REFERENCES house (type),
+  CONSTRAINT fk_house_case_type FOREIGN KEY (case_type) REFERENCES case_type (type)
 );
 
-CREATE INDEX idx_legislature_case_type_legislature
-  ON legislature_case_type (legislature) ;
+CREATE INDEX idx_house_case_type_house
+  ON house_case_type (house) ;
 
-CREATE INDEX idx_legislature_case_type_case_type
-  ON legislature_case_type (case_type);
+CREATE INDEX idx_house_case_type_case_type
+  ON house_case_type (case_type);

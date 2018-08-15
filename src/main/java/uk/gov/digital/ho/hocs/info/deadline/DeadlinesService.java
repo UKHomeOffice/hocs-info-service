@@ -9,7 +9,7 @@ import uk.gov.digital.ho.hocs.info.entities.Deadline;
 import uk.gov.digital.ho.hocs.info.entities.Sla;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
-import uk.gov.digital.ho.hocs.info.repositories.ExemptionDateRepository;
+import uk.gov.digital.ho.hocs.info.repositories.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.repositories.SlaRepository;
 
 import java.time.LocalDate;
@@ -22,13 +22,13 @@ public class DeadlinesService {
 
     private final SlaRepository slaRepository;
     private final CaseTypeService caseTypeService;
-    private final ExemptionDateRepository exemptionDateRepository;
+    private final HolidayDateRepository holidayDateRepository;
     private final RequestData requestData;
 
     @Autowired
-    public DeadlinesService(SlaRepository slaRepository, ExemptionDateRepository exemptionDateRepository, CaseTypeService caseTypeService, RequestData requestData) {
+    public DeadlinesService(SlaRepository slaRepository, HolidayDateRepository holidayDateRepository, CaseTypeService caseTypeService, RequestData requestData) {
         this.slaRepository = slaRepository;
-        this.exemptionDateRepository = exemptionDateRepository;
+        this.holidayDateRepository = holidayDateRepository;
         this.caseTypeService = caseTypeService;
         this.requestData = requestData;
     }
@@ -37,7 +37,7 @@ public class DeadlinesService {
         log.info("Requesting deadlines for caseType {} with received date of {} ", caseType, receivedDate);
         if (caseType != null && receivedDate != null) {
             if (caseTypeService.hasPermissionForCaseType(caseType)) {
-                Set<LocalDate> holidays = exemptionDateRepository.findAllByCaseType(caseType);
+                Set<LocalDate> holidays = holidayDateRepository.findAllByCaseType(caseType);
                 Set<Sla> slas = slaRepository.findAllByCaseType(caseType);
                 return slas.stream().map(sla -> new Deadline(receivedDate, sla, holidays)).collect(Collectors.toSet());
             } else {

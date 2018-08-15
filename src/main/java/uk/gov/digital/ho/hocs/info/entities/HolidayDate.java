@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "exemption_date")
+@Table(name = "holiday_date")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExemptionDate implements Serializable {
+public class HolidayDate implements Serializable {
 
     @Id
     @Column(name = "id")

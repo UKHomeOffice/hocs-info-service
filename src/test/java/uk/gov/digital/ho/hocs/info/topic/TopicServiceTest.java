@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.RequestData;
 import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
 import uk.gov.digital.ho.hocs.info.entities.Topic;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.repositories.ParentTopicRepository;
 
 import java.util.ArrayList;
