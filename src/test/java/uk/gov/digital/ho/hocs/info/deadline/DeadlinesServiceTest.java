@@ -55,7 +55,6 @@ public class DeadlinesServiceTest {
 
         when(holidayDateRepository.findAllByCaseType(any())).thenReturn(getHolidays());
         when(slaRepository.findAllByCaseType(any())).thenReturn(get3DaySla());
-        when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
 
         Set<Deadline> deadlineDtos = deadlinesService.getDeadlines(CASE_TYPE_TYPE, LocalDate.of(2018, 01, 02));
 
@@ -73,7 +72,6 @@ public class DeadlinesServiceTest {
 
         when(holidayDateRepository.findAllByCaseType(any())).thenReturn(getHolidays());
         when(slaRepository.findAllByCaseType(any())).thenReturn(get3DaySla());
-        when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
 
         Set<Deadline> deadlineDtos = deadlinesService.getDeadlines(CASE_TYPE_TYPE, LocalDate.of(2018, 01, 05));
 
@@ -91,7 +89,6 @@ public class DeadlinesServiceTest {
 
         when(holidayDateRepository.findAllByCaseType(any())).thenReturn(getHolidays());
         when(slaRepository.findAllByCaseType(any())).thenReturn(get3DaySla());
-        when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
 
         Set<Deadline> deadlineDtos = deadlinesService.getDeadlines(CASE_TYPE_TYPE, LocalDate.of(2018, 01, 12));
 
@@ -108,7 +105,6 @@ public class DeadlinesServiceTest {
 
         when(holidayDateRepository.findAllByCaseType(any())).thenReturn(getHolidays());
         when(slaRepository.findAllByCaseType(any())).thenReturn(get10DaySla());
-        when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
 
         Set<Deadline> deadlineDtos = deadlinesService.getDeadlines(CASE_TYPE_TYPE, LocalDate.of(2018, 12, 13));
 
@@ -125,7 +121,6 @@ public class DeadlinesServiceTest {
 
         when(holidayDateRepository.findAllByCaseType(any())).thenReturn(getHolidays());
         when(slaRepository.findAllByCaseType(any())).thenReturn(get10DaySla());
-        when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
 
         Set<Deadline> deadlineDtos = deadlinesService.getDeadlines(CASE_TYPE_TYPE, LocalDate.of(2018, 12, 20));
 
@@ -143,7 +138,6 @@ public class DeadlinesServiceTest {
 
         when(holidayDateRepository.findAllByCaseType(any())).thenReturn(getHolidays());
         when(slaRepository.findAllByCaseType(any())).thenReturn(get10DaySla());
-        when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
 
         Set<Deadline> deadlineDtos = deadlinesService.getDeadlines(CASE_TYPE_TYPE, LocalDate.of(2020, 02, 20));
 

@@ -36,13 +36,9 @@ public class DeadlinesService {
     Set<Deadline> getDeadlines(String caseType, LocalDate receivedDate) throws EntityPermissionException, EntityNotFoundException {
         log.info("Requesting deadlines for caseType {} with received date of {} ", caseType, receivedDate);
         if (caseType != null && receivedDate != null) {
-            if (caseTypeService.hasPermissionForCaseType(caseType)) {
                 Set<LocalDate> holidays = holidayDateRepository.findAllByCaseType(caseType);
                 Set<Sla> slas = slaRepository.findAllByCaseType(caseType);
                 return slas.stream().map(sla -> new Deadline(receivedDate, sla, holidays)).collect(Collectors.toSet());
-            } else {
-                throw new EntityPermissionException("Not allowed to get deadlines caseType: %s not in Roles: %s", caseType, requestData.rolesString());
-            }
         } else {
             throw new EntityNotFoundException("CaseType or received date was null!");
         }
