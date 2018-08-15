@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import uk.gov.digital.ho.hocs.info.entities.Team;
 import uk.gov.digital.ho.hocs.info.entities.Unit;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,7 +20,7 @@ public class UnitDto {
     private String uuid;
 
     @JsonProperty("teams")
-    private Set<TeamDto> teams = new HashSet<>();
+    private Set<TeamDto> teams;
 
     public static UnitDto from (Unit unit) {
         Set<TeamDto> teamDtos = unit.getTeams().stream().map(TeamDto::from).collect(Collectors.toSet());
