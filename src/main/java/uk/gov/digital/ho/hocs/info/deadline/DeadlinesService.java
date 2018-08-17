@@ -3,8 +3,6 @@ package uk.gov.digital.ho.hocs.info.deadline;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.info.RequestData;
-import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
 import uk.gov.digital.ho.hocs.info.entities.Deadline;
 import uk.gov.digital.ho.hocs.info.entities.Sla;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
@@ -21,16 +19,12 @@ import java.util.stream.Collectors;
 public class DeadlinesService {
 
     private final SlaRepository slaRepository;
-    private final CaseTypeService caseTypeService;
     private final HolidayDateRepository holidayDateRepository;
-    private final RequestData requestData;
 
     @Autowired
-    public DeadlinesService(SlaRepository slaRepository, HolidayDateRepository holidayDateRepository, CaseTypeService caseTypeService, RequestData requestData) {
+    public DeadlinesService(SlaRepository slaRepository, HolidayDateRepository holidayDateRepository) {
         this.slaRepository = slaRepository;
         this.holidayDateRepository = holidayDateRepository;
-        this.caseTypeService = caseTypeService;
-        this.requestData = requestData;
     }
 
     Set<Deadline> getDeadlines(String caseType, LocalDate receivedDate) throws EntityPermissionException, EntityNotFoundException {

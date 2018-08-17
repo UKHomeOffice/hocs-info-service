@@ -7,7 +7,7 @@ import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.entities.CaseTypeEntity;
 
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @Getter
 public class CaseTypeDto {
 

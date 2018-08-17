@@ -2,8 +2,7 @@ package uk.gov.digital.ho.hocs.info.casetype;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.digital.ho.hocs.info.dto.GetCaseTypesResponse;
 import uk.gov.digital.ho.hocs.info.entities.CaseTypeEntity;
@@ -22,9 +21,17 @@ public class CaseTypeResource {
         this.caseTypeService = caseTypeService;
     }
 
-    @RequestMapping(value = "/casetype", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetCaseTypesResponse> getCaseTypes() {
+    @GetMapping(value = "/casetype/single", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetCaseTypesResponse> getCaseTypesSingle() {
         Set<CaseTypeEntity> caseTypes = caseTypeService.getCaseTypes();
+        return ResponseEntity.ok(GetCaseTypesResponse.from(caseTypes));
+    }
+
+    @GetMapping(value = "/casetype/bulk", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetCaseTypesResponse> getCaseTypesBulk() {
+        Set<CaseTypeEntity> caseTypes = caseTypeService.getCaseTypes();
+        caseTypes.remove(
+        caseTypes.stream().filter(x -> "DTEN".equals(x.getType())).findAny().orElse(null));
         return ResponseEntity.ok(GetCaseTypesResponse.from(caseTypes));
     }
 }

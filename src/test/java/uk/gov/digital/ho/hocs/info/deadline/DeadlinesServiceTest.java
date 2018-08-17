@@ -35,19 +35,13 @@ public class DeadlinesServiceTest {
     @Mock
     private SlaRepository slaRepository;
 
-    @Mock
-    private CaseTypeService caseTypeService;
-
-    @Mock
-    private RequestData requestData;
-
     private DeadlinesService deadlinesService;
 
     private static final String CASE_TYPE_TYPE = "MIN";
 
     @Before
     public void setUp() {
-        this.deadlinesService = new DeadlinesService(slaRepository, holidayDateRepository, caseTypeService, requestData);
+        this.deadlinesService = new DeadlinesService(slaRepository, holidayDateRepository);
     }
 
     @Test
