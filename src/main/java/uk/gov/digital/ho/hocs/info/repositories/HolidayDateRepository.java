@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import uk.gov.digital.ho.hocs.info.entities.HolidayDate;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -12,6 +13,6 @@ import java.util.Set;
 public interface HolidayDateRepository extends CrudRepository<HolidayDate, String> {
 
     @Query(value ="SELECT ed.date FROM holiday_date ed WHERE ed.case_type = ?1", nativeQuery = true )
-    Set<LocalDate> findAllByCaseType(String caseType);
+    Set<Date> findAllByCaseType(String caseType);
 
 }

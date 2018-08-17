@@ -10,7 +10,9 @@ import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 import uk.gov.digital.ho.hocs.info.repositories.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.repositories.SlaRepository;
 
+import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,9 +32,10 @@ public class DeadlinesService {
     Set<Deadline> getDeadlines(String caseType, LocalDate receivedDate) throws EntityPermissionException, EntityNotFoundException {
         log.info("Requesting deadlines for caseType {} with received date of {} ", caseType, receivedDate);
         if (caseType != null && receivedDate != null) {
-                Set<LocalDate> holidays = holidayDateRepository.findAllByCaseType(caseType);
-                Set<Sla> slas = slaRepository.findAllByCaseType(caseType);
-                return slas.stream().map(sla -> new Deadline(receivedDate, sla, holidays)).collect(Collectors.toSet());
+            Set<Date> dates = holidayDateRepository.findAllByCaseType(caseType);
+            Set<LocalDate> holidays = dates.stream().map(Date::toLocalDate).collect(Collectors.toSet());
+            Set<Sla> slas = slaRepository.findAllByCaseType(caseType);
+            return slas.stream().map(sla -> new Deadline(receivedDate, sla, holidays)).collect(Collectors.toSet());
         } else {
             throw new EntityNotFoundException("CaseType or received date was null!");
         }

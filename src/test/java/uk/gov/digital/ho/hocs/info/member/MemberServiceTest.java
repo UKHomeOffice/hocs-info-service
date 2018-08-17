@@ -6,7 +6,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.RequestData;
+import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
 import uk.gov.digital.ho.hocs.info.entities.Member;
+import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 import uk.gov.digital.ho.hocs.info.repositories.MemberRepository;
 
 import java.util.*;
@@ -24,29 +26,33 @@ public class MemberServiceTest {
     @Mock
     private RequestData requestData;
 
+    @Mock
+    private CaseTypeService caseTypeService;
+
     private MemberService memberService;
 
     @Before
-//    public void setUp() {
-//        this.memberService = new MemberService(memberRepository, requestData);
-//    }
+    public void setUp() {
+        this.memberService = new MemberService(memberRepository, caseTypeService, requestData);
+    }
 
     @Test
-    public void shouldReturnAllMembersInDB(){
+    public void shouldReturnAllMembersInDB() throws EntityPermissionException {
 
-//        when(memberRepository.findAll()).thenReturn(memberList());
-//
-//        Set<Member> repoResponse = memberService.getActiveMembersByCaseType();
-//
-//        verify(memberRepository, times(1)).findAll();
-//
-//        assertThat(repoResponse.size()).isEqualTo(6);
-//        assetMemberContainsCorrectElements(repoResponse,1, "member1");
-//        assetMemberContainsCorrectElements(repoResponse,2, "member2");
-//        assetMemberContainsCorrectElements(repoResponse,3, "member3");
-//        assetMemberContainsCorrectElements(repoResponse,4, "member4");
-//        assetMemberContainsCorrectElements(repoResponse,5, "member5");
-//        assetMemberContainsCorrectElements(repoResponse,6, "member6");
+        when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
+        when(memberRepository.findAllActiveMembersForCaseType(any())).thenReturn(memberList());
+
+        Set<Member> repoResponse = memberService.getActiveMembersByCaseType("MIN");
+
+        verify(memberRepository, times(1)).findAllActiveMembersForCaseType(any());
+
+        assertThat(repoResponse.size()).isEqualTo(6);
+        assetMemberContainsCorrectElements(repoResponse,1, "member1");
+        assetMemberContainsCorrectElements(repoResponse,2, "member2");
+        assetMemberContainsCorrectElements(repoResponse,3, "member3");
+        assetMemberContainsCorrectElements(repoResponse,4, "member4");
+        assetMemberContainsCorrectElements(repoResponse,5, "member5");
+        assetMemberContainsCorrectElements(repoResponse,6, "member6");
 
     }
 
@@ -57,14 +63,14 @@ public class MemberServiceTest {
     }
 
 
-//    private Set<Member> memberList() {
-//        return new HashSet<Member>(){{
-//            add(new Member(1,"member1"));
-//            add(new Member(2,"member2"));
-//            add(new Member(3,"member3"));
-//            add(new Member(4,"member4"));
-//            add(new Member(5,"member5"));
-//            add(new Member(6,"member6"));
-//        }};
-//    }
+    private Set<Member> memberList() {
+        return new HashSet<Member>(){{
+            add(new Member(1,"member1","member1",UUID.randomUUID().toString()));
+            add(new Member(2,"member2","member2",UUID.randomUUID().toString()));
+            add(new Member(3,"member3","member3",UUID.randomUUID().toString()));
+            add(new Member(4,"member4","member4",UUID.randomUUID().toString()));
+            add(new Member(5,"member5","member5",UUID.randomUUID().toString()));
+            add(new Member(6,"member6","member6",UUID.randomUUID().toString()));
+        }};
+    }
 }

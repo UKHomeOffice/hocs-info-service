@@ -6,8 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.RequestData;
-import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
 import uk.gov.digital.ho.hocs.info.entities.Deadline;
 import uk.gov.digital.ho.hocs.info.entities.Sla;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
@@ -15,6 +13,7 @@ import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 import uk.gov.digital.ho.hocs.info.repositories.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.repositories.SlaRepository;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@Ignore
+
 @RunWith(MockitoJUnitRunner.class)
 public class DeadlinesServiceTest {
 
@@ -143,13 +142,13 @@ public class DeadlinesServiceTest {
         assertThat(deadlinesAsList.get(0).getType()).isEqualTo("final");
     }
 
-    private static Set<LocalDate> getHolidays() {
-        Set<LocalDate> holidays = new HashSet<>();
+    private static Set<Date> getHolidays() {
+        Set<Date> holidays = new HashSet<>();
 
-        holidays.add(LocalDate.of(2018, 01, 15));
-        holidays.add(LocalDate.of(2018, 12, 25));
-        holidays.add(LocalDate.of(2018, 12, 26));
-        holidays.add(LocalDate.of(2019, 01, 01));
+        holidays.add(Date.valueOf(LocalDate.of(2018, 01, 15)));
+        holidays.add(Date.valueOf(LocalDate.of(2018, 12, 25)));
+        holidays.add(Date.valueOf(LocalDate.of(2018, 12, 26)));
+        holidays.add(Date.valueOf(LocalDate.of(2019, 01, 01)));
         return holidays;
     }
 
