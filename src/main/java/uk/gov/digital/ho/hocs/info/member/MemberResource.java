@@ -2,16 +2,15 @@ package uk.gov.digital.ho.hocs.info.member;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
 import uk.gov.digital.ho.hocs.info.dto.GetMembersResponse;
-import uk.gov.digital.ho.hocs.info.dto.GetTeamResponse;
 import uk.gov.digital.ho.hocs.info.entities.Member;
-import uk.gov.digital.ho.hocs.info.entities.Team;
-import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
+import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 
-import javax.swing.text.html.parser.Entity;
-import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
@@ -20,20 +19,22 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 public class MemberResource {
 
     private final MemberService memberService;
+    private final CaseTypeService caseTypeService;
+
 
     @Autowired
-    public MemberResource(final MemberService memberService) {
+    public MemberResource(MemberService memberService, CaseTypeService caseTypeService) {
         this.memberService = memberService;
+        this.caseTypeService = caseTypeService;
     }
 
-    @RequestMapping(value = "/members", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
-public ResponseEntity<GetMembersResponse> getAllMembers(@RequestHeader("X-Auth-Roles") String[] roles) {
-        log.info("requesting all Members");
+    @RequestMapping(value = "/casetype/{caseType}/members", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetMembersResponse> getAllMembers(@PathVariable String caseType) {
         try {
-            List<Member> members = memberService.getMembers();
-            return ResponseEntity.ok(new GetMembersResponse(members));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.badRequest().build();
+            Set<Member> members = memberService.getActiveMembersByCaseType(caseType);
+            return ResponseEntity.ok(GetMembersResponse.from(members));
+        } catch ( EntityPermissionException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build() ;
         }
     }
 }

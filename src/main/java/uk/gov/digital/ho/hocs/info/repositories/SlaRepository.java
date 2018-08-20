@@ -5,14 +5,12 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import uk.gov.digital.ho.hocs.info.entities.Sla;
 
-import java.util.List;
+import java.util.Set;
 
 @Repository
-public interface SlaRepository extends CrudRepository<Sla, Long> {
+public interface SlaRepository extends CrudRepository<Sla, String> {
 
-    @Query(value ="select * from sla s join case_type c on s.case_type_id = c.id where c.type = ?1", nativeQuery = true )
-    List<Sla> findSLACaseType(String caseType);
-
-
+    @Query(value ="SELECT s.* FROM sla s WHERE s.case_type = ?1" , nativeQuery = true )
+    Set<Sla> findAllByCaseType(String caseType);
 
 }

@@ -1,6 +1,5 @@
 package uk.gov.digital.ho.hocs.info.deadline;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,8 +8,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.dto.DeadlineDto;
-import uk.gov.digital.ho.hocs.info.dto.GetDeadlinesRequest;
 import uk.gov.digital.ho.hocs.info.dto.GetDeadlinesResponse;
+import uk.gov.digital.ho.hocs.info.entities.Deadline;
+import uk.gov.digital.ho.hocs.info.entities.Sla;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
+import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,7 +25,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-@SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
 public class DeadlinesResourceTest {
 
     @Mock
@@ -37,20 +38,16 @@ public class DeadlinesResourceTest {
     }
 
     @Test
-    public void shouldReturnDeadlineDatesforCaseType() {
+    public void shouldReturnDeadlineDatesforCaseType() throws EntityPermissionException, EntityNotFoundException {
 
         when(deadlinesService.getDeadlines(any(), any())).thenReturn(getMockDeadlinesForCaseTypeRequest());
 
         ResponseEntity<GetDeadlinesResponse> response =
-                deadlinesResource.getDeadlines(
-                        new GetDeadlinesRequest(
-                                "MIN",
-                                LocalDate.of(2018, 01, 18
-                                )));
+                deadlinesResource.getDeadlines("MIN","2018-01-18");
 
         verify(deadlinesService, times(1)).getDeadlines("MIN",LocalDate.of(2018, 01, 18));
 
-        List<DeadlineDto> responseEntityAsList = new ArrayList<>(response.getBody().getDeadlineDtos());
+        List<DeadlineDto> responseEntityAsList = new ArrayList<>(response.getBody().getDeadlines());
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -65,47 +62,11 @@ public class DeadlinesResourceTest {
 
     }
 
-    @Test
-    public void shouldReturnDeadlineDateWhenFiveDaySlaRequested(){
-        when(deadlinesService.getDeadlinesForRequestedSLA(any(), any(), any())).thenReturn(getMockDeadlinesForRequestedSLAFiveDay());
-        ResponseEntity<DeadlineDto> response =
-                deadlinesResource.getDeadlinesForRequestedSLA(
-                        new GetDeadlinesRequest(
-                                "HMPOCOR",
-                                LocalDate.of(2018, 01, 18),
-                                5l
-                        ));
+    private static Set<Deadline> getMockDeadlinesForCaseTypeRequest() {
+        Set<Deadline> deadLines = new HashSet<>();
 
-        assertThat(response).isNotNull();
-        assertThat(response.getBody().getDate()).isEqualTo(LocalDate.of(2018, 01, 25));
-        assertThat(response.getBody().getType()).isEqualTo("Final");
-
+        deadLines.add(new Deadline(LocalDate.of(2018, 01, 18), new Sla("draft", 0,"MIN"), new HashSet<>()));
+        deadLines.add(new Deadline(LocalDate.of(2018, 01, 25), new Sla("dispatch", 0,"MIN"), new HashSet<>()));
+        return deadLines;
     }
-
-    @Test
-    public void shouldReturnDeadlineDateWhenTenDaySlaRequested(){
-        when(deadlinesService.getDeadlinesForRequestedSLA(any(), any(), any())).thenReturn(getMockDeadlinesForRequestedSLATenDay());
-        ResponseEntity<DeadlineDto> response =
-                deadlinesResource.getDeadlinesForRequestedSLA(
-                        new GetDeadlinesRequest(
-                                "HMPOCOR",
-                                LocalDate.of(2018, 01, 18),
-                                10l
-                        ));
-
-        assertThat(response).isNotNull();
-        assertThat(response.getBody().getDate()).isEqualTo(LocalDate.of(2018, 02, 1));
-        assertThat(response.getBody().getType()).isEqualTo("Final");
-    }
-
-    private Set<DeadlineDto> getMockDeadlinesForCaseTypeRequest() {
-        Set<DeadlineDto> deadlineDtos = new HashSet<>();
-        deadlineDtos.add(new DeadlineDto("draft", LocalDate.of(2018, 01, 18)));
-        deadlineDtos.add(new DeadlineDto("dispatch",LocalDate.of(2018, 01, 25)));
-        return deadlineDtos;
-    }
-    private DeadlineDto getMockDeadlinesForRequestedSLAFiveDay(){
-    return new DeadlineDto("Final", LocalDate.of(2018, 01, 25));}
-    private DeadlineDto getMockDeadlinesForRequestedSLATenDay(){
-    return new DeadlineDto("Final", LocalDate.of(2018, 02, 1));}
 }

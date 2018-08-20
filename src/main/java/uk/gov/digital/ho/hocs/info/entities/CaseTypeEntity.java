@@ -5,15 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "case_type")
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
-public class CaseTypeDetail {
+public class CaseTypeEntity implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -26,8 +25,7 @@ public class CaseTypeDetail {
     @Column(name = "type")
     private String type;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "case_type_id", referencedColumnName = "id")
-    private List<Sla> slas = new ArrayList<>();
+    @Column(name = "tenant_role")
+    private String role;
 
 }

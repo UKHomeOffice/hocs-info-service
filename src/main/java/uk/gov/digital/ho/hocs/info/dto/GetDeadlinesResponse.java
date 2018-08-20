@@ -1,22 +1,23 @@
 package uk.gov.digital.ho.hocs.info.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import uk.gov.digital.ho.hocs.info.entities.Deadline;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
-@NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class GetDeadlinesResponse {
 
-    @JsonProperty("deadlineDtos")
-    Set<DeadlineDto> deadlineDtos;
+    @JsonProperty("deadlines")
+    Set<DeadlineDto> deadlines;
 
-    public static GetDeadlinesResponse from(Set<DeadlineDto> deadlineDtos) {
+    public static GetDeadlinesResponse from(Set<Deadline> deadlinesSet) {
+        Set<DeadlineDto> deadlineDtos = deadlinesSet.stream().map(DeadlineDto::from).collect(Collectors.toSet());
         return new GetDeadlinesResponse(deadlineDtos);
     }
-
 }

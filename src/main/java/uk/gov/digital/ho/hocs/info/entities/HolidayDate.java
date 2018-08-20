@@ -6,15 +6,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "holiday")
+@Table(name = "holiday_date")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Holiday {
+public class HolidayDate implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -27,13 +28,5 @@ public class Holiday {
     @Getter
     @Setter
     private LocalDate date;
-
-    @ManyToMany
-    @JoinTable(
-            name = "tenants_holidays",
-            joinColumns = { @JoinColumn(name = "tenant_id") },
-            inverseJoinColumns = { @JoinColumn(name = "holiday_id") }
-    )
-    private List<Tenant> tenants = new ArrayList<>();
 
 }

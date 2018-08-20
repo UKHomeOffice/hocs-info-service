@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import uk.gov.digital.ho.hocs.info.entities.Team;
 
 @Repository
-public interface TeamRepository extends CrudRepository<Team, Integer> {
+public interface TeamRepository extends CrudRepository<Team, String> {
 
     @Query(value = "SELECT t.* FROM team t JOIN member m on m.team_id = t.id WHERE m.id = ?1", nativeQuery = true)
     Team getTeamFromMemberId(int topicId);

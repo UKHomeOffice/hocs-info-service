@@ -5,26 +5,33 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "unit")
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
-public class Unit {
+public class Unit implements Serializable {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "displayName")
+    @Column(name = "display_name")
     private String displayName;
 
+    @Column(name = "uuid")
+    private String uuid;
+
+    @Column(name = "active")
+    private boolean active;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "unit_id", referencedColumnName = "id")
-    private Set<Team> team = new HashSet<>();
+    @JoinColumn(name = "unit_uuid", referencedColumnName = "uuid")
+    private Set<Team> teams = new HashSet<>();
 
 }

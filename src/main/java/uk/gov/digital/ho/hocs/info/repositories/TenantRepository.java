@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import uk.gov.digital.ho.hocs.info.entities.Tenant;
 
 @Repository
-public interface TenantRepository extends CrudRepository<Tenant, Long> {
+public interface TenantRepository extends CrudRepository<Tenant, String> {
 }

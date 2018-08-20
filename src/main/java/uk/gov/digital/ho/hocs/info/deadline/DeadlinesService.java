@@ -1,85 +1,43 @@
 package uk.gov.digital.ho.hocs.info.deadline;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.info.dto.DeadlineDto;
-import uk.gov.digital.ho.hocs.info.entities.Holiday;
+import uk.gov.digital.ho.hocs.info.entities.Deadline;
+import uk.gov.digital.ho.hocs.info.entities.HolidayDate;
 import uk.gov.digital.ho.hocs.info.entities.Sla;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
-import uk.gov.digital.ho.hocs.info.repositories.HolidayRepository;
+import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
+import uk.gov.digital.ho.hocs.info.repositories.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.repositories.SlaRepository;
 
-import java.time.DayOfWeek;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static uk.gov.digital.ho.hocs.info.HocsInfoServiceApplication.isNullOrEmpty;
-
 @Service
+@Slf4j
 public class DeadlinesService {
 
     private final SlaRepository slaRepository;
-    private final HolidayRepository holidayRepository;
+    private final HolidayDateRepository holidayDateRepository;
 
     @Autowired
-    public DeadlinesService(SlaRepository slaRepository, HolidayRepository holidayRepository) {
+    public DeadlinesService(SlaRepository slaRepository, HolidayDateRepository holidayDateRepository) {
         this.slaRepository = slaRepository;
-        this.holidayRepository = holidayRepository;
+        this.holidayDateRepository = holidayDateRepository;
     }
 
-    public Set<DeadlineDto> getDeadlines(String caseType, LocalDate receivedDate) {
-        if (!isNullOrEmpty(caseType) && !isNullOrEmpty(receivedDate)) {
-            List<Holiday> holidays = holidayRepository.findAllByCaseType(caseType);
-
-            List<Sla> slas = slaRepository.findSLACaseType(caseType);
-
-            if (holidays != null && slas != null) {
-                return calculateDeadline(receivedDate, slas, holidays);
-            } else {
-                throw new EntityNotFoundException("Holidays or SLAs not Found!");
-            }
+    Set<Deadline> getDeadlines(String caseType, LocalDate receivedDate) throws EntityPermissionException, EntityNotFoundException {
+        log.info("Requesting deadlines for caseType {} with received date of {} ", caseType, receivedDate);
+        if (caseType != null && receivedDate != null) {
+            Set<HolidayDate> holidays = holidayDateRepository.findAllByCaseType(caseType);
+            Set<Sla> slas = slaRepository.findAllByCaseType(caseType);
+            return slas.stream().map(sla -> new Deadline(receivedDate, sla, holidays)).collect(Collectors.toSet());
         } else {
             throw new EntityNotFoundException("CaseType or received date was null!");
         }
-    }
-
-    private Set<DeadlineDto> calculateDeadline(LocalDate receivedDate, List<Sla> slas, List<Holiday> holidays) {
-        Set<DeadlineDto> deadlineDtos = new HashSet<>();
-        for (Sla sla : slas) {
-            LocalDate deadlineDate = getDate(receivedDate, sla.getValue(), holidays);
-            deadlineDtos.add(new DeadlineDto(sla.getType(), deadlineDate));
-        }
-        return deadlineDtos;
-    }
-
-    public DeadlineDto getDeadlinesForRequestedSLA(String caseType, LocalDate receivedDate, Long sla) {
-        if (!isNullOrEmpty(caseType) && !isNullOrEmpty(receivedDate) && !isNullOrEmpty(sla)) {
-            List<Holiday> holidays = holidayRepository.findAllByCaseType(caseType);
-
-            if (holidays != null) {
-                return new DeadlineDto(sla + " day", getDate(receivedDate, sla, holidays));
-            }else {
-                throw new EntityNotFoundException("Holidays not Found!");
-            }
-        } else {
-            throw new EntityNotFoundException("CaseType, received date or SLA was null!");
-        }
-    }
-
-    private LocalDate getDate(LocalDate receivedDate, Long sla, List<Holiday> holidays) {
-        LocalDate deadlineDate = receivedDate;
-        int addedDays = 0;
-        while (addedDays < sla) {
-            deadlineDate = deadlineDate.plusDays(1);
-            if (!(deadlineDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
-                    deadlineDate.getDayOfWeek() == DayOfWeek.SUNDAY ||
-                    (holidays.stream().map(Holiday::getDate).collect(Collectors.toList()).contains(deadlineDate)))) {
-                ++addedDays;
-            }
-        }
-        return deadlineDate;
     }
 }

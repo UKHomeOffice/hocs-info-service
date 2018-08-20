@@ -6,16 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.Serializable;
 
 @Entity
-@Table(name = "tenant", schema = "info")
+@Table(name = "tenant")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Tenant {
+public class Tenant implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -25,20 +22,4 @@ public class Tenant {
     @Column(name = "display_name")
     @Getter
     private String displayName;
-
-    @ManyToMany(mappedBy = "tenants", fetch = FetchType.LAZY)
-    private Set<Holiday> holidays = new HashSet<>();
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "tenant_id", referencedColumnName = "id")
-    private List<CaseTypeDetail> caseTypeDetails = new ArrayList<>();
-
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JoinColumn(name = "tenant_id", referencedColumnName = "id")
-//    private Set<Unit> unit = new HashSet<>();
 }
-//
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JoinColumn(name = "tenant_id", referencedColumnName = "id")
-//    private Set<ParentTopic> parentTopic = new HashSet<>();
-//}
