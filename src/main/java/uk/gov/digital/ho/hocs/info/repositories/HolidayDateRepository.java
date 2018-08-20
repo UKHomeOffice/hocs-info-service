@@ -12,7 +12,7 @@ import java.util.Set;
 @Repository
 public interface HolidayDateRepository extends CrudRepository<HolidayDate, String> {
 
-    @Query(value ="SELECT ed.date FROM holiday_date ed WHERE ed.case_type = ?1", nativeQuery = true )
-    Set<Date> findAllByCaseType(String caseType);
+    @Query(value ="SELECT ed.* FROM holiday_date ed WHERE ed.case_type = ?1", nativeQuery = true )
+    Set<HolidayDate> findAllByCaseType(String caseType);
 
 }

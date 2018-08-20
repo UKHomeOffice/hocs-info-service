@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.entities.Deadline;
+import uk.gov.digital.ho.hocs.info.entities.HolidayDate;
 import uk.gov.digital.ho.hocs.info.entities.Sla;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
@@ -142,13 +143,13 @@ public class DeadlinesServiceTest {
         assertThat(deadlinesAsList.get(0).getType()).isEqualTo("final");
     }
 
-    private static Set<Date> getHolidays() {
-        Set<Date> holidays = new HashSet<>();
+    private static Set<HolidayDate> getHolidays() {
+        Set<HolidayDate> holidays = new HashSet<>();
 
-        holidays.add(Date.valueOf(LocalDate.of(2018, 01, 15)));
-        holidays.add(Date.valueOf(LocalDate.of(2018, 12, 25)));
-        holidays.add(Date.valueOf(LocalDate.of(2018, 12, 26)));
-        holidays.add(Date.valueOf(LocalDate.of(2019, 01, 01)));
+        holidays.add(new HolidayDate(1,LocalDate.of(2018, 01, 15)));
+        holidays.add(new HolidayDate(2,LocalDate.of(2018, 12, 25)));
+        holidays.add(new HolidayDate(3,LocalDate.of(2018, 12, 26)));
+        holidays.add(new HolidayDate(4,LocalDate.of(2019, 01, 01)));
         return holidays;
     }
 

@@ -40,7 +40,7 @@ DROP TABLE IF EXISTS holiday_date;
 CREATE TABLE IF NOT EXISTS holiday_date
 (
   id          BIGSERIAL PRIMARY KEY,
-  date        date      NOT NULL,
+  date        DATE      NOT NULL,
   case_type   TEXT  NOT NULL,
   CONSTRAINT holiday_date_sla_idempotent UNIQUE (date,case_type),
   CONSTRAINT fk_holiday_id FOREIGN KEY (case_type) REFERENCES case_type (type)

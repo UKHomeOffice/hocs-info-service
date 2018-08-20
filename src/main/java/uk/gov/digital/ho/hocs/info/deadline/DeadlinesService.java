@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.entities.Deadline;
+import uk.gov.digital.ho.hocs.info.entities.HolidayDate;
 import uk.gov.digital.ho.hocs.info.entities.Sla;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
@@ -32,8 +33,7 @@ public class DeadlinesService {
     Set<Deadline> getDeadlines(String caseType, LocalDate receivedDate) throws EntityPermissionException, EntityNotFoundException {
         log.info("Requesting deadlines for caseType {} with received date of {} ", caseType, receivedDate);
         if (caseType != null && receivedDate != null) {
-            Set<Date> dates = holidayDateRepository.findAllByCaseType(caseType);
-            Set<LocalDate> holidays = dates.stream().map(Date::toLocalDate).collect(Collectors.toSet());
+            Set<HolidayDate> holidays = holidayDateRepository.findAllByCaseType(caseType);
             Set<Sla> slas = slaRepository.findAllByCaseType(caseType);
             return slas.stream().map(sla -> new Deadline(receivedDate, sla, holidays)).collect(Collectors.toSet());
         } else {
