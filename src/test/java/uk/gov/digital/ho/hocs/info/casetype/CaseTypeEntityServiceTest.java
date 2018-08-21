@@ -82,28 +82,42 @@ public class CaseTypeEntityServiceTest {
         assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "UTEN", "UKVI Number 10", "UKVI");
     }
 
+    @Test
+    public void shouldGetBulkCaseTypesSingleTenantRequested() {
 
-//     @Test
-//     public void shouldGetCaseTypesSingleTenantRequestedWithNoneTenantsInXAuthRolesHeader() {
-//
-//         when(tenantService.getTenantsFromRoles(anyList())).thenReturn(new ArrayList<String>() {{ add("DCU");}});
-//         when(caseTypeRepository.findCaseTypesByTenant("DCU")).thenReturn(getDCUCaseType());
-//
-//        // List<CaseTypeDto> caseTypeDtos = caseTypeService.getCaseTypes(new ArrayList<String>() {{
-//        //     add("Create");add("Document");add("Draft");add("DCU");
-//        // }});
-//
-//         verify(caseTypeRepository, times(1)).findCaseTypesByTenant("DCU");
-//
-//         assertThat(caseTypeDtos.size()).isEqualTo(3);
-//
-//         assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "MIN","DCU Ministerial","DCU" );
-//         assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "TRO","DCU Treat Official","DCU" );
-//         assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "DTEN","DCU Number 10","DCU" );
-//
-//         CaseTypeDto result = caseTypeDtos.stream().filter(x -> "Create".equals(x.getType())).findAny().orElse(null);
-//         assertThat(result).isNull();
-//     }
+        when(requestData.roles()).thenReturn(singleRole);
+        when(caseTypeRepository.findAllBulkCaseTypesByTenant(any())).thenReturn(getDCUCaseTypeBulk());
+
+        Set<CaseTypeEntity> caseTypeDtos = caseTypeService.getCaseTypesBulk();
+
+        verify(caseTypeRepository, times(1)).findAllBulkCaseTypesByTenant(any());
+
+        assertThat(caseTypeDtos.size()).isEqualTo(2);
+
+        assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "MIN", "DCU Ministerial", "DCU");
+        assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "TRO", "DCU Treat Official", "DCU");
+        assetCaseTypeDtoDoesNotContainElement(caseTypeDtos, "DTEN", "DCU Number 10", "DCU");
+    }
+
+
+    @Test
+    public void shouldGetBulkCaseTypesMultipleTenantRequested() {
+        when(requestData.roles()).thenReturn(multiRoles);
+        when(caseTypeRepository.findAllBulkCaseTypesByTenant(multiRoles)).thenReturn(getDCUAndUKVICaseTypeBulk());
+
+        Set<CaseTypeEntity> caseTypeDtos = caseTypeService.getCaseTypesBulk();
+
+        verify(caseTypeRepository, times(1)).findAllBulkCaseTypesByTenant(any());
+
+        assertThat(caseTypeDtos.size()).isEqualTo(5);
+
+        assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "MIN", "DCU Ministerial", "DCU");
+        assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "TRO", "DCU Treat Official", "DCU");
+        assetCaseTypeDtoDoesNotContainElement(caseTypeDtos, "DTEN", "DCU Number 10", "DCU");
+        assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "IMCB", "UKVI B REF", "UKVI");
+        assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "IMCM", "UKVI Ministerial REF", "UKVI");
+        assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "UTEN", "UKVI Number 10", "UKVI");
+    }
 
     private void assetCaseTypeDtoContainsCorrectElements(Set<CaseTypeEntity> caseTypeDtos, String CaseType, String DisplayName, String tenant) {
         CaseTypeEntity result1 = caseTypeDtos.stream().filter(x -> CaseType.equals(x.getType())).findAny().orElse(null);
@@ -112,17 +126,36 @@ public class CaseTypeEntityServiceTest {
         assertThat(result1.getRole()).isEqualTo(tenant);
     }
 
+    private void assetCaseTypeDtoDoesNotContainElement(Set<CaseTypeEntity> caseTypeDtos, String CaseType, String DisplayName, String tenant) {
+        CaseTypeEntity result1 = caseTypeDtos.stream().filter(x -> CaseType.equals(x.getType())).findAny().orElse(null);
+        assertThat(result1).isNull();
+    }
+
     private Set<CaseTypeEntity> getDCUCaseType() {
         return new HashSet<>(Arrays.asList(new CaseTypeEntity(1, "DCU Ministerial", "MIN", "DCU"),
                 new CaseTypeEntity(2, "DCU Treat Official", "TRO", "DCU"),
                 new CaseTypeEntity(3, "DCU Number 10", "DTEN", "DCU")));
     }
 
+    private Set<CaseTypeEntity> getDCUCaseTypeBulk() {
+        return new HashSet<>(Arrays.asList(new CaseTypeEntity(1, "DCU Ministerial", "MIN", "DCU"),
+                new CaseTypeEntity(2, "DCU Treat Official", "TRO", "DCU")));
+    }
+
     private HashSet<CaseTypeEntity> getDCUAndUKVICaseType() {
-        return new HashSet<CaseTypeEntity>(Arrays.asList(
+        return new HashSet<>(Arrays.asList(
                 new CaseTypeEntity(1, "DCU Ministerial", "MIN", "DCU"),
                 new CaseTypeEntity(2, "DCU Treat Official", "TRO", "DCU"),
                 new CaseTypeEntity(3, "DCU Number 10", "DTEN", "DCU"),
+                new CaseTypeEntity(1, "UKVI B REF", "IMCB", "UKVI"),
+                new CaseTypeEntity(2, "UKVI Ministerial REF", "IMCM", "UKVI"),
+                new CaseTypeEntity(3, "UKVI Number 10", "UTEN", "UKVI")));
+    }
+
+    private HashSet<CaseTypeEntity> getDCUAndUKVICaseTypeBulk() {
+        return new HashSet<>(Arrays.asList(
+                new CaseTypeEntity(1, "DCU Ministerial", "MIN", "DCU"),
+                new CaseTypeEntity(2, "DCU Treat Official", "TRO", "DCU"),
                 new CaseTypeEntity(1, "UKVI B REF", "IMCB", "UKVI"),
                 new CaseTypeEntity(2, "UKVI Ministerial REF", "IMCM", "UKVI"),
                 new CaseTypeEntity(3, "UKVI Number 10", "UTEN", "UKVI")));

@@ -62,12 +62,12 @@ public class CaseTypeEntityResourceTest {
     @Test
     public void shouldReturnCaseTypesWhenSingleTenantRequestedForBulkCaseExcludingDTENCaseType() {
 
-        when(caseTypeService.getCaseTypes()).thenReturn(getMockCaseTypesSingleTenant());
+        when(caseTypeService.getCaseTypesBulk()).thenReturn(getMockCaseTypesSingleTenantBulk());
 
         ResponseEntity<GetCaseTypesResponse> response =
                 caseTypeResource.getCaseTypesBulk();
 
-        verify(caseTypeService, times(1)).getCaseTypes();
+        verify(caseTypeService, times(1)).getCaseTypesBulk();
 
         List<CaseTypeDto> responseEntityAsList = new ArrayList<>(Objects.requireNonNull(response.getBody()).getCaseTypes());
 
@@ -118,12 +118,12 @@ public class CaseTypeEntityResourceTest {
 
     @Test
     public void shouldReturnCaseTypesWhenMultipleTenantsRequestedForBulkCaseExcludingDTENCaseType() {
-        when(caseTypeService.getCaseTypes()).thenReturn(getMockCaseTypesMultipleTenant());
+        when(caseTypeService.getCaseTypesBulk()).thenReturn(getMockCaseTypesMultipleTenantBulk());
 
         ResponseEntity<GetCaseTypesResponse> response =
                 caseTypeResource.getCaseTypesBulk();
 
-        verify(caseTypeService, times(1)).getCaseTypes();
+        verify(caseTypeService, times(1)).getCaseTypesBulk();
 
         List<CaseTypeDto> responseEntityAsList = new ArrayList<>(response.getBody().getCaseTypes());
 
@@ -156,11 +156,28 @@ public class CaseTypeEntityResourceTest {
         return caseTypesSet;
     }
 
+    private static Set<CaseTypeEntity> getMockCaseTypesSingleTenantBulk() {
+        Set<CaseTypeEntity> caseTypesSet = new HashSet<>();
+        caseTypesSet.add(new CaseTypeEntity(1,"DCU Ministerial", "MIN","DCU"));
+        caseTypesSet.add(new CaseTypeEntity(2,"DCU Treat Official", "TRO","DCU"));
+        return caseTypesSet;
+    }
+
     private Set<CaseTypeEntity> getMockCaseTypesMultipleTenant() {
         Set<CaseTypeEntity> caseTypesSet = new HashSet<>();
         caseTypesSet.add(new CaseTypeEntity(1,"DCU Ministerial", "MIN","DCU"));
         caseTypesSet.add(new CaseTypeEntity(2,"DCU Treat Official", "TRO","DCU"));
         caseTypesSet.add(new CaseTypeEntity(3,"DCU Number 10", "DTEN","UKVI"));
+        caseTypesSet.add(new CaseTypeEntity(4, "UKVI B REF", "IMCB","UKVI"));
+        caseTypesSet.add(new CaseTypeEntity(5, "UKVI Ministerial REF", "IMCM","UKVI"));
+        caseTypesSet.add(new CaseTypeEntity(6, "UKVI Number 10", "UTEN","UKVI"));
+        return caseTypesSet;
+    }
+
+    private Set<CaseTypeEntity> getMockCaseTypesMultipleTenantBulk() {
+        Set<CaseTypeEntity> caseTypesSet = new HashSet<>();
+        caseTypesSet.add(new CaseTypeEntity(1,"DCU Ministerial", "MIN","DCU"));
+        caseTypesSet.add(new CaseTypeEntity(2,"DCU Treat Official", "TRO","DCU"));
         caseTypesSet.add(new CaseTypeEntity(4, "UKVI B REF", "IMCB","UKVI"));
         caseTypesSet.add(new CaseTypeEntity(5, "UKVI Ministerial REF", "IMCM","UKVI"));
         caseTypesSet.add(new CaseTypeEntity(6, "UKVI Number 10", "UTEN","UKVI"));

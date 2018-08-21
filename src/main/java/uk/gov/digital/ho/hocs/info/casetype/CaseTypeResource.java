@@ -29,9 +29,7 @@ public class CaseTypeResource {
 
     @GetMapping(value = "/casetype/bulk", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetCaseTypesResponse> getCaseTypesBulk() {
-        Set<CaseTypeEntity> caseTypes = caseTypeService.getCaseTypes();
-        caseTypes.remove(
-        caseTypes.stream().filter(x -> "DTEN".equals(x.getType())).findAny().orElse(null));
+        Set<CaseTypeEntity> caseTypes = caseTypeService.getCaseTypesBulk();
         return ResponseEntity.ok(GetCaseTypesResponse.from(caseTypes));
     }
 }
