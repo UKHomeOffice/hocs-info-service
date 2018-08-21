@@ -27,6 +27,11 @@ public class CaseTypeService {
         return caseTypeRepository.findAllCaseTypesByTenant(requestData.roles());
     }
 
+    Set<CaseTypeEntity> getCaseTypesBulk() {
+        log.debug("Requesting all case types for Bulk upload");
+        return caseTypeRepository.findAllBulkCaseTypesByTenant(requestData.roles());
+    }
+
     public boolean hasPermissionForCaseType(String caseType)
     {
         String caseTypeEntity = caseTypeRepository.findCaseTypeEntityByTenant(caseType, requestData.roles());
