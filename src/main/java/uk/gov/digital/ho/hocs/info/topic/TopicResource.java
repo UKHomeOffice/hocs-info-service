@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.digital.ho.hocs.info.dto.GetTopicsResponse;
 import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
-import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 
 import java.util.Arrays;
 import java.util.List;

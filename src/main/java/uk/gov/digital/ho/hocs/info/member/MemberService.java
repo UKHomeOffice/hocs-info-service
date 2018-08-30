@@ -6,12 +6,9 @@ import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.RequestData;
 import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
 import uk.gov.digital.ho.hocs.info.entities.Member;
-import uk.gov.digital.ho.hocs.info.entities.Team;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 import uk.gov.digital.ho.hocs.info.repositories.MemberRepository;
-import uk.gov.digital.ho.hocs.info.repositories.TeamRepository;
 
-import java.util.List;
 import java.util.Set;
 
 @Service

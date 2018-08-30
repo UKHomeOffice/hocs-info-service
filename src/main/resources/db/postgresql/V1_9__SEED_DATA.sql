@@ -46,3 +46,46 @@ VALUES ('2018-08-27', 'MIN'),
   ('2019-05-27', 'DTEN'),
   ('2019-08-26', 'DTEN'),
   ('2019-11-25', 'DTEN');
+
+INSERT INTO unit(display_name, uuid, active)  VALUES
+  ('UNIT 1'    , 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c',TRUE);
+
+INSERT INTO team(display_name, uuid, unit_uuid) VALUES
+  ('TEAM 1', '44444444-2222-2222-2222-222222222222', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c');
+
+INSERT INTO unit_case_type(unit_uuid,case_type) VALUES
+  ('d9a93c21-a1a8-4a5d-aa7b-597bb95a782c', 'MIN');
+
+Insert INTO nominated_person (teamUUID, email_address)
+VALUES
+  ('44444444-2222-2222-2222-222222222222','simulate-delivered@notifications.service.gov.uk'),
+  ('44444444-2222-2222-2222-222222222222','simulate-delivered-2@notifications.service.gov.uk');
+
+Insert INTO template (display_name, case_type, file_link, UUID,active)
+VALUES
+  ('MIN template', 'MIN', 'URL LINK', '11111111-1111-1111-1111-111111111111',TRUE ),
+  ('MIN template OLD', 'MIN', 'URL LINK', '11111111-1111-1111-1111-111111111112',FALSE ),
+  ('TRO template', 'TRO', 'URL LINK', '11111111-1111-1111-1111-111111111113',TRUE ),
+  ('TRO template OLD', 'TRO', 'URL LINK', '11111111-1111-1111-1111-111111111114',FALSE ),
+  ('DTEN template', 'DTEN', 'URL LINK', '11111111-1111-1111-1111-111111111115',TRUE ),
+  ('DTEN template OLD', 'DTEN', 'URL LINK', '11111111-1111-1111-1111-111111111116',FALSE );
+
+INSERT INTO parent_topic (display_name, UUID)
+VALUES
+  ('Parent topic 1', '11111111-1111-1111-1111-111111111121'),
+  ('Parent topic 2', '11111111-1111-1111-1111-111111111122');
+
+INSERT INTO topic (display_name, UUID, parent_topic_uuid)
+VALUES
+  ('topic 1', '11111111-1111-1111-1111-111111111131','11111111-1111-1111-1111-111111111121'),
+  ('topic 2', '11111111-1111-1111-1111-111111111132','11111111-1111-1111-1111-111111111122');
+
+INSERT INTO standard_line (display_name, file_link, UUID)
+VALUES
+  ('Standard Line 1','URL Link 1','11111111-1111-1111-1111-111111111141'),
+  ('Standard Line 2','URL Link 2','11111111-1111-1111-1111-111111111142');
+
+INSERT INTO standard_line_topic (standard_line_uuid, tenant_role,topic_uuid,active)
+VALUES
+  ('11111111-1111-1111-1111-111111111141','DCU','11111111-1111-1111-1111-111111111131',TRUE ),
+  ('11111111-1111-1111-1111-111111111142','DCU','11111111-1111-1111-1111-111111111132',TRUE );

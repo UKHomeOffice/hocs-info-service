@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uk.gov.digital.ho.hocs.info.entities.Unit;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
