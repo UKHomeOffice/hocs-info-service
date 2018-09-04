@@ -5,8 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import uk.gov.digital.ho.hocs.info.entities.HolidayDate;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.Set;
 
 @Repository

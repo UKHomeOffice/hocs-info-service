@@ -1,6 +1,5 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
