@@ -24,12 +24,8 @@ public class TemplateResource {
 
     @GetMapping(value = "/casetype/{caseType}/template", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetTemplateResponse> getTemplateForCaseTypes(@PathVariable String caseType) {
-        try {
             Template template = templateService.getTemplate(caseType);
             return ResponseEntity.ok(GetTemplateResponse.from(template));
-        } catch (EntityPermissionException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
     }
 
 }

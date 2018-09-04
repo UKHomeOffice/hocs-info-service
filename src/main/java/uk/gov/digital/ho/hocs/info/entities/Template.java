@@ -26,8 +26,8 @@ public class Template implements Serializable {
     private String caseType;
 
     @Getter
-    @Column(name = "file_link")
-    private String fileLink;
+    @Column(name = "document_key")
+    private String documentKey;
 
     @Column(name = "uuid")
     private UUID uuid;

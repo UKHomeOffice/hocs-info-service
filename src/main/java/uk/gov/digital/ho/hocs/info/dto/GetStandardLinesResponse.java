@@ -14,10 +14,10 @@ public class GetStandardLinesResponse {
     @JsonProperty("displayName")
     private String displayName;
 
-    @JsonProperty("file_link")
-    private String fileLink;
+    @JsonProperty("documentkey")
+    private String documentkey;
 
     public static GetStandardLinesResponse from(StandardLines standardLines) {
-        return new GetStandardLinesResponse(standardLines.getDisplayName(), standardLines.getFileLink());
+        return new GetStandardLinesResponse(standardLines.getDisplayName(), standardLines.getDocumentKey());
     }
 }

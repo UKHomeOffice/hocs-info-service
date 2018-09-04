@@ -61,14 +61,11 @@ VALUES
   ('44444444-2222-2222-2222-222222222222','simulate-delivered@notifications.service.gov.uk'),
   ('44444444-2222-2222-2222-222222222222','simulate-delivered-2@notifications.service.gov.uk');
 
-Insert INTO template (display_name, case_type, file_link, UUID,active)
+Insert INTO template (display_name, case_type, document_key, UUID,active)
 VALUES
-  ('MIN template', 'MIN', 'URL LINK', '11111111-1111-1111-1111-111111111111',TRUE ),
-  ('MIN template OLD', 'MIN', 'URL LINK', '11111111-1111-1111-1111-111111111112',FALSE ),
-  ('TRO template', 'TRO', 'URL LINK', '11111111-1111-1111-1111-111111111113',TRUE ),
-  ('TRO template OLD', 'TRO', 'URL LINK', '11111111-1111-1111-1111-111111111114',FALSE ),
-  ('DTEN template', 'DTEN', 'URL LINK', '11111111-1111-1111-1111-111111111115',TRUE ),
-  ('DTEN template OLD', 'DTEN', 'URL LINK', '11111111-1111-1111-1111-111111111116',FALSE );
+  ('MIN template', 'MIN', 'templates/min/MP_Response_template.odt', '11111111-1111-1111-1111-111111111111',TRUE ),
+  ('TRO template', 'TRO', 'templates/tro/Treat_Official_template.odt', '11111111-1111-1111-1111-111111111113',TRUE ),
+  ('DTEN template', 'DTEN', 'templates/dten/MP_Response_template.odt', '11111111-1111-1111-1111-111111111115',TRUE );
 
 INSERT INTO parent_topic (display_name, UUID)
 VALUES
@@ -80,7 +77,7 @@ VALUES
   ('topic 1', '11111111-1111-1111-1111-111111111131','11111111-1111-1111-1111-111111111121'),
   ('topic 2', '11111111-1111-1111-1111-111111111132','11111111-1111-1111-1111-111111111122');
 
-INSERT INTO standard_line (display_name, file_link, UUID)
+INSERT INTO standard_line (display_name, document_key, UUID)
 VALUES
   ('Standard Line 1','URL Link 1','11111111-1111-1111-1111-111111111141'),
   ('Standard Line 2','URL Link 2','11111111-1111-1111-1111-111111111142');

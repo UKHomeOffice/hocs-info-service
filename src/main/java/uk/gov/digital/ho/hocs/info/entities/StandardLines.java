@@ -22,8 +22,8 @@ public class StandardLines implements Serializable {
     private String displayName;
 
     @Getter
-    @Column(name = "file_link")
-    private String fileLink;
+    @Column(name = "document_key")
+    private String documentKey;
 
     @Column(name = "uuid")
     private UUID uuid;

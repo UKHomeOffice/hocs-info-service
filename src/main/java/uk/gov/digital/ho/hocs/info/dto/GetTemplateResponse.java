@@ -11,13 +11,10 @@ import uk.gov.digital.ho.hocs.info.entities.Template;
 @Getter
 public class GetTemplateResponse {
 
-    @JsonProperty("displayName")
-    private String displayName;
-
-    @JsonProperty("file_link")
-    private String fileLink;
+    @JsonProperty("documentKey")
+    private String documentKey;
 
     public static GetTemplateResponse from (Template template) {
-        return new GetTemplateResponse(template.getDisplayName(), template.getFileLink());
+        return new GetTemplateResponse( template.getDocumentKey());
     }
 }
