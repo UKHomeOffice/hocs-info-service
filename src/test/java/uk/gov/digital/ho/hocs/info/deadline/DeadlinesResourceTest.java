@@ -15,10 +15,8 @@ import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,18 +45,18 @@ public class DeadlinesResourceTest {
 
         verify(deadlinesService, times(1)).getDeadlines("MIN",LocalDate.of(2018, 01, 18));
 
-        List<DeadlineDto> responseEntityAsList = new ArrayList<>(response.getBody().getDeadlines());
+        Map<String, LocalDate> deadlines = response.getBody().getDeadlines();
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        DeadlineDto result1 = responseEntityAsList.stream().filter(x -> "draft".equals(x.getType())).findAny().orElse(null);
-        assertThat(result1).isNotNull();
-        assertThat(result1.getDate()).isEqualTo(LocalDate.of(2018, 01, 18));
+        LocalDate draftDate = deadlines.get("draft");
+        assertThat(draftDate).isNotNull();
+        assertThat(draftDate).isEqualTo(LocalDate.of(2018, 01, 18));
 
-        DeadlineDto result2 = responseEntityAsList.stream().filter(x -> "dispatch".equals(x.getType())).findAny().orElse(null);
-        assertThat(result2).isNotNull();
-        assertThat(result2.getDate()).isEqualTo(LocalDate.of(2018, 01, 25));
+        LocalDate dispatchDate = deadlines.get("dispatch");
+        assertThat(dispatchDate).isNotNull();
+        assertThat(dispatchDate).isEqualTo(LocalDate.of(2018, 01, 25));
 
     }
 
