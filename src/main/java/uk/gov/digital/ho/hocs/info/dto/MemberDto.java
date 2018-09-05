@@ -11,13 +11,17 @@ import uk.gov.digital.ho.hocs.info.entities.Member;
 @Getter
 public class MemberDto {
 
-    @JsonProperty("displayName")
+    @JsonProperty("label")
     private String displayName;
 
-    @JsonProperty("type")
+    @JsonProperty("value")
     private String uuid;
 
-    public static MemberDto from (Member member) {
-        return new MemberDto(member.getDisplayName(), member.getUuid());
+    @JsonProperty("group")
+    private String house;
+
+
+    public static MemberDto from(Member member) {
+        return new MemberDto(member.getDisplayName(), member.getUuid(), member.getHouse());
     }
 }

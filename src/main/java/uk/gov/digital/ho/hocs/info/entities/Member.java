@@ -22,10 +22,22 @@ public class Member implements Serializable {
     @Column(name = "display_name")
     private String displayName;
 
-    @Column(name = "letter_name")
-    private String letterName;
+    @Column(name = "list_as")
+    private String listAs;
+
+    @Column(name = "full_title")
+    private String fullTitle;
+
+    @Column(name = "external_id")
+    private String externalId;
+
+    @Column(name = "house")
+    private String house;
 
     @Column(name = "uuid")
     private String uuid;
+
+    @Column(name = "active")
+    private Boolean active;
 
 }

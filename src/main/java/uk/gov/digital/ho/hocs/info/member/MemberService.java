@@ -9,6 +9,7 @@ import uk.gov.digital.ho.hocs.info.entities.Member;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 import uk.gov.digital.ho.hocs.info.repositories.MemberRepository;
 
+import javax.xml.bind.JAXBException;
 import java.util.Set;
 
 @Service
@@ -24,13 +25,21 @@ public class MemberService {
         this.memberRepository = memberRepository;
         this.caseTypeService = caseTypeService;
         this.requestData = requestData;
-
     }
 
-    public Set<Member> getActiveMembersByCaseType(String caseType) throws EntityPermissionException {
+    public Set<Member> getAllActiveMembersByCaseType(String caseType) throws EntityPermissionException {
         log.debug("Requesting all Members for CaseType {}", caseType);
         if (caseTypeService.hasPermissionForCaseType(caseType)) {
             return memberRepository.findAllActiveMembersForCaseType(caseType);
+        } else {
+            throw new EntityPermissionException("Not allowed to get Members for CaseType, CaseType: %s not in Roles: %s", caseType, requestData.rolesString());
+        }
+    }
+
+    public Set<Member> getAllActiveMembers(String caseType) throws EntityPermissionException {
+        log.debug("Requesting all Members");
+        if (caseTypeService.hasPermissionForCaseType(caseType)) {
+            return  memberRepository.findAllActiveMembers();
         } else {
             throw new EntityPermissionException("Not allowed to get Members for CaseType, CaseType: %s not in Roles: %s", caseType, requestData.rolesString());
         }

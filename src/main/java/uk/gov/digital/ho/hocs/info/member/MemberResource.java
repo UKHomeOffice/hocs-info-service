@@ -4,11 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.dto.GetMembersResponse;
 import uk.gov.digital.ho.hocs.info.entities.Member;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
@@ -22,19 +18,27 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 public class MemberResource {
 
     private final MemberService memberService;
-    private final CaseTypeService caseTypeService;
 
 
     @Autowired
-    public MemberResource(MemberService memberService, CaseTypeService caseTypeService) {
+    public MemberResource(MemberService memberService) {
         this.memberService = memberService;
-        this.caseTypeService = caseTypeService;
     }
 
-    @RequestMapping(value = "/casetype/{caseType}/members", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetMembersResponse> getAllMembers(@PathVariable String caseType) {
+    @GetMapping(value = "/casetype/{caseType}/members", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetMembersResponse> getAllActiveMembersByCaseType(@PathVariable String caseType) {
         try {
-            Set<Member> members = memberService.getActiveMembersByCaseType(caseType);
+            Set<Member> members = memberService.getAllActiveMembersByCaseType(caseType);
+            return ResponseEntity.ok(GetMembersResponse.from(members));
+        } catch ( EntityPermissionException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build() ;
+        }
+    }
+
+    @GetMapping(value = "/casetype/{caseType}/allmembers", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetMembersResponse> getAllActiveMembers(@PathVariable String caseType) {
+        try {
+            Set<Member> members = memberService.getAllActiveMembers(caseType);
             return ResponseEntity.ok(GetMembersResponse.from(members));
         } catch ( EntityPermissionException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build() ;
