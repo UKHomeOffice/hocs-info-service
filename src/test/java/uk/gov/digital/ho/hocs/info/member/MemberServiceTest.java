@@ -7,11 +7,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.RequestData;
 import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
-import uk.gov.digital.ho.hocs.info.entities.Member;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 import uk.gov.digital.ho.hocs.info.repositories.MemberRepository;
-
-import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;

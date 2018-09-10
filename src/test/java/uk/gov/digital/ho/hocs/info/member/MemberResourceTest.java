@@ -8,7 +8,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.dto.GetMembersResponse;
-import uk.gov.digital.ho.hocs.info.entities.Member;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 
 import java.util.HashSet;

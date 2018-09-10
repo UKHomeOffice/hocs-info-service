@@ -1,24 +1,37 @@
+DROP TABLE IF EXISTS houses;
+
+CREATE TABLE IF NOT EXISTS houses
+(
+  id      BIGSERIAL PRIMARY KEY,
+  name    TEXT                  NOT NULL,
+  deleted BOOLEAN DEFAULT FALSE NOT NULL,
+  CONSTRAINT house_name_idempotent UNIQUE (name)
+);
+
+CREATE INDEX idx_house_reference
+  ON houses (name);
+
 DROP TABLE IF EXISTS member;
 
 CREATE TABLE IF NOT EXISTS member
 (
-  id           BIGSERIAL PRIMARY KEY,
-  display_name TEXT    NOT NULL,
-  list_as      TEXT    NOT NULL,
-  full_title   TEXT    NOT NULL,
-  external_id  TEXT    NOT NULL,
-  house        TEXT    NOT NULL,
-  uuid         UUID    NOT NULL,
-  active       boolean NOT NULL,
+  id                 BIGSERIAL PRIMARY KEY,
+  full_title         TEXT                  NOT NULL,
+  external_reference TEXT                  NOT NULL,
+  house_id           INT             ,
+  uuid               UUID                  NOT NULL,
+  updated            DATE                  NOT NULL,
+  deleted            BOOLEAN DEFAULT FALSE NOT NULL,
 
-  CONSTRAINT member_external_id_idempotent UNIQUE (external_id, house),
+  CONSTRAINT member_name_ref_idempotent UNIQUE (full_title, external_reference, house_id),
+  CONSTRAINT fk_house_id FOREIGN KEY (house_id) REFERENCES houses (id),
   CONSTRAINT member_uuid_idempotent UNIQUE (uuid),
-  CONSTRAINT member_name_idempotent UNIQUE (display_name)
+  CONSTRAINT member_name_idempotent UNIQUE (full_title)
 
 );
 
 CREATE INDEX idx_member_active
-  ON member (active);
+  ON member (deleted);
 
 
 DROP TABLE IF EXISTS member_team;
@@ -30,7 +43,7 @@ CREATE TABLE IF NOT EXISTS member_team
   tenant_role TEXT NOT NULL,
   team_uuid   UUID NOT NULL,
 
-  CONSTRAINT fk_member_team_member_id FOREIGN KEY (member_uuid) REFERENCES member (uuid),
+  --   CONSTRAINT fk_member_team_member_id FOREIGN KEY (member_uuid) REFERENCES member (uuid),
   CONSTRAINT fk_member_tenant_role FOREIGN KEY (tenant_role) REFERENCES tenant (role),
   CONSTRAINT fk_member_team_team_id FOREIGN KEY (team_uuid) REFERENCES team (uuid)
 

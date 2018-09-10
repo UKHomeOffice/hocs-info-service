@@ -9,7 +9,6 @@ import uk.gov.digital.ho.hocs.info.entities.Member;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 import uk.gov.digital.ho.hocs.info.repositories.MemberRepository;
 
-import javax.xml.bind.JAXBException;
 import java.util.Set;
 
 @Service

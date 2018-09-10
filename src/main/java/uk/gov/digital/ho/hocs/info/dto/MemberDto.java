@@ -22,6 +22,6 @@ public class MemberDto {
 
 
     public static MemberDto from(Member member) {
-        return new MemberDto(member.getDisplayName(), member.getUuid(), member.getHouse());
+        return new MemberDto(member.getFullTitle(), member.getUuid(), member.getHouseId().toString());
     }
 }
