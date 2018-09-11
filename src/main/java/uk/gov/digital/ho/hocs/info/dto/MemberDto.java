@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.entities.Member;
 
+import java.util.UUID;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -15,13 +16,12 @@ public class MemberDto {
     private String displayName;
 
     @JsonProperty("value")
-    private String uuid;
+    private UUID uuid;
 
     @JsonProperty("group")
     private String house;
 
-
     public static MemberDto from(Member member) {
-        return new MemberDto(member.getFullTitle(), member.getUuid(), member.getHouseId().toString());
+        return new MemberDto(member.getFullTitle(), member.getUuid(), member.getHouse());
     }
 }

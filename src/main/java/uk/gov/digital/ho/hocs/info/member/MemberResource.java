@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.dto.GetMembersResponse;
 import uk.gov.digital.ho.hocs.info.entities.Member;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
+import uk.gov.digital.ho.hocs.info.exception.IngestException;
 
 import java.util.Set;
 
@@ -19,20 +20,9 @@ public class MemberResource {
 
     private final MemberService memberService;
 
-
     @Autowired
     public MemberResource(MemberService memberService) {
         this.memberService = memberService;
-    }
-
-    @GetMapping(value = "/casetype/{caseType}/members", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetMembersResponse> getAllActiveMembersByCaseType(@PathVariable String caseType) {
-        try {
-            Set<Member> members = memberService.getAllActiveMembersByCaseType(caseType);
-            return ResponseEntity.ok(GetMembersResponse.from(members));
-        } catch ( EntityPermissionException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build() ;
-        }
     }
 
     @GetMapping(value = "/casetype/{caseType}/allmembers", produces = APPLICATION_JSON_UTF8_VALUE)
@@ -42,6 +32,18 @@ public class MemberResource {
             return ResponseEntity.ok(GetMembersResponse.from(members));
         } catch ( EntityPermissionException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build() ;
+        }
+    }
+
+    @GetMapping(value = "/houses/refresh")
+    public ResponseEntity getFromApi() {
+        log.info("Updating Houses");
+        try {
+            memberService.updateWebMemberLists();
+            return ResponseEntity.ok().build();
+        } catch (IngestException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
         }
     }
 }

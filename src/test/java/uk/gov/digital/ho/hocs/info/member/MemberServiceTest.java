@@ -7,10 +7,15 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.RequestData;
 import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
+import uk.gov.digital.ho.hocs.info.entities.Member;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
+import uk.gov.digital.ho.hocs.info.exception.IngestException;
+import uk.gov.digital.ho.hocs.info.house.ingest.ListConsumerService;
 import uk.gov.digital.ho.hocs.info.repositories.MemberRepository;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.mockito.Mockito.*;
 
 
@@ -26,22 +31,14 @@ public class MemberServiceTest {
     @Mock
     private CaseTypeService caseTypeService;
 
+    @Mock
+    private ListConsumerService listConsumerService;
+
     private MemberService memberService;
 
     @Before
     public void setUp() {
-        this.memberService = new MemberService(memberRepository, caseTypeService, requestData);
-    }
-
-    @Test
-    public void shouldReturnAllActiveMembersForSpecificCaseType() throws EntityPermissionException {
-
-        when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
-
-        memberService.getAllActiveMembersByCaseType("MIN");
-
-        verify(memberRepository, times(1)).findAllActiveMembersForCaseType(any());
-        verifyNoMoreInteractions(memberRepository);
+        this.memberService = new MemberService(memberRepository, caseTypeService, listConsumerService, requestData);
     }
 
     @Test
@@ -53,6 +50,31 @@ public class MemberServiceTest {
 
         verify(memberRepository, times(1)).findAllActiveMembers();
         verifyNoMoreInteractions(memberRepository);
+    }
+
+
+    @Test
+    public void shouldUpdateOneMemberFromEachOfTheSixParliamentApis() throws IngestException {
+
+        when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
+        when(listConsumerService.createCommonsFromUKParliamentAPI()).thenReturn(getMembers());
+        when(listConsumerService.createFromEuropeanParliamentAPI()).thenReturn(getMembers());
+        when(listConsumerService.createFromIrishAssemblyAPI()).thenReturn(getMembers());
+        when(listConsumerService.createFromScottishParliamentAPI()).thenReturn(getMembers());
+        when(listConsumerService.createFromWelshAssemblyAPI()).thenReturn(getMembers());
+        when(listConsumerService.createLordsFromUKParliamentAPI()).thenReturn(getMembers());
+
+        memberService.updateWebMemberLists();
+
+        verify(memberRepository, times(6)).findByExternalReference(any());
+        verify(memberRepository, times(6)).save(any());
+        verifyNoMoreInteractions(memberRepository);
+    }
+
+    private Set<Member> getMembers() {
+        Set<Member> members = new HashSet<>();
+        members.add(new Member("House", "fullTitle", "extRef"));
+        return members;
     }
 
 }

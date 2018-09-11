@@ -1,16 +1,3 @@
-DROP TABLE IF EXISTS houses;
-
-CREATE TABLE IF NOT EXISTS houses
-(
-  id      BIGSERIAL PRIMARY KEY,
-  name    TEXT                  NOT NULL,
-  deleted BOOLEAN DEFAULT FALSE NOT NULL,
-  CONSTRAINT house_name_idempotent UNIQUE (name)
-);
-
-CREATE INDEX idx_house_reference
-  ON houses (name);
-
 DROP TABLE IF EXISTS member;
 
 CREATE TABLE IF NOT EXISTS member
@@ -18,15 +5,13 @@ CREATE TABLE IF NOT EXISTS member
   id                 BIGSERIAL PRIMARY KEY,
   full_title         TEXT                  NOT NULL,
   external_reference TEXT                  NOT NULL,
-  house_id           INT             ,
+  house              TEXT                  NOT NULL,
   uuid               UUID                  NOT NULL,
   updated            DATE                  NOT NULL,
   deleted            BOOLEAN DEFAULT FALSE NOT NULL,
 
-  CONSTRAINT member_name_ref_idempotent UNIQUE (full_title, external_reference, house_id),
-  CONSTRAINT fk_house_id FOREIGN KEY (house_id) REFERENCES houses (id),
-  CONSTRAINT member_uuid_idempotent UNIQUE (uuid),
-  CONSTRAINT member_name_idempotent UNIQUE (full_title)
+  CONSTRAINT member_name_ref_idempotent UNIQUE (full_title, external_reference, house),
+  CONSTRAINT member_uuid_idempotent UNIQUE (uuid)
 
 );
 

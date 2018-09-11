@@ -1,45 +1,20 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import uk.gov.digital.ho.hocs.info.entities.Member;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+public enum House {
 
-@NoArgsConstructor
-@Entity
-@Table(name = "houses")
-@Access(AccessType.FIELD)
-@EqualsAndHashCode(of = {"name"})
-public class House implements Serializable {
+    HOUSE_LORDS("House of Lords"),
+    HOUSE_COMMONS("House of Commons"),
+    HOUSE_SCOTTISH_PARLIAMENT("Scottish Parliament"),
+    HOUSE_NORTHERN_IRISH_ASSEMBLY("Northern Irish Assembly"),
+    HOUSE_EUROPEAN_PARLIAMENT("European Parliament"),
+    HOUSE_WELSH_ASSEMBLY("Welsh Assembly");
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "name", nullable = false)
     @Getter
-    private String name;
+    private String displayValue;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name ="house_id", referencedColumnName = "id")
-    @Getter
-    @Setter
-    private Set<Member> members = new HashSet<>();
-
-    @Column(name = "deleted", nullable = false)
-    @Getter
-    @Setter
-    private Boolean deleted = false;
-
-    public House(String name, Set<Member> members) {
-        this.name = name;
-        this.members = members;
+    House(String value) {
+        displayValue = value;
     }
 }

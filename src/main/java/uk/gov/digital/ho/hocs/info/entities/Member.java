@@ -12,8 +12,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Access(AccessType.FIELD)
-@EqualsAndHashCode(of = {"fullTitle", "referenceName"})
 public class Member implements Serializable {
 
     @Id
@@ -21,8 +19,8 @@ public class Member implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "house_id")
-    private Long houseId;
+    @Column(name = "house")
+    private String house;
 
     @Column(name = "full_title")
     private String fullTitle;
@@ -31,7 +29,7 @@ public class Member implements Serializable {
     private String externalReference;
 
     @Column(name = "uuid")
-    private String uuid;
+    private UUID uuid;
 
     @Column(name = "updated")
     private LocalDateTime updated;
@@ -41,10 +39,11 @@ public class Member implements Serializable {
     private Boolean deleted = false;
 
 
-    public Member( String fullTitle, String externalReference) {
+    public Member(String house, String fullTitle, String externalReference ) {
+        this.house = house;
         this.fullTitle = toListText(fullTitle);
         this.externalReference = toListValue(externalReference);
-        this.uuid = toListValue(UUID.randomUUID().toString());
+        this.uuid = UUID.randomUUID();
         this.updated = LocalDateTime.now();
     }
 
@@ -59,5 +58,10 @@ public class Member implements Serializable {
                 .replaceAll("[^a-zA-Z0-9_]+", "")
                 .replaceAll("__", "_")
                 .toUpperCase();
+    }
+
+    public void update(String fullTitle){
+        this.fullTitle = fullTitle;
+        this.updated = LocalDateTime.now();
     }
 }

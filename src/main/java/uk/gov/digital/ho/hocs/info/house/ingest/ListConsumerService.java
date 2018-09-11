@@ -22,10 +22,6 @@ public class ListConsumerService {
 
     private final String HOUSE_LORDS = "lords";
     private final String HOUSE_COMMONS = "commons";
-    private final String HOUSE_SCOTTISH_PARLIAMENT = "scottish_parliament";
-    private final String HOUSE_NORTHERN_IRISH_ASSEMBLY = "northern_irish_assembly";
-    private final String HOUSE_EUROPEAN_PARLIAMENT = "european_parliament";
-    private final String HOUSE_WELSH_ASSEMBLY = "welsh_assembly";
 
     private final String API_UK_PARLIAMENT;
     private final String API_SCOTTISH_PARLIAMENT;
@@ -46,48 +42,48 @@ public class ListConsumerService {
         this.API_WELSH_ASSEMBLY = apiWelshAssembly;
     }
 
-    public House createFromEuropeanParliamentAPI() throws IngestException {
+    public  Set<Member> createFromEuropeanParliamentAPI() throws IngestException {
         log.info("Updating European Parliament");
         EuropeMembers europeMembers = getMembersFromAPI(API_EUROPEAN_PARLIAMENT, MediaType.APPLICATION_XML, EuropeMembers.class);
-        Set<Member> members = europeMembers.getMembers().stream().map(m -> new Member( m.getName(), "EU"+m.getId())).collect(Collectors.toSet());
-        return new House(HOUSE_EUROPEAN_PARLIAMENT, members);
+        Set<Member> members = europeMembers.getMembers().stream().map(m -> new Member(House.HOUSE_EUROPEAN_PARLIAMENT.getDisplayValue(), m.getName()+" MEP", "EU"+m.getId())).collect(Collectors.toSet());
+        return members;
     }
 
-    public House createFromIrishAssemblyAPI() throws IngestException {
+    public Set<Member> createFromIrishAssemblyAPI() throws IngestException {
         log.info("Updating Irish Assembly");
         IrishMembers irishMembers = getMembersFromAPI(API_NORTHERN_IRISH_ASSEMBLY, MediaType.APPLICATION_XML, IrishMembers.class);
-        Set<Member> members = irishMembers.getMembers().stream().map(m -> new Member( m.getFullDisplayName(), "NI"+m.getPersonId())).collect(Collectors.toSet());
-        return new House(HOUSE_NORTHERN_IRISH_ASSEMBLY, members);
+        Set<Member> members = irishMembers.getMembers().stream().map(m -> new Member(House.HOUSE_NORTHERN_IRISH_ASSEMBLY.getDisplayValue(), m.getFullDisplayName()+" MLA", "NI"+m.getPersonId())).collect(Collectors.toSet());
+        return members;
     }
 
-    public House createFromScottishParliamentAPI() throws IngestException {
+    public Set<Member> createFromScottishParliamentAPI() throws IngestException {
         log.info("Updating Scottish Parliament");
        ScottishMember[] scottishMembers = getMembersFromAPI(API_SCOTTISH_PARLIAMENT, MediaType.APPLICATION_JSON, ScottishMember[].class);
-        Set<Member> members = Arrays.stream(scottishMembers).map(m -> new Member( m.getName(), "SC"+m.getPersonId())).collect(Collectors.toSet());
-        return new House(HOUSE_SCOTTISH_PARLIAMENT, members);
+        Set<Member> members = Arrays.stream(scottishMembers).map(m -> new Member(House.HOUSE_SCOTTISH_PARLIAMENT.getDisplayValue(), m.getName()+" MSP", "SC"+m.getPersonId())).collect(Collectors.toSet());
+        return members;
     }
 
-    public House createCommonsFromUKParliamentAPI() throws IngestException {
+    public Set<Member> createCommonsFromUKParliamentAPI() throws IngestException {
         log.info("Updating House of Commons");
         UKMembers ukUKMembers = getMembersFromAPI(getFormattedUkEndpoint(HOUSE_COMMONS), MediaType.APPLICATION_XML, UKMembers.class);
-        Set<Member> members = ukUKMembers.getMembers().stream().map(m -> new Member(m.getFullTitle(), "CO"+m.getMemberId())).collect(Collectors.toSet());
-        return new House(HOUSE_COMMONS, members);
+        Set<Member> members = ukUKMembers.getMembers().stream().map(m -> new Member(House.HOUSE_COMMONS.getDisplayValue(),m.getFullTitle(), "CO"+m.getMemberId())).collect(Collectors.toSet());
+        return members;
     }
 
-    public House createLordsFromUKParliamentAPI() throws IngestException {
+    public Set<Member> createLordsFromUKParliamentAPI() throws IngestException {
         log.info("Updating House of Lords");
         UKMembers ukUKMembers = getMembersFromAPI(getFormattedUkEndpoint(HOUSE_LORDS), MediaType.APPLICATION_XML, UKMembers.class);
-        Set<Member> members = ukUKMembers.getMembers().stream().map(m -> new Member(m.getFullTitle(), "LO"+m.getMemberId())).collect(Collectors.toSet());
-        return new House(HOUSE_LORDS, members);
+        Set<Member> members = ukUKMembers.getMembers().stream().map(m -> new Member(House.HOUSE_LORDS.getDisplayValue(), m.getFullTitle(), "LO"+m.getMemberId())).collect(Collectors.toSet());
+        return members;
     }
 
-    public House createFromWelshAssemblyAPI() throws IngestException {
+    public Set<Member> createFromWelshAssemblyAPI() throws IngestException {
         log.info("Updating Welsh Assembly");
         WelshWards welshWards = getMembersFromAPI(API_WELSH_ASSEMBLY, MediaType.APPLICATION_XML, WelshWards.class);
         Set<WelshMembers> welshMembers = welshWards.getWards().stream().map(WelshWard::getMembers).collect(Collectors.toSet());
         Set<WelshMember> welshMemberSet = welshMembers.stream().map(WelshMembers::getMembers).flatMap(Collection::stream).collect(Collectors.toSet());
-        Set<Member> members = welshMemberSet.stream().map(m -> new Member( m.getName(), "WE"+m.getId())).collect(Collectors.toSet());
-        return new House(HOUSE_WELSH_ASSEMBLY, members);
+        Set<Member> members = welshMemberSet.stream().map(m -> new Member(House.HOUSE_WELSH_ASSEMBLY.getDisplayValue(), m.getName(), "WE"+m.getId())).collect(Collectors.toSet());
+        return members;
     }
 
     private <T> T getMembersFromAPI(String apiEndpoint, MediaType mediaType, Class<T> returnClass) throws IngestException {
