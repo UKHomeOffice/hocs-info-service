@@ -35,14 +35,14 @@ public class MemberResource {
         }
     }
 
-    @GetMapping(value = "/houses/refresh")
+    @GetMapping(value = "/members/refresh")
     public ResponseEntity getFromApi() {
         log.info("Updating Houses");
         try {
             memberService.updateWebMemberLists();
             return ResponseEntity.ok().build();
         } catch (IngestException e) {
-            e.printStackTrace();
+            log.error("Ingest exception");
             return ResponseEntity.badRequest().build();
         }
     }
