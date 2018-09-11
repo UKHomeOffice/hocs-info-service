@@ -37,9 +37,10 @@ public class MemberResource {
 
     @GetMapping(value = "/members/refresh")
     public ResponseEntity getFromApi() {
-        log.info("Updating Houses");
+        log.info("Updating Members");
         try {
             memberService.updateWebMemberLists();
+            log.info("Members Updated");
             return ResponseEntity.ok().build();
         } catch (IngestException e) {
             log.error("Ingest exception");
