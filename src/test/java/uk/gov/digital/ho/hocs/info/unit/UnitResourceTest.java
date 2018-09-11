@@ -2,24 +2,12 @@ package uk.gov.digital.ho.hocs.info.unit;
 
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.dto.GetUnitsResponse;
-import uk.gov.digital.ho.hocs.info.entities.Member;
-import uk.gov.digital.ho.hocs.info.entities.Team;
-import uk.gov.digital.ho.hocs.info.entities.Unit;
-import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
-
-import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.*;
 
 @Ignore
 @RunWith(MockitoJUnitRunner.class)
