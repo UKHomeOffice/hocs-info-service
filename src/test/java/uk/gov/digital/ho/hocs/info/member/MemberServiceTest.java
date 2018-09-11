@@ -56,7 +56,6 @@ public class MemberServiceTest {
     @Test
     public void shouldUpdateOneMemberFromEachOfTheSixParliamentApis() throws IngestException {
 
-        when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
         when(listConsumerService.createCommonsFromUKParliamentAPI()).thenReturn(getMembers());
         when(listConsumerService.createFromEuropeanParliamentAPI()).thenReturn(getMembers());
         when(listConsumerService.createFromIrishAssemblyAPI()).thenReturn(getMembers());
