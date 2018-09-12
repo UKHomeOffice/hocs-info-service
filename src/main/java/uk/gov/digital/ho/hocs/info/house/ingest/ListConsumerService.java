@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ListConsumerService {
 
-    private final String HOUSE_LORDS = "lords";
-    private final String HOUSE_COMMONS = "commons";
+    private final String HOUSE_LORDS = "lords/";
+    private final String HOUSE_COMMONS = "commons/";
 
     private final String API_UK_PARLIAMENT;
     private final String API_SCOTTISH_PARLIAMENT;
