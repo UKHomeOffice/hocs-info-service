@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "parent-topic")
@@ -24,7 +25,10 @@ public class ParentTopic implements Serializable {
     @Column(name = "displayName")
     private String displayName;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "parent_topic_id", referencedColumnName = "id")
-    private Set<Topic> topic = new HashSet<>();
+    @Column(name = "uuid")
+    private UUID uuid;
+
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "parent_topic_id", referencedColumnName = "id")
+//    private Set<Topic> topic = new HashSet<>();
 }

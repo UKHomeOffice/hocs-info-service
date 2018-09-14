@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
+import uk.gov.digital.ho.hocs.info.entities.Topic;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,9 +15,10 @@ import java.util.List;
 public class GetTopicsResponse {
 
     @JsonProperty("topics")
-    List<ParentTopic> topics;
+    List<TopicDto> topics;
 
-    public static GetTopicsResponse from(List<ParentTopic> topics) {
-        return new GetTopicsResponse(topics);
+    public static GetTopicsResponse from(List<Topic> topics) {
+        List<TopicDto> topicDto = topics.stream().map(TopicDto::from).collect(Collectors.toList());
+        return new GetTopicsResponse(topicDto);
     }
 }

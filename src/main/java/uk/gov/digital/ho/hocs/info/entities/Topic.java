@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.UUID;
 
 @Entity
 @Table(name = "topic")
@@ -21,4 +22,7 @@ public class Topic implements Serializable {
 
     @Column(name = "displayName")
     private String displayName;
+
+    @Column(name = "uuid")
+    private UUID uuid;
 }

@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface ParentTopicRepository extends CrudRepository<ParentTopic, String> {
 
-    @Query(value = "select * from parent_topic pt join tenant t on pt.tenant_id = t.id where t.display_name = ?1", nativeQuery = true)
-    List<ParentTopic> findParentTopicByTenant(String tenant);
+    @Query(value = "select * from parent_topic pt join parent_topic_case_type ptct on pt.uuid = ptct.parent_topic_uuid where ptct.case_type = ?1", nativeQuery = true)
+    List<ParentTopic>  findAllParentTopicByCaseType(String caseType);
+
 }
