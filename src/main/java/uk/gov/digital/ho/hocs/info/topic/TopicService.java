@@ -9,7 +9,6 @@ import uk.gov.digital.ho.hocs.info.entities.Topic;
 import uk.gov.digital.ho.hocs.info.repositories.ParentTopicRepository;
 import uk.gov.digital.ho.hocs.info.repositories.TopicRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

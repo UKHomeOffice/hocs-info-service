@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import uk.gov.digital.ho.hocs.info.exception.IngestException;
 import uk.gov.digital.ho.hocs.info.entities.House;
 import uk.gov.digital.ho.hocs.info.entities.Member;
+import uk.gov.digital.ho.hocs.info.exception.IngestException;
 
 import java.util.Arrays;
 import java.util.Collection;
