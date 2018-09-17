@@ -8,19 +8,21 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.digital.ho.hocs.info.dto.GetParentTopicsResponse;
 import uk.gov.digital.ho.hocs.info.dto.GetTopicsResponse;
+import uk.gov.digital.ho.hocs.info.dto.TopicDto;
 import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
 import uk.gov.digital.ho.hocs.info.entities.Topic;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
-@Ignore
 @RunWith(MockitoJUnitRunner.class)
 public class TopicResourceTest {
 
@@ -29,7 +31,7 @@ public class TopicResourceTest {
 
     private TopicResource topicResource;
 
-    private static final String[] ROLES= {"Create","DCU"};
+    private static final String[] ROLES = {"Create", "DCU"};
 
     @Before
     public void setUp() {
@@ -37,50 +39,60 @@ public class TopicResourceTest {
     }
 
     @Test
-    public void shouldGetTopicsByTenant() {
+    public void shouldGetParentTopicsByCaseType() {
 
-        when(topicService.getTopics(any())).thenReturn( getTopics());
+        when(topicService.getParentTopics(any())).thenReturn(getParentTopics());
 
-        ResponseEntity<GetTopicsResponse> response = topicResource.getAllTopics(ROLES);
+        ResponseEntity<GetParentTopicsResponse> response = topicResource.getAllParentTopicsByCaseType("MIN");
 
-        verify(topicService, times(1)).getTopics(anyList());
+        verify(topicService, times(1)).getParentTopics(any());
+        verifyNoMoreInteractions(topicService);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getTopics().size()).isEqualTo(1);
-        assertThat(response.getBody().getTopics().get(0).getDisplayName()).isEqualTo("Parent Topic 1");
-
-        List<Topic> responseTopicAsList = new ArrayList<>(response.getBody().getTopics().get(0).getTopic());
-
-        Topic result1 = responseTopicAsList.stream().filter(x -> Objects.equals(1 ,x.getId())).findAny().orElse(null);
-        assertThat(result1).isNotNull();
-        assertThat(result1.getDisplayName()).isEqualTo("Topic1");
-        Topic result2 = responseTopicAsList.stream().filter(x -> Objects.equals(2,x.getId())).findAny().orElse(null);
-        assertThat(result2).isNotNull();
-        assertThat(result2.getDisplayName()).isEqualTo("Topic2");
+        assertThat(response.getBody().getParentTopicDto().size()).isEqualTo(2);
+        assertThat(response.getBody().getParentTopicDto().get(0).getDisplayName()).isEqualTo("ParentTopic1");
+        assertThat(response.getBody().getParentTopicDto().get(1).getDisplayName()).isEqualTo("ParentTopic2");
     }
 
     @Test
-    public void shouldErrorOnNoTopics() {
-        when(topicService.getTopics(any())).thenThrow(new EntityNotFoundException("shan't"));
-        ResponseEntity<GetTopicsResponse> response = topicResource.getAllTopics(ROLES);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    public void shouldGetTopicsByParentTopics() {
+        when(topicService.getAllTopicsForParentTopic(any())).thenReturn(getTopics());
+
+        ResponseEntity<GetTopicsResponse> response = topicResource.getTopicsByParentTopic(UUID.randomUUID());
+
+        verify(topicService, times(1)).getAllTopicsForParentTopic(any());
+        verifyNoMoreInteractions(topicService);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    public void shouldErrorOnNoRoles() {
-        String[] EMPTY_ROLES = {};
-        ResponseEntity<GetTopicsResponse> response = topicResource.getAllTopics(EMPTY_ROLES);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    public void getTopicByUUID() {
+
+        when(topicService.getTopic(any())).thenReturn(new Topic(1, "Topic1", UUID.randomUUID()));
+
+        ResponseEntity<TopicDto> response = topicResource.getTopicByUUID(UUID.randomUUID());
+
+        verify(topicService, times(1)).getTopic(any());
+        verifyNoMoreInteractions(topicService);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    private List<ParentTopic> getTopics() {
-        Set<Topic> topics = new HashSet<Topic>() {{
-                add(new Topic(1, "Topic1"));
-                add(new Topic(2, "Topic2"));
-            }};
-
+    private List<ParentTopic> getParentTopics() {
         return new ArrayList<ParentTopic>() {{
-            add(new ParentTopic(1,"Parent Topic 1", topics));
+            add(new ParentTopic(1, "ParentTopic1", UUID.randomUUID()));
+            add(new ParentTopic(2, "ParentTopic2", UUID.randomUUID()));
         }};
+
     }
+
+    private List<Topic> getTopics() {
+        return new ArrayList<Topic>() {{
+            add(new Topic(1, "Topic1", UUID.randomUUID()));
+            add(new Topic(2, "Topic2", UUID.randomUUID()));
+        }};
+
+    }
+
 }
