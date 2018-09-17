@@ -57,16 +57,16 @@ public class MemberServiceTest {
     public void shouldUpdateOneMemberFromEachOfTheSixParliamentApis() throws IngestException {
 
         when(listConsumerService.createCommonsFromUKParliamentAPI()).thenReturn(getMembers());
-        when(listConsumerService.createFromIrishAssemblyAPI()).thenReturn(getMembers());
         when(listConsumerService.createFromScottishParliamentAPI()).thenReturn(getMembers());
         when(listConsumerService.createFromWelshAssemblyAPI()).thenReturn(getMembers());
         when(listConsumerService.createLordsFromUKParliamentAPI()).thenReturn(getMembers());
+//        when(listConsumerService.createFromIrishAssemblyAPI()).thenReturn(getMembers());
 //        when(listConsumerService.createFromEuropeanParliamentAPI()).thenReturn(getMembers());
 
         memberService.updateWebMemberLists();
 
-        verify(memberRepository, times(5)).findByExternalReference(any());
-        verify(memberRepository, times(5)).save(any());
+        verify(memberRepository, times(4)).findByExternalReference(any());
+        verify(memberRepository, times(4)).save(any());
         verifyNoMoreInteractions(memberRepository);
     }
 
