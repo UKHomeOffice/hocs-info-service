@@ -41,11 +41,11 @@ public class MemberService {
 
     public void updateWebMemberLists() throws IngestException {
         updateMember(listConsumerService.createFromWelshAssemblyAPI());
-        updateMember(listConsumerService.createFromEuropeanParliamentAPI());
         updateMember(listConsumerService.createFromIrishAssemblyAPI());
         updateMember(listConsumerService.createFromScottishParliamentAPI());
         updateMember(listConsumerService.createCommonsFromUKParliamentAPI());
         updateMember(listConsumerService.createLordsFromUKParliamentAPI());
+        updateMember(listConsumerService.createFromEuropeanParliamentAPI());
     }
 
     private void updateMember(Set<Member> members) {

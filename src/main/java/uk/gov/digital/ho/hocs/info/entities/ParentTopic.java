@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
-@Table(name = "parent-topic")
+@Table(name = "parent_topic")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

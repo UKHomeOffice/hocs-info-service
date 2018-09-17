@@ -36,7 +36,7 @@ public class TopicResource {
     }
 
     @GetMapping(value = "/topic/all/{parentTopicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetTopicsResponse> getTopicsByParentTopics(@PathVariable UUID parentTopicUUID) {
+    public ResponseEntity<GetTopicsResponse> getTopicsByParentTopic(@PathVariable UUID parentTopicUUID) {
             log.info("requesting all topics for parent topic uuid {}", parentTopicUUID);
             List<Topic> topics = topicService.getAllTopicsForParentTopic(parentTopicUUID);
             return ResponseEntity.ok(GetTopicsResponse.from(topics));

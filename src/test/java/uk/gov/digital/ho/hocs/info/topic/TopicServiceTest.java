@@ -10,20 +10,24 @@ import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
 import uk.gov.digital.ho.hocs.info.entities.Topic;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.repositories.ParentTopicRepository;
+import uk.gov.digital.ho.hocs.info.repositories.TopicRepository;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TopicServiceTest {
-    
+
     @Mock
     private ParentTopicRepository parentTopicRepository;
+
+    @Mock
+    private TopicRepository topicRepository;
 
     @Mock
     private RequestData requestData;
@@ -31,52 +35,53 @@ public class TopicServiceTest {
     private TopicService topicService;
 
     @Before
-    public void setUp() { 
-        this.topicService = new TopicService(parentTopicRepository, requestData );
+    public void setUp() {
+        this.topicService = new TopicService(parentTopicRepository, topicRepository, requestData);
     }
 
-    //@Test(expected = EntityNotFoundException.class)
-    public void shouldThrowExceptionWhenGetTopicsWithNoRoles() throws EntityNotFoundException {
-        //topicService.getTopics(null);
-        assertThat(1).isEqualTo(1);
-    }
-    
     @Test
-    public void shouldReturnTopicsByTenant(){
+    public void shouldReturnParentTopicsForCaseType() {
+        when(parentTopicRepository.findAllParentTopicByCaseType(any())).thenReturn(getParentTopics());
 
-       // when(tenantService.getTenantsFromRoles(any())).thenReturn(new ArrayList<String>() {{ add("DCU");}});
-       // when(parentTopicRepository.findParentTopicByTenant("DCU")).thenReturn(getTopics());
-       //
-       // List<ParentTopic> parentTopics = topicService.getTopics(new ArrayList<String>() {{
-       //     add("DCU");
-       // }});
-       //
-       // verify(parentTopicRepository, times(1)).findParentTopicByTenant(any());
-       //
-       // assertThat(parentTopics.size()).isEqualTo(1);
-       // assertThat(parentTopics.get(0).getId()).isEqualTo(1);
-       // assertThat(parentTopics.get(0).getDisplayName()).isEqualTo("Parent Topic 1");
-       // assertThat(parentTopics.get(0).getTopic().size()).isEqualTo(2);
-       //
-       // List<Topic> responseTopicAsList = new ArrayList<>(parentTopics.get(0).getTopic());
-       //
-       // Topic result1 = responseTopicAsList.stream().filter(x -> "Topic1".equals(x.getDisplayName())).findAny().orElse(null);
-       // assertThat(result1).isNotNull();
-       // assertThat(result1.getId()).isEqualTo(1);
-       // Topic result2 = responseTopicAsList.stream().filter(x -> "Topic2".equals(x.getDisplayName())).findAny().orElse(null);
-       // assertThat(result2).isNotNull();
-       // assertThat(result2.getId()).isEqualTo(2);
+        List<ParentTopic> parentTopics = topicService.getParentTopics("MIN");
+
+        verify(parentTopicRepository, times(1)).findAllParentTopicByCaseType(any());
+        verifyNoMoreInteractions(parentTopicRepository);
+    }
+
+    @Test
+    public void shouldReturnTopicsForParentTopic() {
+        when(topicRepository.findTopicByParentTopic(any())).thenReturn(getTopics());
+
+        List<Topic> Topics = topicService.getAllTopicsForParentTopic(UUID.randomUUID());
+
+        verify(topicRepository, times(1)).findTopicByParentTopic(any());
+        verifyNoMoreInteractions(parentTopicRepository);
+    }
+
+    @Test
+    public void shouldReturnTopicsByCaseType() {
+        when(topicRepository.findTopicByUUID(any())).thenReturn(new Topic(1, "Topic1", UUID.randomUUID()));
+
+        Topic topics = topicService.getTopic(UUID.randomUUID());
+
+        verify(topicRepository, times(1)).findTopicByUUID(any());
+        verifyNoMoreInteractions(parentTopicRepository);
+    }
+
+    private List<ParentTopic> getParentTopics() {
+        return new ArrayList<ParentTopic>() {{
+            add(new ParentTopic(1, "ParentTopic1", UUID.randomUUID()));
+            add(new ParentTopic(2, "ParentTopic2", UUID.randomUUID()));
+        }};
 
     }
 
-    private List<ParentTopic> getTopics() {
-        Set<Topic> topics = new HashSet<Topic>() {{
-            add(new Topic(1, "Topic1"));
-            add(new Topic(2, "Topic2"));
+    private List<Topic> getTopics() {
+        return new ArrayList<Topic>() {{
+            add(new Topic(1, "Topic1", UUID.randomUUID()));
+            add(new Topic(2, "Topic2", UUID.randomUUID()));
         }};
 
-        return new ArrayList<ParentTopic>() {{
-            add(new ParentTopic(1,"Parent Topic 1", topics));
-        }};
     }
 }
