@@ -34,6 +34,8 @@ public class TopicServiceTest {
 
     private TopicService topicService;
 
+    private UUID uuid = UUID.randomUUID();
+
     @Before
     public void setUp() {
         this.topicService = new TopicService(parentTopicRepository, topicRepository, requestData);
@@ -51,21 +53,21 @@ public class TopicServiceTest {
 
     @Test
     public void shouldReturnTopicsForParentTopic() {
-        when(topicRepository.findTopicByParentTopic(any())).thenReturn(getTopics());
+        when(topicRepository.findTopicByParentTopic(uuid)).thenReturn(getTopics());
 
-        List<Topic> Topics = topicService.getAllTopicsForParentTopic(UUID.randomUUID());
+        List<Topic> Topics = topicService.getAllTopicsForParentTopic(uuid);
 
-        verify(topicRepository, times(1)).findTopicByParentTopic(any());
+        verify(topicRepository, times(1)).findTopicByParentTopic(uuid);
         verifyNoMoreInteractions(parentTopicRepository);
     }
 
     @Test
     public void shouldReturnTopicsByCaseType() {
-        when(topicRepository.findTopicByUUID(any())).thenReturn(new Topic(1, "Topic1", UUID.randomUUID()));
+        when(topicRepository.findTopicByUUID(uuid)).thenReturn(new Topic(1, "Topic1", UUID.randomUUID()));
 
-        Topic topics = topicService.getTopic(UUID.randomUUID());
+        Topic topics = topicService.getTopic(uuid);
 
-        verify(topicRepository, times(1)).findTopicByUUID(any());
+        verify(topicRepository, times(1)).findTopicByUUID(uuid);
         verifyNoMoreInteractions(parentTopicRepository);
     }
 

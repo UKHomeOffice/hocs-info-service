@@ -79,8 +79,6 @@ public class TopicResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-
-
     private List<ParentTopic> getParentTopics() {
         return new ArrayList<ParentTopic>() {{
             add(new ParentTopic(1, "ParentTopic1", UUID.randomUUID()));
