@@ -29,6 +29,7 @@ public class Template implements Serializable {
     @Column(name = "document_key")
     private String documentKey;
 
+    @Getter
     @Column(name = "uuid")
     private UUID uuid;
 
