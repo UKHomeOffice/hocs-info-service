@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.entities.Template;
 import uk.gov.digital.ho.hocs.info.repositories.TemplateRepository;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @Slf4j
 public class TemplateService {
@@ -17,9 +20,14 @@ public class TemplateService {
         this.templateRepository = templateRepository;
     }
 
-    public Template getTemplate(String caseType){
+    public List<Template> getTemplates(String caseType){
         log.info("Requesting template for case type {} ", caseType);
         return templateRepository.findActiveTemplateByCaseType(caseType);
 
+    }
+
+    public Template getTemplateKey(UUID templateUUID) {
+        log.info("Requesting template key for template {} ", templateUUID);
+        return templateRepository.findTemplateByUuid(templateUUID);
     }
 }

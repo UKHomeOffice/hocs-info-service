@@ -4,20 +4,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
 import uk.gov.digital.ho.hocs.info.entities.StandardLines;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class GetStandardLinesResponse {
 
-    @JsonProperty("displayName")
-    private String displayName;
+    @JsonProperty("standardLine")
+    List<StandardLineDto> standardLineDtos;
 
-    @JsonProperty("documentkey")
-    private String documentkey;
-
-    public static GetStandardLinesResponse from(StandardLines standardLines) {
-        return new GetStandardLinesResponse(standardLines.getDisplayName(), standardLines.getDocumentKey());
+    public static GetStandardLinesResponse from(List<StandardLines> standardLines) {
+        List<StandardLineDto> standardLineDtos = standardLines.stream().map(StandardLineDto::from).collect(Collectors.toList());
+        return new GetStandardLinesResponse(standardLineDtos);
     }
 }

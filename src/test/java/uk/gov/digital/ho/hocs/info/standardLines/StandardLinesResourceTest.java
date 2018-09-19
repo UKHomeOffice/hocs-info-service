@@ -8,13 +8,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.dto.GetStandardLinesResponse;
-import uk.gov.digital.ho.hocs.info.dto.GetTemplateResponse;
 import uk.gov.digital.ho.hocs.info.entities.StandardLines;
-import uk.gov.digital.ho.hocs.info.entities.Template;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
-import uk.gov.digital.ho.hocs.info.template.TemplateResource;
-import uk.gov.digital.ho.hocs.info.template.TemplateService;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,7 +36,7 @@ public class StandardLinesResourceTest {
     @Test
     public void shouldReturnTemplateForRequestedCaseType() throws EntityPermissionException {
 
-        when(standardLinesService.getStandardLines(MIN,uuid)).thenReturn(new StandardLines());
+        when(standardLinesService.getStandardLines(MIN,uuid)).thenReturn(new ArrayList<StandardLines>(){{new StandardLines();}});
 
         ResponseEntity<GetStandardLinesResponse> response =
                 standardLinesResource.getTemplateForCaseTypes(MIN, uuid);

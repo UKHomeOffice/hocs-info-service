@@ -1,0 +1,20 @@
+DELETE FROM standard_line_topic;
+DELETE FROM standard_line ;
+
+INSERT INTO standard_line (display_name, document_key, UUID)
+VALUES
+  ('Standard Line 1','standardlines/standard_line_1.docx','11111111-1111-1111-1111-111111111143'),
+  ('Standard Line 2','standardlines/standard_line_2.docx','11111111-1111-1111-1111-111111111144'),
+  ('Standard Line 3','standardlines/standard_line_3.docx','11111111-1111-1111-1111-111111111145'),
+  ('Standard Line 4','standardlines/standard_line_4.docx','11111111-1111-1111-1111-111111111146'),
+  ('Standard Line 5','standardlines/standard_line_5.docx','11111111-1111-1111-1111-111111111147'),
+  ('Standard Line 6','standardlines/standard_line_6.docx','11111111-1111-1111-1111-111111111148');
+
+INSERT INTO standard_line_topic (standard_line_uuid, tenant_role,topic_uuid,active)
+VALUES
+  ('11111111-1111-1111-1111-111111111143','DCU','11111111-1111-1111-1111-111111111131',TRUE ),
+  ('11111111-1111-1111-1111-111111111144','DCU','11111111-1111-1111-1111-111111111131',TRUE ),
+  ('11111111-1111-1111-1111-111111111145','DCU','11111111-1111-1111-1111-111111111132',TRUE ),
+  ('11111111-1111-1111-1111-111111111146','DCU','11111111-1111-1111-1111-111111111132',TRUE ),
+  ('11111111-1111-1111-1111-111111111147','DCU','11111111-1111-1111-1111-111111111133',TRUE ),
+  ('11111111-1111-1111-1111-111111111148','DCU','11111111-1111-1111-1111-111111111133',TRUE );

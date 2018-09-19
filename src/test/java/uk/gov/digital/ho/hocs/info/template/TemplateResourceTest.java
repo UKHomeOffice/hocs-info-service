@@ -7,10 +7,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.digital.ho.hocs.info.dto.GetTemplateKeyResponse;
 import uk.gov.digital.ho.hocs.info.dto.GetTemplateResponse;
-import uk.gov.digital.ho.hocs.info.entities.CaseTypeEntity;
 import uk.gov.digital.ho.hocs.info.entities.Template;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -24,6 +27,8 @@ public class TemplateResourceTest {
 
     private TemplateResource templateResource;
 
+    private final UUID TEMPLATE_UUID = UUID.randomUUID();
+
     @Before
     public void setUp() {
         templateResource = new TemplateResource(templateService);
@@ -32,12 +37,26 @@ public class TemplateResourceTest {
     @Test
     public void shouldReturnTemplateForRequestedCaseType() throws EntityPermissionException {
 
-        when(templateService.getTemplate(MIN)).thenReturn(new Template());
+        when(templateService.getTemplates(MIN)).thenReturn(new ArrayList<Template>(){{new Template();}});
 
         ResponseEntity<GetTemplateResponse> response =
-                templateResource.getTemplateForCaseTypes(MIN);
+                templateResource.getTemplatesForCaseType(MIN);
 
-        verify(templateService, times(1)).getTemplate(MIN);
+        verify(templateService, times(1)).getTemplates(MIN);
+        verifyNoMoreInteractions(templateService);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void shouldReturnTemplateKey() throws EntityPermissionException {
+
+        when(templateService.getTemplateKey(TEMPLATE_UUID)).thenReturn(new Template());
+
+        ResponseEntity<GetTemplateKeyResponse> response =
+                templateResource.getTemplateKey("MIN",TEMPLATE_UUID);
+
+        verify(templateService, times(1)).getTemplateKey(TEMPLATE_UUID);
         verifyNoMoreInteractions(templateService);
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

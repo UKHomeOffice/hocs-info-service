@@ -14,6 +14,7 @@ import uk.gov.digital.ho.hocs.info.repositories.StandardLinesRepository;
 import uk.gov.digital.ho.hocs.info.repositories.TemplateRepository;
 import uk.gov.digital.ho.hocs.info.template.TemplateService;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -43,7 +44,7 @@ public class StandardLinesServiceTest {
     @Test
     public void shouldReturnTemplate() throws EntityPermissionException {
         when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
-        StandardLines standardLines = standardLinesService.getStandardLines("MIN",uuid);
+        List<StandardLines> standardLines = standardLinesService.getStandardLines("MIN",uuid);
         verify(standardLinesRepository, times(1)).findStandardLinesByCaseTopic(any());
     }
 

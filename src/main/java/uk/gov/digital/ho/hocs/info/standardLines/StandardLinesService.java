@@ -9,6 +9,7 @@ import uk.gov.digital.ho.hocs.info.entities.StandardLines;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 import uk.gov.digital.ho.hocs.info.repositories.StandardLinesRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -26,7 +27,7 @@ public class StandardLinesService {
         this.requestData = requestData;
     }
 
-    public StandardLines getStandardLines(String caseType, UUID topicUUID) throws EntityPermissionException {
+    public List<StandardLines> getStandardLines(String caseType, UUID topicUUID) throws EntityPermissionException {
         log.info("Requesting Standard Lines for Topic {} ", topicUUID);
         if (caseTypeService.hasPermissionForCaseType(caseType)) {
             return standardLinesRepository.findStandardLinesByCaseTopic(topicUUID);
