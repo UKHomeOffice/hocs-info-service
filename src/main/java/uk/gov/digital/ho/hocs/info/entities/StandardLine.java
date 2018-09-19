@@ -8,9 +8,9 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
-@Table(name = "standard_lines")
+@Table(name = "standard_line")
 @NoArgsConstructor
-public class StandardLines implements Serializable {
+public class StandardLine implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -25,6 +25,7 @@ public class StandardLines implements Serializable {
     @Column(name = "document_key")
     private String documentKey;
 
+    @Getter
     @Column(name = "uuid")
     private UUID uuid;
 }

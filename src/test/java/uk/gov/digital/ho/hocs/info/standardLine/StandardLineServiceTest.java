@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.standardLines;
+package uk.gov.digital.ho.hocs.info.standardLine;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,12 +7,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.RequestData;
 import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
-import uk.gov.digital.ho.hocs.info.entities.StandardLines;
-import uk.gov.digital.ho.hocs.info.entities.Template;
+import uk.gov.digital.ho.hocs.info.entities.StandardLine;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
-import uk.gov.digital.ho.hocs.info.repositories.StandardLinesRepository;
-import uk.gov.digital.ho.hocs.info.repositories.TemplateRepository;
-import uk.gov.digital.ho.hocs.info.template.TemplateService;
+import uk.gov.digital.ho.hocs.info.repositories.StandardLineRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,10 +18,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class StandardLinesServiceTest {
+public class StandardLineServiceTest {
 
     @Mock
-    private StandardLinesRepository standardLinesRepository;
+    private StandardLineRepository standardLineRepository;
 
     @Mock
     private RequestData requestData;
@@ -32,24 +29,31 @@ public class StandardLinesServiceTest {
     @Mock
     private CaseTypeService caseTypeService;
 
-    private StandardLinesService standardLinesService;
+    private StandardLineService standardLineService;
 
     UUID uuid = UUID.randomUUID();
 
     @Before
     public void setUp() {
-        this.standardLinesService = new StandardLinesService(standardLinesRepository, caseTypeService, requestData);
+        this.standardLineService = new StandardLineService(standardLineRepository, caseTypeService, requestData);
     }
 
     @Test
     public void shouldReturnTemplate() throws EntityPermissionException {
         when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
-        List<StandardLines> standardLines = standardLinesService.getStandardLines("MIN",uuid);
-        verify(standardLinesRepository, times(1)).findStandardLinesByCaseTopic(any());
+        List<StandardLine> standardLines = standardLineService.getStandardLines("MIN",uuid);
+        verify(standardLineRepository, times(1)).findStandardLinesByCaseTopic(any());
+    }
+
+    @Test
+    public void shouldReturnStandardLineKey() throws EntityPermissionException {
+        standardLineService.getStandardLineKey(UUID.randomUUID());
+        verify(standardLineRepository, times(1)).findStandardLineByUuid(any());
+        verifyNoMoreInteractions(standardLineRepository);
     }
 
     @Test(expected = EntityPermissionException.class)
     public void shouldThrowExemptionWhenCaseTypeNotValidForPermissionCheck() throws EntityPermissionException {
-        standardLinesService.getStandardLines(null,uuid);
+        standardLineService.getStandardLines(null,uuid);
     }
 }
