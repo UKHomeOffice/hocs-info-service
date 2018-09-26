@@ -13,6 +13,7 @@ import uk.gov.digital.ho.hocs.info.repositories.ParentTopicRepository;
 import uk.gov.digital.ho.hocs.info.repositories.TopicRepository;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,8 +74,8 @@ public class TopicServiceTest {
 
     private List<ParentTopic> getParentTopics() {
         return new ArrayList<ParentTopic>() {{
-            add(new ParentTopic(1, "ParentTopic1", UUID.randomUUID()));
-            add(new ParentTopic(2, "ParentTopic2", UUID.randomUUID()));
+            add(new ParentTopic(1, "ParentTopic1", UUID.randomUUID(), new HashSet<>()));
+            add(new ParentTopic(2, "ParentTopic2", UUID.randomUUID(), new HashSet<>()));
         }};
 
     }
