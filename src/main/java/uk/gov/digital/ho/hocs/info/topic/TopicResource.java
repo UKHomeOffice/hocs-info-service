@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.digital.ho.hocs.info.dto.GetAllTopicsResponse;
 import uk.gov.digital.ho.hocs.info.dto.GetParentTopicsResponse;
 import uk.gov.digital.ho.hocs.info.dto.GetTopicsResponse;
 import uk.gov.digital.ho.hocs.info.dto.TopicDto;
@@ -28,11 +29,18 @@ public class TopicResource {
         this.topicService = topicService;
     }
 
+    @GetMapping(value = "topics/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetAllTopicsResponse> getAllTopicsByCaseType(@PathVariable String caseType) {
+            log.info("requesting all Parent topics and topics for case type {}", caseType);
+            List<ParentTopic> parentTopics = topicService.getParentTopics(caseType);
+            return ResponseEntity.ok(GetAllTopicsResponse.from(parentTopics));
+    }
+
     @GetMapping(value = "topic/parent/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetParentTopicsResponse> getAllParentTopicsByCaseType(@PathVariable String caseType) {
-            log.info("requesting all Parent topics for case type {}", caseType);
-            List<ParentTopic> parentTopics = topicService.getParentTopics(caseType);
-            return ResponseEntity.ok(GetParentTopicsResponse.from(parentTopics));
+        log.info("requesting all Parent topics for case type {}", caseType);
+        List<ParentTopic> parentTopics = topicService.getParentTopics(caseType);
+        return ResponseEntity.ok(GetParentTopicsResponse.from(parentTopics));
     }
 
     @GetMapping(value = "/topic/all/{parentTopicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)

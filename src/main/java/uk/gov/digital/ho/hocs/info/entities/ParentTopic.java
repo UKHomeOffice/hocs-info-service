@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -26,7 +28,7 @@ public class ParentTopic implements Serializable {
     @Column(name = "uuid")
     private UUID uuid;
 
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "parent_topic_id", referencedColumnName = "id")
-//    private Set<Topic> topic = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_topic_uuid", referencedColumnName = "uuid")
+    private Set<Topic> topic = new HashSet<>();
 }

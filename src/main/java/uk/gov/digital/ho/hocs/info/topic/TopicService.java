@@ -33,7 +33,7 @@ public class TopicService {
     }
 
     public List<Topic> getAllTopicsForParentTopic(UUID parentTopicUUID) {
-        log.debug("Requesting all  topics for parent topic UUID{}", parentTopicUUID);
+        log.debug("Requesting all topics for parent topic UUID{}", parentTopicUUID);
         return  topicRepository.findTopicByParentTopic(parentTopicUUID);
     }
 
