@@ -6,6 +6,6 @@ CREATE TABLE IF NOT EXISTS correspondent_type
   display_name TEXT    NOT NULL,
   type         TEXT    NOT NULL,
 
-    CONSTRAINT case_type_type_idempotent UNIQUE ( type ),
-  CONSTRAINT case_type_name_idempotent UNIQUE (display_name)
+    CONSTRAINT corresponent_type_type_idempotent UNIQUE ( type ),
+  CONSTRAINT correspondent_type_name_idempotent UNIQUE (display_name)
 );

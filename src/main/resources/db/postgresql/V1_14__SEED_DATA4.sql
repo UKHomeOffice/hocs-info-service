@@ -9,5 +9,5 @@ VALUES
   ('Family Relation','FAMILY'),
   ('Friend','FRIEND'),
   ('Legal Representative','LEGAL_REP'),
-  ('Member','MEMBER')
+  ('Member','MEMBER'),
   ('Other','OTHER');
