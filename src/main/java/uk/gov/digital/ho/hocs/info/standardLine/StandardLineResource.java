@@ -26,19 +26,13 @@ public class StandardLineResource {
         this.standardLineService = standardLineService;
     }
 
-    @GetMapping(value = "/casetype/{caseType}/standardlines/{topicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetStandardLineResponse> getTemplateForCaseTypes(@PathVariable String caseType, @PathVariable UUID topicUUID) {
+    @GetMapping(value = "standardlines/{topicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetStandardLineResponse> getStandardLinesForPrimaryTopic(@PathVariable UUID topicUUID) {
         try {
-            List<StandardLine> standardLines = standardLineService.getStandardLines(caseType, topicUUID);
+            List<StandardLine> standardLines = standardLineService.getStandardLines(topicUUID);
             return ResponseEntity.ok(GetStandardLineResponse.from(standardLines));
         } catch (EntityPermissionException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-    }
-
-    @GetMapping(value = "/casetype/{caseType}/standardlinekey/{standardLineUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetStandardLineKeyResponse> getStandardLineKey(@PathVariable String caseType, @PathVariable UUID standardLineUUID) {
-        StandardLine standardLine = standardLineService.getStandardLineKey(standardLineUUID);
-        return ResponseEntity.ok(GetStandardLineKeyResponse.from(standardLine));
     }
 }

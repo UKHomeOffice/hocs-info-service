@@ -17,28 +17,14 @@ import java.util.UUID;
 public class StandardLineService {
 
     private final StandardLineRepository standardLineRepository;
-    private final CaseTypeService caseTypeService;
-    private final RequestData requestData;
 
     @Autowired
-    public StandardLineService(StandardLineRepository standardLineRepository, CaseTypeService caseTypeService, RequestData requestData) {
+    public StandardLineService(StandardLineRepository standardLineRepository) {
         this.standardLineRepository = standardLineRepository;
-        this.caseTypeService = caseTypeService;
-        this.requestData = requestData;
     }
 
-    public List<StandardLine> getStandardLines(String caseType, UUID topicUUID) throws EntityPermissionException {
-        log.info("Requesting Standard Lines for Topic {} ", topicUUID);
-        if (caseTypeService.hasPermissionForCaseType(caseType)) {
-            return standardLineRepository.findStandardLinesByCaseTopic(topicUUID);
-        } else {
-            //TODO AUDIT permission exception
-            throw new EntityPermissionException("Not allowed to get Units for CaseType, CaseType: %s not in Roles: %s", caseType, requestData.rolesString());
-        }
-    }
-
-    public StandardLine getStandardLineKey(UUID standardLineUUID) {
-        log.info("Requesting standard line key for template {} ", standardLineUUID);
-        return standardLineRepository.findStandardLineByUuid(standardLineUUID);
+    public List<StandardLine> getStandardLines(UUID topicUUID) throws EntityPermissionException {
+        log.info("Requesting Standard Lines for Case type {} and Topic {} ", topicUUID);
+            return standardLineRepository.findStandardLinesByTopic(topicUUID);
     }
 }

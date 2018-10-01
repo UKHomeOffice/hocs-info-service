@@ -13,7 +13,7 @@ import java.util.UUID;
 @Getter
 public class StandardLineDto {
 
-    @JsonProperty("displayName")
+    @JsonProperty("label")
     private String displayName;
 
     @JsonProperty("value")

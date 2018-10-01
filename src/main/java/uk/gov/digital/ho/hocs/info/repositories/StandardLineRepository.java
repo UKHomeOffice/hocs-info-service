@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface StandardLineRepository extends CrudRepository<StandardLine, String> {
 
     @Query(value = "SELECT sl.* FROM standard_line sl JOIN standard_line_topic slt ON sl.uuid = slt.standard_line_uuid WHERE slt.topic_uuid = ?1 AND slt.active = TRUE", nativeQuery = true)
-    List<StandardLine> findStandardLinesByCaseTopic(UUID topicUUID);
+    List<StandardLine> findStandardLinesByTopic(UUID topicUUID);
 
     StandardLine findStandardLineByUuid(UUID standardLineUUID);
 }
