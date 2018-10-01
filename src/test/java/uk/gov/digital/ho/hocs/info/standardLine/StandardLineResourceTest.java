@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.dto.GetStandardLineKeyResponse;
 import uk.gov.digital.ho.hocs.info.dto.GetStandardLineResponse;
 import uk.gov.digital.ho.hocs.info.entities.StandardLine;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
@@ -21,7 +20,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class StandardLineResourceTest {
 
-    public static final String MIN = "MIN";
     @Mock
     private StandardLineService standardLineService;
 
@@ -35,28 +33,16 @@ public class StandardLineResourceTest {
     }
 
     @Test
-    public void shouldReturnTemplateForRequestedCaseType() throws EntityPermissionException {
+    public void shouldReturnStandardLineForPRimaryTopic() throws EntityPermissionException {
 
-        when(standardLineService.getStandardLines(MIN,uuid)).thenReturn(new ArrayList<StandardLine>(){{new StandardLine();}});
+        when(standardLineService.getStandardLines(uuid)).thenReturn(new ArrayList<StandardLine>() {{
+            new StandardLine();
+        }});
 
         ResponseEntity<GetStandardLineResponse> response =
-                standardLineResource.getTemplateForCaseTypes(MIN, uuid);
+                standardLineResource.getStandardLinesForPrimaryTopic(uuid);
 
-        verify(standardLineService, times(1)).getStandardLines(MIN, uuid);
-        verifyNoMoreInteractions(standardLineService);
-        assertThat(response).isNotNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    public void shouldReturnTemplateKey() throws EntityPermissionException {
-
-        when(standardLineService.getStandardLineKey(uuid)).thenReturn(new StandardLine());
-
-        ResponseEntity<GetStandardLineKeyResponse> response =
-                standardLineResource.getStandardLineKey(MIN, uuid);
-
-        verify(standardLineService, times(1)).getStandardLineKey(uuid);
+        verify(standardLineService, times(1)).getStandardLines(uuid);
         verifyNoMoreInteractions(standardLineService);
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
