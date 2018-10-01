@@ -12,6 +12,7 @@ import uk.gov.digital.ho.hocs.info.house.ingest.ListConsumerService;
 import uk.gov.digital.ho.hocs.info.repositories.MemberRepository;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -28,6 +29,11 @@ public class MemberService {
         this.caseTypeService = caseTypeService;
         this.listConsumerService =listConsumerService;
         this.requestData = requestData;
+    }
+
+    public Member getMemberAndAddress(UUID uuid) {
+        log.debug("Requesting House Address for Member {}", uuid);
+        return memberRepository.findMemberAndAddressByUUID(uuid);
     }
 
     public Set<Member> getAllActiveMembers(String caseType) throws EntityPermissionException {

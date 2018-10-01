@@ -41,6 +41,21 @@ public class Member implements Serializable {
     @Setter
     private Boolean deleted = false;
 
+    @Column(name = "address1", insertable=false)
+    private String address1;
+
+    @Column(name = "address2", insertable=false)
+    private String address2;
+
+    @Column(name = "address3", insertable=false)
+    private String address3;
+
+    @Column(name = "postcode", insertable=false)
+    private String postcode;
+
+    @Column(name = "country", insertable=false)
+    private String country;
+
 
     public Member(String house, String fullTitle, String externalReference ) {
         this.house = house;
