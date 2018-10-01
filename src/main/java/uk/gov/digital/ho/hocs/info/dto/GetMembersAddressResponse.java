@@ -4,11 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import uk.gov.digital.ho.hocs.info.entities.House;
-import uk.gov.digital.ho.hocs.info.entities.Member;
-
-import java.util.Set;
-import java.util.stream.Collectors;
+import uk.gov.digital.ho.hocs.info.entities.MemberHouseAddress;
 
 @AllArgsConstructor(access =  AccessLevel.PRIVATE)
 @Getter
@@ -44,16 +40,16 @@ public class GetMembersAddressResponse {
     @JsonProperty("reference")
     String reference;
 
-    public static GetMembersAddressResponse from(Member member)
+    public static GetMembersAddressResponse from(MemberHouseAddress memberHouseAddress)
     {
         return new GetMembersAddressResponse(
                 "Member",
-                member.getFullTitle(),
-                member.getPostcode(),
-                member.getAddress1(),
-                member.getAddress2(),
-                member.getAddress3(),
-                member.getCountry(),
+                memberHouseAddress.getFullTitle(),
+                memberHouseAddress.getPostcode(),
+                memberHouseAddress.getAddress1(),
+                memberHouseAddress.getAddress2(),
+                memberHouseAddress.getAddress3(),
+                memberHouseAddress.getCountry(),
                 "",
                 "",
                 ""
