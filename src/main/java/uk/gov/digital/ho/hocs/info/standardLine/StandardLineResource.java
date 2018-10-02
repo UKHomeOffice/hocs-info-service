@@ -28,11 +28,7 @@ public class StandardLineResource {
 
     @GetMapping(value = "standardlines/{topicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetStandardLineResponse> getStandardLinesForPrimaryTopic(@PathVariable UUID topicUUID) {
-        try {
             List<StandardLine> standardLines = standardLineService.getStandardLines(topicUUID);
             return ResponseEntity.ok(GetStandardLineResponse.from(standardLines));
-        } catch (EntityPermissionException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
     }
 }

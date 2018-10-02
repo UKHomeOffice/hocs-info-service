@@ -23,7 +23,7 @@ public class StandardLineService {
         this.standardLineRepository = standardLineRepository;
     }
 
-    public List<StandardLine> getStandardLines(UUID topicUUID) throws EntityPermissionException {
+    public List<StandardLine> getStandardLines(UUID topicUUID){
         log.info("Requesting Standard Lines for Case type {} and Topic {} ", topicUUID);
             return standardLineRepository.findStandardLinesByTopic(topicUUID);
     }
