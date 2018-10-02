@@ -27,6 +27,9 @@ public class HouseAddress implements Serializable {
     @Column(name = "house")
     private String house;
 
+    @Column(name = "house_code")
+    private String houseCode;
+
     @Column(name = "address1")
     private String address1;
 

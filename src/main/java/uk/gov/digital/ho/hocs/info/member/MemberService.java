@@ -33,7 +33,7 @@ public class MemberService {
 
     public Member getMemberAndAddress(UUID uuid) {
         log.debug("Requesting House Address for Member {}", uuid);
-        return memberRepository.findMemberAndAddressByUUID(uuid);
+        return memberRepository.findByUuid(uuid);
     }
 
     public Set<Member> getAllActiveMembers(String caseType) throws EntityPermissionException {
