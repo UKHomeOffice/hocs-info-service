@@ -41,10 +41,17 @@ public class Member implements Serializable {
     @Setter
     private Boolean deleted = false;
 
+    @Column(name = "house_address_uuid")
+    private UUID houseAddressUUID;
 
-    public Member(String house, String fullTitle, String externalReference ) {
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "house_address_uuid", referencedColumnName = "uuid", insertable = false, updatable = false)
+    private HouseAddress houseAddress;
+
+    public Member(String house, String fullTitle, UUID houseAddressUUID,String externalReference ) {
         this.house = house;
         this.fullTitle = toListText(fullTitle);
+        this.houseAddressUUID = houseAddressUUID;
         this.externalReference = toListValue(externalReference);
         this.uuid = UUID.randomUUID();
         this.updated = LocalDateTime.now();
