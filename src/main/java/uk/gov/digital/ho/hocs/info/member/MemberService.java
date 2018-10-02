@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.RequestData;
 import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
 import uk.gov.digital.ho.hocs.info.entities.Member;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 import uk.gov.digital.ho.hocs.info.exception.IngestException;
 import uk.gov.digital.ho.hocs.info.house.ingest.ListConsumerService;
@@ -31,9 +32,14 @@ public class MemberService {
         this.requestData = requestData;
     }
 
-    public Member getMemberAndAddress(UUID uuid) {
+    public Member getMemberAndAddress(UUID uuid) throws EntityNotFoundException {
         log.debug("Requesting House Address for Member {}", uuid);
-        return memberRepository.findByUuid(uuid);
+        Member member = memberRepository.findByUuid(uuid);
+        if (member != null) {
+            return member;
+        } else {
+            throw new EntityNotFoundException("Could not find member %s", uuid);
+        }
     }
 
     public Set<Member> getAllActiveMembers(String caseType) throws EntityPermissionException {

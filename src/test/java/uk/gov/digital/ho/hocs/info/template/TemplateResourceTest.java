@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.dto.GetTemplateKeyResponse;
 import uk.gov.digital.ho.hocs.info.dto.GetTemplateResponse;
 import uk.gov.digital.ho.hocs.info.entities.Template;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 
 import java.util.ArrayList;
@@ -61,4 +62,9 @@ public class TemplateResourceTest {
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
+//    @Test(expected = EntityNotFoundException.class)
+//    public void shouldThrowEntityNotFoundExceptionWhenMemberNotFound(){
+//
+//    }
 }

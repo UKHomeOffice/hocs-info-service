@@ -7,14 +7,18 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.RequestData;
 import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
+import uk.gov.digital.ho.hocs.info.entities.HouseAddress;
 import uk.gov.digital.ho.hocs.info.entities.Member;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 import uk.gov.digital.ho.hocs.info.exception.IngestException;
 import uk.gov.digital.ho.hocs.info.house.ingest.ListConsumerService;
 import uk.gov.digital.ho.hocs.info.repositories.MemberRepository;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 
@@ -70,9 +74,30 @@ public class MemberServiceTest {
         verifyNoMoreInteractions(memberRepository);
     }
 
+    @Test
+    public void shouldReturnMemberWithAddress() throws EntityNotFoundException {
+        when(memberRepository.findByUuid(any())).thenReturn(new Member(1l, "commons", "member1 title", "ext1", UUID.randomUUID(), LocalDateTime.now(), false, UUID.randomUUID(), new HouseAddress()));
+
+        memberService.getMemberAndAddress(any());
+        verify(memberRepository, times(1)).findByUuid(any());
+        verifyNoMoreInteractions(memberRepository);
+
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenMemberNotFound()  {
+        UUID uuid = UUID.randomUUID();
+        when(memberRepository.findByUuid(uuid)).thenReturn(null);
+        try {
+            memberService.getMemberAndAddress(uuid);
+        } catch (EntityNotFoundException e) {
+           assert(e.getLocalizedMessage().equals("Could not find member " + uuid));
+        }
+    }
+
     private Set<Member> getMembers() {
         Set<Member> members = new HashSet<>();
-        members.add(new Member("House", "fullTitle", "extRef"));
+        members.add(new Member("House", "fullTitle", UUID.randomUUID(), "extRef"));
         return members;
     }
 

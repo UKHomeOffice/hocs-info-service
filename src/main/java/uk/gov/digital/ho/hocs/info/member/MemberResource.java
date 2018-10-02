@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.digital.ho.hocs.info.dto.GetMembersAddressResponse;
 import uk.gov.digital.ho.hocs.info.dto.GetMembersResponse;
 import uk.gov.digital.ho.hocs.info.entities.Member;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 import uk.gov.digital.ho.hocs.info.exception.IngestException;
 
@@ -55,8 +56,12 @@ public class MemberResource {
     @GetMapping(value = "/member/{uuid}/address", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetMembersAddressResponse> getMemberAddressByUUID(@PathVariable UUID uuid) {
         log.info("requesting house address for member {}", uuid);
-        Member member = memberService.getMemberAndAddress(uuid);
-        return ResponseEntity.ok(GetMembersAddressResponse.from(member));
+        try {
+            Member member = memberService.getMemberAndAddress(uuid);
+            return ResponseEntity.ok(GetMembersAddressResponse.from(member));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
 
     }
 }
