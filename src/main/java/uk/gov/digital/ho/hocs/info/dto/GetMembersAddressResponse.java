@@ -44,7 +44,7 @@ public class GetMembersAddressResponse {
     public static GetMembersAddressResponse from(Member member)
     {
         return new GetMembersAddressResponse(
-                "Member",
+                "MEMBER",
                 member.getFullTitle(),
                 member.getHouseAddress().getPostcode(),
                 member.getHouseAddress().getAddress1(),
