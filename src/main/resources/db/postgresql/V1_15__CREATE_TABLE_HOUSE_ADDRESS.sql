@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS house_address
 
 );
 
+DELETE FROM member;
+
 Alter Table member
   ADD column house_address_uuid UUID NOT NULL,
   ADD CONSTRAINT fk_house_address_id FOREIGN KEY (house_address_uuid) REFERENCES house_address (uuid);
