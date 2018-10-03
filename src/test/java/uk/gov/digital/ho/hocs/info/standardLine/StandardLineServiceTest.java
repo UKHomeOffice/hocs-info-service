@@ -23,25 +23,20 @@ public class StandardLineServiceTest {
     @Mock
     private StandardLineRepository standardLineRepository;
 
-    @Mock
-    private RequestData requestData;
-    @Mock
-    private CaseTypeService caseTypeService;
-
     private StandardLineService standardLineService;
 
     UUID uuid = UUID.randomUUID();
 
     @Before
     public void setUp() {
-        this.standardLineService = new StandardLineService(standardLineRepository, caseTypeService, requestData);
+        this.standardLineService = new StandardLineService(standardLineRepository);
     }
 
     @Test
     public void shouldReturnListOfStandardLineForPrimaryTopic() throws EntityPermissionException {
-        when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
-        List<StandardLine> standardLines = standardLineService.getStandardLines("MIN",uuid);
-        verify(standardLineRepository, times(1)).findStandardLinesByCaseTopic(any());
+
+        List<StandardLine> standardLines = standardLineService.getStandardLines(uuid);
+        verify(standardLineRepository, times(1)).findStandardLinesByTopic(any());
         verifyNoMoreInteractions(standardLineRepository);
     }
 }
