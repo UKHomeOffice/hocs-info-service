@@ -1,20 +1,34 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.UUID;
+
 
 @Entity
 @Table(name = "minister")
 @NoArgsConstructor
+@AllArgsConstructor
+@Getter
+
+
 public class Minister implements Serializable {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    @Column(name = "display_name")
-    private String displayName;
+    @Column(name = "office_name")
+    private String officeName;
+
+    @Column(name = "minister_name")
+    private String ministerName;
+
+    @Column(name = "uuid")
+    private UUID uuid;
 }
