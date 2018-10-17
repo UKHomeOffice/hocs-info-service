@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.deadline;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +37,7 @@ public class DeadlinesResourceTest {
     }
 
     @Test
+    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public void shouldReturnDeadlineDatesforCaseType() throws EntityPermissionException, EntityNotFoundException {
 
         when(deadlinesService.getDeadlines(any(), any())).thenReturn(getMockDeadlinesForCaseTypeRequest());

@@ -28,7 +28,7 @@ public class MemberService {
     public MemberService(MemberRepository memberRepository, CaseTypeService caseTypeService, ListConsumerService listConsumerService, RequestData requestData) {
         this.memberRepository = memberRepository;
         this.caseTypeService = caseTypeService;
-        this.listConsumerService =listConsumerService;
+        this.listConsumerService = listConsumerService;
         this.requestData = requestData;
     }
 
@@ -45,7 +45,7 @@ public class MemberService {
     public Set<Member> getAllActiveMembers(String caseType) throws EntityPermissionException {
         log.debug("Requesting all Members");
         if (caseTypeService.hasPermissionForCaseType(caseType)) {
-            return  memberRepository.findAllActiveMembers();
+            return memberRepository.findAllActiveMembers();
         } else {
             throw new EntityPermissionException("Not allowed to get Members for CaseType, CaseType: %s not in Roles: %s", caseType, requestData.rolesString());
         }
@@ -56,8 +56,8 @@ public class MemberService {
         updateMember(listConsumerService.createFromScottishParliamentAPI());
         updateMember(listConsumerService.createCommonsFromUKParliamentAPI());
         updateMember(listConsumerService.createLordsFromUKParliamentAPI());
-//        updateMember(listConsumerService.createFromIrishAssemblyAPI());
-//        updateMember(listConsumerService.createFromEuropeanParliamentAPI());
+        //        updateMember(listConsumerService.createFromIrishAssemblyAPI());
+        //        updateMember(listConsumerService.createFromEuropeanParliamentAPI());
     }
 
     private void updateMember(Set<Member> members) {

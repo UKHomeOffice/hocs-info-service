@@ -38,7 +38,7 @@ public class TemplateResourceTest {
     @Test
     public void shouldReturnTemplateForRequestedCaseType() throws EntityPermissionException {
 
-        when(templateService.getTemplates(MIN)).thenReturn(new ArrayList<Template>(){{new Template();}});
+        when(templateService.getTemplates(MIN)).thenReturn(new ArrayList<>());
 
         ResponseEntity<GetTemplateResponse> response =
                 templateResource.getTemplatesForCaseType(MIN);

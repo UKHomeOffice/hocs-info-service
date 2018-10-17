@@ -33,11 +33,9 @@ public class StandardLineResourceTest {
     }
 
     @Test
-    public void shouldReturnStandardLineForPRimaryTopic() throws EntityPermissionException {
+    public void shouldReturnStandardLineForPrimaryTopic() throws EntityPermissionException {
 
-        when(standardLineService.getStandardLines(uuid)).thenReturn(new ArrayList<StandardLine>() {{
-            new StandardLine();
-        }});
+        when(standardLineService.getStandardLines(uuid)).thenReturn(new ArrayList<>());
 
         ResponseEntity<GetStandardLineResponse> response =
                 standardLineResource.getStandardLinesForPrimaryTopic(uuid);

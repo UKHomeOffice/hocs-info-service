@@ -64,8 +64,8 @@ public class MemberServiceTest {
         when(listConsumerService.createFromScottishParliamentAPI()).thenReturn(getMembers());
         when(listConsumerService.createFromWelshAssemblyAPI()).thenReturn(getMembers());
         when(listConsumerService.createLordsFromUKParliamentAPI()).thenReturn(getMembers());
-//        when(listConsumerService.createFromIrishAssemblyAPI()).thenReturn(getMembers());
-//        when(listConsumerService.createFromEuropeanParliamentAPI()).thenReturn(getMembers());
+        //        when(listConsumerService.createFromIrishAssemblyAPI()).thenReturn(getMembers());
+        //        when(listConsumerService.createFromEuropeanParliamentAPI()).thenReturn(getMembers());
 
         memberService.updateWebMemberLists();
 

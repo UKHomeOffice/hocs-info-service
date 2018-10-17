@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.casetype;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +35,7 @@ public class CaseTypeEntityResourceTest {
     }
 
     @Test
+    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public void shouldReturnCaseTypesWhenSingleTenantRequestedForSingleCase() {
 
 
@@ -60,6 +62,7 @@ public class CaseTypeEntityResourceTest {
     }
 
     @Test
+    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public void shouldReturnCaseTypesWhenSingleTenantRequestedForBulkCaseExcludingDTENCaseType() {
 
         when(caseTypeService.getCaseTypesBulk()).thenReturn(getMockCaseTypesSingleTenantBulk());
@@ -84,6 +87,7 @@ public class CaseTypeEntityResourceTest {
     }
 
     @Test
+    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public void shouldReturnCaseTypesWhenMultipleTenantsRequestedForSingleCase() {
         when(caseTypeService.getCaseTypes()).thenReturn(getMockCaseTypesMultipleTenant());
 
@@ -117,6 +121,7 @@ public class CaseTypeEntityResourceTest {
     }
 
     @Test
+    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public void shouldReturnCaseTypesWhenMultipleTenantsRequestedForBulkCaseExcludingDTENCaseType() {
         when(caseTypeService.getCaseTypesBulk()).thenReturn(getMockCaseTypesMultipleTenantBulk());
 
