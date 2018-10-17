@@ -41,7 +41,7 @@ public class CorrespondentTypeServiceTest {
     public void shouldreturnAllCorrespondentTypes() {
         when(correspondentTypeRepository.findAll()).thenReturn(new HashSet<>());
 
-        Set<CorrespondentType> correspondentTypes = correspondentTypeService.getCorrespondentTypes();
+        correspondentTypeService.getCorrespondentTypes();
         verify(correspondentTypeRepository, times(1)).findAll();
         verifyNoMoreInteractions(correspondentTypeRepository);
 

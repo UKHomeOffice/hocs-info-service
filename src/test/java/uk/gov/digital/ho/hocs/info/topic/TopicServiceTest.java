@@ -46,7 +46,7 @@ public class TopicServiceTest {
     public void shouldReturnParentTopicsForCaseType() {
         when(parentTopicRepository.findAllParentTopicByCaseType(any())).thenReturn(getParentTopics());
 
-        List<ParentTopic> parentTopics = topicService.getParentTopics("MIN");
+        topicService.getParentTopics("MIN");
 
         verify(parentTopicRepository, times(1)).findAllParentTopicByCaseType(any());
         verifyNoMoreInteractions(parentTopicRepository);
@@ -56,7 +56,7 @@ public class TopicServiceTest {
     public void shouldReturnTopicsForParentTopic() {
         when(topicRepository.findTopicByParentTopic(uuid)).thenReturn(getTopics());
 
-        List<Topic> Topics = topicService.getAllTopicsForParentTopic(uuid);
+        topicService.getAllTopicsForParentTopic(uuid);
 
         verify(topicRepository, times(1)).findTopicByParentTopic(uuid);
         verifyNoMoreInteractions(parentTopicRepository);
@@ -66,7 +66,7 @@ public class TopicServiceTest {
     public void shouldReturnTopicsByCaseType() {
         when(topicRepository.findTopicByUUID(uuid)).thenReturn(new Topic(1, "Topic1", UUID.randomUUID()));
 
-        Topic topics = topicService.getTopic(uuid);
+        topicService.getTopic(uuid);
 
         verify(topicRepository, times(1)).findTopicByUUID(uuid);
         verifyNoMoreInteractions(parentTopicRepository);

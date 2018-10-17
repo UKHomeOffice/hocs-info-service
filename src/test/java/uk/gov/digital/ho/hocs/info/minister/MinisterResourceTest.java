@@ -5,10 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.Minister.MinisterResource;
 import uk.gov.digital.ho.hocs.info.Minister.MinisterService;
-import uk.gov.digital.ho.hocs.info.dto.GetMinistersResponse;
 
 import java.util.HashSet;
 
@@ -33,7 +31,7 @@ public class MinisterResourceTest {
 
         when(ministerService.getMinisters()).thenReturn(new HashSet<>());
 
-        ResponseEntity<GetMinistersResponse> response = ministerResource.getAllMinisters();
+        ministerResource.getAllMinisters();
         verify(ministerService, times(1)).getMinisters();
         verifyNoMoreInteractions(ministerService);
     }

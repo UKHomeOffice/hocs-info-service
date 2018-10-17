@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.entities.Member;
-import uk.gov.digital.ho.hocs.info.entities.MemberHouseAddress;
 
 @AllArgsConstructor(access =  AccessLevel.PRIVATE)
 @Getter

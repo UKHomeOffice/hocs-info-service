@@ -33,7 +33,7 @@ public class MinisterServiceTest {
 
         when(ministerRepository.findAll()).thenReturn(new HashSet<>());
 
-        Set<Minister> ministers = ministerService.getMinisters();
+        ministerService.getMinisters();
         verify(ministerRepository, times(1)).findAll();
         verifyNoMoreInteractions(ministerRepository);
     }
