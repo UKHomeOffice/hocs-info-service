@@ -16,12 +16,13 @@ public class DeadlineDtoTest {
     @Test
     public void shouldBuildDeadlineDTOFromDeadlineObject() {
         Sla sla = new Sla("Draft", 5, "MIN");
-        Set<HolidayDate> holidayDates = new HashSet<HolidayDate>(){{new HolidayDate(1,LocalDate.of(2018,1,1));}};
-        Deadline deadline = new Deadline(LocalDate.of(2018,1,1),sla,holidayDates);
+        Set<HolidayDate> holidayDates = new HashSet<>();
+        holidayDates.add(new HolidayDate(1, LocalDate.of(2018, 1, 1)));
+        Deadline deadline = new Deadline(LocalDate.of(2018, 1, 1), sla, holidayDates);
 
         DeadlineDto deadlineDto = DeadlineDto.from(deadline);
 
-        assertThat(deadlineDto.getDate()).isEqualTo(LocalDate.of(2018,1,8));
+        assertThat(deadlineDto.getDate()).isEqualTo(LocalDate.of(2018, 1, 8));
         assertThat(deadlineDto.getType()).isEqualTo("Draft");
 
     }

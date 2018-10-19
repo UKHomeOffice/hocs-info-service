@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ListConsumerService {
 
-    private final static String HOUSE_LORDS = "lords/";
-    private final static String HOUSE_COMMONS = "commons/";
+    private final String HOUSE_LORDS = "lords/";
+    private final String HOUSE_COMMONS = "commons/";
     private final String API_UK_PARLIAMENT;
     private final String API_SCOTTISH_PARLIAMENT;
     private final String API_NORTHERN_IRISH_ASSEMBLY;
@@ -45,6 +45,7 @@ public class ListConsumerService {
         this.API_EUROPEAN_PARLIAMENT = apiEuropeanParliament;
         this.API_WELSH_ASSEMBLY = apiWelshAssembly;
         this.houseAddressRepository = houseAddressRepository;
+
     }
 
     public  Set<Member> createFromEuropeanParliamentAPI() throws IngestException {
