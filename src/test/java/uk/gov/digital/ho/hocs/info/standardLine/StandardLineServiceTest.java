@@ -36,7 +36,7 @@ public class StandardLineServiceTest {
     public void shouldReturnListOfStandardLineForPrimaryTopic() throws EntityPermissionException {
 
         standardLineService.getStandardLines(uuid);
-        verify(standardLineRepository, times(1)).findStandardLinesByTopic(any());
+        verify(standardLineRepository, times(1)).findStandardLinesByTopic(any(), any());
         verifyNoMoreInteractions(standardLineRepository);
     }
 }

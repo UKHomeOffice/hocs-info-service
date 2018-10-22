@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -28,4 +29,8 @@ public class StandardLine implements Serializable {
     @Getter
     @Column(name = "uuid")
     private UUID uuid;
+
+    @Getter
+    @Column(name = "expires")
+    private LocalDate expires;
 }
