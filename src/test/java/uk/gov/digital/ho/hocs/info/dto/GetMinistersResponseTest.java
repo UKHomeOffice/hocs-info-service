@@ -10,7 +10,6 @@ import static org.junit.Assert.*;
 
 public class GetMinistersResponseTest {
 
-    UUID uuid = UUID.randomUUID();
     UUID uuid1 = UUID.randomUUID();
     UUID uuid2 = UUID.randomUUID();
 
