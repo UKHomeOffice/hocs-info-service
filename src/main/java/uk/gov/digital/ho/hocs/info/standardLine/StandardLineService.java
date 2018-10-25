@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.entities.StandardLine;
 import uk.gov.digital.ho.hocs.info.repositories.StandardLineRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +23,6 @@ public class StandardLineService {
 
     public List<StandardLine> getStandardLines(UUID topicUUID){
         log.info("Requesting Standard Lines for Case type {} and Topic {} ", topicUUID);
-            return standardLineRepository.findStandardLinesByTopic(topicUUID);
+            return standardLineRepository.findStandardLinesByTopicAndExpires(topicUUID, LocalDate.now());
     }
 }

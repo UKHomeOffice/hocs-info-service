@@ -11,6 +11,7 @@ import uk.gov.digital.ho.hocs.info.entities.StandardLine;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 import uk.gov.digital.ho.hocs.info.repositories.StandardLineRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +27,7 @@ public class StandardLineServiceTest {
     private StandardLineService standardLineService;
 
     UUID uuid = UUID.randomUUID();
+    LocalDate currentDate = LocalDate.now();
 
     @Before
     public void setUp() {
@@ -33,10 +35,10 @@ public class StandardLineServiceTest {
     }
 
     @Test
-    public void shouldReturnListOfStandardLineForPrimaryTopic() throws EntityPermissionException {
+    public void shouldReturnListOfStandardLineForPrimaryTopic(){
 
         standardLineService.getStandardLines(uuid);
-        verify(standardLineRepository, times(1)).findStandardLinesByTopic(any());
+        verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, currentDate);
         verifyNoMoreInteractions(standardLineRepository);
     }
 }
