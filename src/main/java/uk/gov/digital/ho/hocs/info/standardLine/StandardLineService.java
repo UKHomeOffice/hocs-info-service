@@ -23,6 +23,6 @@ public class StandardLineService {
 
     public List<StandardLine> getStandardLines(UUID topicUUID){
         log.info("Requesting Standard Lines for Case type {} and Topic {} ", topicUUID);
-            return standardLineRepository.findStandardLinesByTopic(topicUUID, LocalDate.now());
+            return standardLineRepository.findStandardLinesByTopicAndExpires(topicUUID, LocalDate.now());
     }
 }
