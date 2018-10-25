@@ -38,7 +38,7 @@ public class StandardLineServiceTest {
     public void shouldReturnListOfStandardLineForPrimaryTopic(){
 
         standardLineService.getStandardLines(uuid);
-        verify(standardLineRepository, times(1)).findStandardLinesByTopic(uuid, currentDate);
+        verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, currentDate);
         verifyNoMoreInteractions(standardLineRepository);
     }
 }
