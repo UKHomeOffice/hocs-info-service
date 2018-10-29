@@ -45,6 +45,7 @@ public class ListConsumerService {
         this.API_EUROPEAN_PARLIAMENT = apiEuropeanParliament;
         this.API_WELSH_ASSEMBLY = apiWelshAssembly;
         this.houseAddressRepository = houseAddressRepository;
+
     }
 
     public  Set<Member> createFromEuropeanParliamentAPI() throws IngestException {
