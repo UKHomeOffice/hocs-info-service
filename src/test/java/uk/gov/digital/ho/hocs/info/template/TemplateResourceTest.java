@@ -7,10 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.dto.GetTemplateKeyResponse;
 import uk.gov.digital.ho.hocs.info.dto.GetTemplateResponse;
-import uk.gov.digital.ho.hocs.info.entities.Template;
-import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 
 import java.util.ArrayList;
@@ -44,20 +41,6 @@ public class TemplateResourceTest {
                 templateResource.getTemplatesForCaseType(MIN);
 
         verify(templateService, times(1)).getTemplates(MIN);
-        verifyNoMoreInteractions(templateService);
-        assertThat(response).isNotNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    public void shouldReturnTemplateKey() throws EntityPermissionException {
-
-        when(templateService.getTemplateKey(TEMPLATE_UUID)).thenReturn(new Template());
-
-        ResponseEntity<GetTemplateKeyResponse> response =
-                templateResource.getTemplateKey("MIN",TEMPLATE_UUID);
-
-        verify(templateService, times(1)).getTemplateKey(TEMPLATE_UUID);
         verifyNoMoreInteractions(templateService);
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

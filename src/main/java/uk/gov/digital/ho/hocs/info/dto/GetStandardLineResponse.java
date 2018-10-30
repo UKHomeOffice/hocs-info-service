@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import uk.gov.digital.ho.hocs.info.entities.StandardLine;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
@@ -14,11 +15,13 @@ import java.util.stream.Collectors;
 @Getter
 public class GetStandardLineResponse {
 
-    @JsonProperty("standardLine")
-    List<StandardLineDto> standardLineDtos;
+    @JsonProperty("label")
+    private String displayName;
 
-    public static GetStandardLineResponse from(List<StandardLine> standardLines) {
-        List<StandardLineDto> standardLineDtos = standardLines.stream().map(StandardLineDto::from).collect(Collectors.toList());
-        return new GetStandardLineResponse(standardLineDtos);
+    @JsonProperty("value")
+    private UUID uuid;
+
+    public static GetStandardLineResponse from(StandardLine standardLine) {
+        return new GetStandardLineResponse(standardLine.getDisplayName(), standardLine.getUuid());
     }
 }

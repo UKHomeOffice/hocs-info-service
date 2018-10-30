@@ -26,13 +26,22 @@ public class Template implements Serializable {
     private String caseType;
 
     @Getter
-    @Column(name = "document_key")
-    private String documentKey;
-
-    @Getter
     @Column(name = "uuid")
     private UUID uuid;
 
-    @Column(name = "active")
-    private boolean active;
+    @Getter
+    @Column(name = "deleted")
+    private boolean deleted = false;
+
+    public Template(String displayName, String caseType, UUID uuid) {
+        this.displayName = displayName;
+        this.caseType = caseType;
+        this.uuid = uuid;
+    }
+
+
+    public void delete() {
+        this.deleted = Boolean.TRUE;
+
+    }
 }

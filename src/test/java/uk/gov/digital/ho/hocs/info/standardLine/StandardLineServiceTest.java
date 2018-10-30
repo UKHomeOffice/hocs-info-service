@@ -4,15 +4,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.internal.matchers.Null;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.RequestData;
-import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
-import uk.gov.digital.ho.hocs.info.entities.StandardLine;
-import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
+import uk.gov.digital.ho.hocs.info.documentClient.DocumentClient;
+import uk.gov.digital.ho.hocs.info.documentClient.model.ManagedDocumentType;
+import uk.gov.digital.ho.hocs.info.dto.CreateStandardLineDocumentDto;
 import uk.gov.digital.ho.hocs.info.repositories.StandardLineRepository;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -24,21 +26,47 @@ public class StandardLineServiceTest {
     @Mock
     private StandardLineRepository standardLineRepository;
 
+    @Mock
+    private DocumentClient documentClient;
+
     private StandardLineService standardLineService;
 
+    private final UUID STANDARD_LINE_EXTERNAL_REFERENCE_UUID = UUID.fromString("77777777-7777-7777-7777-777777777777");
     UUID uuid = UUID.randomUUID();
-    LocalDate currentDate = LocalDate.now();
+    UUID documentUUID = UUID.randomUUID();
+    LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+    LocalDateTime localDateTimeNow = LocalDateTime.now();
+
+
 
     @Before
     public void setUp() {
-        this.standardLineService = new StandardLineService(standardLineRepository);
+        this.standardLineService = new StandardLineService(standardLineRepository, documentClient);
     }
 
     @Test
-    public void shouldReturnListOfStandardLineForPrimaryTopic(){
+    public void shouldReturnStandardLineForPrimaryTopic(){
 
         standardLineService.getStandardLines(uuid);
-        verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, currentDate);
+        verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, endOfDay);
         verifyNoMoreInteractions(standardLineRepository);
+    }
+
+    @Test
+    public void shouldCreateNewStandardLineTopic(){
+        CreateStandardLineDocumentDto request = new CreateStandardLineDocumentDto("dn","url",uuid,LocalDate.now().plusDays(1));
+
+        when(documentClient.createDocument(STANDARD_LINE_EXTERNAL_REFERENCE_UUID, request.getDisplayName(), ManagedDocumentType.STANDARD_LINE)).thenReturn(documentUUID);
+        when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid ,endOfDay)).thenReturn(null);
+
+        standardLineService.createStandardLineDocument(request);
+
+
+        verify(documentClient,times(1)).createDocument(STANDARD_LINE_EXTERNAL_REFERENCE_UUID, "dn",ManagedDocumentType.STANDARD_LINE );
+        verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, endOfDay);
+        verify(standardLineRepository, times(1)).save(any());
+        verify(documentClient).processDocument(ManagedDocumentType.STANDARD_LINE, documentUUID, "url");
+        verifyNoMoreInteractions(standardLineRepository);
+        verifyNoMoreInteractions(documentClient);
     }
 }

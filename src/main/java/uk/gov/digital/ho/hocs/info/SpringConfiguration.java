@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.info;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -12,6 +13,11 @@ public class SpringConfiguration implements WebMvcConfigurer {
     @Bean
     public RequestData createRequestData() {
         return new RequestData();
+    }
+
+    @Bean
+    public RestTemplate createRestTemplate() {
+        return new RestTemplate();
     }
 
     @Override
