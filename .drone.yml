@@ -83,12 +83,13 @@ pipeline:
     secrets:
       - hocs_info_service_dev
       - hocs_info_service_qa
+      - hocs_info_service_demo      
     commands:
       - cd kube-hocs-info-service
       - ./deploy.sh
     when:
       event: deployment
-      environment: [dev, qa]
+      environment: [dev, qa, demo]
 
   deploy-to-prod:
     image: quay.io/ukhomeofficedigital/kd:v0.8.0
