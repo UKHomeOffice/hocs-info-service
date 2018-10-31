@@ -44,7 +44,7 @@ public class NominatedPeopleServiceTest {
     private static Set<NominatedPerson> getMockNominatedPeopleForTeam() {
         Set<NominatedPerson> nominatedPeople = new HashSet<>();
 
-        nominatedPeople.add(new NominatedPerson(1, teamUUID, "test@test.com"));
-        nominatedPeople.add(new NominatedPerson(2, teamUUID, "test@test.com"));
+        nominatedPeople.add(new NominatedPerson(1l, teamUUID, "test@test.com"));
+        nominatedPeople.add(new NominatedPerson(2l, teamUUID, "test@test.com"));
         return nominatedPeople;
 }}

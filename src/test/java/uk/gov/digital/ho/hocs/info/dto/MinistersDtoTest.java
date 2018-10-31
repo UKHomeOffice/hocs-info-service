@@ -13,7 +13,6 @@ public class MinistersDtoTest {
 
     @Test
     public void from() {
-
         Minister minister = new Minister(1l,"Home Sec", "bob", uuid);
 
         MinisterDto ministerDto = MinisterDto.from(minister);

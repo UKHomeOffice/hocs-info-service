@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,12 +11,13 @@ import java.util.UUID;
 @Entity
 @Table(name = "template")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Template implements Serializable {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Getter
     @Column(name = "display_name")

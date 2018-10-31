@@ -19,7 +19,7 @@ public class NominatedPerson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     @Setter
-    private int id;
+    private Long id;
 
     @Getter
     @Column(name = "teamUUID")
