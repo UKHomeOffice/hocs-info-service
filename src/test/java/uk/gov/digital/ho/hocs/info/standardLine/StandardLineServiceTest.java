@@ -4,17 +4,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.internal.matchers.Null;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.dto.CreateStandardLineDocumentDto;
+import uk.gov.digital.ho.hocs.info.entities.StandardLine;
 import uk.gov.digital.ho.hocs.info.repositories.StandardLineRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -31,13 +30,12 @@ public class StandardLineServiceTest {
 
     private StandardLineService standardLineService;
 
-    private final UUID STANDARD_LINE_EXTERNAL_REFERENCE_UUID = UUID.fromString("77777777-7777-7777-7777-777777777777");
-    UUID uuid = UUID.randomUUID();
-    UUID documentUUID = UUID.randomUUID();
-    LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
-    LocalDateTime localDateTimeNow = LocalDateTime.now();
-
-
+    private static final UUID SL_EXT_REF = UUID.fromString("77777777-7777-7777-7777-777777777777");
+    private static final UUID uuid = UUID.randomUUID();
+    private static final UUID DOCUMENT_UUID = UUID.randomUUID();
+    private static final UUID NEW_DOCUMENT_UUID = UUID.randomUUID();
+    private static final LocalDateTime END_OF_DAY = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+    private static final String DISPLAY_NAME = "dn";
 
     @Before
     public void setUp() {
@@ -48,24 +46,41 @@ public class StandardLineServiceTest {
     public void shouldReturnStandardLineForPrimaryTopic(){
 
         standardLineService.getStandardLines(uuid);
-        verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, endOfDay);
+        verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
         verifyNoMoreInteractions(standardLineRepository);
     }
 
     @Test
-    public void shouldCreateNewStandardLineTopic(){
-        CreateStandardLineDocumentDto request = new CreateStandardLineDocumentDto("dn","url",uuid,LocalDate.now().plusDays(1));
+    public void shouldCreateNewStandardLine(){
+        CreateStandardLineDocumentDto request = new CreateStandardLineDocumentDto(DISPLAY_NAME,"url",uuid,LocalDate.now().plusDays(1));
 
-        when(documentClient.createDocument(STANDARD_LINE_EXTERNAL_REFERENCE_UUID, request.getDisplayName(), ManagedDocumentType.STANDARD_LINE)).thenReturn(documentUUID);
-        when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid ,endOfDay)).thenReturn(null);
+        when(documentClient.createDocument(SL_EXT_REF, request.getDisplayName(), ManagedDocumentType.STANDARD_LINE)).thenReturn(DOCUMENT_UUID);
+        when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid , END_OF_DAY)).thenReturn(null);
 
         standardLineService.createStandardLineDocument(request);
 
-
-        verify(documentClient,times(1)).createDocument(STANDARD_LINE_EXTERNAL_REFERENCE_UUID, "dn",ManagedDocumentType.STANDARD_LINE );
-        verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, endOfDay);
+        verify(documentClient,times(1)).createDocument(SL_EXT_REF, DISPLAY_NAME,ManagedDocumentType.STANDARD_LINE );
+        verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
         verify(standardLineRepository, times(1)).save(any());
-        verify(documentClient).processDocument(ManagedDocumentType.STANDARD_LINE, documentUUID, "url");
+        verify(documentClient).processDocument(ManagedDocumentType.STANDARD_LINE, DOCUMENT_UUID, "url");
+        verifyNoMoreInteractions(standardLineRepository);
+        verifyNoMoreInteractions(documentClient);
+    }
+
+    @Test
+    public void shouldCreateStandardLineExpiringPrevious(){
+        CreateStandardLineDocumentDto request = new CreateStandardLineDocumentDto(DISPLAY_NAME,"url",uuid,LocalDate.now().plusDays(1));
+
+        when(documentClient.createDocument(SL_EXT_REF, request.getDisplayName(), ManagedDocumentType.STANDARD_LINE)).thenReturn(NEW_DOCUMENT_UUID);
+        when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid , END_OF_DAY)).thenReturn(new StandardLine(DOCUMENT_UUID, DISPLAY_NAME, uuid, END_OF_DAY));
+
+        standardLineService.createStandardLineDocument(request);
+
+        verify(documentClient,times(1)).createDocument(SL_EXT_REF, DISPLAY_NAME,ManagedDocumentType.STANDARD_LINE );
+        verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
+        verify(standardLineRepository, times(2)).save(any());
+        verify(documentClient).deleteDocument(SL_EXT_REF, DOCUMENT_UUID);
+        verify(documentClient).processDocument(ManagedDocumentType.STANDARD_LINE, NEW_DOCUMENT_UUID, "url");
         verifyNoMoreInteractions(standardLineRepository);
         verifyNoMoreInteractions(documentClient);
     }

@@ -53,24 +53,33 @@ public class TemplateService {
         if (document != null) {
             UUID templateUUID = documentClient.createDocument(TEMPLATE_EXTERNAL_REFERENCE_UUID, document.getDisplayName(), ManagedDocumentType.TEMPLATE);
 
-            Template template = templateRepository.findTemplateByDisplayNameAndCaseType(document.getDisplayName(), document.getCaseType());
+            setDeletedExistingTemplateIfExists(document);
 
-            if (template != null) {
-                template.delete();
-                templateRepository.save(template);
-                deleteDocument(TEMPLATE_EXTERNAL_REFERENCE_UUID, template.getUuid());
-                log.info("Set Deleted to True for Template - {}, id {}", template.getDisplayName(), template.getUuid());
-            }
-
-            Template newTemplate = new Template(document.getDisplayName(), document.getCaseType(), templateUUID);
-            templateRepository.save(newTemplate);
-
+            saveTemplate(document, templateUUID);
 
             documentClient.processDocument(ManagedDocumentType.TEMPLATE, templateUUID, document.getS3UntrustedUrl());
+        } else {
+            throw new EntityCreationException("no template");
+
         }
     }
 
-    void deleteDocument(UUID externalReferenceUUID, UUID documentUUID) throws EntityCreationException {
+    private void setDeletedExistingTemplateIfExists(CreateTemplateDocumentDto document) {
+        Template template = templateRepository.findTemplateByDisplayNameAndCaseType(document.getDisplayName(), document.getCaseType());
+        if (template != null) {
+            template.delete();
+            templateRepository.save(template);
+            deleteDocument(TEMPLATE_EXTERNAL_REFERENCE_UUID, template.getUuid());
+            log.info("Set Deleted to True for Template - {}, id {}", template.getDisplayName(), template.getUuid());
+        }
+    }
+
+    private void saveTemplate(CreateTemplateDocumentDto document, UUID templateUUID) {
+        Template newTemplate = new Template(document.getDisplayName(), document.getCaseType(), templateUUID);
+        templateRepository.save(newTemplate);
+    }
+
+    private void deleteDocument(UUID externalReferenceUUID, UUID documentUUID) throws EntityCreationException {
         documentClient.deleteDocument(externalReferenceUUID, documentUUID);
     }
 }
