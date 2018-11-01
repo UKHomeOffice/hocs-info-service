@@ -15,33 +15,33 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'checkstyle'
-apply plugin: 'findbugs'
-apply plugin: 'pmd'
+//apply plugin: 'checkstyle'
+//apply plugin: 'findbugs'
+//apply plugin: 'pmd'
 apply plugin: 'jacoco'
 
-checkstyle {
-	ignoreFailures = false
-	toolVersion "8.11"
-}
-findbugs {
-	ignoreFailures = false
-}
-pmd {
-	ignoreFailures = false
-}
-gradle.taskGraph.beforeTask { task ->
-	if (task.name == "checkstyleTest") {
-		task.deleteAllActions()
-	}
-}
-tasks.withType(FindBugs) {
-	excludeFilter = file('config/findbugs/exclude-filter.xml')
-	reports {
-		xml.enabled false
-		html.enabled true
-	}
-}
+//checkstyle {
+//	ignoreFailures = false
+//	toolVersion "8.11"
+//}
+//findbugs {
+//	ignoreFailures = false
+//}
+//pmd {
+//	ignoreFailures = false
+//}
+//gradle.taskGraph.beforeTask { task ->
+//	if (task.name == "checkstyleTest") {
+//		task.deleteAllActions()
+//	}
+//}
+//tasks.withType(FindBugs) {
+//	excludeFilter = file('config/findbugs/exclude-filter.xml')
+//	reports {
+//		xml.enabled false
+//		html.enabled true
+//	}
+//}
 task copyLombok(type: Copy) {
 	outputs.upToDateWhen { false }
 	into "${buildDir}/libs"
@@ -74,6 +74,13 @@ dependencies {
 	compile('org.flywaydb:flyway-core')
 	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.9.6'
 	compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1u2'
+
+	compile group: 'org.apache.camel', name: 'camel-spring-boot', version: camelVersion
+	compile group: 'org.apache.camel', name: 'camel-jackson', version: camelVersion
+	compile group: 'org.apache.camel', name: 'camel-aws', version: camelVersion
+	compile group: 'org.apache.camel', name: 'camel-http4', version: camelVersion
+	compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.6'
+	compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.380'
 
 	compile('org.apache.commons:commons-csv:1.5')
 

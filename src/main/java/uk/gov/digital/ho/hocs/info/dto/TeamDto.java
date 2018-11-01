@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.entities.Team;
 
+import java.util.UUID;
+
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class TeamDto {
@@ -14,7 +16,7 @@ public class TeamDto {
     private String displayName;
 
     @JsonProperty("type")
-    private String uuid;
+    private UUID uuid;
 
     public static TeamDto from (Team team) {
         return new TeamDto(team.getDisplayName(), team.getUuid()); }

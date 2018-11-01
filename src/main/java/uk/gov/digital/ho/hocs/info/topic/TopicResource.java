@@ -55,6 +55,5 @@ public class TopicResource {
         log.info("requesting topic {}", topicUUID);
         Topic topics = topicService.getTopic(topicUUID);
         return ResponseEntity.ok(TopicDto.from(topics));
-
     }
 }

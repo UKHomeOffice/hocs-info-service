@@ -71,7 +71,7 @@ public class TopicResourceTest {
 
     @Test
     public void getTopicByUUID() {
-        when(topicService.getTopic(any())).thenReturn(new Topic(1, "Topic1", UUID.randomUUID()));
+        when(topicService.getTopic(any())).thenReturn(new Topic(1l, "Topic1", UUID.randomUUID()));
 
         ResponseEntity<TopicDto> response = topicResource.getTopicByUUID(UUID.randomUUID());
 
@@ -82,15 +82,15 @@ public class TopicResourceTest {
 
     private List<ParentTopic> getParentTopics() {
         return new ArrayList<ParentTopic>() {{
-            add(new ParentTopic(1, "ParentTopic1", UUID.randomUUID(), new HashSet<>()));
-            add(new ParentTopic(2, "ParentTopic2", UUID.randomUUID(), new HashSet<>()));
+            add(new ParentTopic(1l, "ParentTopic1", UUID.randomUUID(), new HashSet<>()));
+            add(new ParentTopic(2l, "ParentTopic2", UUID.randomUUID(), new HashSet<>()));
         }};
     }
 
     private List<Topic> getTopics() {
         return new ArrayList<Topic>() {{
-            add(new Topic(1, "Topic1", UUID.randomUUID()));
-            add(new Topic(2, "Topic2", UUID.randomUUID()));
+            add(new Topic(1l, "Topic1", UUID.randomUUID()));
+            add(new Topic(2l, "Topic2", UUID.randomUUID()));
         }};
     }
 

@@ -2,9 +2,8 @@ package uk.gov.digital.ho.hocs.info.standardLine;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import uk.gov.digital.ho.hocs.info.dto.CreateStandardLineDocumentDto;
 import uk.gov.digital.ho.hocs.info.dto.GetStandardLineResponse;
 import uk.gov.digital.ho.hocs.info.entities.StandardLine;
 
@@ -25,7 +24,13 @@ public class StandardLineResource {
 
     @GetMapping(value = "standardlines/{topicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetStandardLineResponse> getStandardLinesForPrimaryTopic(@PathVariable UUID topicUUID) {
-            List<StandardLine> standardLines = standardLineService.getStandardLines(topicUUID);
+           StandardLine standardLines = standardLineService.getStandardLines(topicUUID);
             return ResponseEntity.ok(GetStandardLineResponse.from(standardLines));
+    }
+
+    @PostMapping(value = "standardline/document", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity createDocument(@RequestBody CreateStandardLineDocumentDto request) {
+        standardLineService.createStandardLineDocument(request);
+        return ResponseEntity.ok().build();
     }
 }

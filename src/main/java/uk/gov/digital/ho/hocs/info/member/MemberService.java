@@ -56,8 +56,8 @@ public class MemberService {
         updateMember(listConsumerService.createFromScottishParliamentAPI());
         updateMember(listConsumerService.createCommonsFromUKParliamentAPI());
         updateMember(listConsumerService.createLordsFromUKParliamentAPI());
-        //        updateMember(listConsumerService.createFromIrishAssemblyAPI());
-        //        updateMember(listConsumerService.createFromEuropeanParliamentAPI());
+        updateMember(listConsumerService.createFromIrishAssemblyAPI());
+        updateMember(listConsumerService.createFromEuropeanParliamentAPI());
     }
 
     private void updateMember(Set<Member> members) {

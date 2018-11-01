@@ -7,11 +7,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.digital.ho.hocs.info.dto.CreateStandardLineDocumentDto;
 import uk.gov.digital.ho.hocs.info.dto.GetStandardLineResponse;
 import uk.gov.digital.ho.hocs.info.entities.StandardLine;
-import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,9 +32,9 @@ public class StandardLineResourceTest {
     }
 
     @Test
-    public void shouldReturnStandardLineForPrimaryTopic() throws EntityPermissionException {
+    public void shouldReturnStandardLineForPrimaryTopic() {
 
-        when(standardLineService.getStandardLines(uuid)).thenReturn(new ArrayList<>());
+        when(standardLineService.getStandardLines(uuid)).thenReturn(new StandardLine());
 
         ResponseEntity<GetStandardLineResponse> response =
                 standardLineResource.getStandardLinesForPrimaryTopic(uuid);
@@ -45,4 +44,19 @@ public class StandardLineResourceTest {
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
+    @Test
+    public void shouldCreateStandardLineForTopic() {
+        CreateStandardLineDocumentDto createStandardLineDocumentDto = new CreateStandardLineDocumentDto();
+
+        ResponseEntity response =
+                standardLineResource.createDocument(createStandardLineDocumentDto);
+
+        verify(standardLineService, times(1)).createStandardLineDocument(createStandardLineDocumentDto);
+        verifyNoMoreInteractions(standardLineService);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+
 }

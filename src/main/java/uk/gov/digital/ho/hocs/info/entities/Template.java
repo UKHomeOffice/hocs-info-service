@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,12 +11,13 @@ import java.util.UUID;
 @Entity
 @Table(name = "template")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Template implements Serializable {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Getter
     @Column(name = "display_name")
@@ -26,13 +28,22 @@ public class Template implements Serializable {
     private String caseType;
 
     @Getter
-    @Column(name = "document_key")
-    private String documentKey;
-
-    @Getter
     @Column(name = "uuid")
     private UUID uuid;
 
-    @Column(name = "active")
-    private boolean active;
+    @Getter
+    @Column(name = "deleted")
+    private boolean deleted = false;
+
+    public Template(String displayName, String caseType, UUID uuid) {
+        this.displayName = displayName;
+        this.caseType = caseType;
+        this.uuid = uuid;
+    }
+
+
+    public void delete() {
+        this.deleted = Boolean.TRUE;
+
+    }
 }

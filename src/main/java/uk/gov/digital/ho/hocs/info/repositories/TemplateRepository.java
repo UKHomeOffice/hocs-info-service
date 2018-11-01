@@ -11,8 +11,11 @@ import java.util.UUID;
 @Repository
 public interface TemplateRepository extends CrudRepository<Template, String> {
 
-    @Query(value = "SELECT t.* FROM template t WHERE t.case_type = ?1 AND t.active = TRUE", nativeQuery = true)
+    @Query(value = "SELECT t.* FROM template t WHERE t.case_type = ?1 AND t.deleted = FALSE", nativeQuery = true)
     List<Template> findActiveTemplateByCaseType(String caseType);
 
     Template findTemplateByUuid(UUID templateUUID);
+
+    @Query(value = "SELECT t.* FROM template t WHERE t.display_name = ?1 AND case_type = ?2 AND t.deleted = FALSE", nativeQuery = true)
+    Template findTemplateByDisplayNameAndCaseType(String caseType, String displayName);
 }

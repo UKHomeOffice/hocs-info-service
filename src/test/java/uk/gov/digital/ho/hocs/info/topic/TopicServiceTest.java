@@ -64,7 +64,7 @@ public class TopicServiceTest {
 
     @Test
     public void shouldReturnTopicsByCaseType() {
-        when(topicRepository.findTopicByUUID(uuid)).thenReturn(new Topic(1, "Topic1", UUID.randomUUID()));
+        when(topicRepository.findTopicByUUID(uuid)).thenReturn(new Topic(1l, "Topic1", UUID.randomUUID()));
 
         topicService.getTopic(uuid);
 
@@ -74,16 +74,16 @@ public class TopicServiceTest {
 
     private List<ParentTopic> getParentTopics() {
         return new ArrayList<ParentTopic>() {{
-            add(new ParentTopic(1, "ParentTopic1", UUID.randomUUID(), new HashSet<>()));
-            add(new ParentTopic(2, "ParentTopic2", UUID.randomUUID(), new HashSet<>()));
+            add(new ParentTopic(1l, "ParentTopic1", UUID.randomUUID(), new HashSet<>()));
+            add(new ParentTopic(2l, "ParentTopic2", UUID.randomUUID(), new HashSet<>()));
         }};
 
     }
 
     private List<Topic> getTopics() {
         return new ArrayList<Topic>() {{
-            add(new Topic(1, "Topic1", UUID.randomUUID()));
-            add(new Topic(2, "Topic2", UUID.randomUUID()));
+            add(new Topic(1l, "Topic1", UUID.randomUUID()));
+            add(new Topic(2l, "Topic2", UUID.randomUUID()));
         }};
 
     }
