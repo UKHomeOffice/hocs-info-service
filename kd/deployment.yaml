@@ -163,7 +163,7 @@ spec:
                   key: db_name
             - name: DB_SCHEMA_NAME
               value:
-                'cs_info_servcie_005'
+                'cs_info_servcie_006'
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
