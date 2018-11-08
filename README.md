@@ -1,4 +1,1 @@
 # hocs-info-service
-
-
-
