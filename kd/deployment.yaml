@@ -152,6 +152,11 @@ spec:
               value: 'https://hocs-casework.{{.KUBE_NAMESPACE}}.svc.cluster.local'
             - name: HOCS_DOCUMENT_SERVICE
               value: 'https://hocs-docs.{{.KUBE_NAMESPACE}}.svc.cluster.local'
+            - name: HOCS_BASICAUTH
+              valueFrom:
+                secretKeyRef:
+                  name: ui-casework-creds
+                  key: plaintext
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
