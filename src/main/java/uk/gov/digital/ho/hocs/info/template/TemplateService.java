@@ -10,6 +10,7 @@ import uk.gov.digital.ho.hocs.info.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.dto.CreateTemplateDocumentDto;
 import uk.gov.digital.ho.hocs.info.entities.Template;
 import uk.gov.digital.ho.hocs.info.exception.EntityCreationException;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 import uk.gov.digital.ho.hocs.info.repositories.TemplateRepository;
 
@@ -33,8 +34,13 @@ public class TemplateService {
     }
 
     public Template getTemplates(String caseType){
-        log.info("Requesting template for case type {} ", caseType);
-            return templateRepository.findActiveTemplateByCaseType(caseType);
+        Template template = templateRepository.findActiveTemplateByCaseType(caseType);
+        if(template != null){
+            log.info("Got Template for CaseType {} ", caseType);
+        return template;
+        } else {
+            throw new EntityNotFoundException("Template for CaseType: %s, not found!", caseType);
+        }
     }
 
     void createTemplateDocument(CreateTemplateDocumentDto document) throws EntityCreationException {

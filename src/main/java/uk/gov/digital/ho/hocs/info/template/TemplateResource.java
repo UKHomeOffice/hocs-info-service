@@ -26,11 +26,8 @@ public class TemplateResource {
     @GetMapping(value = "/templates/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetTemplateResponse> getTemplatesForCaseType(@PathVariable String caseType) {
         Template template = templateService.getTemplates(caseType);
-        if(template == null) {
-            return ResponseEntity.notFound().build();
-        } else  {
         return ResponseEntity.ok(GetTemplateResponse.from(template));
-        }
+
     }
 
     @PostMapping(value = "template/document", produces = APPLICATION_JSON_UTF8_VALUE)

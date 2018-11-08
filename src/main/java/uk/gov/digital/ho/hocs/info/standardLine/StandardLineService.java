@@ -7,6 +7,7 @@ import uk.gov.digital.ho.hocs.info.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.dto.CreateStandardLineDocumentDto;
 import uk.gov.digital.ho.hocs.info.entities.StandardLine;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.repositories.StandardLineRepository;
 
 import java.time.LocalDate;
@@ -32,9 +33,13 @@ public class StandardLineService {
     }
 
     public StandardLine getStandardLines(UUID topicUUID) {
-        log.info("Requesting Standard Lines for Topic {} ", topicUUID);
-
-        return standardLineRepository.findStandardLinesByTopicAndExpires(topicUUID, endOfDay);
+        StandardLine standardLine = standardLineRepository.findStandardLinesByTopicAndExpires(topicUUID, endOfDay);
+        if (standardLine != null) {
+            log.info("Got Standard Lines for Topic {} ", topicUUID);
+            return standardLine;
+        } else {
+            throw new EntityNotFoundException("Standard Line: %s, not found!", topicUUID);
+        }
     }
 
     void createStandardLineDocument(CreateStandardLineDocumentDto request) {
