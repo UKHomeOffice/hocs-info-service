@@ -7,7 +7,6 @@ import uk.gov.digital.ho.hocs.info.dto.CreateStandardLineDocumentDto;
 import uk.gov.digital.ho.hocs.info.dto.GetStandardLineResponse;
 import uk.gov.digital.ho.hocs.info.entities.StandardLine;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -25,7 +24,11 @@ public class StandardLineResource {
     @GetMapping(value = "standardlines/{topicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetStandardLineResponse> getStandardLinesForPrimaryTopic(@PathVariable UUID topicUUID) {
            StandardLine standardLines = standardLineService.getStandardLines(topicUUID);
-            return ResponseEntity.ok(GetStandardLineResponse.from(standardLines));
+           if(standardLines == null ){
+               return ResponseEntity.notFound().build();
+           } else {
+               return ResponseEntity.ok(GetStandardLineResponse.from(standardLines));
+           }
     }
 
     @PostMapping(value = "standardline/document", produces = APPLICATION_JSON_UTF8_VALUE)
