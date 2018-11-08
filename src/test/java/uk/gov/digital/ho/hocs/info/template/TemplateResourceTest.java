@@ -33,7 +33,7 @@ public class TemplateResourceTest {
     }
 
     @Test
-    public void shouldReturnTemplateForRequestedCaseType() throws EntityPermissionException {
+    public void shouldReturnTemplateForRequestedCaseType() {
 
         when(templateService.getTemplates(MIN)).thenReturn(new Template("display","MIN" , UUID.randomUUID()));
 
@@ -46,19 +46,6 @@ public class TemplateResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    @Test
-    public void shouldReturnTemplateNotFoundForRequestedCaseTypeWhenNotTemplate() throws EntityPermissionException {
-
-        when(templateService.getTemplates(MIN)).thenReturn(null);
-
-        ResponseEntity<GetTemplateResponse> response =
-                templateResource.getTemplatesForCaseType(MIN);
-
-        verify(templateService, times(1)).getTemplates(MIN);
-        verifyNoMoreInteractions(templateService);
-        assertThat(response).isNotNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
 
     @Test
     public void shouldCreateTemplateForCaseType() {

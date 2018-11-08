@@ -23,12 +23,9 @@ public class StandardLineResource {
 
     @GetMapping(value = "standardlines/{topicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetStandardLineResponse> getStandardLinesForPrimaryTopic(@PathVariable UUID topicUUID) {
-           StandardLine standardLines = standardLineService.getStandardLines(topicUUID);
-           if(standardLines == null ){
-               return ResponseEntity.notFound().build();
-           } else {
-               return ResponseEntity.ok(GetStandardLineResponse.from(standardLines));
-           }
+        StandardLine standardLines = standardLineService.getStandardLines(topicUUID);
+        return ResponseEntity.ok(GetStandardLineResponse.from(standardLines));
+
     }
 
     @PostMapping(value = "standardline/document", produces = APPLICATION_JSON_UTF8_VALUE)

@@ -9,6 +9,8 @@ import uk.gov.digital.ho.hocs.info.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.dto.CreateStandardLineDocumentDto;
 import uk.gov.digital.ho.hocs.info.entities.StandardLine;
+import uk.gov.digital.ho.hocs.info.exception.EntityCreationException;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.repositories.StandardLineRepository;
 
 import java.time.LocalDate;
@@ -44,7 +46,7 @@ public class StandardLineServiceTest {
 
     @Test
     public void shouldReturnStandardLineForPrimaryTopic(){
-
+        when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid, END_OF_DAY)).thenReturn(new StandardLine());
         standardLineService.getStandardLines(uuid);
         verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
         verifyNoMoreInteractions(standardLineRepository);
@@ -83,5 +85,11 @@ public class StandardLineServiceTest {
         verify(documentClient).processDocument(ManagedDocumentType.STANDARD_LINE, NEW_DOCUMENT_UUID, "url");
         verifyNoMoreInteractions(standardLineRepository);
         verifyNoMoreInteractions(documentClient);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldNotGetCaseWithValidParamsNotFoundException() {
+
+        standardLineService.getStandardLines(uuid);
     }
 }
