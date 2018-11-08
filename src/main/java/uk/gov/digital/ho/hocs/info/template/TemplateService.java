@@ -21,31 +21,20 @@ import java.util.UUID;
 public class TemplateService {
 
     private final TemplateRepository templateRepository;
-    private final CaseTypeService caseTypeService;
-    private final RequestData requestData;
     private final DocumentClient documentClient;
     private final UUID TEMPLATE_EXTERNAL_REFERENCE_UUID = UUID.fromString("88888888-8888-8888-8888-888888888888");
 
 
     @Autowired
     public TemplateService(TemplateRepository templateRepository,
-                           CaseTypeService caseTypeService,
-                           RequestData requestData,
                            DocumentClient documentClient) {
         this.templateRepository = templateRepository;
-        this.caseTypeService = caseTypeService;
-        this.requestData = requestData;
         this.documentClient = documentClient;
     }
 
-    public List<Template> getTemplates(String caseType) throws EntityPermissionException {
+    public Template getTemplates(String caseType){
         log.info("Requesting template for case type {} ", caseType);
-        if (caseTypeService.hasPermissionForCaseType(caseType)) {
             return templateRepository.findActiveTemplateByCaseType(caseType);
-        } else {
-            //TODO AUDIT permission exception
-            throw new EntityPermissionException("Not allowed to get Units for CaseType, CaseType: %s not in Roles: %s", caseType, requestData.rolesString());
-        }
     }
 
     void createTemplateDocument(CreateTemplateDocumentDto document) throws EntityCreationException {

@@ -23,13 +23,13 @@ public class TemplateResource {
         this.templateService = templateService;
     }
 
-    @GetMapping(value = "/casetype/{caseType}/templates", produces = APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/templates/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetTemplateResponse> getTemplatesForCaseType(@PathVariable String caseType) {
-        try {
-            List<Template> template = templateService.getTemplates(caseType);
-            return ResponseEntity.ok(GetTemplateResponse.from(template));
-        } catch (EntityPermissionException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        Template template = templateService.getTemplates(caseType);
+        if(template == null) {
+            return ResponseEntity.notFound().build();
+        } else  {
+        return ResponseEntity.ok(GetTemplateResponse.from(template));
         }
     }
 

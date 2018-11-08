@@ -38,6 +38,7 @@ public class StandardLineService {
     }
 
     void createStandardLineDocument(CreateStandardLineDocumentDto request) {
+        log.info("creating Standard Lines -expiry {} ", request.getExpires());
         UUID documentUUID = documentClient.createDocument(SL_EXT_REF_UUID, request.getDisplayName(), ManagedDocumentType.STANDARD_LINE);
 
         expireExistingStandardLineIfExist(request);

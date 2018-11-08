@@ -6,19 +6,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uk.gov.digital.ho.hocs.info.entities.Template;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class GetTemplateResponse {
 
-    @JsonProperty("templates")
-    List<TemplateDto> templateDtos;
+    @JsonProperty("label")
+    private String displayName;
 
-    public static GetTemplateResponse from(List<Template> templates) {
-        List<TemplateDto> templateDtos = templates.stream().map(TemplateDto::from).collect(Collectors.toList());
-        return new GetTemplateResponse(templateDtos);
+    @JsonProperty("value")
+    private UUID uuid;
+
+    public static GetTemplateResponse from(Template template) {
+        return new GetTemplateResponse(template.getDisplayName(), template.getUuid());
     }
 }

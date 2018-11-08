@@ -26,11 +26,6 @@ public class TemplateServiceTest {
     @Mock
     private TemplateRepository templateRepository;
 
-    @Mock
-    private RequestData requestData;
-
-    @Mock
-    private CaseTypeService caseTypeService;
 
     @Mock
     private DocumentClient documentClient;
@@ -43,12 +38,11 @@ public class TemplateServiceTest {
 
     @Before
     public void setUp() {
-        this.templateService = new TemplateService(templateRepository, caseTypeService, requestData, documentClient);
+        this.templateService = new TemplateService(templateRepository,documentClient);
     }
 
     @Test
     public void shouldReturnListOfTemplates() throws EntityPermissionException {
-        when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
         templateService.getTemplates("MIN");
         verify(templateRepository, times(1)).findActiveTemplateByCaseType(any());
         verifyNoMoreInteractions(templateRepository);
@@ -87,11 +81,6 @@ public class TemplateServiceTest {
         verify(documentClient).processDocument(ManagedDocumentType.TEMPLATE, NEW_DOCUMENT_UUID, "URL");
         verifyNoMoreInteractions(templateRepository);
         verifyNoMoreInteractions(documentClient);
-    }
-
-    @Test(expected = EntityPermissionException.class)
-    public void shouldThrowExemptionWhenCaseTypeNotValidForPermissionCheck() throws EntityPermissionException {
-        templateService.getTemplates(null);
     }
 
     @Test(expected = EntityCreationException.class)

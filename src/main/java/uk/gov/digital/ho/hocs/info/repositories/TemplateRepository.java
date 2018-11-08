@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface TemplateRepository extends CrudRepository<Template, String> {
 
     @Query(value = "SELECT t.* FROM template t WHERE t.case_type = ?1 AND t.deleted = FALSE", nativeQuery = true)
-    List<Template> findActiveTemplateByCaseType(String caseType);
+    Template findActiveTemplateByCaseType(String caseType);
 
     Template findTemplateByUuid(UUID templateUUID);
 
