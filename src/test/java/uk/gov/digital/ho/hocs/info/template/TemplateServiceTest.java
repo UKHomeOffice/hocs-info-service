@@ -56,12 +56,12 @@ public class TemplateServiceTest {
         CreateTemplateDocumentDto request = new CreateTemplateDocumentDto(DISPLAY_NAME, CASE_TYPE,"URL");
 
         when(documentClient.createDocument(TEMPLATE_EXT_REF, request.getDisplayName(), ManagedDocumentType.TEMPLATE)).thenReturn(NEW_DOCUMENT_UUID);
-        when(templateRepository.findTemplateByDisplayNameAndCaseType(request.getDisplayName() , request.getCaseType())).thenReturn(null);
+        when(templateRepository.findActiveTemplateByCaseType( request.getCaseType())).thenReturn(null);
 
         templateService.createTemplateDocument(request);
 
         verify(documentClient,times(1)).createDocument(TEMPLATE_EXT_REF, DISPLAY_NAME,ManagedDocumentType.TEMPLATE );
-        verify(templateRepository, times(1)).findTemplateByDisplayNameAndCaseType(request.getDisplayName(),request.getCaseType());
+        verify(templateRepository, times(1)).findActiveTemplateByCaseType(request.getCaseType());
         verify(templateRepository, times(1)).save(any());
         verify(documentClient).processDocument(ManagedDocumentType.TEMPLATE, NEW_DOCUMENT_UUID, "URL");
         verifyNoMoreInteractions(templateRepository);
@@ -73,12 +73,12 @@ public class TemplateServiceTest {
         CreateTemplateDocumentDto request = new CreateTemplateDocumentDto(DISPLAY_NAME, CASE_TYPE,"URL");
 
         when(documentClient.createDocument(TEMPLATE_EXT_REF, request.getDisplayName(), ManagedDocumentType.TEMPLATE)).thenReturn(NEW_DOCUMENT_UUID);
-        when(templateRepository.findTemplateByDisplayNameAndCaseType(request.getDisplayName() , request.getCaseType())).thenReturn(new Template(DISPLAY_NAME, CASE_TYPE, DOCUMENT_UUID));
+        when(templateRepository.findActiveTemplateByCaseType( request.getCaseType())).thenReturn(new Template(DISPLAY_NAME, CASE_TYPE, DOCUMENT_UUID));
 
         templateService.createTemplateDocument(request);
 
         verify(documentClient,times(1)).createDocument(TEMPLATE_EXT_REF, DISPLAY_NAME,ManagedDocumentType.TEMPLATE );
-        verify(templateRepository, times(1)).findTemplateByDisplayNameAndCaseType(request.getDisplayName(),request.getCaseType());
+        verify(templateRepository, times(1)).findActiveTemplateByCaseType(request.getCaseType());
         verify(templateRepository, times(2)).save(any());
         verify(documentClient).deleteDocument(TEMPLATE_EXT_REF, DOCUMENT_UUID);
         verify(documentClient).processDocument(ManagedDocumentType.TEMPLATE, NEW_DOCUMENT_UUID, "URL");

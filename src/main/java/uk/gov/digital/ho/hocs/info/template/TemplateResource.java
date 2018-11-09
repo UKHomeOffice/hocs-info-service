@@ -1,15 +1,11 @@
 package uk.gov.digital.ho.hocs.info.template;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.dto.CreateTemplateDocumentDto;
 import uk.gov.digital.ho.hocs.info.dto.GetTemplateResponse;
 import uk.gov.digital.ho.hocs.info.entities.Template;
-import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
-
-import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 

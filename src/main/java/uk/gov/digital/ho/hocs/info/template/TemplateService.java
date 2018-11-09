@@ -43,7 +43,7 @@ public class TemplateService {
         }
     }
 
-    void createTemplateDocument(CreateTemplateDocumentDto document) throws EntityCreationException {
+    void createTemplateDocument(CreateTemplateDocumentDto document) {
 
         if (document != null) {
             UUID templateUUID = documentClient.createDocument(TEMPLATE_EXTERNAL_REFERENCE_UUID, document.getDisplayName(), ManagedDocumentType.TEMPLATE);
@@ -60,7 +60,7 @@ public class TemplateService {
     }
 
     private void setDeletedExistingTemplateIfExists(CreateTemplateDocumentDto document) {
-        Template template = templateRepository.findTemplateByDisplayNameAndCaseType(document.getDisplayName(), document.getCaseType());
+        Template template = templateRepository.findActiveTemplateByCaseType(document.getCaseType());
         if (template != null) {
             template.delete();
             templateRepository.save(template);
@@ -74,7 +74,7 @@ public class TemplateService {
         templateRepository.save(newTemplate);
     }
 
-    private void deleteDocument(UUID externalReferenceUUID, UUID documentUUID) throws EntityCreationException {
+    private void deleteDocument(UUID externalReferenceUUID, UUID documentUUID) {
         documentClient.deleteDocument(externalReferenceUUID, documentUUID);
     }
 }
