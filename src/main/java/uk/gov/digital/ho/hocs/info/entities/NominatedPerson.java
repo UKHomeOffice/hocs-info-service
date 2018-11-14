@@ -22,7 +22,7 @@ public class NominatedPerson {
     private Long id;
 
     @Getter
-    @Column(name = "teamUUID")
+    @Column(name = "team_uuid")
     UUID teamUUID;
 
     @Getter

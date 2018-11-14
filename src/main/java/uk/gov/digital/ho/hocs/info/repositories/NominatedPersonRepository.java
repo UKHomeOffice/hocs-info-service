@@ -9,6 +9,6 @@ import java.util.UUID;
 
 public interface NominatedPersonRepository extends CrudRepository<NominatedPerson, String> {
 
-    @Query(value ="SELECT * FROM nominated_person np WHERE teamUUID = ?1" , nativeQuery = true )
+    @Query(value ="SELECT * FROM nominated_person np WHERE team_uuid = ?1" , nativeQuery = true )
     Set<NominatedPerson> findAllByTeamUUID(UUID teamUUID);
 }

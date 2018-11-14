@@ -6,16 +6,13 @@ import org.springframework.stereotype.Repository;
 import uk.gov.digital.ho.hocs.info.entities.Unit;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Repository
-public interface UnitRepository extends CrudRepository<Unit, String> {
+public interface UnitRepository extends CrudRepository<Unit, Long> {
 
-    //@Query(value = "SELECT u.* FROM unit u JOIN unit_case_type uct ON u.uuid = uct.unit_uuid AND uct.case_type = ?1 AND u.active = TRUE", nativeQuery = true)
     @Query(value = "SELECT u.*, t.* FROM unit u JOIN team t ON u.uuid = t.unit_uuid JOIN unit_case_type uct ON u.uuid = uct.unit_uuid AND uct.case_type = ?1 AND u.active = TRUE", nativeQuery = true)
     Set<Unit> findAllActiveUnitsByCaseType(String caseType);
-
     Set<Unit> findAll();
-
-    Unit findOneById(String df);
-
+    Unit findByUuid(UUID uuid);
 }

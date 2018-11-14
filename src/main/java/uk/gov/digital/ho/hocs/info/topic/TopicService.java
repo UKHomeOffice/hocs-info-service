@@ -22,7 +22,7 @@ public class TopicService {
 
 
     @Autowired
-    public TopicService(ParentTopicRepository parentTopicRepository, TopicRepository topicRepository, RequestData requestData) {
+    public TopicService(ParentTopicRepository parentTopicRepository, TopicRepository topicRepository) {
         this.parentTopicRepository = parentTopicRepository;
         this.topicRepository = topicRepository;
     }

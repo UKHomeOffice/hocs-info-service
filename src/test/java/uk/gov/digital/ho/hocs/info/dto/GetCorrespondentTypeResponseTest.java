@@ -14,9 +14,9 @@ public class GetCorrespondentTypeResponseTest {
     @Test
     public void shouldCreateGetCorrespondentTypeResponseDTOFromCorrespondentType() {
         Set<CorrespondentType> correspondentTypeSet = new HashSet<>();
-        correspondentTypeSet.add(new CorrespondentType(1,"Correspondent","CORRESPONDENT"));
-        correspondentTypeSet.add(new CorrespondentType(2,"Constituent","CONSTITUENT"));
-        correspondentTypeSet.add(new CorrespondentType(3,"Member","MEMBER"));
+        correspondentTypeSet.add(new CorrespondentType(1L,"Correspondent","CORRESPONDENT"));
+        correspondentTypeSet.add(new CorrespondentType(2L,"Constituent","CONSTITUENT"));
+        correspondentTypeSet.add(new CorrespondentType(3L,"Member","MEMBER"));
         GetCorrespondentTypeResponse getCorrespondentTypeResponse = GetCorrespondentTypeResponse.from(correspondentTypeSet);
 
         List<CorrespondentTypeDto> responseAsList = new ArrayList<>(Objects.requireNonNull(getCorrespondentTypeResponse.getCorrespondentTypes()));
