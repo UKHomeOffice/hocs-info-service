@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -128,7 +128,7 @@ public class TeamServiceTest {
 
         TeamDto result = teamService.getTeam(team1UUID);
 
-        assertThat(result.getPermissions().size()).isEqualTo(2);
+        assertThat(result.getPermissions().size()).isEqualTo(1);
         verify(teamRepository, times(1)).findByUuid(team1UUID);
         verifyNoMoreInteractions(teamRepository);
     }
