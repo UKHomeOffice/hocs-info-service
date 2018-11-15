@@ -22,6 +22,7 @@ public class Unit implements Serializable {
         this.shortCode = shortCode;
         this.uuid = uuid;
         this.active = active;
+        this.teams = new HashSet<>();
     }
 
     @Id
@@ -49,7 +50,7 @@ public class Unit implements Serializable {
         teams.add(team);
     }
     public void removeTeam(UUID teamUUID) {
-        teams.removeIf(team -> team.getUnitUUID() == teamUUID);
+        teams.removeIf(team -> team.getUuid() == teamUUID);
 
     }
 

@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.entities.Team;
 
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor()
 @Getter
+@EqualsAndHashCode
 public class TeamDto {
 
     @JsonProperty("displayName")

@@ -3,13 +3,13 @@ package uk.gov.digital.ho.hocs.info.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.entities.Permission;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
-
-
 @Getter
+@EqualsAndHashCode
 public class PermissionDto {
 
     @JsonCreator

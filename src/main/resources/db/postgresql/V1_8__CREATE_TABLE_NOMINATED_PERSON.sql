@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS nominated_person
   team_uuid UUID NOT NULL,
   email_address    TEXT NOT NULL,
 
-  CONSTRAINT fk_team_id FOREIGN KEY (team_uuid) REFERENCES team (uuid)
+  CONSTRAINT fk_team_person__id FOREIGN KEY (team_uuid) REFERENCES team (uuid)
 );

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.entities.Unit;
 
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor()
 @Getter
+@EqualsAndHashCode
 public class UnitDto {
 
     @JsonProperty("displayName")
@@ -47,7 +49,6 @@ public class UnitDto {
 
     public static UnitDto from(Unit unit) {
         Set<TeamDto> teamDtos = unit.getTeams().stream().map(TeamDto::from).collect(Collectors.toSet());
-
         return new UnitDto(unit.getDisplayName(), unit.getUuid().toString(), teamDtos, unit.getShortCode());
     }
 }
