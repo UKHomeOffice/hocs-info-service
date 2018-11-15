@@ -33,15 +33,17 @@ public class TemplateService {
         this.documentClient = documentClient;
     }
 
-    public Template getTemplates(String caseType){
+
+    public Template getTemplates(String caseType) {
         Template template = templateRepository.findActiveTemplateByCaseType(caseType);
-        if(template != null){
+        if (template != null) {
             log.info("Got Template for CaseType {} ", caseType);
-        return template;
+            return template;
         } else {
             throw new EntityNotFoundException("Template for CaseType: %s, not found!", caseType);
         }
     }
+
 
     void createTemplateDocument(CreateTemplateDocumentDto document) {
 

@@ -30,16 +30,13 @@ public class TopicServiceTest {
     @Mock
     private TopicRepository topicRepository;
 
-    @Mock
-    private RequestData requestData;
-
     private TopicService topicService;
 
     private UUID uuid = UUID.randomUUID();
 
     @Before
     public void setUp() {
-        this.topicService = new TopicService(parentTopicRepository, topicRepository, requestData);
+        this.topicService = new TopicService(parentTopicRepository, topicRepository);
     }
 
     @Test

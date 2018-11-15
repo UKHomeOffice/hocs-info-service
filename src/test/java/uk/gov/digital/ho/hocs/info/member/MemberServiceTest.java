@@ -48,8 +48,6 @@ public class MemberServiceTest {
     @Test
     public void shouldReturnAllActiveMembers() throws EntityPermissionException {
 
-        when(caseTypeService.hasPermissionForCaseType(any())).thenReturn(true);
-
         memberService.getAllActiveMembers("MIN");
 
         verify(memberRepository, times(1)).findAllActiveMembers();
