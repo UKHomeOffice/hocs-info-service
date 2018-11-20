@@ -64,13 +64,13 @@ public class DeadlinesServiceTest {
     @Test
     public void shouldCalculateStageDeadlinesWhenThreeDaySlaNotSpanningOverWeekend() throws EntityPermissionException, EntityNotFoundException {
 
-        when(holidayDateRepository.findAllByCaseType(any())).thenReturn(getHolidays());
+        when(holidayDateRepository.findAllByStageType(any())).thenReturn(getHolidays());
         when(slaRepository.findAllByStageType(any())).thenReturn(get3DayStageSla());
 
-        Deadline deadlineDto = deadlinesService.getDeadlineForStage(CASE_TYPE_TYPE,"final", LocalDate.of(2018, 01, 02));
+        Deadline deadlineDto = deadlinesService.getDeadlineForStage("final", LocalDate.of(2018, 01, 02));
 
 
-        verify(holidayDateRepository, times(1)).findAllByCaseType(any());
+        verify(holidayDateRepository, times(1)).findAllByStageType(any());
         verify(slaRepository, times(1)).findAllByStageType(any());
 
         assertThat(deadlineDto.getDate()).isEqualTo(LocalDate.of(2018, 01, 05));
@@ -80,12 +80,12 @@ public class DeadlinesServiceTest {
     @Test
     public void shouldCalculateStageDeadlinesWhenThreeDaySlaSpanningOverTwoWeekendDays() throws EntityPermissionException, EntityNotFoundException {
 
-        when(holidayDateRepository.findAllByCaseType(any())).thenReturn(getHolidays());
+        when(holidayDateRepository.findAllByStageType(any())).thenReturn(getHolidays());
         when(slaRepository.findAllByStageType(any())).thenReturn(get3DayStageSla());
 
-        Deadline deadlineDto = deadlinesService.getDeadlineForStage(CASE_TYPE_TYPE, "final", LocalDate.of(2018, 01, 05));
+        Deadline deadlineDto = deadlinesService.getDeadlineForStage("final", LocalDate.of(2018, 01, 05));
 
-        verify(holidayDateRepository, times(1)).findAllByCaseType(any());
+        verify(holidayDateRepository, times(1)).findAllByStageType(any());
         verify(slaRepository, times(1)).findAllByStageType(any());
         assertThat(deadlineDto.getDate()).isEqualTo(LocalDate.of(2018, 01, 10));
         assertThat(deadlineDto.getType()).isEqualTo("final");
