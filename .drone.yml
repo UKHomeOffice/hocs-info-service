@@ -160,9 +160,10 @@ services:
 
   keycloak:
     image: jboss/keycloak
+    volumes: [ keycloak:/tmp/keycloak ]
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: password1
-      KEYCLOAK_IMPORT: keycloak/local-realm.json
+      KEYCLOAK_IMPORT: /tmp/keycloak/local-realm.json
       DB_VENDOR: h2
 
