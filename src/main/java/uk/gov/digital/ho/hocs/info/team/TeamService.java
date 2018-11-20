@@ -9,6 +9,7 @@ import uk.gov.digital.ho.hocs.info.entities.CaseTypeEntity;
 import uk.gov.digital.ho.hocs.info.entities.Permission;
 import uk.gov.digital.ho.hocs.info.entities.Team;
 import uk.gov.digital.ho.hocs.info.entities.Unit;
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.repositories.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.repositories.TeamRepository;
 import uk.gov.digital.ho.hocs.info.repositories.UnitRepository;
@@ -30,51 +31,59 @@ public class TeamService {
 
     private TeamRepository teamRepository;
     private KeycloakService keycloakService;
-    private UnitRepository unitRepostiory;
+    private UnitRepository unitRepository;
     private CaseTypeRepository caseTypeRepository;
 
     public TeamService(TeamRepository teamRepository, UnitRepository unitRepository, CaseTypeRepository caseTypeRepository, KeycloakService keycloakService) {
         this.teamRepository = teamRepository;
         this.keycloakService = keycloakService;
-        this.unitRepostiory = unitRepository;
+        this.unitRepository = unitRepository;
         this.caseTypeRepository = caseTypeRepository;
     }
 
     public Set<TeamDto> getTeamsForUnit(UUID unitUUID) {
-        return teamRepository.findTeamsByUnitUUID(unitUUID).stream().map(team -> TeamDto.from(team)).collect(Collectors.toSet());
+        return teamRepository.findTeamsByUnitUuid(unitUUID).stream().map(team -> TeamDto.from(team)).collect(Collectors.toSet());
     }
 
     public TeamDto getTeam(UUID teamUUID) {
-        return TeamDto.from( teamRepository.findByUuid(teamUUID));
+        Team team = teamRepository.findByUuid(teamUUID);
+        if(team == null) {
+            throw new EntityNotFoundException("Team does not exist");
+        }
+        return TeamDto.from(team);
     }
 
     @Transactional
-    public void createTeam(TeamDto newTeam, UUID unitUUID) {
+    public TeamDto createTeam(TeamDto newTeam, UUID unitUUID) {
 
         Team team = teamRepository.findByUuid(newTeam.getUuid());
-        Unit unit = unitRepostiory.findByUuid(unitUUID);
+        Unit unit = unitRepository.findByUuid(unitUUID);
         Set<Permission> permissions = getPermissionsFromDto(newTeam.getPermissions(), team);
         if(team == null) {
-            team = new Team(newTeam.getDisplayName(),newTeam.getUuid());
+            team = new Team(newTeam.getDisplayName(),newTeam.getUuid(), true);
             team.addPermissions(getPermissionsFromDto(newTeam.getPermissions(), team));
             unit.addTeam(team);
-           // unitRepostiory.save(unit);
          }
-        CreateKeyCloakMappings(permissions,team.getUuid(),unit.getShortCode(), Optional.empty());
+        createKeyCloakMappings(permissions,team.getUuid(),unit.getShortCode(), Optional.empty());
 
         log.info("Team with UUID {} created in Unit {}", team.getUuid().toString(), unit.getShortCode(), value(EVENT, TEAM_CREATED));
+        return TeamDto.from(team);
     }
 
-
+    @Transactional
+    public void updateTeamName(UUID teamUUID, String newName) {
+        Team team = teamRepository.findByUuid(teamUUID);
+        team.setDisplayName(newName);
+        log.info("Team with UUID {} name updated to {}", team.getUuid().toString(), newName, value(EVENT, TEAM_RENAMED));
+    }
 
     public void addUserToTeam(UUID userUUID, UUID teamUUID) {
 
         Team team = teamRepository.findByUuid(teamUUID);
         String unit = team.getUnit().getShortCode();
-        String teamId= team.getUuid().toString();
         Set<Permission> permissions = team.getPermissions();
 
-        CreateKeyCloakMappings(permissions,teamUUID,unit, Optional.of(userUUID));
+        createKeyCloakMappings(permissions,teamUUID,unit, Optional.of(userUUID));
 
         log.info("Added user with UUID {} to team with UUID {}",userUUID.toString(), team.getUuid().toString(), value(EVENT, USER_ADDED_TO_TEAM));
     }
@@ -84,15 +93,31 @@ public class TeamService {
         Team team = teamRepository.findByUuid(teamUUID);
         String currentGroupPath = String.format("/%s/%s", team.getUnit().getShortCode(), team.getUuid());
 
-        Unit oldUnit = unitRepostiory.findByUuid(team.getUnitUUID());
+        Unit oldUnit = unitRepository.findByUuid(team.getUnit().getUuid());
         oldUnit.removeTeam(teamUUID);
 
-        Unit newUnit = unitRepostiory.findByUuid(unitUUID);
+        Unit newUnit = unitRepository.findByUuid(unitUUID);
         newUnit.addTeam(team);
 
         keycloakService.moveGroup(currentGroupPath, team.getUnit().getShortCode());
 
         log.info("Moved team {} from Unit {} to Unit {}", teamUUID.toString(), oldUnit.getShortCode(), newUnit.getShortCode(), value(EVENT, TEAM_ADDED_TO_UNIT));
+    }
+
+    public void updateTeamPermissions(UUID teamUUID, Set<PermissionDto> permissionsDto) {
+        Team team = teamRepository.findByUuid(teamUUID);
+        Set<Permission> permissions = getPermissionsFromDto(permissionsDto, team);
+        team.addPermissions(permissions);
+        createKeyCloakMappings(permissions,teamUUID,team.getUnit().getShortCode(), Optional.empty());
+        keycloakService.updateUserGroupsForGroup(String.format("/%s/%s",team.getUnit().getShortCode(), teamUUID.toString()));
+        log.info("Updated Permissions for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_UPDATED));
+    }
+
+    @Transactional
+    public void deleteTeam(UUID teamUUID) {
+        //TODO: Check Team does not have any topics assigned before deletion
+        Team team = teamRepository.findByUuid(teamUUID);
+        team.setActive(false);
     }
 
     private Set<Permission> getPermissionsFromDto(Set<PermissionDto> permissionsDto, Team team) {
@@ -105,7 +130,8 @@ public class TeamService {
         return permissions;
     }
 
-    private void CreateKeyCloakMappings(Set<Permission> permissions, UUID teamUUID, String unitShortCode, Optional<UUID> userUUID) {
+
+    private void createKeyCloakMappings(Set<Permission> permissions, UUID teamUUID, String unitShortCode, Optional<UUID> userUUID) {
         String team = teamUUID.toString();
         keycloakService.createUnitGroupIfNotExists(unitShortCode);
         keycloakService.createGroupPathIfNotExists(unitShortCode, team);
@@ -121,5 +147,6 @@ public class TeamService {
 
         }
     }
+
 
 }

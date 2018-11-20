@@ -28,6 +28,8 @@ CREATE TABLE IF NOT EXISTS team
   display_name TEXT NOT NULL,
   uuid         UUID NOT NULL,
   unit_uuid    UUID NOT NULL,
+  active       boolean NOT NULL,
+
 
   CONSTRAINT team_uuid_idempotent UNIQUE (uuid),
   CONSTRAINT team_name_idempotent UNIQUE (display_name),

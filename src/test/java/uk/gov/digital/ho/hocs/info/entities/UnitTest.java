@@ -15,8 +15,8 @@ public class UnitTest {
         UUID team2UUID = UUID.randomUUID();
         Unit unit = new Unit("Unit 1", "TEST", UUID.randomUUID(), true);
 
-        Team team1 = new Team("Team 2", team1UUID);
-        Team team2 = new Team("Team 2", team2UUID);
+        Team team1 = new Team("Team 2", team1UUID, true);
+        Team team2 = new Team("Team 2", team2UUID, true);
 
         assertThat(unit.getTeams().size()).isEqualTo(0);
         unit.addTeam(team1);
@@ -32,8 +32,8 @@ public class UnitTest {
         UUID team2UUID = UUID.randomUUID();
         Unit unit = new Unit("Unit 1", "TEST", UUID.randomUUID(), true);
 
-        Team team1 = new Team("Team 2", team1UUID);
-        Team team2 = new Team("Team 2", team2UUID);
+        Team team1 = new Team("Team 2", team1UUID, true);
+        Team team2 = new Team("Team 2", team2UUID, true);
         unit.addTeam(team1);
         unit.addTeam(team2);
 

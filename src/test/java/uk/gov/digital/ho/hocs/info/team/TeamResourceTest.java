@@ -8,11 +8,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.dto.TeamDto;
-
+import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -43,6 +42,15 @@ public class TeamResourceTest {
     }
 
     @Test
+    public void shouldDeleteATeam() {
+        doNothing().when(teamService).deleteTeam(teamUUID);
+        ResponseEntity result = teamResource.deleteTeam(teamUUID.toString());
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(teamService, times(1)).deleteTeam(teamUUID);
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
     public void shouldGetAllTeamsForAUnit() {
         UUID unitUUID = UUID.randomUUID();
         when(teamService.getTeamsForUnit(unitUUID)).thenReturn(getTeams());
@@ -58,7 +66,7 @@ public class TeamResourceTest {
     public void shouldGetTeamForUUID() {
         UUID teamUUID = UUID.randomUUID();
         UUID unitUUID = UUID.randomUUID();
-        TeamDto team = new TeamDto( "Team1", teamUUID, new HashSet<>());
+        TeamDto team = new TeamDto( "Team1", teamUUID, true, new HashSet<>());
         when(teamService.getTeam(teamUUID)).thenReturn(team);
 
         ResponseEntity<TeamDto> result = teamResource.getTeam(unitUUID.toString(), teamUUID.toString());
@@ -68,15 +76,27 @@ public class TeamResourceTest {
         verifyNoMoreInteractions(teamService);
     }
 
+    @Test(expected = EntityNotFoundException.class)
+    public void returnNotFoundWHenTeamDoesNotExist() {
+        UUID teamUUID = UUID.randomUUID();
+        UUID unitUUID = UUID.randomUUID();
+        when(teamService.getTeam(teamUUID)).thenThrow(new EntityNotFoundException(""));
+
+        teamResource.getTeam(unitUUID.toString(), teamUUID.toString());
+        verify(teamService, times(1)).getTeam(teamUUID);
+        verifyNoMoreInteractions(teamService);
+    }
+
     @Test
     public void shouldCreateNewTeam() {
         UUID teamUUID = UUID.randomUUID();
         UUID unitUUID = UUID.randomUUID();
-        TeamDto team = new TeamDto( "Team1", teamUUID, new HashSet<>());
+        TeamDto team = new TeamDto( "Team1", teamUUID, true, new HashSet<>());
         doNothing().when(teamService).createTeam(team, unitUUID);
 
-        ResponseEntity result = teamResource.createTeam(unitUUID.toString(), team);
+        ResponseEntity result = teamResource.createUpdateTeam(unitUUID.toString(), team);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+
         verify(teamService, times(1)).createTeam(team, unitUUID);
         verifyNoMoreInteractions(teamService);
     }
@@ -94,8 +114,8 @@ public class TeamResourceTest {
 
     private Set<TeamDto> getTeams() {
         return new HashSet<TeamDto>() {{
-            add(new TeamDto( "Team1", UUID.randomUUID(), new HashSet<>()));
-            add(new TeamDto( "Team2", UUID.randomUUID(), new HashSet<>()));
+            add(new TeamDto( "Team1", UUID.randomUUID(), true, new HashSet<>()));
+            add(new TeamDto( "Team2", UUID.randomUUID(), true, new HashSet<>()));
         }};
     }
 

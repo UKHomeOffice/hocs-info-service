@@ -1,9 +1,6 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import uk.gov.digital.ho.hocs.info.dto.TeamDto;
 
 import javax.persistence.*;
@@ -19,18 +16,23 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(of = {"uuid"})
 public class Team implements Serializable {
 
-    public Team(String displayName, UUID uuid) {
+    public Team(String displayName, UUID uuid, boolean active) {
         this.displayName = displayName;
         this.uuid = uuid;
+        this.active = active;
         this.permissions = new HashSet<>();
     }
 
     public Team(String displayName, UUID uuid, Set<Permission> permissions) {
         this.displayName = displayName;
         this.uuid = uuid;
-        this.permissions = Optional.ofNullable(permissions).orElse(new HashSet<>());
+        this.permissions = new HashSet<>();
+        if(permissions !=null) {
+            addPermissions(permissions);
+        }
     }
 
     @Id
@@ -44,8 +46,8 @@ public class Team implements Serializable {
     @Column(name = "uuid")
     private UUID uuid;
 
-    @Column(name = "unit_uuid", insertable = false, updatable = false)
-    private UUID unitUUID;
+    @Column(name = "active")
+    private boolean active;
 
     @ManyToOne
     @JoinColumn(name = "unit_uuid", referencedColumnName = "uuid")
@@ -55,8 +57,10 @@ public class Team implements Serializable {
     private Set<Permission> permissions;
 
     public void addPermission(Permission permission) {
-        permission.setTeam(this);
-        permissions.add(permission);
+        if(!permissions.contains(permission)) {
+            permission.setTeam(this);
+            permissions.add(permission);
+        }
     }
 
     public void addPermissions(Set<Permission> newPermissions) {

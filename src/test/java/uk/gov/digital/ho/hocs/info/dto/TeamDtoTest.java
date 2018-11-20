@@ -12,12 +12,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TeamDtoTest {
 
     UUID uuid = UUID.randomUUID();
-    UUID unitUUID = UUID.randomUUID();
 
     @Test
     public void from() {
 
-        Team team = new Team(1L,"displayName", uuid, unitUUID, null,new HashSet<Permission>());
+        Team team = new Team(1L,"displayName", uuid, true, null,new HashSet<Permission>());
 
         TeamDto teamDto = TeamDto.from(team);
 

@@ -3,6 +3,8 @@ package uk.gov.digital.ho.hocs.info.team;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.dto.TeamDto;
+import uk.gov.digital.ho.hocs.info.dto.UpdateTeamNameRequest;
+import uk.gov.digital.ho.hocs.info.dto.UpdateTeamPermissionsRequest;
 
 
 import java.util.Set;
@@ -16,21 +18,39 @@ public class TeamResource {
         this.teamService = teamService;
     }
 
-    @PostMapping(value = "/users/{userUUID}/teams/{teamUUID}")
+    @PostMapping(value = "/users/{userUUID}/team/{teamUUID}")
     public ResponseEntity addUserToGroup(@PathVariable String userUUID, @PathVariable String teamUUID) {
         teamService.addUserToTeam(UUID.fromString(userUUID), UUID.fromString(teamUUID));
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "/unit/{unitUUID}/teams" )
-    public ResponseEntity createTeam(@PathVariable String unitUUID, @RequestBody TeamDto team) {
-        teamService.createTeam(team, UUID.fromString(unitUUID));
+    public ResponseEntity<TeamDto> createUpdateTeam(@PathVariable String unitUUID, @RequestBody TeamDto team) {
+        TeamDto createdTeam = teamService.createTeam(team, UUID.fromString(unitUUID));
+        return ResponseEntity.ok(createdTeam);
+    }
+
+    @PostMapping(value = "/unit/{unitUUID}/teams/{teamUUID}")
+    public ResponseEntity addTeamToUnit(@PathVariable String unitUUID, @PathVariable String teamUUID) {
+        teamService.moveToNewUnit(UUID.fromString(unitUUID), UUID.fromString(teamUUID));
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping(value = "/unit/{unitUUID}/teams/{teamUUID}")
-    public ResponseEntity addTeamToUnit(@PathVariable String unitUUID, @PathVariable String teamUUID) {
-        teamService.moveToNewUnit(UUID.fromString(unitUUID), UUID.fromString(teamUUID));
+    @PutMapping(value = "/team/{teamUUID}")
+    public ResponseEntity updateTeamName(@PathVariable String teamUUID, @RequestBody UpdateTeamNameRequest team) {
+        teamService.updateTeamName(UUID.fromString(teamUUID), team.getDisplayName());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping(value = "/team/{teamUUID}")
+    public ResponseEntity deleteTeam(@PathVariable String teamUUID) {
+        teamService.deleteTeam(UUID.fromString(teamUUID));
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(value = "/team/{teamUUID}/permissions")
+    public ResponseEntity updateTeamPermissions(@PathVariable String teamUUID, @RequestBody UpdateTeamPermissionsRequest team) {
+        teamService.updateTeamPermissions(UUID.fromString(teamUUID),team.getPermissions());
         return ResponseEntity.ok().build();
     }
 

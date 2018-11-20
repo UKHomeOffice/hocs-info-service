@@ -25,7 +25,6 @@ public class KeycloakService {
         this.hocsRealmName = hocsRealmName;
     }
 
-
    public  void addUserToGroup(UUID userUUID, String groupPath) {
         RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
         UserResource user = hocsRealm.users().get(userUUID.toString());
@@ -46,7 +45,6 @@ public class KeycloakService {
         GroupRepresentation parentGroup =  hocsRealm.getGroupByPath(parentPath);
         GroupRepresentation newGroup = new GroupRepresentation();
         newGroup.setName(groupName);
-        System.out.println(parentGroup.getId());
         Response response = hocsRealm.groups().group(parentGroup.getId()).subGroup(newGroup);
         response.close();
     }
@@ -56,12 +54,24 @@ public class KeycloakService {
         return users;
     }
 
+    public void updateUserGroupsForGroup(String groupPath) {
+        RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
+        GroupRepresentation group = hocsRealm.getGroupByPath(groupPath);
+        List<UserRepresentation> users = hocsRealm.groups().group(group.getId()).members();
+        for (GroupRepresentation subGroup : group.getSubGroups()) {
+            for (UserRepresentation user : users) {
+                addUserToGroup(UUID.fromString(user.getId()), subGroup.getPath());
+            }
+        }
+    }
+
+
     public void moveGroup(String currentGroupPath, String newParent) {
         RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
         GroupRepresentation group = hocsRealm.getGroupByPath(currentGroupPath);
+        createUnitGroupIfNotExists(newParent);
         GroupRepresentation newParentGroup = hocsRealm.getGroupByPath(newParent);
         hocsRealm.groups().group(newParentGroup.getId()).subGroup(group);
-
     }
 
 }

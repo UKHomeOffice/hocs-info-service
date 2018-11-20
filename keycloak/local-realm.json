@@ -247,37 +247,38 @@
   },
   "groups" : [ {
     "id" : "516e05ec-ed79-4a48-aa2e-35f174fe9034",
-    "name" : "DCU",
-    "path" : "/DCU",
+    "name" : "UNIT2",
+    "path" : "/UNIT2",
     "attributes" : { },
     "realmRoles" : [ ],
     "clientRoles" : { },
     "subGroups" : [ {
       "id" : "abf7617c-058c-4287-9f41-b95384fdbc7d",
-      "name" : "44444444-2222-2222-2222-222222222222",
-      "path" : "/DCU/44444444-2222-2222-2222-222222222222",
+      "name" : "434a4e33-437f-4e6d-8f04-14ea40fdbfa2",
+      "path" : "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2",
       "attributes" : { },
       "realmRoles" : [ ],
       "clientRoles" : { },
       "subGroups" : [ {
         "id" : "a6f5c195-b625-4a95-9789-6609ef87cb38",
-        "name" : "MIN",
-        "path" : "/DCU/44444444-2222-2222-2222-222222222222/MIN",
+        "name" : "CT2",
+        "path" : "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2/CT2",
         "attributes" : { },
         "realmRoles" : [ ],
         "clientRoles" : { },
         "subGroups" : [ {
           "id" : "a9faabdd-4e39-47c0-94ee-6548bf5b3547",
-          "name" : "OWNER",
-          "path" : "/DCU/44444444-2222-2222-2222-222222222222/MIN/OWNER",
+          "name" : "WRITE",
+          "path" : "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2/CT2/WRITE",
           "attributes" : { },
           "realmRoles" : [ ],
           "clientRoles" : { },
           "subGroups" : [ ]
         } ]
       } ]
-    } ]
-  } ],
+    }]
+  }
+  ],
   "defaultRoles" : [ "uma_authorization", "offline_access" ],
   "requiredCredentials" : [ "password" ],
   "otpPolicyType" : "totp",
@@ -314,7 +315,7 @@
       "account" : [ "view-profile", "manage-account" ]
     },
     "notBefore" : 0,
-    "groups" : [ "/DCU/44444444-2222-2222-2222-222222222222/MIN/OWNER" ]
+    "groups" : [ "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2/CT2/WRITE" ]
   } ],
   "scopeMappings" : [ {
     "clientScope" : "offline_access",
