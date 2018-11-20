@@ -28,7 +28,7 @@ public class DeadlinesService {
         this.holidayDateRepository = holidayDateRepository;
     }
 
-    Set<Deadline> getDeadlines(String caseType, LocalDate receivedDate) throws EntityPermissionException, EntityNotFoundException {
+    Set<Deadline> getDeadlines(String caseType, LocalDate receivedDate) throws EntityNotFoundException {
         log.info("Requesting deadlines for caseType {} with received date of {} ", caseType, receivedDate);
         if (caseType != null && receivedDate != null) {
             Set<HolidayDate> holidays = holidayDateRepository.findAllByCaseType(caseType);
@@ -36,6 +36,17 @@ public class DeadlinesService {
             return slas.stream().map(sla -> new Deadline(receivedDate, sla, holidays)).collect(Collectors.toSet());
         } else {
             throw new EntityNotFoundException("CaseType or received date was null!");
+        }
+    }
+
+    Deadline getDeadlineForStage(String caseType, String stageType, LocalDate receivedDate) throws EntityNotFoundException {
+        log.info("Requesting deadlines for caseType {} stageType {} with received date of {} ", caseType, stageType, receivedDate);
+        if (caseType != null && stageType != null && receivedDate != null) {
+            Set<HolidayDate> holidays = holidayDateRepository.findAllByCaseType(caseType);
+            Sla sla = slaRepository.findAllByStageType(stageType);
+            return new Deadline(receivedDate, sla, holidays);
+        } else {
+            throw new EntityNotFoundException("CaseType, StageType or received date was null!");
         }
     }
 }
