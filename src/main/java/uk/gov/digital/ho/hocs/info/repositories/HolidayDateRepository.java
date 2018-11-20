@@ -13,4 +13,6 @@ public interface HolidayDateRepository extends CrudRepository<HolidayDate, Strin
     @Query(value ="SELECT ed.* FROM holiday_date ed WHERE ed.case_type = ?1", nativeQuery = true )
     Set<HolidayDate> findAllByCaseType(String caseType);
 
+    @Query(value ="select h.* from holiday_date h join sla s on h.case_type = s.case_type where s.stage_type = ?1", nativeQuery = true )
+    Set<HolidayDate> findAllByStageType(String stageType);
 }

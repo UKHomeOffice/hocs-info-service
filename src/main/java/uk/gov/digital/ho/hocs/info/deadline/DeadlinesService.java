@@ -7,7 +7,6 @@ import uk.gov.digital.ho.hocs.info.entities.Deadline;
 import uk.gov.digital.ho.hocs.info.entities.HolidayDate;
 import uk.gov.digital.ho.hocs.info.entities.Sla;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
-import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 import uk.gov.digital.ho.hocs.info.repositories.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.repositories.SlaRepository;
 
@@ -39,10 +38,10 @@ public class DeadlinesService {
         }
     }
 
-    Deadline getDeadlineForStage(String caseType, String stageType, LocalDate receivedDate) throws EntityNotFoundException {
-        log.info("Requesting deadlines for caseType {} stageType {} with received date of {} ", caseType, stageType, receivedDate);
-        if (caseType != null && stageType != null && receivedDate != null) {
-            Set<HolidayDate> holidays = holidayDateRepository.findAllByCaseType(caseType);
+    Deadline getDeadlineForStage(String stageType, LocalDate receivedDate) throws EntityNotFoundException {
+        log.info("Requesting deadlines for stageType {} with received date of {} ", stageType, receivedDate);
+        if (stageType != null && receivedDate != null) {
+            Set<HolidayDate> holidays = holidayDateRepository.findAllByStageType(stageType);
             Sla sla = slaRepository.findAllByStageType(stageType);
             return new Deadline(receivedDate, sla, holidays);
         } else {
