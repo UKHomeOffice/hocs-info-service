@@ -16,8 +16,10 @@ public class Deadline implements Serializable {
     private LocalDate date;
 
     public Deadline(LocalDate receivedDate, Sla sla, Set<HolidayDate> holidays) {
-        type = sla.getStageType();
-        date = calculateDeadline(receivedDate, sla.getValue(), holidays);
+        if(sla != null) {
+            type = sla.getStageType();
+            date = calculateDeadline(receivedDate, sla.getValue(), holidays);
+        }
     }
 
     private static LocalDate calculateDeadline(LocalDate receivedDate, int sla, Set<HolidayDate> holidays) {
