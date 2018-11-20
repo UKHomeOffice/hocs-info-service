@@ -160,7 +160,8 @@ services:
 
   keycloak:
     image: jboss/keycloak
-    volumes: [ keycloak:/tmp/keycloak ]
+    volumes:
+      - keycloak:/tmp/keycloak
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: password1
