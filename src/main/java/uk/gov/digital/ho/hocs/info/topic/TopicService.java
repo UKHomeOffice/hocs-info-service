@@ -3,7 +3,6 @@ package uk.gov.digital.ho.hocs.info.topic;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.info.RequestData;
 import uk.gov.digital.ho.hocs.info.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.caseworkclient.dto.GetCaseworkCaseDataResponse;
 import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
