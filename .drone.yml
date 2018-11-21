@@ -3,10 +3,8 @@ pipeline:
     image: quay.io/ukhomeofficedigital/hocs-docker-tools
     commands:
     - |
-      curl http://keycloak:8080/auth/realms/master/.well-known/openid-configuration
-    - |
-      until $(curl http://keycloak:8080/auth/realms/master/.well-known/openid-configuration); do
-        sleep 20
+      until $(curl --output /dev/null --silent --head --fail http://keycloak:8080/auth/realms/master/.well-known/openid-configuration); do
+        sleep 5
       done
     - |
       export TKN=$(curl -X POST 'http://keycloak:8080/auth/realms/master/protocol/openid-connect/token' -H "Content-Type: application/x-www-form-urlencoded" -d "username=admin" -d 'password=password1' -d 'grant_type=password' -d 'client_id=admin-cli' | jq -r '.access_token')
