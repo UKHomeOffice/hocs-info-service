@@ -92,7 +92,7 @@ public class TeamResourceTest {
         UUID teamUUID = UUID.randomUUID();
         UUID unitUUID = UUID.randomUUID();
         TeamDto team = new TeamDto( "Team1", teamUUID, true, new HashSet<>());
-        doNothing().when(teamService).createTeam(team, unitUUID);
+        when(teamService.createTeam(team, unitUUID)).thenReturn(team);
 
         ResponseEntity result = teamResource.createUpdateTeam(unitUUID.toString(), team);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);

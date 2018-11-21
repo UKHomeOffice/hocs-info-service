@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS case_type
   bulk         boolean NULL,
 
     CONSTRAINT case_type_type_idempotent UNIQUE ( type ),
-  CONSTRAINT case_type_name_idempotent UNIQUE (display_name),
+  CONSTRAINT case_type_name_idempotent UNIQUE (display_name)
 );
 
 CREATE INDEX idx_case_type_tenant_role
