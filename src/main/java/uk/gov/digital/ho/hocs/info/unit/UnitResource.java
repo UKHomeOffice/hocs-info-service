@@ -4,11 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.dto.GetUnitsResponse;
+import uk.gov.digital.ho.hocs.info.dto.UnitDto;
 import uk.gov.digital.ho.hocs.info.entities.Unit;
 import uk.gov.digital.ho.hocs.info.exception.EntityPermissionException;
 
@@ -27,13 +25,21 @@ public class UnitResource {
         this.unitService = unitService;
     }
 
-    @RequestMapping(value = "/casetype/{caseType}/unit", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetUnitsResponse> getAllUnits(@PathVariable String caseType) {
-        try {
-            Set<Unit> units = unitService.getActiveUnitsByCaseType(caseType);
-            return ResponseEntity.ok(GetUnitsResponse.from(units));
-        } catch ( EntityPermissionException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build() ;
-        }
+    @GetMapping(value = "/unit/casetype/{casetype}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Set<UnitDto>> getAllUnitsForCaseType(@PathVariable String caseType) {
+            Set<UnitDto> units = unitService.getAllUnitsForCaseType(caseType);
+            return ResponseEntity.ok(units);
+    }
+
+    @GetMapping(value = "/unit", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Set<UnitDto>> getAllUnits() {
+        Set<UnitDto> units = unitService.getAllUnits();
+        return ResponseEntity.ok(units);
+    }
+
+    @PostMapping(value = "/unit", produces= APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity createUnit(@RequestBody UnitDto unit) {
+        unitService.createUnit(unit);
+        return ResponseEntity.ok().build();
     }
 }

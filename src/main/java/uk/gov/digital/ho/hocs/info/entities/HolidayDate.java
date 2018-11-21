@@ -20,7 +20,7 @@ public class HolidayDate implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     @Setter
-    private int id;
+    private Long id;
 
     @Column(name = "date")
     @Getter

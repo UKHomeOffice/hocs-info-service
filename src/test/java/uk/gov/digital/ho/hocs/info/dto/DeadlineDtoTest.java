@@ -17,7 +17,7 @@ public class DeadlineDtoTest {
     public void shouldBuildDeadlineDTOFromDeadlineObject() {
         Sla sla = new Sla("Draft", 5, "MIN");
         Set<HolidayDate> holidayDates = new HashSet<>();
-        holidayDates.add(new HolidayDate(1, LocalDate.of(2018, 1, 1)));
+        holidayDates.add(new HolidayDate(1L, LocalDate.of(2018, 1, 1)));
         Deadline deadline = new Deadline(LocalDate.of(2018, 1, 1), sla, holidayDates);
 
         DeadlineDto deadlineDto = DeadlineDto.from(deadline);

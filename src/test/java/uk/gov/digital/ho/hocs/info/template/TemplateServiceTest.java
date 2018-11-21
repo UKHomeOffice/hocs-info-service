@@ -45,9 +45,11 @@ public class TemplateServiceTest {
 
     @Test
     public void shouldReturnListOfTemplates() throws EntityPermissionException {
+
         when(templateRepository.findActiveTemplateByCaseType(CASE_TYPE)).thenReturn(new Template());
         templateService.getTemplates(CASE_TYPE);
         verify(templateRepository, times(1)).findActiveTemplateByCaseType(CASE_TYPE);
+
         verifyNoMoreInteractions(templateRepository);
     }
 
@@ -85,6 +87,7 @@ public class TemplateServiceTest {
         verifyNoMoreInteractions(templateRepository);
         verifyNoMoreInteractions(documentClient);
     }
+
 
     @Test(expected = EntityCreationException.class)
     public void shouldThrowExemptionWhenCreateTemplateDocumentDTOIsNull() {

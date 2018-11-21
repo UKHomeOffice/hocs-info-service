@@ -23,6 +23,7 @@ public class TemplateResource {
 
     @GetMapping(value = "/templates/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetTemplateResponse> getTemplatesForCaseType(@PathVariable String caseType) {
+
         Template template = templateService.getTemplates(caseType);
         return ResponseEntity.ok(GetTemplateResponse.from(template));
 

@@ -44,11 +44,7 @@ public class MemberService {
 
     public Set<Member> getAllActiveMembers(String caseType) throws EntityPermissionException {
         log.debug("Requesting all Members");
-        if (caseTypeService.hasPermissionForCaseType(caseType)) {
             return memberRepository.findAllActiveMembers();
-        } else {
-            throw new EntityPermissionException("Not allowed to get Members for CaseType, CaseType: %s not in Roles: %s", caseType, requestData.rolesString());
-        }
     }
 
     public void updateWebMemberLists() throws IngestException {

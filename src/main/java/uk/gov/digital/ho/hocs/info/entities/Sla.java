@@ -15,7 +15,7 @@ public class Sla implements Serializable {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Getter
     @Column(name = "stage_type")
