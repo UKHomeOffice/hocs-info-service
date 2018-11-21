@@ -3,6 +3,8 @@ pipeline:
     image: quay.io/ukhomeofficedigital/hocs-docker-tools
     commands:
     - |
+      curl http://keycloak:8080/auth/realms/master/.well-known/openid-configuration
+    - |
       until $(curl http://keycloak:8080/auth/realms/master/.well-known/openid-configuration); do
         sleep 20
       done
