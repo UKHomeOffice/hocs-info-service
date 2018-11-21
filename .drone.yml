@@ -3,7 +3,7 @@ pipeline:
     image: quay.io/ukhomeofficedigital/hocs-docker-tools
     commands:
     - |
-      until $(curl --output /dev/null --silent --head --fail http://keycloak:8080/auth); do
+      until $(curl --output /dev/null --silent --head --fail http://keycloak:8080/auth/realms/master/.well-known/openid-configuration); do
         sleep 5
       done
     - |
