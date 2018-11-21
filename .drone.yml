@@ -1,6 +1,6 @@
 pipeline:
   wait-for-keycloak:
-    image: quay.io/ukhomeofficedigital/hocs-docker-tools
+    image: quay.io/ukhomeofficedigital/hocs-docker-tools:build-4
     commands:
     - |
       until $(curl --output /dev/null --silent --head --fail http://keycloak:8080/auth/realms/master/.well-known/openid-configuration); do
