@@ -3,6 +3,8 @@ package uk.gov.digital.ho.hocs.info.standardLine;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.caseworkclient.CaseworkClient;
+import uk.gov.digital.ho.hocs.info.caseworkclient.dto.GetCaseworkCaseDataResponse;
 import uk.gov.digital.ho.hocs.info.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.dto.CreateStandardLineDocumentDto;
@@ -23,13 +25,16 @@ public class StandardLineService {
     private final DocumentClient documentClient;
     private final UUID SL_EXT_REF_UUID = UUID.fromString("77777777-7777-7777-7777-777777777777");
     LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+    private  final CaseworkClient caseworkClient;
 
     @Autowired
     public StandardLineService(
             StandardLineRepository standardLineRepository,
-            DocumentClient documentClient) {
+            DocumentClient documentClient,
+            CaseworkClient caseworkClient) {
         this.standardLineRepository = standardLineRepository;
         this.documentClient = documentClient;
+        this.caseworkClient = caseworkClient;
     }
 
     public StandardLine getStandardLines(UUID topicUUID) {
@@ -52,6 +57,11 @@ public class StandardLineService {
 
         processDocument(request,documentUUID);
         log.info("Created Standard Line - {}", request.getDisplayName());
+    }
+
+    public StandardLine getStandardLineList(UUID caseUUID) {
+        GetCaseworkCaseDataResponse caseTypeResponse = caseworkClient.getCase(caseUUID);
+        return getStandardLines(caseTypeResponse.getPrimaryTopic());
     }
 
     private void expireExistingStandardLineIfExist(CreateStandardLineDocumentDto request) {
