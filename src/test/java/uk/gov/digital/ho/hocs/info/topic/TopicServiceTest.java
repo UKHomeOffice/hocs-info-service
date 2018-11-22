@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.RequestData;
+import uk.gov.digital.ho.hocs.info.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
 import uk.gov.digital.ho.hocs.info.entities.Topic;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
@@ -30,13 +31,16 @@ public class TopicServiceTest {
     @Mock
     private TopicRepository topicRepository;
 
+    @Mock
+    private CaseworkClient caseworkClient;
+
     private TopicService topicService;
 
     private UUID uuid = UUID.randomUUID();
 
     @Before
     public void setUp() {
-        this.topicService = new TopicService(parentTopicRepository, topicRepository);
+        this.topicService = new TopicService(parentTopicRepository, topicRepository, caseworkClient);
     }
 
     @Test

@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.dto.CreateStandardLineDocumentDto;
@@ -30,6 +31,9 @@ public class StandardLineServiceTest {
     @Mock
     private DocumentClient documentClient;
 
+    @Mock
+    private CaseworkClient caseworkClient;
+
     private StandardLineService standardLineService;
 
     private static final UUID SL_EXT_REF = UUID.fromString("77777777-7777-7777-7777-777777777777");
@@ -41,7 +45,7 @@ public class StandardLineServiceTest {
 
     @Before
     public void setUp() {
-        this.standardLineService = new StandardLineService(standardLineRepository, documentClient);
+        this.standardLineService = new StandardLineService(standardLineRepository, documentClient, caseworkClient);
     }
 
     @Test
