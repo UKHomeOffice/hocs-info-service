@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.info.entities;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode(of = {"type"})
 public class CaseTypeEntity implements Serializable {
 
     @Id
@@ -27,5 +29,8 @@ public class CaseTypeEntity implements Serializable {
 
     @Column(name = "tenant_role")
     private String role;
+
+    @Column(name = "active")
+    private boolean active;
 
 }

@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.keycloak;
+package uk.gov.digital.ho.hocs.info.security;
 
 import org.keycloak.admin.client.Keycloak;
 import org.springframework.beans.factory.BeanCreationException;

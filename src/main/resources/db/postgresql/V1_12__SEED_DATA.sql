@@ -51,10 +51,10 @@ VALUES ('2018-08-27', 'MIN'),
 INSERT INTO unit (display_name, uuid,short_code, active)
 VALUES ('UNIT 1', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', 'UNIT1', TRUE);
 
-INSERT INTO team (display_name, uuid, unit_uuid)
-VALUES ('TEAM 1', '44444444-2222-2222-2222-222222222222', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c'),
-       ('TEAM 2', '11111111-1111-1111-1111-111111111111', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c'),
-       ('TEAM 3', '33333333-3333-3333-3333-333333333333', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c');
+INSERT INTO team (display_name, uuid, unit_uuid, active)
+VALUES ('TEAM 1', '44444444-2222-2222-2222-222222222222', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),
+       ('TEAM 2', '11111111-1111-1111-1111-111111111111', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),
+       ('TEAM 3', '33333333-3333-3333-3333-333333333333', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true);
 
 INSERT INTO unit_case_type (unit_uuid, case_type)
 VALUES ('d9a93c21-a1a8-4a5d-aa7b-597bb95a782c', 'MIN');

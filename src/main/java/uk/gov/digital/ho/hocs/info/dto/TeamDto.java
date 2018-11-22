@@ -24,6 +24,9 @@ public class TeamDto {
     @JsonProperty("type")
     private UUID uuid;
 
+    @JsonProperty("active")
+    private boolean active;
+
     @JsonProperty("permissions")
     private Set<PermissionDto> permissions;
 
@@ -35,7 +38,7 @@ public class TeamDto {
     }
 
     public static TeamDto from (Team team) {
-        return new TeamDto(team.getDisplayName(), team.getUuid(),
+        return new TeamDto(team.getDisplayName(), team.getUuid(), team.isActive(),
                 team.getPermissions().stream().map(permission ->
                         PermissionDto.from(permission)).collect(Collectors.toSet())); }
 }
