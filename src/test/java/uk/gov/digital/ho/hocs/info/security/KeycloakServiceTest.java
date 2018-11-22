@@ -7,8 +7,7 @@ import org.keycloak.admin.client.resource.GroupResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.mockito.Answers;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.ws.rs.core.Response;
@@ -118,6 +117,49 @@ public class KeycloakServiceTest {
         service.moveGroup(currentGroupPath, newGroupPath);
 
         verify(hocsRealm.groups().group("NEW_ID"), times(1)).subGroup(oldGroup);
+    }
+
+
+    @Test
+    public void shouldUpdateGroupMemberPermissions() {
+        String groupPath = "/UNIT1/teamUUID";
+
+        GroupRepresentation group = new GroupRepresentation();
+        group.setPath(groupPath);
+        group.setId("GROUP_ID");
+
+        GroupRepresentation caseTypeSubGroup = new GroupRepresentation();
+        caseTypeSubGroup.setPath(groupPath + "/CASETYPE1");
+        caseTypeSubGroup.setId("CASE_TYPE_GROUP_ID");
+
+        GroupRepresentation permissionTypeSubGroup = new GroupRepresentation();
+        permissionTypeSubGroup.setPath(groupPath + "/CASETYPE1" + "/OWNER");
+        permissionTypeSubGroup.setId("PERMISSION_GROUP_ID");
+
+        caseTypeSubGroup.setSubGroups(new ArrayList<GroupRepresentation>(){{
+            add(permissionTypeSubGroup);
+        }});
+
+        group.setSubGroups(new ArrayList<GroupRepresentation>(){{
+            add(caseTypeSubGroup);
+        }});
+
+        List<UserRepresentation> userRepresentations = new ArrayList<>();
+        UserRepresentation user =  new UserRepresentation();
+        user.setId(userUUID.toString());
+        user.setFirstName("FirstName");
+        user.setFirstName("LastName");
+        userRepresentations.add(user);
+
+        KeycloakService spyService = Mockito.spy(new KeycloakService(keycloakClient, HOCS_REALM));
+        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
+        doNothing().when(spyService).addUserToGroup(userUUID, "/UNIT1/teamUUID/CASETYPE1/OWNER");
+        when(hocsRealm.getGroupByPath(groupPath)).thenReturn(group);
+        when(hocsRealm.groups().group(group.getId()).members()).thenReturn(userRepresentations);
+
+        spyService.updateUserGroupsForGroup(groupPath);
+        verify(spyService, times(1)).addUserToGroup(userUUID, "/UNIT1/teamUUID/CASETYPE1/OWNER");
+
     }
 
 }

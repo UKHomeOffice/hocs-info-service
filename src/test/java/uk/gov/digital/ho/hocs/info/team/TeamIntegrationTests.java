@@ -1,10 +1,8 @@
-package uk.gov.digital.ho.hocs.info.integration;
+package uk.gov.digital.ho.hocs.info.team;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.entity.ContentType;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.keycloak.admin.client.Keycloak;
@@ -43,15 +41,8 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql(
-        scripts = "classpath:beforeTest.sql",
-        config = @SqlConfig(transactionMode = ISOLATED)
-)
-@Sql(
-        scripts = "classpath:afterTest.sql",
-        config = @SqlConfig(transactionMode = ISOLATED),
-        executionPhase = AFTER_TEST_METHOD
-)
+@Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
+@Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 public class TeamIntegrationTests {
 
@@ -97,7 +88,6 @@ public class TeamIntegrationTests {
                 serverUrl, HOCS_REALM, username, password, clientId, clientId);
 
     }
-
 
     @Test
     public void shouldAddTeamToUnitAndRemoveFromOldUnit() {
@@ -162,9 +152,6 @@ public class TeamIntegrationTests {
         assertThat(unitGroup).isNotNull();
     }
 
-
-
-
     @Test
     public void shouldAddUserToGroup() {
 
@@ -222,7 +209,6 @@ public class TeamIntegrationTests {
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).getDisplayName()).isEqualTo("New Team Name");
-
     }
 
     private String getBasePath() {
@@ -232,7 +218,6 @@ public class TeamIntegrationTests {
     private void setupKeycloakRealm() throws IOException {
         Keycloak adminClient = Keycloak.getInstance(
                 serverUrl, "master", username, password, clientId, clientId);
-
         try {
             adminClient.realms().realm(HOCS_REALM).remove();
         } catch (Exception e) {
@@ -240,7 +225,7 @@ public class TeamIntegrationTests {
         }
         RealmRepresentation hocsRealm = mapper.readValue(new File("./keycloak/local-realm.json"), RealmRepresentation.class);
         adminClient.realms().create(hocsRealm);
-         }
+    }
 }
 
 
