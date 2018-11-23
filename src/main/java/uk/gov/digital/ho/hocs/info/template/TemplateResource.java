@@ -7,6 +7,8 @@ import uk.gov.digital.ho.hocs.info.dto.CreateTemplateDocumentDto;
 import uk.gov.digital.ho.hocs.info.dto.GetTemplateResponse;
 import uk.gov.digital.ho.hocs.info.entities.Template;
 
+import java.util.UUID;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @RestController
@@ -25,6 +27,12 @@ public class TemplateResource {
         Template template = templateService.getTemplates(caseType);
         return ResponseEntity.ok(GetTemplateResponse.from(template));
 
+    }
+
+    @GetMapping(value = "/case/{caseUUID}/templates", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetTemplateResponse> getTemplate(@PathVariable UUID caseUUID) {
+        Template template =  templateService.getTemplateList(caseUUID);
+        return ResponseEntity.ok(GetTemplateResponse.from(template));
     }
 
     @PostMapping(value = "template/document", produces = APPLICATION_JSON_UTF8_VALUE)

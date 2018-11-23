@@ -28,6 +28,12 @@ public class StandardLineResource {
 
     }
 
+    @GetMapping(value = "/case/{caseUUID}/standard_lines", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetStandardLineResponse> getStandardLines(@PathVariable UUID caseUUID) {
+        StandardLine standardLines = standardLineService.getStandardLineList(caseUUID);
+        return ResponseEntity.ok(GetStandardLineResponse.from(standardLines));
+    }
+
     @PostMapping(value = "standardline/document", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity createDocument(@RequestBody CreateStandardLineDocumentDto request) {
         standardLineService.createStandardLineDocument(request);

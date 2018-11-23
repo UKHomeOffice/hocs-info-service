@@ -36,6 +36,12 @@ public class TopicResource {
             return ResponseEntity.ok(GetAllTopicsResponse.from(parentTopics));
     }
 
+    @GetMapping(value = "/case/{caseUUID}/topiclist", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetAllTopicsResponse> getParentTopicsAndTopics(@PathVariable UUID caseUUID) {
+        List<ParentTopic> parentTopics = topicService.getTopicList(caseUUID);
+        return ResponseEntity.ok(GetAllTopicsResponse.from(parentTopics));
+    }
+
     @GetMapping(value = "topic/parent/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetParentTopicsResponse> getAllParentTopicsByCaseType(@PathVariable String caseType) {
         log.info("requesting all Parent topics for case type {}", caseType);
