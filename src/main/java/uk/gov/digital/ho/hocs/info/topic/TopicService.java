@@ -3,7 +3,8 @@ package uk.gov.digital.ho.hocs.info.topic;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.info.RequestData;
+import uk.gov.digital.ho.hocs.info.caseworkclient.CaseworkClient;
+import uk.gov.digital.ho.hocs.info.caseworkclient.dto.GetCaseworkCaseDataResponse;
 import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
 import uk.gov.digital.ho.hocs.info.entities.Topic;
 import uk.gov.digital.ho.hocs.info.repositories.ParentTopicRepository;
@@ -19,12 +20,14 @@ public class TopicService {
 
     private final ParentTopicRepository parentTopicRepository;
     private final TopicRepository topicRepository;
+    private final CaseworkClient caseworkClient;
 
 
     @Autowired
-    public TopicService(ParentTopicRepository parentTopicRepository, TopicRepository topicRepository, RequestData requestData) {
+    public TopicService(ParentTopicRepository parentTopicRepository, TopicRepository topicRepository, CaseworkClient caseworkClient) {
         this.parentTopicRepository = parentTopicRepository;
         this.topicRepository = topicRepository;
+        this.caseworkClient = caseworkClient;
     }
 
     public List<ParentTopic> getParentTopics(String caseType) {
@@ -40,5 +43,10 @@ public class TopicService {
     public Topic getTopic(UUID topicUUID) {
         log.debug("Requesting topics {}", topicUUID);
         return  topicRepository.findTopicByUUID(topicUUID);
+    }
+
+    public List<ParentTopic> getTopicList(UUID caseUUID) {
+        GetCaseworkCaseDataResponse caseTypeResponse = caseworkClient.getCase(caseUUID);
+        return getParentTopics(caseTypeResponse.getType());
     }
 }

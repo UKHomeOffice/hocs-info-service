@@ -1,0 +1,34 @@
+version: '3.1'
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+    - 5432:5432
+    networks:
+    - hocs-network
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: dev
+    tmpfs:
+    - /var/lib/postgresql
+
+  keycloak:
+    image: jboss/keycloak
+    restart: always
+    ports:
+    - 9990:9990
+    - 9081:8080
+    networks:
+    - hocs-network
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: password1
+      KEYCLOAK_IMPORT: /tmp/local-realm.json
+      DB_VENDOR: h2
+    volumes:
+    - ${PWD}/keycloak:/tmp
+
+networks:
+  hocs-network:

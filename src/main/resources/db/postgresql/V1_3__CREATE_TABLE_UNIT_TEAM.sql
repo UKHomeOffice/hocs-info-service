@@ -5,11 +5,12 @@ CREATE TABLE IF NOT EXISTS unit
   id           BIGSERIAL PRIMARY KEY,
   display_name TEXT NOT NULL,
   uuid         UUID NOT NULL,
+  short_code   TEXT NOT NULL,
   active      boolean NOT NULL,
 
   CONSTRAINT unit_uuid_idempotent UNIQUE (uuid),
-  CONSTRAINT unit_name_idempotent UNIQUE (display_name)
-
+  CONSTRAINT unit_name_idempotent UNIQUE (display_name),
+  CONSTRAINT unit_code_idempotent UNIQUE (short_code)
 );
 
 CREATE INDEX idx_unit_uuid
@@ -27,6 +28,8 @@ CREATE TABLE IF NOT EXISTS team
   display_name TEXT NOT NULL,
   uuid         UUID NOT NULL,
   unit_uuid    UUID NOT NULL,
+  active       boolean NOT NULL,
+
 
   CONSTRAINT team_uuid_idempotent UNIQUE (uuid),
   CONSTRAINT team_name_idempotent UNIQUE (display_name),

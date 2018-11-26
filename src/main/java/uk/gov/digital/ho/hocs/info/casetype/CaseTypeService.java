@@ -32,9 +32,5 @@ public class CaseTypeService {
         return caseTypeRepository.findAllBulkCaseTypesByTenant(requestData.roles());
     }
 
-    public boolean hasPermissionForCaseType(String caseType)
-    {
-        String caseTypeEntity = caseTypeRepository.findCaseTypeEntityByTenant(caseType, requestData.roles());
-        return  caseTypeEntity != null;
-    }
+
 }

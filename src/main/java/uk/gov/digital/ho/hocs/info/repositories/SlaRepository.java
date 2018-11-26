@@ -13,4 +13,6 @@ public interface SlaRepository extends CrudRepository<Sla, String> {
     @Query(value ="SELECT s.* FROM sla s WHERE s.case_type = ?1" , nativeQuery = true )
     Set<Sla> findAllByCaseType(String caseType);
 
+    @Query(value ="SELECT s.* FROM sla s WHERE s.stage_type = ?1" , nativeQuery = true )
+    Sla findAllByStageType(String stageType);
 }

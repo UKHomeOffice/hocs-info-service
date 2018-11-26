@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.RequestData;
 import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
+import uk.gov.digital.ho.hocs.info.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.dto.CreateTemplateDocumentDto;
@@ -31,6 +32,9 @@ public class TemplateServiceTest {
     @Mock
     private DocumentClient documentClient;
 
+    @Mock
+    private CaseworkClient caseworkClient;
+
     private TemplateService templateService;
     private static final UUID TEMPLATE_EXT_REF = UUID.fromString("88888888-8888-8888-8888-888888888888");
     private static final UUID DOCUMENT_UUID = UUID.randomUUID();
@@ -40,14 +44,16 @@ public class TemplateServiceTest {
 
     @Before
     public void setUp() {
-        this.templateService = new TemplateService(templateRepository,documentClient);
+        this.templateService = new TemplateService(templateRepository,documentClient, caseworkClient);
     }
 
     @Test
     public void shouldReturnListOfTemplates() throws EntityPermissionException {
+
         when(templateRepository.findActiveTemplateByCaseType(CASE_TYPE)).thenReturn(new Template());
         templateService.getTemplates(CASE_TYPE);
         verify(templateRepository, times(1)).findActiveTemplateByCaseType(CASE_TYPE);
+
         verifyNoMoreInteractions(templateRepository);
     }
 
@@ -85,6 +91,7 @@ public class TemplateServiceTest {
         verifyNoMoreInteractions(templateRepository);
         verifyNoMoreInteractions(documentClient);
     }
+
 
     @Test(expected = EntityCreationException.class)
     public void shouldThrowExemptionWhenCreateTemplateDocumentDTOIsNull() {

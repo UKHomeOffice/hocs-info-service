@@ -1,8 +1,22 @@
 pipeline:
+  wait-for-keycloak:
+    image: quay.io/ukhomeofficedigital/hocs-docker-tools:build-4
+    commands:
+    - |
+      until $(curl --output /dev/null --silent --head --fail http://keycloak:8080/auth/realms/master/.well-known/openid-configuration); do
+        sleep 5
+      done
+    - |
+      export TKN=$(curl -X POST 'http://keycloak:8080/auth/realms/master/protocol/openid-connect/token' -H "Content-Type: application/x-www-form-urlencoded" -d "username=admin" -d 'password=password1' -d 'grant_type=password' -d 'client_id=admin-cli' | jq -r '.access_token')
+    - |
+      curl -vX POST http://keycloak:8080/auth/admin/realms -d @keycloak/local-realm.json --header "Authorization: Bearer $TKN" --header "Content-Type: application/json"
 
   build-project:
     image: quay.io/ukhomeofficedigital/openjdk8
     commands:
+      - export SPRING_PROFILES_ACTIVE='development, local'
+      - export DB_HOST='postgres'
+      - export AWS_LOCAL_HOST='localstack'
       - ./gradlew build
     when:
       event: [push, pull_request, tag]
@@ -37,19 +51,6 @@ pipeline:
     when:
       branch: master
       event: push
-
-  tag-docker-image-with-git-tag:
-    image: docker:17.09.1
-    environment:
-      - DOCKER_HOST=tcp://172.17.0.1:2375
-    secrets:
-      - docker_password
-    commands:
-      - docker login -u="ukhomeofficedigital+hocs" -p=$${DOCKER_PASSWORD} quay.io
-      - docker tag hocs-info-service quay.io/ukhomeofficedigital/hocs-info-service:$${DRONE_TAG}
-      - docker push quay.io/ukhomeofficedigital/hocs-info-service:$${DRONE_TAG}
-    when:
-      event: tag
 
   clone-kube-project:
     image: plugins/git
@@ -106,3 +107,61 @@ pipeline:
     when:
       event: deployment
       environment: prod
+
+
+services:
+  keycloak:
+    image: jboss/keycloak
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: password1
+      DB_VENDOR: h2
+  postgres:
+    image: quay.io/ukhomeofficedigital/postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: dev
+  localstack:
+    image: localstack/localstack:latest
+    environment:
+      HOSTNAME_EXTERNAL: localstack
+      DEFAULT_REGION: eu-west-2
+      SERVICES: sqs,s3
+  aws_cli:
+    image: quay.io/ukhomeofficedigital/hocs-docker-tools
+    command:
+    - /bin/sh
+    - -c
+    - |
+      aws --endpoint-url=http://localstack:4572 s3 mb s3://untrusted-bucket
+      aws --endpoint-url=http://localstack:4572 s3 mb s3://trusted-bucket
+      aws --endpoint-url=http://localstack:4576 sqs create-queue --queue-name case-queue
+      aws --endpoint-url=http://localstack:4576 sqs create-queue --queue-name case-queue-dlq
+      aws --endpoint-url=http://localstack:4576 sqs create-queue --queue-name document-queue
+      aws --endpoint-url=http://localstack:4576 sqs create-queue --queue-name document-queue-dlq
+      aws --endpoint-url=http://localstack:4576 sqs create-queue --queue-name reporting-queue
+      aws --endpoint-url=http://localstack:4576 sqs create-queue --queue-name reporting-queue-dlq
+
+    environment:
+      AWS_ACCESS_KEY_ID: UNSET
+      AWS_SECRET_ACCESS_KEY: UNSET
+      AWS_DEFAULT_REGION: 'eu-west-2'
+  selenium:
+    image: selenium/hub
+
+  chrome:
+    image: selenium/node-chrome
+    environment:
+      HUB_PORT_4444_TCP_ADDR: selenium
+      HUB_PORT_4444_TCP_PORT: "4444"
+      DISPLAY: ":99.0"
+
+  firefox:
+    image: selenium/node-firefox
+    environment:
+      HUB_PORT_4444_TCP_ADDR: selenium
+      HUB_PORT_4444_TCP_PORT: "4444"
+      DISPLAY: ":98.0"
+
+
+

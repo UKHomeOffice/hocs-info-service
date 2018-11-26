@@ -11,7 +11,7 @@ public class CaseTypeDtoTest {
 
     @Test
     public void shouldBuildCaseTypeDtoFromCaseTypeObject() {
-        CaseTypeEntity caseTypeEntity = new CaseTypeEntity(1,"Name","MIN","DCU");
+        CaseTypeEntity caseTypeEntity = new CaseTypeEntity(1L,"Name","MIN","DCU", true);
 
         CaseTypeDto caseTypeDto = CaseTypeDto.from(caseTypeEntity);
 

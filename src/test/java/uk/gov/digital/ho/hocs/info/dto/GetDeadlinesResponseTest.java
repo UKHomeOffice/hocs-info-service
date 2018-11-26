@@ -17,7 +17,7 @@ public class GetDeadlinesResponseTest {
         Sla sla = new Sla("Draft", 5, "MIN");
         Sla sla2 = new Sla("Final", 5, "MIN");
         Set<HolidayDate> holidayDates = new HashSet<>();
-        holidayDates.add(new HolidayDate(1, LocalDate.of(2018, 1, 1)));
+        holidayDates.add(new HolidayDate(1L, LocalDate.of(2018, 1, 1)));
         Deadline deadline = new Deadline(LocalDate.of(2018, 1, 1), sla, holidayDates);
         Deadline deadline2 = new Deadline(LocalDate.of(2018, 2, 1), sla2, holidayDates);
 

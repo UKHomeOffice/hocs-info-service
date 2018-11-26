@@ -62,6 +62,37 @@ public class DeadlinesServiceTest {
     }
 
     @Test
+    public void shouldCalculateStageDeadlinesWhenThreeDaySlaNotSpanningOverWeekend() throws EntityPermissionException, EntityNotFoundException {
+
+        when(holidayDateRepository.findAllByStageType(any())).thenReturn(getHolidays());
+        when(slaRepository.findAllByStageType(any())).thenReturn(get3DayStageSla());
+
+        Deadline deadlineDto = deadlinesService.getDeadlineForStage("final", LocalDate.of(2018, 01, 02));
+
+
+        verify(holidayDateRepository, times(1)).findAllByStageType(any());
+        verify(slaRepository, times(1)).findAllByStageType(any());
+
+        assertThat(deadlineDto.getDate()).isEqualTo(LocalDate.of(2018, 01, 05));
+        assertThat(deadlineDto.getType()).isEqualTo("final");
+    }
+
+    @Test
+    public void shouldCalculateStageDeadlinesWhenThreeDaySlaSpanningOverTwoWeekendDays() throws EntityPermissionException, EntityNotFoundException {
+
+        when(holidayDateRepository.findAllByStageType(any())).thenReturn(getHolidays());
+        when(slaRepository.findAllByStageType(any())).thenReturn(get3DayStageSla());
+
+        Deadline deadlineDto = deadlinesService.getDeadlineForStage("final", LocalDate.of(2018, 01, 05));
+
+        verify(holidayDateRepository, times(1)).findAllByStageType(any());
+        verify(slaRepository, times(1)).findAllByStageType(any());
+        assertThat(deadlineDto.getDate()).isEqualTo(LocalDate.of(2018, 01, 10));
+        assertThat(deadlineDto.getType()).isEqualTo("final");
+
+    }
+
+    @Test
     public void shouldCalculateDeadlinesWhenThreeDaySlaSpanningOverTwoWeekendDays() throws EntityPermissionException, EntityNotFoundException {
 
         when(holidayDateRepository.findAllByCaseType(any())).thenReturn(getHolidays());
@@ -146,10 +177,10 @@ public class DeadlinesServiceTest {
     private static Set<HolidayDate> getHolidays() {
         Set<HolidayDate> holidays = new HashSet<>();
 
-        holidays.add(new HolidayDate(1,LocalDate.of(2018, 01, 15)));
-        holidays.add(new HolidayDate(2,LocalDate.of(2018, 12, 25)));
-        holidays.add(new HolidayDate(3,LocalDate.of(2018, 12, 26)));
-        holidays.add(new HolidayDate(4,LocalDate.of(2019, 01, 01)));
+        holidays.add(new HolidayDate(1L,LocalDate.of(2018, 01, 15)));
+        holidays.add(new HolidayDate(2L,LocalDate.of(2018, 12, 25)));
+        holidays.add(new HolidayDate(3L,LocalDate.of(2018, 12, 26)));
+        holidays.add(new HolidayDate(4L,LocalDate.of(2019, 01, 01)));
         return holidays;
     }
 
@@ -158,6 +189,10 @@ public class DeadlinesServiceTest {
         Sla sla1 = new Sla("final", 3, "MIN");
         slas.add(sla1);
         return slas;
+    }
+
+    private static Sla get3DayStageSla() {
+        return new Sla("final", 3, "MIN");
     }
 
     private static Set<Sla> get10DaySla() {

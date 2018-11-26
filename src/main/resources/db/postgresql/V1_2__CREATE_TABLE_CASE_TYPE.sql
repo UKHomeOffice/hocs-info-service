@@ -7,11 +7,10 @@ CREATE TABLE IF NOT EXISTS case_type
   type         TEXT    NOT NULL,
   tenant_role  TEXT    NOT NULL,
   active       boolean NOT NULL,
-  bulk         boolean NOT NULL,
+  bulk         boolean NULL,
 
     CONSTRAINT case_type_type_idempotent UNIQUE ( type ),
-  CONSTRAINT case_type_name_idempotent UNIQUE (display_name),
-  CONSTRAINT fk_case_type_uuid FOREIGN KEY (tenant_role) REFERENCES tenant (role)
+  CONSTRAINT case_type_name_idempotent UNIQUE (display_name)
 );
 
 CREATE INDEX idx_case_type_tenant_role

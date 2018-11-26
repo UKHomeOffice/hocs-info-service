@@ -9,7 +9,7 @@ public class CorrespondentTypeDtoTest {
 
     @Test
     public void shouldBuildCorrespondentTypeDTOFromCorrespondentObject() {
-        CorrespondentType correspondentType = new CorrespondentType(1,"Name","MIN");
+        CorrespondentType correspondentType = new CorrespondentType(1L,"Name","MIN");
 
         CorrespondentTypeDto correspondentTypeDto = CorrespondentTypeDto.from(correspondentType);
 

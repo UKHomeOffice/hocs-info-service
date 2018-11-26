@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.RequestData;
 import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
+import uk.gov.digital.ho.hocs.info.caseworkclient.CaseworkClient;
+import uk.gov.digital.ho.hocs.info.caseworkclient.dto.GetCaseworkCaseDataResponse;
 import uk.gov.digital.ho.hocs.info.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.dto.CreateTemplateDocumentDto;
@@ -24,24 +26,28 @@ public class TemplateService {
     private final TemplateRepository templateRepository;
     private final DocumentClient documentClient;
     private final UUID TEMPLATE_EXTERNAL_REFERENCE_UUID = UUID.fromString("88888888-8888-8888-8888-888888888888");
-
+    private final CaseworkClient caseworkClient;
 
     @Autowired
     public TemplateService(TemplateRepository templateRepository,
-                           DocumentClient documentClient) {
+                           DocumentClient documentClient,
+                           CaseworkClient caseworkClient) {
         this.templateRepository = templateRepository;
         this.documentClient = documentClient;
+        this.caseworkClient = caseworkClient;
     }
 
-    public Template getTemplates(String caseType){
+
+    public Template getTemplates(String caseType) {
         Template template = templateRepository.findActiveTemplateByCaseType(caseType);
-        if(template != null){
+        if (template != null) {
             log.info("Got Template for CaseType {} ", caseType);
-        return template;
+            return template;
         } else {
             throw new EntityNotFoundException("Template for CaseType: %s, not found!", caseType);
         }
     }
+
 
     void createTemplateDocument(CreateTemplateDocumentDto document) {
 
@@ -57,6 +63,11 @@ public class TemplateService {
             throw new EntityCreationException("no template");
 
         }
+    }
+
+    Template getTemplateList(UUID caseUUID) {
+        GetCaseworkCaseDataResponse caseTypeResponse = caseworkClient.getCase(caseUUID);
+        return getTemplates(caseTypeResponse.getType());
     }
 
     private void setDeletedExistingTemplateIfExists(CreateTemplateDocumentDto document) {

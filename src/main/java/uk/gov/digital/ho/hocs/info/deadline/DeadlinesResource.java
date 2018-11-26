@@ -34,8 +34,18 @@ public class DeadlinesResource {
             return ResponseEntity.ok(GetDeadlinesResponse.from(deadlineDtos));
         } catch (EntityNotFoundException  e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch ( EntityPermissionException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build() ;
+        }
+    }
+
+    @GetMapping(value = "/stagetype/{stageType}/deadline/{received}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Deadline> getDeadlineByStage(@PathVariable String stageType, @PathVariable String received) {
+        try {
+            LocalDate receivedDate = LocalDate.parse(received);
+
+            Deadline deadline = deadlinesService.getDeadlineForStage(stageType, receivedDate);
+            return ResponseEntity.ok(deadline);
+        } catch (EntityNotFoundException  e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 }
