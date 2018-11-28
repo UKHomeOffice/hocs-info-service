@@ -23,8 +23,7 @@ public class IrishMember {
     @JacksonXmlProperty(localName = "PersonId")
     private String personId;
 
-    public String getName()
-    {
+    public String getName() {
         return firstName + " " + lastName;
     }
 

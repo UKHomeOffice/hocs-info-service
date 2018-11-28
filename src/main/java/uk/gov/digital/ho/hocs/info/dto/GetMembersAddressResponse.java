@@ -40,8 +40,7 @@ public class GetMembersAddressResponse {
     @JsonProperty("reference")
     String reference;
 
-    public static GetMembersAddressResponse from(Member member)
-    {
+    public static GetMembersAddressResponse from(Member member) {
         return new GetMembersAddressResponse(
                 "MEMBER",
                 member.getFullTitle(),

@@ -15,7 +15,7 @@ public class CaseTypeDto {
     @JsonProperty("value")
     private String type;
 
-    public static CaseTypeDto from(CaseTypeEntity caseTypeEntity){
+    public static CaseTypeDto from(CaseTypeEntity caseTypeEntity) {
         return new CaseTypeDto(caseTypeEntity.getDisplayName(), caseTypeEntity.getType());
     }
 

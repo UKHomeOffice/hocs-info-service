@@ -15,7 +15,7 @@ public class CorrespondentTypeDto {
     @JsonProperty("value")
     private String type;
 
-    public static CorrespondentTypeDto from(CorrespondentType correspondentType){
+    public static CorrespondentTypeDto from(CorrespondentType correspondentType) {
         return new CorrespondentTypeDto(correspondentType.getDisplayName(), correspondentType.getType());
     }
 

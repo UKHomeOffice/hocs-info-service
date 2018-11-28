@@ -5,15 +5,12 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.GroupRepresentation;
-import org.keycloak.representations.idm.PartialImportRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.UUID;
-
 import static net.logstash.logback.argument.StructuredArguments.value;
 import static uk.gov.digital.ho.hocs.info.logging.LogEvent.EVENT;
 import static uk.gov.digital.ho.hocs.info.logging.LogEvent.TEAM_CREATED;
@@ -33,11 +30,10 @@ public class KeycloakService {
     }
 
    public  void addUserToGroup(UUID userUUID, String groupPath) {
-       try {
-        RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
-        UserResource user = hocsRealm.users().get(userUUID.toString());
-        GroupRepresentation group = hocsRealm.getGroupByPath(groupPath);
-
+        try {
+            RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
+            UserResource user = hocsRealm.users().get(userUUID.toString());
+            GroupRepresentation group = hocsRealm.getGroupByPath(groupPath);
             user.joinGroup(group.getId());
         }
         catch(Exception e) {
@@ -99,7 +95,6 @@ public class KeycloakService {
         }
     }
 
-
     public void moveGroup(String currentGroupPath, String newParent) {
         try {
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
@@ -111,7 +106,6 @@ public class KeycloakService {
         catch(Exception e) {
             log.error("Failed to move Keycloak group {} to new parent {} for reason: {}." ,currentGroupPath, newParent, e.getMessage() , value(EVENT, TEAM_CREATED));
             throw new KeycloakException(e.getMessage(), e);
+        }
     }
-    }
-
 }
