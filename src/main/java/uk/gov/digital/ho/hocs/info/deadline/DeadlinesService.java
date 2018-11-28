@@ -9,7 +9,6 @@ import uk.gov.digital.ho.hocs.info.entities.Sla;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.repositories.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.repositories.SlaRepository;
-
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;

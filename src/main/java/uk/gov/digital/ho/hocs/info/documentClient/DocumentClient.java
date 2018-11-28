@@ -14,7 +14,6 @@ import uk.gov.digital.ho.hocs.info.documentClient.dto.CreateManagedDocumentReque
 import uk.gov.digital.ho.hocs.info.documentClient.dto.ProcessDocumentRequest;
 import uk.gov.digital.ho.hocs.info.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.exception.EntityCreationException;
-
 import java.util.UUID;
 
 @Slf4j
@@ -24,7 +23,6 @@ public class DocumentClient {
     private final String documentQueue;
     private final ProducerTemplate producerTemplate;
     private final ObjectMapper objectMapper;
-
     private final RestHelper restHelper;
     private final String serviceBaseURL;
 

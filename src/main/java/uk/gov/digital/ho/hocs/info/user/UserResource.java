@@ -1,18 +1,16 @@
 package uk.gov.digital.ho.hocs.info.user;
 
-
 import java.util.List;
-import org.keycloak.representations.idm.UserRepresentation;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import uk.gov.digital.ho.hocs.info.dto.UserDto;
 
 @RestController
 public class UserResource {
 
     private final UserService userService;
-
 
     @Autowired
     public UserResource(UserService userService) {
@@ -21,9 +19,8 @@ public class UserResource {
 
 
     @GetMapping(value = "/users")
-    public ResponseEntity<List<UserRepresentation>> getAllUsers() {
-
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers().stream().map(user -> UserDto.from(user)).collect(Collectors.toList()));
     }
 
 

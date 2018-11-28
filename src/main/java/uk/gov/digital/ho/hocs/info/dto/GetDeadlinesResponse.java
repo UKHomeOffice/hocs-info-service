@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.entities.Deadline;
-
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;

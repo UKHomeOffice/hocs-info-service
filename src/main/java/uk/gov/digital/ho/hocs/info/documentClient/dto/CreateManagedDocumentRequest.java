@@ -17,7 +17,7 @@ public class CreateManagedDocumentRequest {
     @JsonProperty("type")
     private ManagedDocumentType type;
 
-    @JsonProperty("externalReferenceUUID")
-    private UUID externalReferenceUUID;
+    @JsonProperty("externalReferenceUuid")
+    private UUID externalReferenceUuid;
 
 }
