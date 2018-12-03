@@ -29,7 +29,7 @@ public class KeycloakService {
         this.hocsRealmName = hocsRealmName;
     }
 
-   public  void addUserToGroup(UUID userUUID, String groupPath) {
+   public void addUserToGroup(UUID userUUID, String groupPath) {
         try {
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
             UserResource user = hocsRealm.users().get(userUUID.toString());
@@ -73,6 +73,12 @@ public class KeycloakService {
 
     public List<UserRepresentation> getAllUsers() {
         List<UserRepresentation> users = keycloakClient.realm(hocsRealmName).users().list();
+        return users;
+    }
+
+    public List<UserRepresentation> getUsersForTeam(String path, String teamUUID) {
+        String id = keycloakClient.realm(hocsRealmName).getGroupByPath(path).getId();
+        List<UserRepresentation> users = keycloakClient.realm(hocsRealmName).groups().group(id).members();
         return users;
     }
 

@@ -47,7 +47,7 @@ public class TeamService {
 
     public TeamDto getTeam(UUID teamUUID) {
         Team team = teamRepository.findByUuid(teamUUID);
-        if(team == null) {
+        if (team == null) {
             throw new EntityNotFoundException("Team does not exist");
         }
         return TeamDto.from(team);
@@ -59,12 +59,12 @@ public class TeamService {
         Team team = teamRepository.findByUuid(newTeam.getUuid());
         Unit unit = unitRepository.findByUuid(unitUUID);
         Set<Permission> permissions = getPermissionsFromDto(newTeam.getPermissions(), team);
-        if(team == null) {
-            team = new Team(newTeam.getDisplayName(),newTeam.getUuid(), true);
+        if (team == null) {
+            team = new Team(newTeam.getDisplayName(), newTeam.getUuid(), true);
             team.addPermissions(getPermissionsFromDto(newTeam.getPermissions(), team));
             unit.addTeam(team);
-         }
-        createKeyCloakMappings(permissions,team.getUuid(),unit.getShortCode(), Optional.empty());
+        }
+        createKeyCloakMappings(permissions, team.getUuid(), unit.getShortCode(), Optional.empty());
 
         log.info("Team with UUID {} created in Unit {}", team.getUuid().toString(), unit.getShortCode(), value(EVENT, TEAM_CREATED));
         return TeamDto.from(team);
@@ -83,9 +83,9 @@ public class TeamService {
         String unit = team.getUnit().getShortCode();
         Set<Permission> permissions = team.getPermissions();
 
-        createKeyCloakMappings(permissions,teamUUID,unit, Optional.of(userUUID));
+        createKeyCloakMappings(permissions, teamUUID, unit, Optional.of(userUUID));
 
-        log.info("Added user with UUID {} to team with UUID {}",userUUID.toString(), team.getUuid().toString(), value(EVENT, USER_ADDED_TO_TEAM));
+        log.info("Added user with UUID {} to team with UUID {}", userUUID.toString(), team.getUuid().toString(), value(EVENT, USER_ADDED_TO_TEAM));
     }
 
     @Transactional
@@ -108,8 +108,8 @@ public class TeamService {
         Team team = teamRepository.findByUuid(teamUUID);
         Set<Permission> permissions = getPermissionsFromDto(permissionsDto, team);
         team.addPermissions(permissions);
-        createKeyCloakMappings(permissions,teamUUID,team.getUnit().getShortCode(), Optional.empty());
-        keycloakService.updateUserGroupsForGroup(String.format("/%s/%s",team.getUnit().getShortCode(), teamUUID.toString()));
+        createKeyCloakMappings(permissions, teamUUID, team.getUnit().getShortCode(), Optional.empty());
+        keycloakService.updateUserGroupsForGroup(String.format("/%s/%s", team.getUnit().getShortCode(), teamUUID.toString()));
         log.info("Updated Permissions for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_UPDATED));
     }
 
@@ -122,7 +122,7 @@ public class TeamService {
 
     private Set<Permission> getPermissionsFromDto(Set<PermissionDto> permissionsDto, Team team) {
         Set<Permission> permissions = new HashSet<>();
-        for(PermissionDto permissionDto: permissionsDto) {
+        for (PermissionDto permissionDto : permissionsDto) {
             AccessLevel accessLevel = permissionDto.getAccessLevel();
             CaseTypeEntity caseType = caseTypeRepository.findByType(permissionDto.getCaseTypeCode());
             permissions.add(new Permission(accessLevel, team, caseType));
@@ -135,13 +135,15 @@ public class TeamService {
         String team = teamUUID.toString();
         keycloakService.createUnitGroupIfNotExists(unitShortCode);
         keycloakService.createGroupPathIfNotExists(unitShortCode, team);
-
-        for(Permission permission: permissions) {
-            keycloakService.createGroupPathIfNotExists(String.format("/%s/%s",unitShortCode, team), permission.getCaseType().getType());
-            keycloakService.createGroupPathIfNotExists(String.format("/%s/%s/%s",unitShortCode,team, permission.getCaseType().getType()),permission.getAccessLevel().toString());
+        if (userUUID.isPresent()) {
+            keycloakService.addUserToGroup(userUUID.get(), String.format("/%s/%s", unitShortCode, team));
+        }
+        for (Permission permission : permissions) {
+            keycloakService.createGroupPathIfNotExists(String.format("/%s/%s", unitShortCode, team), permission.getCaseType().getType());
+            keycloakService.createGroupPathIfNotExists(String.format("/%s/%s/%s", unitShortCode, team, permission.getCaseType().getType()), permission.getAccessLevel().toString());
             String groupPath = String.format("/%s/%s/%s/%s", unitShortCode, team, permission.getCaseType().getType(), permission.getAccessLevel());
 
-            if(userUUID.isPresent()) {
+            if (userUUID.isPresent()) {
                 keycloakService.addUserToGroup(userUUID.get(), groupPath);
             }
 
