@@ -207,6 +207,7 @@ public class TeamServiceTest {
         verify(keycloakService, times(1)).createGroupPathIfNotExists(unitGroupPath, team1UUID.toString());
         verify(keycloakService, times(1)).createGroupPathIfNotExists(teamGroupPath, "MIN");
         verify(keycloakService, times(1)).createGroupPathIfNotExists(caseGroupPath, "OWNER");
+        verify(keycloakService, times(1)).addUserToGroup(userUUID, teamGroupPath);
         verify(keycloakService, times(1)).addUserToGroup(userUUID, accessLevelGroupPath);
     }
 
@@ -227,13 +228,18 @@ public class TeamServiceTest {
             add(new PermissionDto("MIN", AccessLevel.OWNER));
         }};
 
+        Set<String> permissionPaths = new HashSet<String>() {{
+            add("/UNIT/" + team1UUID + "/MIN/READ");
+            add("/UNIT/" + team1UUID + "/MIN/OWNER");
+        }};
+
         assertThat(team.getPermissions().size()).isEqualTo(0);
         teamService.updateTeamPermissions(team1UUID, permissions);
         assertThat(team.getPermissions().size()).isEqualTo(2);
 
 
         verify(teamRepository, times(1)).findByUuid(team1UUID);
-        verify(keycloakService, times(1)).updateUserGroupsForGroup("/UNIT/" + team1UUID.toString());
+        verify(keycloakService, times(1)).updateUserTeamGroups("/UNIT/" + team1UUID.toString(),permissionPaths);
         verifyNoMoreInteractions(teamRepository);
     }
 

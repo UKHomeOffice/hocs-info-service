@@ -11,9 +11,8 @@ import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -145,21 +144,10 @@ public class KeycloakServiceTest {
         group.setPath(groupPath);
         group.setId("GROUP_ID");
 
-        GroupRepresentation caseTypeSubGroup = new GroupRepresentation();
-        caseTypeSubGroup.setPath(groupPath + "/CASETYPE1");
-        caseTypeSubGroup.setId("CASE_TYPE_GROUP_ID");
+        Set<String> permissions = new HashSet<String>(){{
+            add("/UNIT1/teamUUID/CASETYPE1/OWNER");
+        }};
 
-        GroupRepresentation permissionTypeSubGroup = new GroupRepresentation();
-        permissionTypeSubGroup.setPath(groupPath + "/CASETYPE1" + "/OWNER");
-        permissionTypeSubGroup.setId("PERMISSION_GROUP_ID");
-
-        caseTypeSubGroup.setSubGroups(new ArrayList<GroupRepresentation>(){{
-            add(permissionTypeSubGroup);
-        }});
-
-        group.setSubGroups(new ArrayList<GroupRepresentation>(){{
-            add(caseTypeSubGroup);
-        }});
 
         List<UserRepresentation> userRepresentations = new ArrayList<>();
         UserRepresentation user =  new UserRepresentation();
@@ -174,7 +162,7 @@ public class KeycloakServiceTest {
         when(hocsRealm.getGroupByPath(groupPath)).thenReturn(group);
         when(hocsRealm.groups().group(group.getId()).members()).thenReturn(userRepresentations);
 
-        spyService.updateUserGroupsForGroup(groupPath);
+        spyService.updateUserTeamGroups(groupPath, permissions);
         verify(spyService, times(1)).addUserToGroup(userUUID, "/UNIT1/teamUUID/CASETYPE1/OWNER");
 
     }

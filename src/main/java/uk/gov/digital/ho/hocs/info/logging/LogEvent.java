@@ -7,7 +7,11 @@ public enum LogEvent {
     TEAM_ADDED_TO_UNIT,
     TEAM_RENAMED,
     TEAM_PERMISSIONS_UPDATED,
-    USER_ADDED_TO_TEAM;
+    USER_ADDED_TO_TEAM,
+    KEYCLOAK_FAILURE,
+    BULK_IMPORT_STARTED,
+    BULK_IMPORT_SUCCESS,
+    BULK_IMPORT_FAILURE;
 
     public static final String EVENT = "event_id";
 }

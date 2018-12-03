@@ -108,8 +108,10 @@ public class TeamService {
         Team team = teamRepository.findByUuid(teamUUID);
         Set<Permission> permissions = getPermissionsFromDto(permissionsDto, team);
         team.addPermissions(permissions);
+        Set<String> permissionPaths = createKeyCloakMappings(permissions, teamUUID, team.getUnit().getShortCode(), Optional.empty());
+        String teamPath = String.format("/%s/%s", team.getUnit().getShortCode(), teamUUID.toString());
         createKeyCloakMappings(permissions, teamUUID, team.getUnit().getShortCode(), Optional.empty());
-        keycloakService.updateUserGroupsForGroup(String.format("/%s/%s", team.getUnit().getShortCode(), teamUUID.toString()));
+        keycloakService.updateUserTeamGroups(teamPath, permissionPaths);
         log.info("Updated Permissions for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_UPDATED));
     }
 
@@ -131,24 +133,26 @@ public class TeamService {
     }
 
 
-    private void createKeyCloakMappings(Set<Permission> permissions, UUID teamUUID, String unitShortCode, Optional<UUID> userUUID) {
+    private Set<String> createKeyCloakMappings(Set<Permission> permissions, UUID teamUUID, String unitShortCode, Optional<UUID> userUUID) {
         String team = teamUUID.toString();
         keycloakService.createUnitGroupIfNotExists(unitShortCode);
         keycloakService.createGroupPathIfNotExists(unitShortCode, team);
+
         if (userUUID.isPresent()) {
             keycloakService.addUserToGroup(userUUID.get(), String.format("/%s/%s", unitShortCode, team));
         }
+
+        Set<String> permissionPaths = new HashSet<>();
         for (Permission permission : permissions) {
             keycloakService.createGroupPathIfNotExists(String.format("/%s/%s", unitShortCode, team), permission.getCaseType().getType());
             keycloakService.createGroupPathIfNotExists(String.format("/%s/%s/%s", unitShortCode, team, permission.getCaseType().getType()), permission.getAccessLevel().toString());
-            String groupPath = String.format("/%s/%s/%s/%s", unitShortCode, team, permission.getCaseType().getType(), permission.getAccessLevel());
-
+            String permissionPath = String.format("/%s/%s/%s/%s", unitShortCode, team, permission.getCaseType().getType(), permission.getAccessLevel());
+            permissionPaths.add(permissionPath);
             if (userUUID.isPresent()) {
-                keycloakService.addUserToGroup(userUUID.get(), groupPath);
+                keycloakService.addUserToGroup(userUUID.get(), permissionPath);
             }
 
         }
+        return permissionPaths;
     }
-
-
 }
