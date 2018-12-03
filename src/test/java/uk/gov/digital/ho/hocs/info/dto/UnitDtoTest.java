@@ -22,9 +22,9 @@ public class UnitDtoTest {
 
         Set<Permission> permissions = new HashSet<Permission>(){{
             add(new Permission(AccessLevel.OWNER, null,
-                    new CaseTypeEntity(1L, "MIN", "type", "role", true)));
+                    new CaseTypeEntity(1L, "MIN", "type","a1", "role", true)));
             add(new Permission(AccessLevel.OWNER, null,
-                    new CaseTypeEntity(1L, "MIN", "type", "role", true)));
+                    new CaseTypeEntity(1L, "MIN", "type", "a1","role", true)));
         }};
         Team team = new Team("Team 1", UUID.randomUUID(), permissions);
         Unit unit = new Unit("Unit 1", "TEST", UUID.randomUUID(), true);
@@ -42,9 +42,9 @@ public class UnitDtoTest {
 
         Set<Permission> permissions = new HashSet<Permission>(){{
             add(new Permission(AccessLevel.OWNER, null,
-                    new CaseTypeEntity(1L, "MIN", "type", "role", true)));
+                    new CaseTypeEntity(1L, "MIN", "type","a1", "role", true)));
             add(new Permission(AccessLevel.OWNER, null,
-                    new CaseTypeEntity(1L, "MIN", "type", "role", true)));
+                    new CaseTypeEntity(1L, "MIN", "type","a1", "role", true)));
         }};
         Team team = new Team("Team 1", UUID.randomUUID(), permissions);
         Unit unit = new Unit("Unit 1", "TEST", UUID.randomUUID(), true);

@@ -23,8 +23,18 @@ public class CaseTypeService {
         this.requestData = requestData;
     }
 
-    Set<CaseTypeEntity> getCaseTypes() {
+    CaseTypeEntity getCaseTypeByShortCode(String shortcode){
+        return caseTypeRepository.findByShortCode(shortcode);
+
+    }
+
+    Set<CaseTypeEntity> getAllCaseTypes() {
         log.debug("Requesting all case types");
+        return caseTypeRepository.findAllBy();
+    }
+
+    Set<CaseTypeEntity> getCaseTypes() {
+        log.debug("Requesting all case types for single create");
         return caseTypeRepository.findAllCaseTypesByTenant(requestData.roles());
     }
 

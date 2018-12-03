@@ -28,6 +28,9 @@ public class CaseTypeEntity implements Serializable {
     @Column(name = "display_name")
     private String displayName;
 
+    @Column(name = "short_code")
+    private String shortCode;
+
     @Column(name = "type")
     private String type;
 

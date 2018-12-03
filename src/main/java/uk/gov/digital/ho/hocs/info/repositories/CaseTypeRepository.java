@@ -24,5 +24,9 @@ public interface CaseTypeRepository extends CrudRepository<CaseTypeEntity, Strin
     @Query(value = "SELECT ct.* FROM case_type ct WHERE ct.tenant_role IN (?1) AND ct.active = TRUE AND ct.bulk = TRUE", nativeQuery = true)
     Set<CaseTypeEntity> findAllBulkCaseTypesByTenant(String[] tenant);
 
+    Set<CaseTypeEntity> findAllBy();
+
+    CaseTypeEntity findByShortCode(String shortCode);
+
     CaseTypeEntity findByType(String type);
 }

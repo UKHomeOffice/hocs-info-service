@@ -32,10 +32,11 @@ public class TeamRepositoryTest {
 
     private final UUID unitUUID = UUID.randomUUID();
     private final UUID teamUUID = UUID.randomUUID();
+
     @Before
     public void setup() {
         Unit unit = new Unit("Unit 1", "UNIT_1", unitUUID,true);
-        CaseTypeEntity caseType = new CaseTypeEntity(null,"TEST","TEST", "", true);
+        CaseTypeEntity caseType = new CaseTypeEntity(null,"TEST","a5","TEST", "", true);
         entityManager.persistAndFlush(caseType);
         Set<Permission> permissions = new HashSet<Permission>(){{
             add(new Permission(AccessLevel.OWNER,null, caseType));
@@ -89,7 +90,7 @@ public class TeamRepositoryTest {
     public void addPermissionsShouldBeIdempotent() {
         Team team = repository.findByUuid(teamUUID);
         assertThat(team.getPermissions().size()).isEqualTo(1);
-        CaseTypeEntity caseType = new CaseTypeEntity(null,"TEST","TEST", "", true);
+        CaseTypeEntity caseType = new CaseTypeEntity(null,"TEST","c7","TEST", "", true);
         team.addPermission(new Permission(AccessLevel.OWNER,null, caseType));
         assertThat(team.getPermissions().size()).isEqualTo(1);
 

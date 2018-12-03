@@ -15,8 +15,19 @@ public class CaseTypeDto {
     @JsonProperty("value")
     private String type;
 
+    @JsonProperty("displayCode")
+    private String displayCode;
+
+    @JsonProperty("shortCode")
+    private String shortCode;
+
     public static CaseTypeDto from(CaseTypeEntity caseTypeEntity) {
-        return new CaseTypeDto(caseTypeEntity.getDisplayName(), caseTypeEntity.getType());
+
+        return new CaseTypeDto(
+                caseTypeEntity.getDisplayName(),
+                caseTypeEntity.getType(),
+                caseTypeEntity.getType(),
+                caseTypeEntity.getShortCode());
     }
 
 }
