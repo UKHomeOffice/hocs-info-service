@@ -202,6 +202,32 @@ public class TeamIntegrationTests {
 
     }
 
+
+    @Test
+    public void shouldUpdateUserPermissionsOnTeamUpdate() {
+        String teamId = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
+        Set<PermissionDto> permissions = new HashSet<PermissionDto>() {{
+            add(new PermissionDto("CT2", AccessLevel.READ));
+        }};
+
+        UpdateTeamPermissionsRequest request = new UpdateTeamPermissionsRequest(permissions);
+
+        HttpEntity<UpdateTeamPermissionsRequest> httpEntity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<String> result = restTemplate.exchange(
+                getBasePath() + "/team/" + teamId + "/permissions"
+                , HttpMethod.PUT, httpEntity, String.class);
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        GroupRepresentation permissionGroup = keycloakClient.realm(HOCS_REALM)
+                .getGroupByPath("/UNIT2/" + teamId + "/CT2/READ");
+
+        assertThat(keycloakClient.realm(HOCS_REALM).groups().group(permissionGroup.getId()).members().get(0).getId())
+                .isEqualTo("ed00bf4a-1a74-4d0b-a3d0-379c12c5e3ff");
+
+    }
+
     @Test
     public void shouldChangeTeamName() {
         String teamId = "08612f06-bae2-4d2f-90d2-2254a68414b8";
