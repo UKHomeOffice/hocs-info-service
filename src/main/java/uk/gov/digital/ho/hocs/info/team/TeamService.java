@@ -138,15 +138,18 @@ public class TeamService {
         keycloakService.createUnitGroupIfNotExists(unitShortCode);
         keycloakService.createGroupPathIfNotExists(unitShortCode, team);
 
-        Set<String> permissionPaths = new HashSet<>();
+        if (userUUID.isPresent()) {
+            keycloakService.addUserToGroup(userUUID.get(), String.format("/%s/%s", unitShortCode, team));
+        }
 
+        Set<String> permissionPaths = new HashSet<>();
         for (Permission permission : permissions) {
             keycloakService.createGroupPathIfNotExists(String.format("/%s/%s", unitShortCode, team), permission.getCaseType().getType());
             keycloakService.createGroupPathIfNotExists(String.format("/%s/%s/%s", unitShortCode, team, permission.getCaseType().getType()), permission.getAccessLevel().toString());
             String permissionPath = String.format("/%s/%s/%s/%s", unitShortCode, team, permission.getCaseType().getType(), permission.getAccessLevel());
             permissionPaths.add(permissionPath);
             if (userUUID.isPresent()) {
-                keycloakService.addUserToGroup(userUUID.get(), String.format("/%s/%s", unitShortCode, team));
+                keycloakService.addUserToGroup(userUUID.get(), permissionPath);
             }
 
         }

@@ -207,6 +207,7 @@ public class TeamServiceTest {
         verify(keycloakService, times(1)).createGroupPathIfNotExists(unitGroupPath, team1UUID.toString());
         verify(keycloakService, times(1)).createGroupPathIfNotExists(teamGroupPath, "MIN");
         verify(keycloakService, times(1)).createGroupPathIfNotExists(caseGroupPath, "OWNER");
+        verify(keycloakService, times(1)).addUserToGroup(userUUID, teamGroupPath);
         verify(keycloakService, times(1)).addUserToGroup(userUUID, accessLevelGroupPath);
     }
 
