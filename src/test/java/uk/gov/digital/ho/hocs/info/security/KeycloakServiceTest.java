@@ -85,11 +85,28 @@ public class KeycloakServiceTest {
         user.setId(userUUID.toString());
         user.setFirstName("FirstName");
         user.setFirstName("LastName");
-        userRepresentations.add(new UserRepresentation());
+        userRepresentations.add(user);
 
         when(keycloakClient.realm(HOCS_REALM).users().list()).thenReturn(userRepresentations);
         service = new KeycloakService(keycloakClient, HOCS_REALM);
         List<UserRepresentation> result =service.getAllUsers();
+        assertThat(result.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void shouldGetUsersForTeam() {
+        String teamUUID = UUID.randomUUID().toString();
+        String path = String.format("/%s/%s","UNIT1",teamUUID);
+        List<UserRepresentation> userRepresentations = new ArrayList<UserRepresentation>();
+        UserRepresentation user =  new UserRepresentation();
+        user.setId(userUUID.toString());
+        user.setFirstName("FirstName");
+        user.setFirstName("LastName");
+        userRepresentations.add(user);
+
+        when(keycloakClient.realm(HOCS_REALM).groups().group(any()).members()).thenReturn(userRepresentations);
+        service = new KeycloakService(keycloakClient, HOCS_REALM);
+        List<UserRepresentation> result = service.getUsersForTeam(path, teamUUID);
         assertThat(result.size()).isEqualTo(1);
     }
 

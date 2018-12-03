@@ -1,6 +1,8 @@
 package uk.gov.digital.ho.hocs.info.user;
 
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,10 @@ public class UserResource {
         return ResponseEntity.ok(userService.getAllUsers().stream().map(user -> UserDto.from(user)).collect(Collectors.toList()));
     }
 
+    @GetMapping(value = "/teams/{teamUUID}/members")
+    public ResponseEntity<List<UserDto>> getUsersForTeam(@PathVariable String teamUUID) {
+        return ResponseEntity.ok(userService.getUsersForTeam(teamUUID).stream().map(user -> UserDto.from(user)).collect(Collectors.toList()));
+    }
 
 }
 
