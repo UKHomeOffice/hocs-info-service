@@ -13,9 +13,9 @@ public class GetCaseTypesResponseTest {
     @Test
     public void shouldCreateGetCaseTypesResponseDTOFromCaseTypesEntity() {
         Set<CaseTypeEntity> caseTypeSet = new HashSet<>();
-        caseTypeSet.add(new CaseTypeEntity(1L,"DCU Ministerial","MIN","DCU", true));
-        caseTypeSet.add(new CaseTypeEntity(2L,"DCU Treat Official","TRO","DCU", true));
-        caseTypeSet.add(new CaseTypeEntity(3L,"DCU Number 10","DTEN","DCU", true));
+        caseTypeSet.add(new CaseTypeEntity(1L,"DCU Ministerial","a1","MIN","DCU", true));
+        caseTypeSet.add(new CaseTypeEntity(2L,"DCU Treat Official","a2","TRO","DCU", true));
+        caseTypeSet.add(new CaseTypeEntity(3L,"DCU Number 10","a3","DTEN","DCU", true));
 
         GetCaseTypesResponse getCaseTypesResponse = GetCaseTypesResponse.from(caseTypeSet);
 
