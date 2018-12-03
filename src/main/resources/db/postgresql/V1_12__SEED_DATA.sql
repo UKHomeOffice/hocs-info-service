@@ -2,13 +2,13 @@ Insert INTO tenant (display_name, role)
 VALUES ('DCU', 'DCU'),
        ('UKVI', 'UKVI');
 
-Insert INTO case_type (display_name, type, tenant_role, active, bulk)
-VALUES ('DCU Ministerial', 'MIN', 'DCU', true, true),
-       ('DCU Treat Official', 'TRO', 'DCU', true, true),
-       ('DCU Number 10', 'DTEN', 'DCU', true, false),
-       ('UKVI B REF', 'IMCB', 'UKVI', true, true),
-       ('UKVI Ministerial REF', 'IMCM', 'UKVI', true, true),
-       ('UKVI Number 10', 'UTEN', 'UKVI', true, true);
+Insert INTO case_type (display_name, short_code, type, tenant_role, active, bulk)
+VALUES ('DCU Ministerial','a1', 'MIN', 'DCU', true, true),
+       ('DCU Treat Official', 'a2', 'TRO', 'DCU', true, true),
+       ('DCU Number 10', 'a3','DTEN', 'DCU', true, false),
+       ('UKVI B REF', 'b1', 'IMCB', 'UKVI', true, true),
+       ('UKVI Ministerial REF','b2', 'IMCM', 'UKVI', true, true),
+       ('UKVI Number 10','b3', 'UTEN', 'UKVI', true, true);
 
 Insert INTO sla (stage_type, value, case_type)
 VALUES ('DCU_MIN_INITIAL_DRAFT', 10, 'MIN'),
