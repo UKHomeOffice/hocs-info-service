@@ -171,6 +171,12 @@ public class TeamIntegrationTests {
         assertThat(keycloakClient.realm(HOCS_REALM)
                 .users().get(userId).groups().stream()
                 .anyMatch(g -> g.getId().equals(group.getId()))).isTrue();
+
+        GroupRepresentation mainGroup = keycloakClient.realm(HOCS_REALM)
+                .getGroupByPath("/UNIT2/"+ teamId);
+        assertThat(keycloakClient.realm(HOCS_REALM)
+                .users().get(userId).groups().stream()
+                .anyMatch(g -> g.getId().equals(mainGroup.getId()))).isTrue();
     }
 
     @Test
