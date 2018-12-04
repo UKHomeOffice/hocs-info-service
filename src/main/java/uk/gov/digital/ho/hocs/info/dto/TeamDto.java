@@ -37,8 +37,18 @@ public class TeamDto {
         this.permissions = Optional.ofNullable(permissions).orElse(new HashSet<>());
     }
 
+    public TeamDto(String displayName, UUID uuid, boolean active) {
+        this.displayName = displayName;
+        this.uuid = UUID.randomUUID();
+    }
+
     public static TeamDto from (Team team) {
         return new TeamDto(team.getDisplayName(), team.getUuid(), team.isActive(),
                 team.getPermissions().stream().map(permission ->
                         PermissionDto.from(permission)).collect(Collectors.toSet())); }
+
+    //TODO: consider if this can be replaced with a JSONView
+    public static TeamDto fromWithoutPermissions(Team team) {
+        return new TeamDto(team.getDisplayName(), team.getUuid(), team.isActive());
+    }
 }
