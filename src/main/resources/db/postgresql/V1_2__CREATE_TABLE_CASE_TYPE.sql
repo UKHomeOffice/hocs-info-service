@@ -2,17 +2,18 @@ DROP TABLE IF EXISTS case_type;
 
 CREATE TABLE IF NOT EXISTS case_type
 (
-  id           BIGSERIAL PRIMARY KEY,
-  display_name TEXT    NOT NULL,
-  short_code   TEXT    NOT NULL,
-  type         TEXT    NOT NULL,
-  tenant_role  TEXT    NOT NULL,
-  active       boolean NOT NULL,
-  bulk         boolean NULL,
+  id            BIGSERIAL PRIMARY KEY,
+  display_name  TEXT    NOT NULL,
+  short_code    TEXT    NOT NULL,
+  type          TEXT    NOT NULL,
+  tenant_role   TEXT    NOT NULL,
+  case_deadline TEXT    NOT NULL,
+  active        boolean NOT NULL,
+  bulk          boolean NULL,
 
-    CONSTRAINT case_type_type_idempotent UNIQUE ( type ),
-    CONSTRAINT case_type_name_idempotent UNIQUE (display_name),
-    CONSTRAINT case_type_short_idempotent UNIQUE (short_code)
+  CONSTRAINT case_type_type_idempotent UNIQUE (type),
+  CONSTRAINT case_type_name_idempotent UNIQUE (display_name),
+  CONSTRAINT case_type_short_idempotent UNIQUE (short_code)
 
 );
 

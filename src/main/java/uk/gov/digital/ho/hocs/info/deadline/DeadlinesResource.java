@@ -37,6 +37,17 @@ public class DeadlinesResource {
         }
     }
 
+    @GetMapping(value = "/casetype/{caseType}/deadline/{received}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Deadline> getCaseDeadline(@PathVariable String caseType, @PathVariable String received) {
+        try {
+            LocalDate receivedDate = LocalDate.parse(received);
+            Deadline deadline = deadlinesService.getCaseDeadlineForCaseType(caseType,receivedDate);
+            return ResponseEntity.ok(deadline);
+        } catch (EntityNotFoundException  e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
     @GetMapping(value = "/stagetype/{stageType}/deadline/{received}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Deadline> getDeadlineByStage(@PathVariable String stageType, @PathVariable String received) {
         try {
