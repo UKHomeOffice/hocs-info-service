@@ -63,6 +63,11 @@ public class TeamResource {
     public ResponseEntity<TeamDto> getTeam(@PathVariable String unitUUID, @PathVariable String teamUUID) {
         return ResponseEntity.ok(teamService.getTeam(UUID.fromString(teamUUID)));
     }
+
+    @GetMapping(value = "/team")
+    public ResponseEntity<Set<TeamDto>> getActiveTeams() {
+        return ResponseEntity.ok(teamService.getAllActiveTeams());
+    }
 }
 
 

@@ -45,6 +45,12 @@ public class TeamService {
         return teamRepository.findTeamsByUnitUuid(unitUUID).stream().map(team -> TeamDto.from(team)).collect(Collectors.toSet());
     }
 
+
+    public Set<TeamDto> getAllActiveTeams() {
+        return teamRepository.findAllByActiveTrue().stream().map(team -> TeamDto.fromWithoutPermissions(team)).collect(Collectors.toSet());
+
+    }
+
     public TeamDto getTeam(UUID teamUUID) {
         Team team = teamRepository.findByUuid(teamUUID);
         if (team == null) {

@@ -52,11 +52,23 @@ public class TeamServiceTest {
     private UUID team1UUID =UUID.randomUUID();
     private UUID team2UUID =UUID.randomUUID();
 
+
+    @Test
+    public void shouldGetAllTeams() {
+
+        when(teamRepository.findAllByActiveTrue()).thenReturn(getTeams().stream().collect(Collectors.toSet()));
+        Set<TeamDto> result = teamService.getAllActiveTeams();
+        assertThat(result).size().isEqualTo(2);
+        verify(teamRepository, times(1)).findAllByActiveTrue();
+        verifyNoMoreInteractions(teamRepository);
+    }
+
     @Test
     public void shouldGetAllTeamsForUnit() {
         UUID unitUUID = UUID.randomUUID();
         when(teamRepository.findTeamsByUnitUuid(unitUUID)).thenReturn(getTeams().stream().collect(Collectors.toSet()));
-        teamService.getTeamsForUnit(unitUUID);
+        Set<TeamDto> result = teamService.getTeamsForUnit(unitUUID);
+        assertThat(result).size().isEqualTo(2);
         verify(teamRepository, times(1)).findTeamsByUnitUuid(unitUUID);
         verifyNoMoreInteractions(teamRepository);
     }
@@ -242,6 +254,8 @@ public class TeamServiceTest {
         verify(keycloakService, times(1)).updateUserTeamGroups("/UNIT/" + team1UUID.toString(),permissionPaths);
         verifyNoMoreInteractions(teamRepository);
     }
+
+
 
     private List<Team> getTeams() {
         CaseTypeEntity caseType = new CaseTypeEntity(1L, "MIN","a1", "MIN", "ROLE", true);

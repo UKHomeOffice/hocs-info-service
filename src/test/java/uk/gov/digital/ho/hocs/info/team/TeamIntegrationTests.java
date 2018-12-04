@@ -16,13 +16,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.digital.ho.hocs.info.dto.PermissionDto;
-import uk.gov.digital.ho.hocs.info.dto.TeamDto;
-import uk.gov.digital.ho.hocs.info.dto.UpdateTeamNameRequest;
-import uk.gov.digital.ho.hocs.info.dto.UpdateTeamPermissionsRequest;
+import uk.gov.digital.ho.hocs.info.dto.*;
 import uk.gov.digital.ho.hocs.info.repositories.TeamRepository;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
@@ -44,6 +42,7 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 @Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
 @Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
+@ActiveProfiles("test")
 public class TeamIntegrationTests {
 
     TestRestTemplate restTemplate = new TestRestTemplate();
@@ -82,11 +81,9 @@ public class TeamIntegrationTests {
     public void setup() throws IOException {
         headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString());
-        setupKeycloakRealm();
-
         keycloakClient = Keycloak.getInstance(
-                serverUrl, HOCS_REALM, username, password, clientId, clientId);
-
+                serverUrl, "master", username, password, clientId, clientId);
+        setupKeycloakRealm();
     }
 
     @Test
@@ -119,6 +116,7 @@ public class TeamIntegrationTests {
                 .getGroupByPath("/UNIT2/" + teamUUID + "/CT2/WRITE")).isInstanceOf(NotFoundException.class);
 
     }
+
 
     @Test
     public void shouldGetAllTeams() {
@@ -248,15 +246,13 @@ public class TeamIntegrationTests {
     }
 
     private void setupKeycloakRealm() throws IOException {
-        Keycloak adminClient = Keycloak.getInstance(
-                serverUrl, "master", username, password, clientId, clientId);
-        try {
-            adminClient.realms().realm(HOCS_REALM).remove();
+     try {
+         keycloakClient.realms().realm(HOCS_REALM).remove();
         } catch (Exception e) {
             //Realm does not exist
         }
         RealmRepresentation hocsRealm = mapper.readValue(new File("./keycloak/local-realm.json"), RealmRepresentation.class);
-        adminClient.realms().create(hocsRealm);
+        keycloakClient.realms().create(hocsRealm);
     }
 }
 

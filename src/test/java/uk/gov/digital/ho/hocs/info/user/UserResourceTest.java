@@ -13,6 +13,8 @@ import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -29,22 +31,12 @@ public class UserResourceTest {
 
         String user1UUID = UUID.randomUUID().toString();
         String user2UUID = UUID.randomUUID().toString();
-        List<UserRepresentation> userRepresentations = new ArrayList<>();
-        UserRepresentation user1 =  new UserRepresentation();
-        user1.setId(user1UUID);
-        user1.setFirstName("FirstName1");
-        user1.setFirstName("LastName1");
-        user1.setUsername("user1@noemail.com");
-        userRepresentations.add(user1);
+        List<UserDto> users = new ArrayList<>();
+        UserDto user1 =  new UserDto(user1UUID,"some user","FirstName", "LastName","user1@noemail.com");
+        UserDto user2 =  new UserDto(user2UUID,"some user2","FirstName2", "LastName2","user2@noemail.com");
+        users.addAll(Stream.of(user1, user2).collect(Collectors.toList()));
 
-        UserRepresentation user2 =  new UserRepresentation();
-        user2.setId(user2UUID);
-        user2.setFirstName("FirstName2");
-        user2.setFirstName("LastName2");
-        user2.setUsername("user2@noemail.com");
-        userRepresentations.add(user2);
-
-        when(userService.getAllUsers()).thenReturn(userRepresentations);
+        when(userService.getAllUsers()).thenReturn(users);
 
         userResource = new UserResource(userService);
         ResponseEntity<List<UserDto>> result = userResource.getAllUsers();
@@ -57,22 +49,14 @@ public class UserResourceTest {
         String user1UUID = UUID.randomUUID().toString();
         String user2UUID = UUID.randomUUID().toString();
         String teamUUID = UUID.randomUUID().toString();
-        List<UserRepresentation> userRepresentations = new ArrayList<>();
-        UserRepresentation user1 =  new UserRepresentation();
-        user1.setId(user1UUID);
-        user1.setFirstName("FirstName1");
-        user1.setFirstName("LastName1");
-        user1.setUsername("user1@noemail.com");
-        userRepresentations.add(user1);
 
-        UserRepresentation user2 =  new UserRepresentation();
-        user2.setId(user2UUID);
-        user2.setFirstName("FirstName2");
-        user2.setFirstName("LastName2");
-        user2.setUsername("user2@noemail.com");
-        userRepresentations.add(user2);
+        List<UserDto> users = new ArrayList<>();
+        UserDto user1 =  new UserDto(user1UUID,"some user","FirstName", "LastName","user1@noemail.com");
+        UserDto user2 =  new UserDto(user2UUID,"some user2","FirstName2", "LastName2","user2@noemail.com");
+        users.addAll(Stream.of(user1, user2).collect(Collectors.toList()));
 
-        when(userService.getUsersForTeam(teamUUID)).thenReturn(userRepresentations);
+
+        when(userService.getUsersForTeam(teamUUID)).thenReturn(users);
 
         userResource = new UserResource(userService);
         ResponseEntity<List<UserDto>> result = userResource.getUsersForTeam(teamUUID);

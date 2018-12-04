@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.dto.UserDto;
 import uk.gov.digital.ho.hocs.info.entities.Team;
 import uk.gov.digital.ho.hocs.info.entities.Unit;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
@@ -48,7 +49,7 @@ public class UserServiceTest {
         userRepresentations.add(user);
         when(keycloakService.getAllUsers()).thenReturn(userRepresentations);
 
-        List<UserRepresentation> result = service.getAllUsers();
+        List<UserDto> result = service.getAllUsers();
         assertThat(result.size()).isEqualTo(1);
         verify(keycloakService, times(1)).getAllUsers();
         verifyNoMoreInteractions(keycloakService);
@@ -78,7 +79,7 @@ public class UserServiceTest {
         String path = String.format("/%s/%s",team.getUnit().getShortCode(),teamUUID);
         when(keycloakService.getUsersForTeam(path,teamUUID.toString())).thenReturn(userRepresentations);
 
-        List<UserRepresentation> result = service.getUsersForTeam(teamUUID.toString());
+        List<UserDto> result = service.getUsersForTeam(teamUUID.toString());
         assertThat(result.size()).isEqualTo(2);
         verify(keycloakService, times(1)).getUsersForTeam(path,teamUUID.toString());
         verifyNoMoreInteractions(keycloakService);
