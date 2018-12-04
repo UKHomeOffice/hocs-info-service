@@ -10,15 +10,34 @@ VALUES ('DCU Ministerial', 'a1', 'MIN', 'DCU', 'DCU_MIN_DISPATCH', true, true),
        ('UKVI Ministerial REF', 'b2', 'IMCM', 'UKVI', 'UKVI_IMCM_DISPATCH', true, true),
        ('UKVI Number 10', 'b3', 'UTEN', 'UKVI', 'UKVI_UTEN_DISPATCH', true, true);
 
-Insert INTO sla (stage_type, value, case_type)
-VALUES ('DCU_MIN_INITIAL_DRAFT', 10, 'MIN'),
-       ('DCU_MIN_DISPATCH', 20, 'MIN'),
-       ('DCU_TRO_INITIAL_DRAFT', 10, 'TRO'),
-       ('DCU_TRO_DISPATCH', 20, 'TRO'),
-       ('DCU_DTEN_DISPATCH', 25, 'DTEN'),
-       ('UKVI_IMCB_DISPATCH', 30, 'IMCB'),
-       ('UKVI_IMCM_DISPATCH', 35, 'IMCM'),
-       ('UKVI_UTEN_DISPATCH', 40, 'UTEN');
+Insert INTO stage_type (display_name, short_code, type, tenant_role, active, deadline)
+VALUES ('Data Input','111', 'DCU_MIN_DATA_INPUT', 'DCU', true, 10),
+       ('Markup','112', 'DCU_MIN_MARKUP', 'DCU', true, 1),
+       ('Transfer Confirmation','113', 'DCU_MIN_TRANSFER_CONFIRMATION', 'DCU', true, 3),
+       ('No Reply Needed Confirmation','114', 'DCU_MIN_NO_REPLY_NEEDED_CONFIRMATION', 'DCU', true, 0),
+       ('Initial Draft','115', 'DCU_MIN_INITIAL_DRAFT', 'DCU', true, 10),
+       ('QA Response','116', 'DCU_MIN_QA_RESPONSE', 'DCU', true, 0),
+       ('Private Office Approval','117', 'DCU_MIN_PRIVATE_OFFICE', 'DCU', true, 0),
+       ('Ministerial Sign off','118', 'DCU_MIN_MINISTER_SIGN_OFF', 'DCU', true, 0),
+       ('Dispatch','119', 'DCU_MIN_DISPATCH', 'DCU', true, 20),
+       ('Copy To Number 10','11a', 'DCU_MIN_COPY_NUMBER_TEN', 'DCU', true, 0),
+       ('Data Input','121', 'DCU_TRO_DATA_INPUT', 'DCU', true, 5),
+       ('Markup','122', 'DCU_TRO_MARKUP', 'DCU', true, 10),
+       ('Transfer Confirmation','123', 'DCU_TRO_TRANSFER_CONFIRMATION', 'DCU', true, 8),
+       ('No Reply Needed Confirmation','124', 'DCU_TRO_NO_REPLY_NEEDED_CONFIRMATION', 'DCU', true, 10),
+       ('Initial Draft','125', 'DCU_TRO_INITIAL_DRAFT', 'DCU', true, 10),
+       ('QA Response','126', 'DCU_TRO_QA_RESPONSE', 'DCU', true, 3),
+       ('Dispatch','127', 'DCU_TRO_DISPATCH', 'DCU', true, 10),
+       ('Copy to Number 10','128', 'DCU_TRO_COPY_NUMBER_TEN', 'DCU', true, 0),
+       ('Data Input','131', 'DCU_DTEN_DATA_INPUT', 'DCU', true, 0),
+       ('Markup','132', 'DCU_DTEN_MARKUP', 'DCU', true, 0),
+       ('Transfer Confirmation','133', 'DCU_DTEN_TRANSFER_CONFIRMATION', 'DCU', true, 0),
+       ('No Reply Needed Confirmation','134', 'DCU_DTEN_NO_REPLY_NEEDED_CONFIRMATION', 'DCU', true, 10),
+       ('Initial Draft','135', 'DCU_DTEN_INITIAL_DRAFT', 'DCU', true, 10),
+       ('QA Response','136', 'DCU_DTEN_QA_RESPONSE', 'DCU', true, 10),
+       ('Private Office','137', 'DCU_DTEN_PRIVATE_OFFICE', 'DCU', true, 0),
+       ('Dispatch','138', 'DCU_DTEN_DISPATCH', 'DCU', true, 20),
+       ('Copy To Number 10','139', 'DCU_DTEN_COPY_NUMBER_TEN', 'DCU', true, 10);
 
 Insert INTO holiday_date (date, case_type)
 VALUES ('2018-08-27', 'MIN'),
