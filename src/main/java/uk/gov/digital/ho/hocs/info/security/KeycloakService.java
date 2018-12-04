@@ -56,17 +56,18 @@ public class KeycloakService {
     }
 
     public void createGroupPathIfNotExists(String parentPath, String groupName) {
-        try {
-            RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
-            GroupRepresentation parentGroup = hocsRealm.getGroupByPath(parentPath);
-            GroupRepresentation newGroup = new GroupRepresentation();
-            newGroup.setName(groupName);
-            Response response = hocsRealm.groups().group(parentGroup.getId()).subGroup(newGroup);
-            response.close();
-        } catch (Exception e) {
-            log.error("Failed to create group  {} with parent {} for reason: {}", groupName, parentPath, e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
-            throw new KeycloakException(e.getMessage(), e);
-        }
+      try {
+        RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
+        GroupRepresentation parentGroup =  hocsRealm.getGroupByPath(parentPath);
+        GroupRepresentation newGroup = new GroupRepresentation();
+        newGroup.setName(groupName);
+        Response response = hocsRealm.groups().group(parentGroup.getId()).subGroup(newGroup);
+        response.close();
+      }
+      catch(Exception e) {
+          log.error("Failed to create group  {} with parent {} for reason: {}", groupName ,parentPath, e.getMessage() , value(EVENT, KEYCLOAK_FAILURE));
+          throw new KeycloakException(e.getMessage(), e);
+      }
     }
 
     public List<UserRepresentation> getAllUsers() {
@@ -104,8 +105,9 @@ public class KeycloakService {
             createUnitGroupIfNotExists(newParent);
             GroupRepresentation newParentGroup = hocsRealm.getGroupByPath(newParent);
             hocsRealm.groups().group(newParentGroup.getId()).subGroup(group);
-        } catch (Exception e) {
-            log.error("Failed to move Keycloak group {} to new parent {} for reason: {}.", currentGroupPath, newParent, e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+        }
+        catch(Exception e) {
+            log.error("Failed to move Keycloak group {} to new parent {} for reason: {}." ,currentGroupPath, newParent, e.getMessage() , value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }
