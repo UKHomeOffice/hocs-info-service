@@ -201,7 +201,7 @@ public class TeamServiceTest {
 
         Set<Permission> permissions = new HashSet<>();
         Unit unit = new Unit(1L, "a unit", "UNIT", unitUUID, true, new HashSet<>());
-        CaseTypeEntity caseType = new CaseTypeEntity(1L, "MIN","a1", "MIN", "ROLE", true);
+        CaseTypeEntity caseType = new CaseTypeEntity(1L, "MIN","a1", "MIN", "ROLE", "DCU_MIN_DISPATCH", true);
         Permission permission = new Permission(1L, AccessLevel.OWNER, null, caseType);
         permissions.add(permission);
         Team team = new Team(1L, "a team", team1UUID, true, unit, permissions);
@@ -230,7 +230,7 @@ public class TeamServiceTest {
         Unit unit = new Unit(1L, "a unit", "UNIT", unitUUID, true, new HashSet<>());
         Team team = new Team(1L, "a team", team1UUID, true, unit, new HashSet<>());
 
-        CaseTypeEntity caseType = new CaseTypeEntity(1L, "MIN","a1", "MIN", "ROLE", true);
+        CaseTypeEntity caseType = new CaseTypeEntity(1L, "MIN","a1", "MIN", "ROLE", "DCU_MIN_DISPATCH", true);
 
         when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
         when(caseTypeRepository.findByType(any())).thenReturn(caseType);
@@ -258,7 +258,7 @@ public class TeamServiceTest {
 
 
     private List<Team> getTeams() {
-        CaseTypeEntity caseType = new CaseTypeEntity(1L, "MIN","a1", "MIN", "ROLE", true);
+        CaseTypeEntity caseType = new CaseTypeEntity(1L, "MIN","a1", "MIN", "ROLE","DCU_MIN_DISPATCH", true);
         Set<Permission> permissions = new HashSet<Permission>() {{
             add(new Permission(1L, AccessLevel.OWNER, null, caseType));
             add(new Permission(1L, AccessLevel.OWNER, null, caseType));

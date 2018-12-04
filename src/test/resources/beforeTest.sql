@@ -2,9 +2,9 @@ Insert INTO tenant (display_name, role)
 VALUES ('TEST_TENANT', 'TEST_TENANT'),
        ('TEST2_TENANT', 'TEST2_TENANT');
 
-Insert INTO case_type (display_name, short_code, type,  tenant_role, active, bulk)
-VALUES ('Test Case Type 1', 'z9','CT1', 'CT1', true, true),
-       ('Test Case Type 2', 'za','CT2', 'CT2', true, true);
+Insert INTO case_type (display_name, short_code, type,  tenant_role,case_deadline, active, bulk)
+VALUES ('Test Case Type 1', 'z9','CT1', 'CT1','DISPATCH', true, true),
+       ('Test Case Type 2', 'za','CT2', 'CT2','DISPATCH', true, true);
 
 INSERT INTO unit (display_name, uuid,short_code, active)
 VALUES ('UNIT 2', '09221c48-b916-47df-9aa0-a0194f86f6dd', 'UNIT2', TRUE),

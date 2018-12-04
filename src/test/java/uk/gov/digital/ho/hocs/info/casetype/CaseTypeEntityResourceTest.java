@@ -150,37 +150,37 @@ public class CaseTypeEntityResourceTest {
 
     private static Set<CaseTypeEntity> getMockCaseTypesSingleTenant() {
         Set<CaseTypeEntity> caseTypesSet = new HashSet<>();
-        caseTypesSet.add(new CaseTypeEntity(1L,"DCU Ministerial","a1", "MIN","DCU", true));
-        caseTypesSet.add(new CaseTypeEntity(2L,"DCU Treat Official","a2", "TRO","DCU", true));
-        caseTypesSet.add(new CaseTypeEntity(3L,"DCU Number 10","a3", "DTEN","DCU", true));
+        caseTypesSet.add(new CaseTypeEntity(1L,"DCU Ministerial","a1", "MIN","DCU", "DCU_MIN_DISPATCH", true));
+        caseTypesSet.add(new CaseTypeEntity(2L,"DCU Treat Official","a2", "TRO","DCU", "DCU_TRO_DISPATCH", true));
+        caseTypesSet.add(new CaseTypeEntity(3L,"DCU Number 10","a3", "DTEN","DCU", "DCU_DTEN_DISPATCH", true));
         return caseTypesSet;
     }
 
     private static Set<CaseTypeEntity> getMockCaseTypesSingleTenantBulk() {
         Set<CaseTypeEntity> caseTypesSet = new HashSet<>();
-        caseTypesSet.add(new CaseTypeEntity(1L,"DCU Ministerial", "a1", "MIN","DCU", true));
-        caseTypesSet.add(new CaseTypeEntity(2L,"DCU Treat Official","a2", "TRO","DCU", true));
+        caseTypesSet.add(new CaseTypeEntity(1L,"DCU Ministerial", "a1", "MIN","DCU","DCU_MIN_DISPATCH",  true));
+        caseTypesSet.add(new CaseTypeEntity(2L,"DCU Treat Official","a2", "TRO","DCU","DCU_TRO_DISPATCH",  true));
         return caseTypesSet;
     }
 
     private Set<CaseTypeEntity> getMockCaseTypesMultipleTenant() {
         Set<CaseTypeEntity> caseTypesSet = new HashSet<>();
-        caseTypesSet.add(new CaseTypeEntity(1L,"DCU Ministerial","a1", "MIN","DCU", true));
-        caseTypesSet.add(new CaseTypeEntity(2L,"DCU Treat Official", "a2", "TRO","DCU", true));
-        caseTypesSet.add(new CaseTypeEntity(3L,"DCU Number 10","a3", "DTEN","UKVI", true));
-        caseTypesSet.add(new CaseTypeEntity(4L, "UKVI B REF", "a4", "IMCB","UKVI", true));
-        caseTypesSet.add(new CaseTypeEntity(5L, "UKVI Ministerial REF","a5", "IMCM","UKVI", true));
-        caseTypesSet.add(new CaseTypeEntity(6L, "UKVI Number 10","a6", "UTEN","UKVI", true));
+        caseTypesSet.add(new CaseTypeEntity(1L,"DCU Ministerial","a1", "MIN","DCU","DCU_MIN_DISPATCH",  true));
+        caseTypesSet.add(new CaseTypeEntity(2L,"DCU Treat Official", "a2", "TRO","DCU","DCU_TRO_DISPATCH",  true));
+        caseTypesSet.add(new CaseTypeEntity(3L,"DCU Number 10","a3", "DTEN","UKVI", "DCU_DTEN_DISPATCH", true));
+        caseTypesSet.add(new CaseTypeEntity(4L, "UKVI B REF", "a4", "IMCB","UKVI", "DCU_IMCB_DISPATCH", true));
+        caseTypesSet.add(new CaseTypeEntity(5L, "UKVI Ministerial REF","a5", "IMCM","UKVI","DCU_IMCM_DISPATCH",  true));
+        caseTypesSet.add(new CaseTypeEntity(6L, "UKVI Number 10","a6", "UTEN","UKVI", "DCU_UTEN_DISPATCH", true));
         return caseTypesSet;
     }
 
     private Set<CaseTypeEntity> getMockCaseTypesMultipleTenantBulk() {
         Set<CaseTypeEntity> caseTypesSet = new HashSet<>();
-        caseTypesSet.add(new CaseTypeEntity(1L,"DCU Ministerial","a1", "MIN","DCU", true));
-        caseTypesSet.add(new CaseTypeEntity(2L,"DCU Treat Official","a2", "TRO","DCU", true));
-        caseTypesSet.add(new CaseTypeEntity(4L, "UKVI B REF","a3", "IMCB","UKVI", true));
-        caseTypesSet.add(new CaseTypeEntity(5L, "UKVI Ministerial REF","a4", "IMCM","UKVI", true));
-        caseTypesSet.add(new CaseTypeEntity(6L, "UKVI Number 10","a5", "UTEN","UKVI", true));
+        caseTypesSet.add(new CaseTypeEntity(1L,"DCU Ministerial","a1", "MIN","DCU", "DCU_MIN_DISPATCH", true));
+        caseTypesSet.add(new CaseTypeEntity(2L,"DCU Treat Official","a2", "TRO","DCU","DCU_TRO_DISPATCH",  true));
+        caseTypesSet.add(new CaseTypeEntity(4L, "UKVI B REF","a3", "IMCB","UKVI","DCU_IMCB_DISPATCH",  true));
+        caseTypesSet.add(new CaseTypeEntity(5L, "UKVI Ministerial REF","a4", "IMCM","UKVI","DCU_IMCM_DISPATCH",  true));
+        caseTypesSet.add(new CaseTypeEntity(6L, "UKVI Number 10","a5", "UTEN","UKVI", "DCU_UTEN_DISPATCH", true));
         return caseTypesSet;
     }
 }

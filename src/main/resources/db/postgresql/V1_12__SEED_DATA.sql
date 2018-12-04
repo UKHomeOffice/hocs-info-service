@@ -2,19 +2,23 @@ Insert INTO tenant (display_name, role)
 VALUES ('DCU', 'DCU'),
        ('UKVI', 'UKVI');
 
-Insert INTO case_type (display_name, short_code, type, tenant_role, active, bulk)
-VALUES ('DCU Ministerial','a1', 'MIN', 'DCU', true, true),
-       ('DCU Treat Official', 'a2', 'TRO', 'DCU', true, true),
-       ('DCU Number 10', 'a3','DTEN', 'DCU', true, false),
-       ('UKVI B REF', 'b1', 'IMCB', 'UKVI', true, true),
-       ('UKVI Ministerial REF','b2', 'IMCM', 'UKVI', true, true),
-       ('UKVI Number 10','b3', 'UTEN', 'UKVI', true, true);
+Insert INTO case_type (display_name, short_code, type, tenant_role, case_deadline, active, bulk)
+VALUES ('DCU Ministerial', 'a1', 'MIN', 'DCU', 'DCU_MIN_DISPATCH', true, true),
+       ('DCU Treat Official', 'a2', 'TRO', 'DCU', 'DCU_TRO_DISPATCH', true, true),
+       ('DCU Number 10', 'a3', 'DTEN', 'DCU', 'DCU_DTEN_DISPATCH', true, false),
+       ('UKVI B REF', 'b1', 'IMCB', 'UKVI', 'UKVI_IMCB_DISPATCH', true, true),
+       ('UKVI Ministerial REF', 'b2', 'IMCM', 'UKVI', 'UKVI_IMCM_DISPATCH', true, true),
+       ('UKVI Number 10', 'b3', 'UTEN', 'UKVI', 'UKVI_UTEN_DISPATCH', true, true);
 
 Insert INTO sla (stage_type, value, case_type)
 VALUES ('DCU_MIN_INITIAL_DRAFT', 10, 'MIN'),
        ('DCU_MIN_DISPATCH', 20, 'MIN'),
        ('DCU_TRO_INITIAL_DRAFT', 10, 'TRO'),
-       ('DCU_TRO_DISPATCH', 20, 'TRO');
+       ('DCU_TRO_DISPATCH', 20, 'TRO'),
+       ('DCU_DTEN_DISPATCH', 25, 'DTEN'),
+       ('UKVI_IMCB_DISPATCH', 30, 'IMCB'),
+       ('UKVI_IMCM_DISPATCH', 35, 'IMCM'),
+       ('UKVI_UTEN_DISPATCH', 40, 'UTEN');
 
 Insert INTO holiday_date (date, case_type)
 VALUES ('2018-08-27', 'MIN'),
@@ -48,7 +52,7 @@ VALUES ('2018-08-27', 'MIN'),
        ('2019-08-26', 'DTEN'),
        ('2019-11-25', 'DTEN');
 
-INSERT INTO unit (display_name, uuid,short_code, active)
+INSERT INTO unit (display_name, uuid, short_code, active)
 VALUES ('UNIT 1', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', 'UNIT1', TRUE);
 
 INSERT INTO team (display_name, uuid, unit_uuid, active)
@@ -60,7 +64,7 @@ INSERT INTO unit_case_type (unit_uuid, case_type)
 VALUES ('d9a93c21-a1a8-4a5d-aa7b-597bb95a782c', 'MIN');
 
 INSERT INTO permission (team_uuid, case_type, access_level)
-VALUES ('44444444-2222-2222-2222-222222222222','MIN', 'OWNER');
+VALUES ('44444444-2222-2222-2222-222222222222', 'MIN', 'OWNER');
 
 INSERT INTO parent_topic (display_name, UUID)
 VALUES ('Parent topic 1', '11111111-1111-1111-1111-111111111121'),
@@ -195,16 +199,23 @@ VALUES ('44444444-2222-2222-2222-222222222222', 'edward.liddiard@homeoffice.gsi.
        ('33333333-3333-3333-3333-333333333333', 'edward.liddiard@homeoffice.gsi.gov.uk');
 
 Insert INTO minister (office_name, minister_name, uuid)
-VALUES  ('Home Secretary', 'Home Secretary', 'cba9013b-6862-417a-ad40-ebdf145601b1'),
-        ('Minister for State for Immigration', 'Minister for State for Immigration', '2dada3ea-2530-4306-86cc-9cbade726048'),
-        ('Minister of State for Security and Economic Crime', 'Minister of State for Security and Economic Crime', '2dada3ea-2530-4306-86cc-9cbade726041'),
-        ('Minister of State for Policing and Fire Service', 'Minister of State for Policing and Fire Service', '2dada3ea-2530-4306-86cc-9cbade726042'),
-        ('Under Secretary of State for Crime, Safeguarding and Vulnerability', 'Under Secretary of State for Crime, Safeguarding and Vulnerability', '2dada3ea-2530-4306-86cc-9cbade726043'),
-        ('Permanent Secretary', 'Permanent Secretary', '2dada3ea-2530-4306-86cc-9cbade726044'),
-        ('Director General UKVI', 'Director General UKVI', '2dada3ea-2530-4306-86cc-9cbade726045'),
-        ('Director Compliance and Returns Immigration Enforcement', 'Director Compliance and Returns Immigration Enforcement', '2dada3ea-2530-4306-86cc-9cbade726046'),
-        ('Director General Border Force', 'Director General Border Force', '2dada3ea-2530-4306-86cc-9cbade726047'),
-        ('Director Resettlement Gold Command', 'Director Resettlement Gold Command', '2dada3ea-2530-4306-86cc-9cbade726056'),
-        ('Director of UKVI International Operations', 'Director of UKVI International Operations', '2dada3ea-2530-4306-86cc-9cbade726098'),
-        ('Director of UKVI Asylum', 'Director of UKVI Asylum', '2dada3ea-2530-4306-86cc-9cbade726099'),
-        ('Minister for Lords', 'Minister for Lords', '2dada3ea-2530-4306-86cc-9cbade726000');
+VALUES ('Home Secretary', 'Home Secretary', 'cba9013b-6862-417a-ad40-ebdf145601b1'),
+       ('Minister for State for Immigration', 'Minister for State for Immigration',
+        '2dada3ea-2530-4306-86cc-9cbade726048'),
+       ('Minister of State for Security and Economic Crime', 'Minister of State for Security and Economic Crime',
+        '2dada3ea-2530-4306-86cc-9cbade726041'),
+       ('Minister of State for Policing and Fire Service', 'Minister of State for Policing and Fire Service',
+        '2dada3ea-2530-4306-86cc-9cbade726042'),
+       ('Under Secretary of State for Crime, Safeguarding and Vulnerability',
+        'Under Secretary of State for Crime, Safeguarding and Vulnerability', '2dada3ea-2530-4306-86cc-9cbade726043'),
+       ('Permanent Secretary', 'Permanent Secretary', '2dada3ea-2530-4306-86cc-9cbade726044'),
+       ('Director General UKVI', 'Director General UKVI', '2dada3ea-2530-4306-86cc-9cbade726045'),
+       ('Director Compliance and Returns Immigration Enforcement',
+        'Director Compliance and Returns Immigration Enforcement', '2dada3ea-2530-4306-86cc-9cbade726046'),
+       ('Director General Border Force', 'Director General Border Force', '2dada3ea-2530-4306-86cc-9cbade726047'),
+       ('Director Resettlement Gold Command', 'Director Resettlement Gold Command',
+        '2dada3ea-2530-4306-86cc-9cbade726056'),
+       ('Director of UKVI International Operations', 'Director of UKVI International Operations',
+        '2dada3ea-2530-4306-86cc-9cbade726098'),
+       ('Director of UKVI Asylum', 'Director of UKVI Asylum', '2dada3ea-2530-4306-86cc-9cbade726099'),
+       ('Minister for Lords', 'Minister for Lords', '2dada3ea-2530-4306-86cc-9cbade726000');

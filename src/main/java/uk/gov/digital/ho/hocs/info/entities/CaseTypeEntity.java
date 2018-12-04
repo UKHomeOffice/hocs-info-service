@@ -37,6 +37,9 @@ public class CaseTypeEntity implements Serializable {
     @Column(name = "tenant_role")
     private String role;
 
+    @Column(name = "case_deadline")
+    private String caseDeadline;
+
     @Column(name = "active")
     private boolean active;
 

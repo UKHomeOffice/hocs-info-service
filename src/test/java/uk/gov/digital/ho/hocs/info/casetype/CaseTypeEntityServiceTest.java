@@ -132,33 +132,33 @@ public class CaseTypeEntityServiceTest {
     }
 
     private Set<CaseTypeEntity> getDCUCaseType() {
-        return new HashSet<>(Arrays.asList(new CaseTypeEntity(1L, "DCU Ministerial","11", "MIN", "DCU", true),
-                new CaseTypeEntity(2L, "DCU Treat Official","12", "TRO", "DCU", true),
-                new CaseTypeEntity(3L, "DCU Number 10","13", "DTEN", "DCU", true)));
+        return new HashSet<>(Arrays.asList(new CaseTypeEntity(1L, "DCU Ministerial","11", "MIN", "DCU","DCU_MIN_DISPATCH", true),
+                new CaseTypeEntity(2L, "DCU Treat Official","12", "TRO", "DCU","DCU_TRO_DISPATCH",  true),
+                new CaseTypeEntity(3L, "DCU Number 10","13", "DTEN", "DCU","DCU_DTEN_DISPATCH",  true)));
     }
 
     private Set<CaseTypeEntity> getDCUCaseTypeBulk() {
-        return new HashSet<>(Arrays.asList(new CaseTypeEntity(1L, "DCU Ministerial","21", "MIN", "DCU", true),
-                new CaseTypeEntity(2L, "DCU Treat Official","22", "TRO", "DCU", true)));
+        return new HashSet<>(Arrays.asList(new CaseTypeEntity(1L, "DCU Ministerial","21", "MIN", "DCU","DCU_MIN_DISPATCH",  true),
+                new CaseTypeEntity(2L, "DCU Treat Official","22", "TRO", "DCU","DCU_MIN_DISPATCH",  true)));
     }
 
     private HashSet<CaseTypeEntity> getDCUAndUKVICaseType() {
         return new HashSet<>(Arrays.asList(
-                new CaseTypeEntity(1L, "DCU Ministerial","31", "MIN", "DCU", true),
-                new CaseTypeEntity(2L, "DCU Treat Official","32", "TRO", "DCU", true),
-                new CaseTypeEntity(3L, "DCU Number 10","33", "DTEN", "DCU", true),
-                new CaseTypeEntity(1L, "UKVI B REF","34", "IMCB", "UKVI", true),
-                new CaseTypeEntity(2L, "UKVI Ministerial REF","35", "IMCM", "UKVI", true),
-                new CaseTypeEntity(3L, "UKVI Number 10","36",  "UTEN","UKVI", true)));
+                new CaseTypeEntity(1L, "DCU Ministerial","31", "MIN", "DCU","DCU_MIN_DISPATCH",  true),
+                new CaseTypeEntity(2L, "DCU Treat Official","32", "TRO", "DCU","DCU_TRO_DISPATCH",  true),
+                new CaseTypeEntity(3L, "DCU Number 10","33", "DTEN", "DCU","DCU_DTEN_DISPATCH",  true),
+                new CaseTypeEntity(1L, "UKVI B REF","34", "IMCB", "UKVI","DCU_IMCB_DISPATCH",  true),
+                new CaseTypeEntity(2L, "UKVI Ministerial REF","35", "IMCM",  "UKVI","DCU_IMCM_DISPATCH", true),
+                new CaseTypeEntity(3L, "UKVI Number 10","36",  "UTEN","UKVI","DCU_UTEN_DISPATCH",  true)));
     }
 
     private HashSet<CaseTypeEntity> getDCUAndUKVICaseTypeBulk() {
         return new HashSet<>(Arrays.asList(
-                new CaseTypeEntity(1L, "DCU Ministerial","41", "MIN", "DCU", true),
-                new CaseTypeEntity(2L, "DCU Treat Official","42", "TRO", "DCU", true),
-                new CaseTypeEntity(1L, "UKVI B REF","43", "IMCB", "UKVI", true),
-                new CaseTypeEntity(2L, "UKVI Ministerial REF","44", "IMCM", "UKVI", true),
-                new CaseTypeEntity(3L, "UKVI Number 10","45", "UTEN", "UKVI", true)));
+                new CaseTypeEntity(1L, "DCU Ministerial","41", "MIN", "DCU","DCU_MIN_DISPATCH",  true),
+                new CaseTypeEntity(2L, "DCU Treat Official","42", "TRO", "DCU","DCU_TRO_DISPATCH",  true),
+                new CaseTypeEntity(1L, "UKVI B REF","43", "IMCB", "UKVI","DCU_IMCB_DISPATCH",  true),
+                new CaseTypeEntity(2L, "UKVI Ministerial REF","44", "IMCM", "UKVI","DCU_IMCM_DISPATCH",  true),
+                new CaseTypeEntity(3L, "UKVI Number 10","45", "UTEN", "UKVI", "DCU_UTEN_DISPATCH", true)));
     }
 
 }
