@@ -315,7 +315,7 @@
       "account" : [ "view-profile", "manage-account" ]
     },
     "notBefore" : 0,
-    "groups" : [ "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2/CT2/WRITE" ]
+    "groups" : [ "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2", "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2/CT2/WRITE" ]
   } ],
   "scopeMappings" : [ {
     "clientScope" : "offline_access",

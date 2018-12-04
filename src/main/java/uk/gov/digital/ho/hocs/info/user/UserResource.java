@@ -22,12 +22,12 @@ public class UserResource {
 
     @GetMapping(value = "/users")
     public ResponseEntity<List<UserDto>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers().stream().map(user -> UserDto.from(user)).collect(Collectors.toList()));
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping(value = "/teams/{teamUUID}/members")
     public ResponseEntity<List<UserDto>> getUsersForTeam(@PathVariable String teamUUID) {
-        return ResponseEntity.ok(userService.getUsersForTeam(teamUUID).stream().map(user -> UserDto.from(user)).collect(Collectors.toList()));
+        return ResponseEntity.ok(userService.getUsersForTeam(teamUUID));
     }
 
 }

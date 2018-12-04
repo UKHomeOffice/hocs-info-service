@@ -52,11 +52,23 @@ public class TeamServiceTest {
     private UUID team1UUID =UUID.randomUUID();
     private UUID team2UUID =UUID.randomUUID();
 
+
+    @Test
+    public void shouldGetAllTeams() {
+
+        when(teamRepository.findAllByActiveTrue()).thenReturn(getTeams().stream().collect(Collectors.toSet()));
+        Set<TeamDto> result = teamService.getAllActiveTeams();
+        assertThat(result).size().isEqualTo(2);
+        verify(teamRepository, times(1)).findAllByActiveTrue();
+        verifyNoMoreInteractions(teamRepository);
+    }
+
     @Test
     public void shouldGetAllTeamsForUnit() {
         UUID unitUUID = UUID.randomUUID();
         when(teamRepository.findTeamsByUnitUuid(unitUUID)).thenReturn(getTeams().stream().collect(Collectors.toSet()));
-        teamService.getTeamsForUnit(unitUUID);
+        Set<TeamDto> result = teamService.getTeamsForUnit(unitUUID);
+        assertThat(result).size().isEqualTo(2);
         verify(teamRepository, times(1)).findTeamsByUnitUuid(unitUUID);
         verifyNoMoreInteractions(teamRepository);
     }
@@ -207,6 +219,7 @@ public class TeamServiceTest {
         verify(keycloakService, times(1)).createGroupPathIfNotExists(unitGroupPath, team1UUID.toString());
         verify(keycloakService, times(1)).createGroupPathIfNotExists(teamGroupPath, "MIN");
         verify(keycloakService, times(1)).createGroupPathIfNotExists(caseGroupPath, "OWNER");
+        verify(keycloakService, times(1)).addUserToGroup(userUUID, teamGroupPath);
         verify(keycloakService, times(1)).addUserToGroup(userUUID, accessLevelGroupPath);
     }
 
@@ -227,15 +240,22 @@ public class TeamServiceTest {
             add(new PermissionDto("MIN", AccessLevel.OWNER));
         }};
 
+        Set<String> permissionPaths = new HashSet<String>() {{
+            add("/UNIT/" + team1UUID + "/MIN/READ");
+            add("/UNIT/" + team1UUID + "/MIN/OWNER");
+        }};
+
         assertThat(team.getPermissions().size()).isEqualTo(0);
         teamService.updateTeamPermissions(team1UUID, permissions);
         assertThat(team.getPermissions().size()).isEqualTo(2);
 
 
         verify(teamRepository, times(1)).findByUuid(team1UUID);
-        verify(keycloakService, times(1)).updateUserGroupsForGroup("/UNIT/" + team1UUID.toString());
+        verify(keycloakService, times(1)).updateUserTeamGroups("/UNIT/" + team1UUID.toString(),permissionPaths);
         verifyNoMoreInteractions(teamRepository);
     }
+
+
 
     private List<Team> getTeams() {
         CaseTypeEntity caseType = new CaseTypeEntity(1L, "MIN","a1", "MIN", "ROLE","DCU_MIN_DISPATCH", true);

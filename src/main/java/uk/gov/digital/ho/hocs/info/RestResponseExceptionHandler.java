@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
+import uk.gov.digital.ho.hocs.info.security.BulkImportException;
 import uk.gov.digital.ho.hocs.info.security.KeycloakException;
 
 import static org.springframework.http.HttpStatus.*;
@@ -24,5 +25,11 @@ public class RestResponseExceptionHandler {
     public ResponseEntity handle(EntityNotFoundException e) {
         log.error("Keycloak exception: {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), NOT_FOUND);
+    }
+
+    @ExceptionHandler(BulkImportException.class)
+    public ResponseEntity handle(BulkImportException e) {
+        log.error("BulkImportException: {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }
 }
