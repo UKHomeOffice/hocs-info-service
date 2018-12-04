@@ -20,5 +20,7 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
 
     Team findByUuid(UUID uuid);
 
+    Set<Team> findAllByActiveTrue();
+
     Set<Team> findTeamsByUnitUuid(UUID unitUUID);
 }
