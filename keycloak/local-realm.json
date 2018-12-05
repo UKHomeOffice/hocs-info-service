@@ -276,6 +276,38 @@
           "subGroups" : [ ]
         } ]
       } ]
+    }, {
+      "id" : "abf7617c-058c-4287-9f41-b95384fdbc7e",
+      "name" : "8b3b4366-a37c-48b6-b274-4c50f8083843",
+      "path" : "/UNIT2/8b3b4366-a37c-48b6-b274-4c50f8083843",
+      "attributes" : { },
+      "realmRoles" : [ ],
+      "clientRoles" : { },
+      "subGroups" : [ {
+        "id" : "a6f5c195-b625-4a95-9789-6609ef87cb39",
+        "name" : "CT3",
+        "path" : "/UNIT2/8b3b4366-a37c-48b6-b274-4c50f8083843/CT3",
+        "attributes" : { },
+        "realmRoles" : [ ],
+        "clientRoles" : { },
+        "subGroups" : [ {
+          "id" : "a9faabdd-4e39-47c0-94ee-6548bf5b354a",
+          "name" : "WRITE",
+          "path" : "/UNIT2/8b3b4366-a37c-48b6-b274-4c50f8083843/CT3/WRITE",
+          "attributes" : { },
+          "realmRoles" : [ ],
+          "clientRoles" : { },
+          "subGroups" : [ ]
+        },{
+          "id" : "a9faabdd-4e39-47c0-94ee-6548bf5b354b",
+          "name" : "READ",
+          "path" : "/UNIT2/8b3b4366-a37c-48b6-b274-4c50f8083843/CT3/READ",
+          "attributes" : { },
+          "realmRoles" : [ ],
+          "clientRoles" : { },
+          "subGroups" : [ ]
+        } ]
+      } ]
     }]
   }
   ],
@@ -315,7 +347,7 @@
       "account" : [ "view-profile", "manage-account" ]
     },
     "notBefore" : 0,
-    "groups" : [ "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2", "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2/CT2/WRITE" ]
+    "groups" : [ "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2", "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2/CT2/WRITE", "/UNIT2/8b3b4366-a37c-48b6-b274-4c50f8083843/CT3/WRITE", "/UNIT2/8b3b4366-a37c-48b6-b274-4c50f8083843/CT3/READ"]
   } ],
   "scopeMappings" : [ {
     "clientScope" : "offline_access",

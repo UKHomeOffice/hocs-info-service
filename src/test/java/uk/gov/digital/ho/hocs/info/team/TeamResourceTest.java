@@ -7,8 +7,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.digital.ho.hocs.info.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.dto.TeamDto;
+import uk.gov.digital.ho.hocs.info.dto.UpdateTeamPermissionsRequest;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
+import uk.gov.digital.ho.hocs.info.security.AccessLevel;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -121,6 +125,36 @@ public class TeamResourceTest {
         ResponseEntity result = teamResource.addTeamToUnit(unitUUID.toString(), teamUUID.toString());
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(teamService, times(1)).moveToNewUnit(unitUUID, teamUUID);
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
+    public void shouldUpdateRequestedPermissionsFromATeam() {
+        UUID teamUUID = UUID.randomUUID();
+        Set<PermissionDto> permissionDtoSet = new HashSet<>();
+        permissionDtoSet.add(new PermissionDto("CT3", AccessLevel.WRITE));
+        UpdateTeamPermissionsRequest request = new UpdateTeamPermissionsRequest(permissionDtoSet);
+
+        doNothing().when(teamService).updateTeamPermissions(teamUUID,permissionDtoSet);
+
+        ResponseEntity result = teamResource.updateTeamPermissions(teamUUID.toString(),request);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(teamService, times(1)).updateTeamPermissions(teamUUID,permissionDtoSet);
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
+    public void shouldRemoveRequestedPermissionsFromATeam() {
+        UUID teamUUID = UUID.randomUUID();
+        Set<PermissionDto> permissionDtoSet = new HashSet<>();
+        permissionDtoSet.add(new PermissionDto("CT3", AccessLevel.WRITE));
+        UpdateTeamPermissionsRequest request = new UpdateTeamPermissionsRequest(permissionDtoSet);
+
+        doNothing().when(teamService).deleteTeamPermissions(teamUUID,permissionDtoSet);
+
+        ResponseEntity result = teamResource.deleteTeamPermissions(teamUUID.toString(),request);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(teamService, times(1)).deleteTeamPermissions(teamUUID,permissionDtoSet);
         verifyNoMoreInteractions(teamService);
     }
 
