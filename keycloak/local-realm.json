@@ -347,7 +347,7 @@
       "account" : [ "view-profile", "manage-account" ]
     },
     "notBefore" : 0,
-    "groups" : [ "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2", "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2/CT2/WRITE", "/UNIT2/8b3b4366-a37c-48b6-b274-4c50f8083843/CT3/WRITE", "/UNIT2/8b3b4366-a37c-48b6-b274-4c50f8083843/CT3/READ"]
+    "groups" : [ "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2", "/UNIT2/8b3b4366-a37c-48b6-b274-4c50f8083843", "/UNIT2/434a4e33-437f-4e6d-8f04-14ea40fdbfa2/CT2/WRITE", "/UNIT2/8b3b4366-a37c-48b6-b274-4c50f8083843/CT3/WRITE", "/UNIT2/8b3b4366-a37c-48b6-b274-4c50f8083843/CT3/READ"]
   } ],
   "scopeMappings" : [ {
     "clientScope" : "offline_access",
