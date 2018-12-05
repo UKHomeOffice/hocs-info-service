@@ -255,6 +255,67 @@ public class TeamServiceTest {
         verifyNoMoreInteractions(teamRepository);
     }
 
+    @Test
+    public void shouldDeleteSinglePermissionInDatabaseAndKeycloak() {
+
+        UUID unitUUID = UUID.randomUUID();
+        Set<Permission> permissions = new HashSet<>();
+        Unit unit = new Unit(1L, "a unit", "UNIT", unitUUID, true, new HashSet<>());
+        Team team = new Team(1L, "a team", team1UUID, true, unit, permissions);
+        CaseTypeEntity caseType = new CaseTypeEntity(1L, "MIN","a1", "MIN", "ROLE", "DCU_MIN_DISPATCH", true);
+        permissions.add(new Permission(AccessLevel.READ, team, caseType));
+        permissions.add(new Permission(AccessLevel.OWNER, team, caseType));
+
+        when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
+        when(caseTypeRepository.findByType(any())).thenReturn(caseType);
+        doNothing().when(keycloakService).deleteTeamPermisisons(any());
+
+        Set<PermissionDto> permissionDtoSet = new HashSet<PermissionDto>() {{
+            add(new PermissionDto("MIN", AccessLevel.READ));
+        }};
+
+        assertThat(team.getPermissions().size()).isEqualTo(2);
+        teamService.deleteTeamPermissions(team1UUID, permissionDtoSet);
+        assertThat(team.getPermissions().size()).isEqualTo(1);
+
+
+        verify(teamRepository, times(1)).findByUuid(team1UUID);
+        verify(keycloakService, times(1)).deleteTeamPermisisons("/UNIT/"+ team1UUID+"/MIN/READ");
+        verifyNoMoreInteractions(teamRepository);
+    }
+
+    @Test
+    public void shouldDeleteMultiplePermissionInDatabaseAndKeycloak() {
+
+        UUID unitUUID = UUID.randomUUID();
+        Set<Permission> permissions = new HashSet<>();
+        Unit unit = new Unit(1L, "a unit", "UNIT", unitUUID, true, new HashSet<>());
+        Team team = new Team(1L, "a team", team1UUID, true, unit, permissions);
+        CaseTypeEntity caseType = new CaseTypeEntity(1L, "MIN","a1", "MIN", "ROLE", "DCU_MIN_DISPATCH", true);
+        permissions.add(new Permission(AccessLevel.READ, team, caseType));
+        permissions.add(new Permission(AccessLevel.OWNER, team, caseType));
+
+        when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
+        when(caseTypeRepository.findByType(any())).thenReturn(caseType);
+        doNothing().when(keycloakService).deleteTeamPermisisons(any());
+
+        Set<PermissionDto> permissionDtoSet = new HashSet<PermissionDto>() {{
+            add(new PermissionDto("MIN", AccessLevel.READ));
+            add(new PermissionDto("MIN", AccessLevel.OWNER));
+        }};
+
+        assertThat(team.getPermissions().size()).isEqualTo(2);
+        teamService.deleteTeamPermissions(team1UUID, permissionDtoSet);
+        assertThat(team.getPermissions().size()).isEqualTo(0);
+
+
+        verify(teamRepository, times(1)).findByUuid(team1UUID);
+        verify(keycloakService, times(1)).deleteTeamPermisisons("/UNIT/"+ team1UUID+"/MIN/READ");
+        verify(keycloakService, times(1)).deleteTeamPermisisons("/UNIT/"+ team1UUID+"/MIN/OWNER");
+        verify(keycloakService, times(1)).deleteTeamPermisisons("/UNIT/"+ team1UUID+"/MIN");
+        verifyNoMoreInteractions(teamRepository);
+    }
+
 
 
     private List<Team> getTeams() {

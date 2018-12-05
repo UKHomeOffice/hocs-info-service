@@ -122,6 +122,25 @@ public class TeamService {
     }
 
     @Transactional
+    public void deleteTeamPermissions(UUID teamUUID, Set<PermissionDto> permissionsDto) {
+        Team team = teamRepository.findByUuid(teamUUID);
+        Set<Permission> permissions = getPermissionsFromDto(permissionsDto, team);
+        team.deletePermissions(permissions);
+        Set<String> permissionPathsAccessLevel = new HashSet<>();
+        Set<String> permissionPathsCaseTypeLevel = new HashSet<>();
+        permissions.forEach(permission -> {
+            permissionPathsAccessLevel.add(String.format("/%s/%s/%s/%s", team.getUnit().getShortCode(), teamUUID.toString(), permission.getCaseType().getType(), permission.getAccessLevel().toString()));
+            permissionPathsCaseTypeLevel.add(String.format("/%s/%s/%s", team.getUnit().getShortCode(), teamUUID.toString(), permission.getCaseType().getType()));
+        });
+
+        permissionPathsAccessLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
+        if (team.getPermissions().size() == 0) {
+        permissionPathsCaseTypeLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
+        }
+        log.info("Deleted Permission for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_DELETED));
+    }
+
+    @Transactional
     public void deleteTeam(UUID teamUUID) {
         //TODO: Check Team does not have any topics assigned before deletion
         Team team = teamRepository.findByUuid(teamUUID);

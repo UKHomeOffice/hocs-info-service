@@ -8,10 +8,12 @@ import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
 import static net.logstash.logback.argument.StructuredArguments.value;
 import static uk.gov.digital.ho.hocs.info.logging.LogEvent.EVENT;
 import static uk.gov.digital.ho.hocs.info.logging.LogEvent.KEYCLOAK_FAILURE;
@@ -30,7 +32,7 @@ public class KeycloakService {
         this.hocsRealmName = hocsRealmName;
     }
 
-   public void addUserToGroup(UUID userUUID, String groupPath) {
+    public void addUserToGroup(UUID userUUID, String groupPath) {
         try {
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
             UserResource user = hocsRealm.users().get(userUUID.toString());
@@ -55,19 +57,29 @@ public class KeycloakService {
         }
     }
 
+    public void deleteTeamPermisisons(String path) {
+        try {
+            String id = keycloakClient.realm(hocsRealmName).getGroupByPath(path).getId();
+            keycloakClient.realm(hocsRealmName).groups().group(id).remove();
+
+        } catch (Exception e) {
+            log.error("Failed to delete permission group for with path {} for reason: {}", path, e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            throw new KeycloakException(e.getMessage(), e);
+        }
+    }
+
     public void createGroupPathIfNotExists(String parentPath, String groupName) {
-      try {
-        RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
-        GroupRepresentation parentGroup =  hocsRealm.getGroupByPath(parentPath);
-        GroupRepresentation newGroup = new GroupRepresentation();
-        newGroup.setName(groupName);
-        Response response = hocsRealm.groups().group(parentGroup.getId()).subGroup(newGroup);
-        response.close();
-      }
-      catch(Exception e) {
-          log.error("Failed to create group  {} with parent {} for reason: {}", groupName ,parentPath, e.getMessage() , value(EVENT, KEYCLOAK_FAILURE));
-          throw new KeycloakException(e.getMessage(), e);
-      }
+        try {
+            RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
+            GroupRepresentation parentGroup = hocsRealm.getGroupByPath(parentPath);
+            GroupRepresentation newGroup = new GroupRepresentation();
+            newGroup.setName(groupName);
+            Response response = hocsRealm.groups().group(parentGroup.getId()).subGroup(newGroup);
+            response.close();
+        } catch (Exception e) {
+            log.error("Failed to create group  {} with parent {} for reason: {}", groupName, parentPath, e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            throw new KeycloakException(e.getMessage(), e);
+        }
     }
 
     public List<UserRepresentation> getAllUsers() {
@@ -105,9 +117,8 @@ public class KeycloakService {
             createUnitGroupIfNotExists(newParent);
             GroupRepresentation newParentGroup = hocsRealm.getGroupByPath(newParent);
             hocsRealm.groups().group(newParentGroup.getId()).subGroup(group);
-        }
-        catch(Exception e) {
-            log.error("Failed to move Keycloak group {} to new parent {} for reason: {}." ,currentGroupPath, newParent, e.getMessage() , value(EVENT, KEYCLOAK_FAILURE));
+        } catch (Exception e) {
+            log.error("Failed to move Keycloak group {} to new parent {} for reason: {}.", currentGroupPath, newParent, e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }

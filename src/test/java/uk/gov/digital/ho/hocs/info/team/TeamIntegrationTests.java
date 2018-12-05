@@ -20,7 +20,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.info.dto.*;
+import uk.gov.digital.ho.hocs.info.entities.Permission;
+import uk.gov.digital.ho.hocs.info.entities.Team;
 import uk.gov.digital.ho.hocs.info.repositories.TeamRepository;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
@@ -126,7 +129,7 @@ public class TeamIntegrationTests {
                 , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<Set<TeamDto>>() {
                 });
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(result.getBody().size()).isEqualTo(3);
+        assertThat(result.getBody().size()).isEqualTo(4);
     }
 
     @Test
@@ -198,6 +201,60 @@ public class TeamIntegrationTests {
                 .getGroupByPath("/UNIT2/" + teamId + "/CT2/READ");
         assertThat(permissionGroup).isNotNull();
 
+    }
+
+    @Test
+    @Transactional
+    public void shouldDeleteTeamPermission() {
+        String teamId = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
+        Set<PermissionDto> permissions = new HashSet<PermissionDto>() {{
+            add(new PermissionDto("CT2", AccessLevel.WRITE));
+        }};
+
+        UpdateTeamPermissionsRequest request = new UpdateTeamPermissionsRequest(permissions);
+
+        HttpEntity<UpdateTeamPermissionsRequest> httpEntity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<String> result = restTemplate.exchange(
+                getBasePath() + "/team/" + teamId + "/permissions"
+                , HttpMethod.DELETE, httpEntity, String.class);
+
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        assertThatThrownBy(() -> keycloakClient.realm(HOCS_REALM)
+                .getGroupByPath("/UNIT2/" + teamId + "/CT2/WRITE")).isInstanceOf(NotFoundException.class);
+
+        assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).getPermissions()).size().isEqualTo(0);
+    }
+
+    @Test
+    @Transactional
+    public void shouldDeleteOnePermissionForTeam() {
+        String teamId = "8b3b4366-a37c-48b6-b274-4c50f8083843";
+        Set<PermissionDto> permissions = new HashSet<PermissionDto>() {{
+            add(new PermissionDto("CT3", AccessLevel.WRITE));
+        }};
+
+        UpdateTeamPermissionsRequest request = new UpdateTeamPermissionsRequest(permissions);
+
+        HttpEntity<UpdateTeamPermissionsRequest> httpEntity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<String> result = restTemplate.exchange(
+                getBasePath() + "/team/" + teamId + "/permissions"
+                , HttpMethod.DELETE, httpEntity, String.class);
+
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        assertThatThrownBy(() -> keycloakClient.realm(HOCS_REALM)
+                .getGroupByPath("/UNIT2/" + teamId + "/CT3/WRITE")).isInstanceOf(NotFoundException.class);
+
+        GroupRepresentation permissionGroup = keycloakClient.realm(HOCS_REALM)
+                .getGroupByPath("/UNIT2/" + teamId + "/CT3/READ");
+        assertThat(permissionGroup).isNotNull();
+
+        assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).getPermissions()).size().isEqualTo(1);
     }
 
 

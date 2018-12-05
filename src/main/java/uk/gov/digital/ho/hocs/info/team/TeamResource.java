@@ -54,6 +54,12 @@ public class TeamResource {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping(value = "/team/{teamUUID}/permissions")
+    public ResponseEntity deleteTeamPermissions(@PathVariable String teamUUID, @RequestBody UpdateTeamPermissionsRequest team) {
+        teamService.deleteTeamPermissions(UUID.fromString(teamUUID), team.getPermissions());
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping(value = "/unit/{unitUUID}/teams")
     public ResponseEntity<Set<TeamDto>> getTeamsForUnit(@PathVariable String unitUUID) {
         return ResponseEntity.ok(teamService.getTeamsForUnit(UUID.fromString(unitUUID)));
