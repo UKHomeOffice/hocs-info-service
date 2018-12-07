@@ -11,11 +11,13 @@ import uk.gov.digital.ho.hocs.info.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.dto.UpdateTeamPermissionsRequest;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
+import uk.gov.digital.ho.hocs.info.exception.TeamDeleteException;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -54,6 +56,16 @@ public class TeamResourceTest {
         verifyNoMoreInteractions(teamService);
     }
 
+    @Test(expected = TeamDeleteException.class)
+    public void shouldThrowTeamDeleteExceptionWhenDeleteATeamWithActiveParentTopics() {
+
+        doThrow(TeamDeleteException.class)
+                .when(teamService)
+                .deleteTeam(teamUUID);
+
+        teamResource.deleteTeam(teamUUID.toString());
+    }
+
     @Test
     public void shouldGetAllTeamsForAUnit() {
         UUID unitUUID = UUID.randomUUID();
@@ -65,6 +77,7 @@ public class TeamResourceTest {
         verify(teamService, times(1)).getTeamsForUnit(unitUUID);
         verifyNoMoreInteractions(teamService);
     }
+
     @Test
     public void shouldGetAllActiveTeams() {
 
@@ -77,12 +90,11 @@ public class TeamResourceTest {
         verifyNoMoreInteractions(teamService);
     }
 
-
     @Test
     public void shouldGetTeamForUUID() {
         UUID teamUUID = UUID.randomUUID();
         UUID unitUUID = UUID.randomUUID();
-        TeamDto team = new TeamDto( "Team1", teamUUID, true, new HashSet<>());
+        TeamDto team = new TeamDto("Team1", teamUUID, true, new HashSet<>());
         when(teamService.getTeam(teamUUID)).thenReturn(team);
 
         ResponseEntity<TeamDto> result = teamResource.getTeam(unitUUID.toString(), teamUUID.toString());
@@ -93,7 +105,7 @@ public class TeamResourceTest {
     }
 
     @Test(expected = EntityNotFoundException.class)
-    public void returnNotFoundWHenTeamDoesNotExist() {
+    public void returnNotFoundWhenTeamDoesNotExist() {
         UUID teamUUID = UUID.randomUUID();
         UUID unitUUID = UUID.randomUUID();
         when(teamService.getTeam(teamUUID)).thenThrow(new EntityNotFoundException(""));
@@ -107,7 +119,7 @@ public class TeamResourceTest {
     public void shouldCreateNewTeam() {
         UUID teamUUID = UUID.randomUUID();
         UUID unitUUID = UUID.randomUUID();
-        TeamDto team = new TeamDto( "Team1", teamUUID, true, new HashSet<>());
+        TeamDto team = new TeamDto("Team1", teamUUID, true, new HashSet<>());
         when(teamService.createTeam(team, unitUUID)).thenReturn(team);
 
         ResponseEntity result = teamResource.createUpdateTeam(unitUUID.toString(), team);
@@ -135,11 +147,11 @@ public class TeamResourceTest {
         permissionDtoSet.add(new PermissionDto("CT3", AccessLevel.WRITE));
         UpdateTeamPermissionsRequest request = new UpdateTeamPermissionsRequest(permissionDtoSet);
 
-        doNothing().when(teamService).updateTeamPermissions(teamUUID,permissionDtoSet);
+        doNothing().when(teamService).updateTeamPermissions(teamUUID, permissionDtoSet);
 
-        ResponseEntity result = teamResource.updateTeamPermissions(teamUUID.toString(),request);
+        ResponseEntity result = teamResource.updateTeamPermissions(teamUUID.toString(), request);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(teamService, times(1)).updateTeamPermissions(teamUUID,permissionDtoSet);
+        verify(teamService, times(1)).updateTeamPermissions(teamUUID, permissionDtoSet);
         verifyNoMoreInteractions(teamService);
     }
 
@@ -150,18 +162,18 @@ public class TeamResourceTest {
         permissionDtoSet.add(new PermissionDto("CT3", AccessLevel.WRITE));
         UpdateTeamPermissionsRequest request = new UpdateTeamPermissionsRequest(permissionDtoSet);
 
-        doNothing().when(teamService).deleteTeamPermissions(teamUUID,permissionDtoSet);
+        doNothing().when(teamService).deleteTeamPermissions(teamUUID, permissionDtoSet);
 
-        ResponseEntity result = teamResource.deleteTeamPermissions(teamUUID.toString(),request);
+        ResponseEntity result = teamResource.deleteTeamPermissions(teamUUID.toString(), request);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(teamService, times(1)).deleteTeamPermissions(teamUUID,permissionDtoSet);
+        verify(teamService, times(1)).deleteTeamPermissions(teamUUID, permissionDtoSet);
         verifyNoMoreInteractions(teamService);
     }
 
     private Set<TeamDto> getTeams() {
         return new HashSet<TeamDto>() {{
-            add(new TeamDto( "Team1", UUID.randomUUID(), true, new HashSet<>()));
-            add(new TeamDto( "Team2", UUID.randomUUID(), true, new HashSet<>()));
+            add(new TeamDto("Team1", UUID.randomUUID(), true, new HashSet<>()));
+            add(new TeamDto("Team2", UUID.randomUUID(), true, new HashSet<>()));
         }};
     }
 

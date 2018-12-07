@@ -11,33 +11,33 @@ VALUES ('DCU Ministerial', 'a1', 'MIN', 'DCU', 'DCU_MIN_DISPATCH', true, true),
        ('UKVI Number 10', 'b3', 'UTEN', 'UKVI', 'UKVI_UTEN_DISPATCH', true, true);
 
 Insert INTO stage_type (display_name, short_code, type, tenant_role, active, deadline)
-VALUES ('Data Input','111', 'DCU_MIN_DATA_INPUT', 'DCU', true, 10),
-       ('Markup','112', 'DCU_MIN_MARKUP', 'DCU', true, 1),
-       ('Transfer Confirmation','113', 'DCU_MIN_TRANSFER_CONFIRMATION', 'DCU', true, 3),
-       ('No Reply Needed Confirmation','114', 'DCU_MIN_NO_REPLY_NEEDED_CONFIRMATION', 'DCU', true, 0),
-       ('Initial Draft','115', 'DCU_MIN_INITIAL_DRAFT', 'DCU', true, 10),
-       ('QA Response','116', 'DCU_MIN_QA_RESPONSE', 'DCU', true, 0),
-       ('Private Office Approval','117', 'DCU_MIN_PRIVATE_OFFICE', 'DCU', true, 0),
-       ('Ministerial Sign off','118', 'DCU_MIN_MINISTER_SIGN_OFF', 'DCU', true, 0),
-       ('Dispatch','119', 'DCU_MIN_DISPATCH', 'DCU', true, 20),
-       ('Copy To Number 10','11a', 'DCU_MIN_COPY_NUMBER_TEN', 'DCU', true, 0),
-       ('Data Input','121', 'DCU_TRO_DATA_INPUT', 'DCU', true, 5),
-       ('Markup','122', 'DCU_TRO_MARKUP', 'DCU', true, 10),
-       ('Transfer Confirmation','123', 'DCU_TRO_TRANSFER_CONFIRMATION', 'DCU', true, 8),
-       ('No Reply Needed Confirmation','124', 'DCU_TRO_NO_REPLY_NEEDED_CONFIRMATION', 'DCU', true, 10),
-       ('Initial Draft','125', 'DCU_TRO_INITIAL_DRAFT', 'DCU', true, 10),
-       ('QA Response','126', 'DCU_TRO_QA_RESPONSE', 'DCU', true, 3),
-       ('Dispatch','127', 'DCU_TRO_DISPATCH', 'DCU', true, 10),
-       ('Copy to Number 10','128', 'DCU_TRO_COPY_NUMBER_TEN', 'DCU', true, 0),
-       ('Data Input','131', 'DCU_DTEN_DATA_INPUT', 'DCU', true, 0),
-       ('Markup','132', 'DCU_DTEN_MARKUP', 'DCU', true, 0),
-       ('Transfer Confirmation','133', 'DCU_DTEN_TRANSFER_CONFIRMATION', 'DCU', true, 0),
-       ('No Reply Needed Confirmation','134', 'DCU_DTEN_NO_REPLY_NEEDED_CONFIRMATION', 'DCU', true, 10),
-       ('Initial Draft','135', 'DCU_DTEN_INITIAL_DRAFT', 'DCU', true, 10),
-       ('QA Response','136', 'DCU_DTEN_QA_RESPONSE', 'DCU', true, 10),
-       ('Private Office','137', 'DCU_DTEN_PRIVATE_OFFICE', 'DCU', true, 0),
-       ('Dispatch','138', 'DCU_DTEN_DISPATCH', 'DCU', true, 20),
-       ('Copy To Number 10','139', 'DCU_DTEN_COPY_NUMBER_TEN', 'DCU', true, 10);
+VALUES ('Data Input', '111', 'DCU_MIN_DATA_INPUT', 'DCU', true, 10),
+       ('Markup', '112', 'DCU_MIN_MARKUP', 'DCU', true, 1),
+       ('Transfer Confirmation', '113', 'DCU_MIN_TRANSFER_CONFIRMATION', 'DCU', true, 3),
+       ('No Reply Needed Confirmation', '114', 'DCU_MIN_NO_REPLY_NEEDED_CONFIRMATION', 'DCU', true, 0),
+       ('Initial Draft', '115', 'DCU_MIN_INITIAL_DRAFT', 'DCU', true, 10),
+       ('QA Response', '116', 'DCU_MIN_QA_RESPONSE', 'DCU', true, 0),
+       ('Private Office Approval', '117', 'DCU_MIN_PRIVATE_OFFICE', 'DCU', true, 0),
+       ('Ministerial Sign off', '118', 'DCU_MIN_MINISTER_SIGN_OFF', 'DCU', true, 0),
+       ('Dispatch', '119', 'DCU_MIN_DISPATCH', 'DCU', true, 20),
+       ('Copy To Number 10', '11a', 'DCU_MIN_COPY_NUMBER_TEN', 'DCU', true, 0),
+       ('Data Input', '121', 'DCU_TRO_DATA_INPUT', 'DCU', true, 5),
+       ('Markup', '122', 'DCU_TRO_MARKUP', 'DCU', true, 10),
+       ('Transfer Confirmation', '123', 'DCU_TRO_TRANSFER_CONFIRMATION', 'DCU', true, 8),
+       ('No Reply Needed Confirmation', '124', 'DCU_TRO_NO_REPLY_NEEDED_CONFIRMATION', 'DCU', true, 10),
+       ('Initial Draft', '125', 'DCU_TRO_INITIAL_DRAFT', 'DCU', true, 10),
+       ('QA Response', '126', 'DCU_TRO_QA_RESPONSE', 'DCU', true, 3),
+       ('Dispatch', '127', 'DCU_TRO_DISPATCH', 'DCU', true, 10),
+       ('Copy to Number 10', '128', 'DCU_TRO_COPY_NUMBER_TEN', 'DCU', true, 0),
+       ('Data Input', '131', 'DCU_DTEN_DATA_INPUT', 'DCU', true, 0),
+       ('Markup', '132', 'DCU_DTEN_MARKUP', 'DCU', true, 0),
+       ('Transfer Confirmation', '133', 'DCU_DTEN_TRANSFER_CONFIRMATION', 'DCU', true, 0),
+       ('No Reply Needed Confirmation', '134', 'DCU_DTEN_NO_REPLY_NEEDED_CONFIRMATION', 'DCU', true, 10),
+       ('Initial Draft', '135', 'DCU_DTEN_INITIAL_DRAFT', 'DCU', true, 10),
+       ('QA Response', '136', 'DCU_DTEN_QA_RESPONSE', 'DCU', true, 10),
+       ('Private Office', '137', 'DCU_DTEN_PRIVATE_OFFICE', 'DCU', true, 0),
+       ('Dispatch', '138', 'DCU_DTEN_DISPATCH', 'DCU', true, 20),
+       ('Copy To Number 10', '139', 'DCU_DTEN_COPY_NUMBER_TEN', 'DCU', true, 10);
 
 Insert INTO holiday_date (date, case_type)
 VALUES ('2018-08-27', 'MIN'),
@@ -77,7 +77,8 @@ VALUES ('UNIT 1', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', 'UNIT1', TRUE);
 INSERT INTO team (display_name, uuid, unit_uuid, active)
 VALUES ('TEAM 1', '44444444-2222-2222-2222-222222222222', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),
        ('TEAM 2', '11111111-1111-1111-1111-111111111111', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),
-       ('TEAM 3', '33333333-3333-3333-3333-333333333333', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true);
+       ('TEAM 3', '33333333-3333-3333-3333-333333333333', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),
+       ('TEAM 14', '33333333-4444-3333-3333-333333333333', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true);
 
 INSERT INTO unit_case_type (unit_uuid, case_type)
 VALUES ('d9a93c21-a1a8-4a5d-aa7b-597bb95a782c', 'MIN');
@@ -87,20 +88,24 @@ VALUES ('44444444-2222-2222-2222-222222222222', 'MIN', 'OWNER');
 
 INSERT INTO parent_topic (display_name, UUID)
 VALUES ('Parent topic 1', '11111111-1111-1111-1111-111111111121'),
-       ('Parent topic 2', '11111111-1111-1111-1111-111111111122');
-
-INSERT INTO topic (display_name, UUID, parent_topic_uuid)
-VALUES ('topic 1', '11111111-1111-1111-1111-111111111131', '11111111-1111-1111-1111-111111111121'),
-       ('topic 2', '11111111-1111-1111-1111-111111111132', '11111111-1111-1111-1111-111111111122');
-
-INSERT INTO parent_topic (display_name, UUID)
-VALUES ('Parent topic 3', '11111111-1111-1111-1111-111111111123'),
+       ('Parent topic 2', '11111111-1111-1111-1111-111111111122'),
+       ('Parent topic 3', '11111111-1111-1111-1111-111111111123'),
        ('Parent topic 4', '11111111-1111-1111-1111-111111111124'),
        ('Parent topic 5', '11111111-1111-1111-1111-111111111125'),
        ('Parent topic 6', '11111111-1111-1111-1111-111111111126');
 
+INSERT INTO parent_topic_team(parent_topic_uuid, tenant_role, team_uuid, active)
+VALUES ('11111111-1111-1111-1111-111111111121', 'DCU', '44444444-2222-2222-2222-222222222222', true),
+       ('11111111-1111-1111-1111-111111111122', 'DCU', '44444444-2222-2222-2222-222222222222', true),
+       ('11111111-1111-1111-1111-111111111123', 'DCU', '33333333-4444-3333-3333-333333333333', false),
+       ('11111111-1111-1111-1111-111111111124', 'DCU', '11111111-1111-1111-1111-111111111111', true),
+       ('11111111-1111-1111-1111-111111111125', 'DCU', '11111111-1111-1111-1111-111111111111', true),
+       ('11111111-1111-1111-1111-111111111126', 'DCU', '33333333-3333-3333-3333-333333333333', true);
+
 INSERT INTO topic (display_name, UUID, parent_topic_uuid)
-VALUES ('topic 3', '11111111-1111-1111-1111-111111111133', '11111111-1111-1111-1111-111111111123'),
+VALUES ('topic 1', '11111111-1111-1111-1111-111111111131', '11111111-1111-1111-1111-111111111121'),
+       ('topic 2', '11111111-1111-1111-1111-111111111132', '11111111-1111-1111-1111-111111111122'),
+       ('topic 3', '11111111-1111-1111-1111-111111111133', '11111111-1111-1111-1111-111111111123'),
        ('topic 4', '11111111-1111-1111-1111-111111111134', '11111111-1111-1111-1111-111111111124'),
        ('topic 5', '11111111-1111-1111-1111-111111111135', '11111111-1111-1111-1111-111111111125'),
        ('topic 6', '11111111-1111-1111-1111-111111111136', '11111111-1111-1111-1111-111111111126'),
