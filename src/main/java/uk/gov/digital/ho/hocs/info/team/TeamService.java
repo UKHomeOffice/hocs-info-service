@@ -133,7 +133,7 @@ public class TeamService {
         });
 
         permissionPathsAccessLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
-        if (team.getPermissions().size() == 0) {
+        if (team.getPermissions().isEmpty()) {
         permissionPathsCaseTypeLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
         }
         log.info("Deleted Permission for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_DELETED));
