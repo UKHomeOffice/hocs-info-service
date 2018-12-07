@@ -7,12 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.dto.TeamDto;
-import uk.gov.digital.ho.hocs.info.entities.CaseTypeEntity;
-import uk.gov.digital.ho.hocs.info.entities.Permission;
-import uk.gov.digital.ho.hocs.info.entities.Team;
-import uk.gov.digital.ho.hocs.info.entities.Unit;
+import uk.gov.digital.ho.hocs.info.entities.*;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
+import uk.gov.digital.ho.hocs.info.exception.TeamDeleteException;
 import uk.gov.digital.ho.hocs.info.repositories.CaseTypeRepository;
+import uk.gov.digital.ho.hocs.info.repositories.ParentTopicRepository;
 import uk.gov.digital.ho.hocs.info.repositories.TeamRepository;
 import uk.gov.digital.ho.hocs.info.repositories.UnitRepository;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
@@ -40,13 +39,21 @@ public class TeamServiceTest {
     private CaseTypeRepository caseTypeRepository;
 
     @Mock
+    private ParentTopicRepository parentTopicRepository;
+
+    @Mock
     private KeycloakService keycloakService;
 
     private TeamService teamService;
 
     @Before
     public void setUp() {
-        this.teamService = new TeamService(teamRepository, unitRepository, caseTypeRepository, keycloakService);
+        this.teamService = new TeamService(
+                teamRepository,
+                unitRepository,
+                caseTypeRepository,
+                parentTopicRepository,
+                keycloakService);
     }
 
     private UUID team1UUID =UUID.randomUUID();
@@ -213,7 +220,7 @@ public class TeamServiceTest {
 
         when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
 
-        teamService = new TeamService(teamRepository, unitRepository, caseTypeRepository, keycloakService);
+//        teamService = new TeamService(teamRepository, unitRepository, caseTypeRepository, keycloakService);
         teamService.addUserToTeam(userUUID, team1UUID);
 
         verify(keycloakService, times(1)).createGroupPathIfNotExists(unitGroupPath, team1UUID.toString());
@@ -316,7 +323,30 @@ public class TeamServiceTest {
         verifyNoMoreInteractions(teamRepository);
     }
 
+    @Test
+    public void ShouldDeleteTeamWhenNoActiveParentTopicsAreLinkedToIt(){
+        Team team = new Team(1L, "a team", team1UUID, true, new Unit(), new HashSet<>());
+        when(parentTopicRepository.findAllActiveParentTopicsForTeam(team1UUID)).thenReturn(new ArrayList<>());
+        when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
 
+        assertThat(team.isActive()).isTrue();
+        teamService.deleteTeam(team1UUID);
+        assertThat(team.isActive()).isFalse();
+
+        verify(parentTopicRepository, times(1)).findAllActiveParentTopicsForTeam(team1UUID);
+        verify(teamRepository, times(1)).findByUuid(team1UUID);
+        verifyNoMoreInteractions(parentTopicRepository);
+        verifyNoMoreInteractions(teamRepository);
+    }
+
+    @Test(expected = TeamDeleteException.class)
+    public void shouldThrowTeamDeleteExceptionWhenActiveParentTopicsAreLinkedToTeam(){
+        List<ParentTopic> parentTopicsList = new ArrayList<>();
+        parentTopicsList.add(new ParentTopic());
+        when(parentTopicRepository.findAllActiveParentTopicsForTeam(team1UUID)).thenReturn(parentTopicsList);
+
+        teamService.deleteTeam(team1UUID);
+    }
 
     private List<Team> getTeams() {
         CaseTypeEntity caseType = new CaseTypeEntity(1L, "MIN","a1", "MIN", "ROLE","DCU_MIN_DISPATCH", true);

@@ -4,22 +4,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.info.dto.PermissionDto;
+import uk.gov.digital.ho.hocs.info.dto.TeamDeleteActiveParentTopicsDto;
 import uk.gov.digital.ho.hocs.info.dto.TeamDto;
-import uk.gov.digital.ho.hocs.info.entities.CaseTypeEntity;
-import uk.gov.digital.ho.hocs.info.entities.Permission;
-import uk.gov.digital.ho.hocs.info.entities.Team;
-import uk.gov.digital.ho.hocs.info.entities.Unit;
+import uk.gov.digital.ho.hocs.info.entities.*;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
+import uk.gov.digital.ho.hocs.info.exception.TeamDeleteException;
 import uk.gov.digital.ho.hocs.info.repositories.CaseTypeRepository;
+import uk.gov.digital.ho.hocs.info.repositories.ParentTopicRepository;
 import uk.gov.digital.ho.hocs.info.repositories.TeamRepository;
 import uk.gov.digital.ho.hocs.info.repositories.UnitRepository;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static net.logstash.logback.argument.StructuredArguments.value;
@@ -33,12 +30,14 @@ public class TeamService {
     private KeycloakService keycloakService;
     private UnitRepository unitRepository;
     private CaseTypeRepository caseTypeRepository;
+    private ParentTopicRepository parentTopicRepository;
 
-    public TeamService(TeamRepository teamRepository, UnitRepository unitRepository, CaseTypeRepository caseTypeRepository, KeycloakService keycloakService) {
+    public TeamService(TeamRepository teamRepository, UnitRepository unitRepository, CaseTypeRepository caseTypeRepository,ParentTopicRepository parentTopicRepository, KeycloakService keycloakService) {
         this.teamRepository = teamRepository;
         this.keycloakService = keycloakService;
         this.unitRepository = unitRepository;
         this.caseTypeRepository = caseTypeRepository;
+        this.parentTopicRepository = parentTopicRepository;
     }
 
     public Set<TeamDto> getTeamsForUnit(UUID unitUUID) {
@@ -134,7 +133,7 @@ public class TeamService {
         });
 
         permissionPathsAccessLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
-        if (team.getPermissions().size() == 0) {
+        if (team.getPermissions().isEmpty()) {
         permissionPathsCaseTypeLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
         }
         log.info("Deleted Permission for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_DELETED));
@@ -142,9 +141,18 @@ public class TeamService {
 
     @Transactional
     public void deleteTeam(UUID teamUUID) {
-        //TODO: Check Team does not have any topics assigned before deletion
-        Team team = teamRepository.findByUuid(teamUUID);
-        team.setActive(false);
+        List<ParentTopic> parentTopics = parentTopicRepository.findAllActiveParentTopicsForTeam(teamUUID);
+        if(parentTopics.isEmpty()) {
+            Team team = teamRepository.findByUuid(teamUUID);
+            team.setActive(false);
+            log.info("Deleted team {}", teamUUID.toString(), value(EVENT, TEAM_DELETED));
+        } else {
+
+            String msg = "Unable to delete team as active parent topic are assigned to team";
+            log.error(msg, value(EVENT, TEAM_DELETED_FAILURE));
+            throw new TeamDeleteException(msg, TeamDeleteActiveParentTopicsDto.from(parentTopics, msg));
+
+        }
     }
 
     private Set<Permission> getPermissionsFromDto(Set<PermissionDto> permissionsDto, Team team) {

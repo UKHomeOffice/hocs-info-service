@@ -1,3 +1,6 @@
+DELETE FROM parent_topic_team WHERE tenant_role = 'TEST_TENANT';
+DELETE FROM parent_topic WHERE UUID = '94a10f9f-a42e-44c0-8ebe-1227cb347f1d' OR UUID = '1abf7a0c-ea2d-478d-b6c8-d739fb60ef04';
+
 DELETE FROM permission WHERE case_type = 'CT1' OR case_type = 'CT2' OR case_type = 'CT3';
 DELETE FROM unit_case_type WHERE unit_uuid = '09221c48-b916-47df-9aa0-a0194f86f6dd';
 

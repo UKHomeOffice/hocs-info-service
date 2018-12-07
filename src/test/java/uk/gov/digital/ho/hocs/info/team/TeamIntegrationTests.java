@@ -22,8 +22,6 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.info.dto.*;
-import uk.gov.digital.ho.hocs.info.entities.Permission;
-import uk.gov.digital.ho.hocs.info.entities.Team;
 import uk.gov.digital.ho.hocs.info.repositories.TeamRepository;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
@@ -129,7 +127,7 @@ public class TeamIntegrationTests {
                 , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<Set<TeamDto>>() {
                 });
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(result.getBody().size()).isEqualTo(4);
+        assertThat(result.getBody().size()).isEqualTo(6);
     }
 
     @Test
@@ -297,6 +295,31 @@ public class TeamIntegrationTests {
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).getDisplayName()).isEqualTo("New Team Name");
     }
+
+    @Test
+    public void shouldDeleteTeam() {
+        String teamId =  "5d584129-66ea-4e97-9277-7576ab1d32c0";
+
+        ResponseEntity<String> result = restTemplate.exchange(
+                getBasePath() + "/team/" + teamId
+                , HttpMethod.DELETE,new HttpEntity(null) ,String.class);
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).isActive()).isFalse();
+    }
+
+    @Test
+    public void shouldReturnPreConditionFailedErrorWhenTryingToDeleteTeamWhichHasActiveParentTopicsAttached() {
+        String teamId =  "7c33c878-9404-4f67-9bbc-ca52dff285ca";
+
+        ResponseEntity<String> result = restTemplate.exchange(
+                getBasePath() + "/team/" + teamId
+                , HttpMethod.DELETE,new HttpEntity(null) ,String.class);
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.PRECONDITION_FAILED);
+        assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).isActive()).isTrue();
+    }
+
 
     private String getBasePath() {
         return "http://localhost:" + port;
