@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import uk.gov.digital.ho.hocs.info.dto.TeamDeleteActiveParentTopicsDto;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.exception.TeamDeleteException;
-import uk.gov.digital.ho.hocs.info.security.BulkImportException;
+import uk.gov.digital.ho.hocs.info.bulkupdate.BulkImportException;
 import uk.gov.digital.ho.hocs.info.security.KeycloakException;
 
 import static net.logstash.logback.argument.StructuredArguments.value;
