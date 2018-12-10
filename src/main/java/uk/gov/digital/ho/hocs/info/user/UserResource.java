@@ -25,6 +25,11 @@ public class UserResource {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    @GetMapping(value = "/user/{userUUID}")
+    public ResponseEntity<UserDto> getUserByUUID(@PathVariable UUID userUUID) {
+        return ResponseEntity.ok(userService.getUserByUUID(userUUID));
+    }
+
     @GetMapping(value = "/teams/{teamUUID}/members")
     public ResponseEntity<List<UserDto>> getUsersForTeam(@PathVariable String teamUUID) {
         return ResponseEntity.ok(userService.getUsersForTeam(teamUUID));

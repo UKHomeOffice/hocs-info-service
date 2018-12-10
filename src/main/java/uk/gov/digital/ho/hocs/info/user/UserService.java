@@ -38,6 +38,10 @@ public class UserService {
         return keycloakService.getAllUsers().stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
     }
 
+    public UserDto getUserByUUID(UUID userUUID) {
+        return UserDto.from(keycloakService.getUserFromUUID(userUUID));
+    }
+
     public List<UserDto> getUsersForTeam(String teamUUID) {
         Team team = teamRepository.findByUuid(UUID.fromString(teamUUID));
         if (team != null) {

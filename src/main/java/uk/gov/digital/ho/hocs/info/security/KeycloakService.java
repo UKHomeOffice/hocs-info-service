@@ -83,14 +83,17 @@ public class KeycloakService {
     }
 
     public List<UserRepresentation> getAllUsers() {
-        List<UserRepresentation> users = keycloakClient.realm(hocsRealmName).users().list();
-        return users;
+        return keycloakClient.realm(hocsRealmName).users().list();
+    }
+
+
+    public UserRepresentation getUserFromUUID(UUID userUUID) {
+        return keycloakClient.realm(hocsRealmName).users().get(userUUID.toString()).toRepresentation();
     }
 
     public List<UserRepresentation> getUsersForTeam(String path, String teamUUID) {
         String id = keycloakClient.realm(hocsRealmName).getGroupByPath(path).getId();
-        List<UserRepresentation> users = keycloakClient.realm(hocsRealmName).groups().group(id).members();
-        return users;
+        return keycloakClient.realm(hocsRealmName).groups().group(id).members();
     }
 
     public void updateUserTeamGroups(String teamGroupPath, Set<String> permissionPaths) {
@@ -122,4 +125,5 @@ public class KeycloakService {
             throw new KeycloakException(e.getMessage(), e);
         }
     }
+
 }

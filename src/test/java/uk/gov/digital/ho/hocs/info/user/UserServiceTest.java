@@ -56,6 +56,22 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    public void shouldGetUserFromUUID() {
+        UserRepresentation user = new UserRepresentation();
+        user.setId(userUUID.toString());
+        user.setFirstName("FirstName");
+        user.setLastName("LastName");
+        when(keycloakService.getUserFromUUID(userUUID)).thenReturn(user);
+
+        UserDto result = service.getUserByUUID(userUUID);
+        assertThat(result.getFirstName()).isEqualTo("FirstName");
+        assertThat(result.getLastName()).isEqualTo("LastName");
+        assertThat(result.getId()).isEqualTo(userUUID.toString());
+        verify(keycloakService, times(1)).getUserFromUUID(userUUID);
+        verifyNoMoreInteractions(keycloakService);
+
+    }
 
     @Test
     public void shouldGetAllUsersForTeam(){
