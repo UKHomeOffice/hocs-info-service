@@ -83,13 +83,30 @@ public class KeycloakServiceTest {
         UserRepresentation user =  new UserRepresentation();
         user.setId(userUUID.toString());
         user.setFirstName("FirstName");
-        user.setFirstName("LastName");
+        user.setLastName("LastName");
         userRepresentations.add(user);
 
         when(keycloakClient.realm(HOCS_REALM).users().list()).thenReturn(userRepresentations);
         service = new KeycloakService(keycloakClient, HOCS_REALM);
         List<UserRepresentation> result =service.getAllUsers();
         assertThat(result.size()).isEqualTo(1);
+    }
+
+
+    @Test
+    public void shouldGetUserForUUID() {
+
+         UserRepresentation user =  new UserRepresentation();
+        user.setId(userUUID.toString());
+        user.setFirstName("FirstName");
+        user.setLastName("LastName");
+
+        when(keycloakClient.realm(HOCS_REALM).users().get(userUUID.toString()).toRepresentation()).thenReturn(user);
+        service = new KeycloakService(keycloakClient, HOCS_REALM);
+        UserRepresentation result = service.getUserFromUUID(userUUID);
+        assertThat(result.getFirstName()).isEqualTo("FirstName");
+        assertThat(result.getLastName()).isEqualTo("LastName");
+        assertThat(result.getId()).isEqualTo(userUUID.toString());
     }
 
     @Test
@@ -100,7 +117,7 @@ public class KeycloakServiceTest {
         UserRepresentation user =  new UserRepresentation();
         user.setId(userUUID.toString());
         user.setFirstName("FirstName");
-        user.setFirstName("LastName");
+        user.setLastName("LastName");
         userRepresentations.add(user);
 
         when(keycloakClient.realm(HOCS_REALM).groups().group(any()).members()).thenReturn(userRepresentations);

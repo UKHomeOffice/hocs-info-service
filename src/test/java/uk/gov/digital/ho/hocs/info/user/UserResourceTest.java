@@ -45,6 +45,19 @@ public class UserResourceTest {
     }
 
     @Test
+    public void shouldGetUserByUUID() {
+
+        UUID userUUID = UUID.randomUUID();
+        UserDto user =  new UserDto(userUUID.toString(),"some user","FirstName", "LastName","user1@noemail.com");
+
+        when(userService.getUserByUUID(userUUID)).thenReturn(user);
+
+        userResource = new UserResource(userService);
+        ResponseEntity<UserDto> result = userResource.getUserByUUID(userUUID);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
     public void shouldGetAllUsersForTeam() {
         String user1UUID = UUID.randomUUID().toString();
         String user2UUID = UUID.randomUUID().toString();
