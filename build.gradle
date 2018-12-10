@@ -57,11 +57,15 @@ dependencies {
 	compile('org.flywaydb:flyway-core')
 	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.9.6'
 	compile group: 'org.keycloak', name: 'keycloak-admin-client', version: '4.5.0.Final'
+	compile group: 'org.keycloak', name: 'keycloak-services', version: '4.5.0.Final'
 	compile group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.1.4.Final'
 	compile group: 'org.jboss.resteasy', name: 'resteasy-client', version: '3.1.4.Final'
 	compile group: 'org.jboss.resteasy', name: 'resteasy-jackson2-provider', version: '3.1.4.Final'
 
 	compile('org.apache.commons:commons-csv:1.5')
+	compile('io.springfox:springfox-swagger2:2.9.2')
+	compile('io.springfox:springfox-swagger-ui:2.9.2')
+
 
 	runtime('org.postgresql:postgresql')
 

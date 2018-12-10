@@ -1,4 +1,5 @@
-package uk.gov.digital.ho.hocs.info.security;
+package uk.gov.digital.ho.hocs.info.bulkupdate;
+import org.keycloak.partialimport.PartialImportResults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,8 +14,7 @@ public class BulkImportResource {
     }
 
     @PostMapping(value = "/admin/bulk-import")
-    public ResponseEntity addUserToGroup() {
-        bulkImportService.refreshAllGroups();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PartialImportResults> addUserToGroup() {
+        return ResponseEntity.ok(bulkImportService.refreshAllGroups());
     }
 }

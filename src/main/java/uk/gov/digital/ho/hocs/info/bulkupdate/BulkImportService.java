@@ -1,8 +1,9 @@
-package uk.gov.digital.ho.hocs.info.security;
+package uk.gov.digital.ho.hocs.info.bulkupdate;
 
 
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.partialimport.PartialImportResults;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.PartialImportRepresentation;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +12,7 @@ import uk.gov.digital.ho.hocs.info.entities.Permission;
 import uk.gov.digital.ho.hocs.info.entities.Team;
 import uk.gov.digital.ho.hocs.info.entities.Unit;
 import uk.gov.digital.ho.hocs.info.repositories.UnitRepository;
-
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -37,13 +38,26 @@ public class BulkImportService {
         this.unitRepository = unitRepository;
     }
 
-    public void refreshAllGroups() {
+    public PartialImportResults refreshAllGroups() {
         log.info("Started Bulk Upload", value(EVENT, BULK_IMPORT_STARTED));
+        PartialImportRepresentation groupImport = getImportGroups();
+        try {
+            Response response = keycloakClient.realm(hocsRealmName).partialImport(groupImport);
+            PartialImportResults results = response.readEntity(PartialImportResults.class);
+            log.info("Completed Bulk Upload", value(EVENT, BULK_IMPORT_SUCCESS));
+            return results;
+        }
+        catch (Exception e) {
+            log.error("Failed to update keycloak with partial import for reason {}", e.getMessage(), value(EVENT, BULK_IMPORT_FAILURE));
+            throw new BulkImportException("Failed to update keycloak with partial import", e);
+        }
 
+    }
 
+    private PartialImportRepresentation getImportGroups() {
         PartialImportRepresentation keyCloakImport = new PartialImportRepresentation();
         List<GroupRepresentation> groups = new ArrayList<>();
-
+        keyCloakImport.setIfResourceExists(PartialImportRepresentation.Policy.OVERWRITE.toString());
         try {
 
             Set<Unit> units = unitRepository.findAll();
@@ -87,15 +101,7 @@ public class BulkImportService {
             log.error("Failed to generate partial import representation from database for reason: {}", e.getMessage(), value(EVENT, BULK_IMPORT_FAILURE));
             throw new BulkImportException("Failed to generate partial import representation from database", e);
         }
-
-        try {
-            keycloakClient.realm(hocsRealmName).partialImport(keyCloakImport);
-        }
-        catch (Exception e) {
-            log.error("Failed to update keycloak with partial import for reason {}", e.getMessage(), value(EVENT, BULK_IMPORT_FAILURE));
-            throw new BulkImportException("Failed to update keycloak with partial import", e);
-        }
-        log.info("Completed Bulk Upload", value(EVENT, BULK_IMPORT_SUCCESS));
+        return keyCloakImport;
     }
 
 
