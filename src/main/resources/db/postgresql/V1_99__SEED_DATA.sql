@@ -164,7 +164,7 @@ VALUES ('11111111-1111-1111-1111-111111111121', 'MIN'),
 INSERT INTO correspondent_type (display_name, type)
 VALUES ('Correspondent', 'CORRESPONDENT'),
        ('Constituent', 'CONSTITUENT'),
-       ('Third Party', 'THIRD_PARY'),
+       ('Third Party', 'THIRD_PARTY'),
        ('Applicant', 'APPLICANT'),
        ('Complainant', 'COMPLAINANT'),
        ('Family Relation', 'FAMILY'),
