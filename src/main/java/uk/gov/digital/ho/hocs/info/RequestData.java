@@ -14,13 +14,25 @@ import java.util.UUID;
 public class RequestData implements HandlerInterceptor {
 
 
-    private static final String CORRELATION_ID_HEADER = "X-Correlation-Id";
-    private static final String USER_ID_HEADER = "X-Auth-Userid";
-    private static final String USERNAME_HEADER = "X-Auth-Username";
+    public static final String CORRELATION_ID_HEADER = "X-Correlation-Id";
+    public static final String USER_ID_HEADER = "X-Auth-Userid";
+    public static final String USERNAME_HEADER = "X-Auth-Username";
+    public static final String GROUP_HEADER = "X-Auth-Groups";
     private static final String ROLES_HEADER = "X-Auth-Roles";
 
     private static final String ANONYMOUS = "anonymous";
 
+    public static Processor transferHeadersToMDC() {
+        return ex -> {
+            MDC.put(CORRELATION_ID_HEADER, ex.getIn().getHeader(CORRELATION_ID_HEADER, String.class));
+            MDC.put(USER_ID_HEADER, ex.getIn().getHeader(USER_ID_HEADER, String.class));
+            MDC.put(USERNAME_HEADER, ex.getIn().getHeader(USERNAME_HEADER, String.class));
+        };
+    }
+
+    private static boolean isNullOrEmpty(String value) {
+        return value == null || value.equals("");
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -28,7 +40,8 @@ public class RequestData implements HandlerInterceptor {
         MDC.put(CORRELATION_ID_HEADER, initialiseCorrelationId(request));
         MDC.put(USER_ID_HEADER, initialiseUserId(request));
         MDC.put(USERNAME_HEADER, initialiseUserName(request));
-        MDC.put(ROLES_HEADER, initialiseRoles(request));
+        MDC.put(GROUP_HEADER, initialiseGroups(request));
+
         return true;
     }
 
@@ -42,7 +55,6 @@ public class RequestData implements HandlerInterceptor {
         response.setHeader(USER_ID_HEADER, userId());
         response.setHeader(USERNAME_HEADER, userId());
         response.setHeader(CORRELATION_ID_HEADER, correlationId());
-        response.setHeader(ROLES_HEADER, rolesString());
         MDC.clear();
     }
 
@@ -61,19 +73,10 @@ public class RequestData implements HandlerInterceptor {
         return !isNullOrEmpty(username) ? username : ANONYMOUS;
     }
 
-    private String initialiseRoles(HttpServletRequest request) {
-        String roles = request.getHeader(ROLES_HEADER);
-        return !isNullOrEmpty(roles) ? roles : ANONYMOUS;
+    private String initialiseGroups(HttpServletRequest request) {
+        String groups = request.getHeader(GROUP_HEADER);
+        return !isNullOrEmpty(groups) ? groups : "/ANONYMOUS/ANONYMOUS";
     }
-
-
-    public String correlationId() {
-        return MDC.get(CORRELATION_ID_HEADER);
-    }
-
-    public String userId() { return MDC.get(USER_ID_HEADER); }
-
-    public String username() { return MDC.get(USERNAME_HEADER); }
 
     public String rolesString() { return MDC.get(ROLES_HEADER); }
 
@@ -88,17 +91,22 @@ public class RequestData implements HandlerInterceptor {
     }
 
 
-    public static Processor transferHeadersToMDC() {
-        return ex -> {
-            MDC.put(CORRELATION_ID_HEADER, ex.getIn().getHeader(CORRELATION_ID_HEADER, String.class));
-            MDC.put(USER_ID_HEADER, ex.getIn().getHeader(USER_ID_HEADER, String.class));
-            MDC.put(USERNAME_HEADER, ex.getIn().getHeader(USERNAME_HEADER, String.class));
-            MDC.put(ROLES_HEADER, ex.getIn().getHeader(ROLES_HEADER, String.class));
-        };
+    public String correlationId() {
+        return MDC.get(CORRELATION_ID_HEADER);
     }
 
-    private static boolean isNullOrEmpty(String value) {
-        return value == null || value.equals("");
+    public String userId() {
+        return MDC.get(USER_ID_HEADER);
+    }
+
+    public String username() {
+        return MDC.get(USERNAME_HEADER);
+    }
+
+    public String groups() {
+        return MDC.get(GROUP_HEADER);
     }
 
 }
+
+
