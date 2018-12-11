@@ -11,18 +11,12 @@ import uk.gov.digital.ho.hocs.info.entities.CaseTypeEntity;
 @Repository
 public interface CaseTypeRepository extends CrudRepository<CaseTypeEntity, String> {
 
-    //TODO: Remove Tenant (link to team instead)
-    // This is used as a permission check, if we return null here you do not have permissions on that case type
-    @Query(value = "SELECT ct.type FROM case_type ct WHERE ct.tenant_role IN (?2) AND ct.type = ?1 AND ct.active = TRUE", nativeQuery = true)
-    String findCaseTypeEntityByTenant(String caseType, String[] tenant);
+    @Query(value = "SELECT ct.* FROM case_type ct JOIN permission ON ct.type = permission.case_type WHERE permission.team_uuid IN ?1 AND ct.active = TRUE", nativeQuery = true)
+    Set<CaseTypeEntity> findAllCaseTypesByTeam(Set<String> team);
 
     //TODO: Remove Tenant (link to team instead)
-    @Query(value = "SELECT ct.* FROM case_type ct WHERE ct.tenant_role IN (?1) AND ct.active = TRUE", nativeQuery = true)
-    Set<CaseTypeEntity> findAllCaseTypesByTenant(String[] tenant);
-
-    //TODO: Remove Tenant (link to team instead)
-    @Query(value = "SELECT ct.* FROM case_type ct WHERE ct.tenant_role IN (?1) AND ct.active = TRUE AND ct.bulk = TRUE", nativeQuery = true)
-    Set<CaseTypeEntity> findAllBulkCaseTypesByTenant(String[] tenant);
+    @Query(value = "SELECT ct.* FROM case_type ct JOIN permission ON ct.type = permission.case_type WHERE permission.team_uuid IN ?1 AND ct.active = TRUE AND ct.bulk = TRUE", nativeQuery = true)
+    Set<CaseTypeEntity> findAllBulkCaseTypesByTeam(Set<String> team);
 
     Set<CaseTypeEntity> findAllBy();
 

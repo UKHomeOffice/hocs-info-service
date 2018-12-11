@@ -43,7 +43,7 @@ public class Team implements Serializable {
     @Column(name = "display_name")
     private String displayName;
 
-    @Column(name = "uuid")
+    @Column(name = "uuid", columnDefinition = "uuid")
     private UUID uuid;
 
     @Column(name = "active")
