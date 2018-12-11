@@ -55,6 +55,7 @@ public class RequestData implements HandlerInterceptor {
         response.setHeader(USER_ID_HEADER, userId());
         response.setHeader(USERNAME_HEADER, userId());
         response.setHeader(CORRELATION_ID_HEADER, correlationId());
+        response.setHeader(ROLES_HEADER, rolesString());
         MDC.clear();
     }
 
@@ -105,6 +106,10 @@ public class RequestData implements HandlerInterceptor {
 
     public String groups() {
         return MDC.get(GROUP_HEADER);
+    }
+
+    public String[] groupsArray() {
+        return groups().split(",");
     }
 
 }

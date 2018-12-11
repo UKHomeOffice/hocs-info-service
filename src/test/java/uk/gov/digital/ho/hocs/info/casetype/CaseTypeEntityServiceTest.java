@@ -10,8 +10,10 @@ import uk.gov.digital.ho.hocs.info.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.entities.CaseTypeEntity;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.repositories.CaseTypeRepository;
+import uk.gov.digital.ho.hocs.info.security.UserPermissionsService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,21 +29,21 @@ public class CaseTypeEntityServiceTest {
     @Mock
     private RequestData requestData;
 
+    @Mock
+    private UserPermissionsService userPermissionsService;
+
     private CaseTypeService caseTypeService;
-
-    private String[] singleRole = {"DCU"};
-    private String[] multiRoles = {"DCU","UKVI"};
-
-
+    private Set team = new HashSet<String>() {{ add("74c79583-1375-494c-9883-f574e7e36541");}};
+    private Set teams = new HashSet<String>() {{ add("74c79583-1375-494c-9883-f574e7e36541, 8b532de4-4915-4783-a19a-c79fd6754d5c"); }};
     @Before
     public void setUp() {
-        this.caseTypeService = new CaseTypeService(caseTypeRepository, requestData);
+        this.caseTypeService = new CaseTypeService(caseTypeRepository, requestData,userPermissionsService);
     }
 
     @Test
     public void shouldreturnEmptySetWhenNoRolesSet() {
         Set<CaseTypeEntity> caseTypeDtos = caseTypeService.getCaseTypes();
-        verify(caseTypeRepository, times(1)).findAllCaseTypesByTenant(any());
+        verify(caseTypeRepository, times(1)).findAllCaseTypesByTeam(any());
 
         assertThat(caseTypeDtos.size()).isEqualTo(0);
 
@@ -50,12 +52,12 @@ public class CaseTypeEntityServiceTest {
     @Test
     public void shouldGetCaseTypesSingleTenantRequested() {
 
-        when(requestData.roles()).thenReturn(singleRole);
-        when(caseTypeRepository.findAllCaseTypesByTenant(any())).thenReturn(getDCUCaseType());
+        when(userPermissionsService.getUserTeams()).thenReturn(team);
+        when(caseTypeRepository.findAllCaseTypesByTeam(team)).thenReturn(getDCUCaseType());
 
         Set<CaseTypeEntity> caseTypeDtos = caseTypeService.getCaseTypes();
 
-        verify(caseTypeRepository, times(1)).findAllCaseTypesByTenant(any());
+        verify(caseTypeRepository, times(1)).findAllCaseTypesByTeam(any());
 
         assertThat(caseTypeDtos.size()).isEqualTo(3);
 
@@ -66,9 +68,9 @@ public class CaseTypeEntityServiceTest {
 
 
     @Test
-    public void shouldGetCaseTypesMultipleTenantRequested() {
-        when(requestData.roles()).thenReturn(multiRoles);
-        when(caseTypeRepository.findAllCaseTypesByTenant(multiRoles)).thenReturn(getDCUAndUKVICaseType());
+    public void shouldGetCaseTypesMultipleTeamsRequested() {
+        when(userPermissionsService.getUserTeams()).thenReturn(teams);
+        when(caseTypeRepository.findAllCaseTypesByTeam(teams)).thenReturn(getDCUAndUKVICaseType());
 
         Set<CaseTypeEntity> caseTypeDtos = caseTypeService.getCaseTypes();
 
@@ -83,14 +85,14 @@ public class CaseTypeEntityServiceTest {
     }
 
     @Test
-    public void shouldGetBulkCaseTypesSingleTenantRequested() {
+    public void shouldGetBulkCaseTypesSingleTeamRequested() {
 
-        when(requestData.roles()).thenReturn(singleRole);
-        when(caseTypeRepository.findAllBulkCaseTypesByTenant(any())).thenReturn(getDCUCaseTypeBulk());
+        when(userPermissionsService.getUserTeams()).thenReturn(team);
+        when(caseTypeRepository.findAllBulkCaseTypesByTeam(team)).thenReturn(getDCUCaseTypeBulk());
 
         Set<CaseTypeEntity> caseTypeDtos = caseTypeService.getCaseTypesBulk();
 
-        verify(caseTypeRepository, times(1)).findAllBulkCaseTypesByTenant(any());
+        verify(caseTypeRepository, times(1)).findAllBulkCaseTypesByTeam(team);
 
         assertThat(caseTypeDtos.size()).isEqualTo(2);
 
@@ -101,13 +103,13 @@ public class CaseTypeEntityServiceTest {
 
 
     @Test
-    public void shouldGetBulkCaseTypesMultipleTenantRequested() {
-        when(requestData.roles()).thenReturn(multiRoles);
-        when(caseTypeRepository.findAllBulkCaseTypesByTenant(multiRoles)).thenReturn(getDCUAndUKVICaseTypeBulk());
+    public void shouldGetBulkCaseTypesMultipleTeamRequested() {
+        when(userPermissionsService.getUserTeams()).thenReturn(teams);
+        when(caseTypeRepository.findAllBulkCaseTypesByTeam(teams)).thenReturn(getDCUAndUKVICaseTypeBulk());
 
         Set<CaseTypeEntity> caseTypeDtos = caseTypeService.getCaseTypesBulk();
 
-        verify(caseTypeRepository, times(1)).findAllBulkCaseTypesByTenant(any());
+        verify(caseTypeRepository, times(1)).findAllBulkCaseTypesByTeam(teams);
 
         assertThat(caseTypeDtos.size()).isEqualTo(5);
 

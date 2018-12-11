@@ -15,7 +15,9 @@ public enum LogEvent {
     BULK_IMPORT_STARTED,
     BULK_IMPORT_SUCCESS,
     BULK_IMPORT_FAILURE,
-    UNCAUGHT_EXCEPTION;
+    UNCAUGHT_EXCEPTION,
+    SECURITY_PARSE_ERROR,
+    SECURITY_UNAUTHORISED;
 
     public static final String EVENT = "event_id";
 }
