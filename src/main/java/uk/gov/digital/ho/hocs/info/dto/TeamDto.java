@@ -39,7 +39,8 @@ public class TeamDto {
 
     public TeamDto(String displayName, UUID uuid, boolean active) {
         this.displayName = displayName;
-        this.uuid = UUID.randomUUID();
+        this.uuid = uuid;
+        this.active = active;
     }
 
     public static TeamDto from (Team team) {
