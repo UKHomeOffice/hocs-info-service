@@ -37,7 +37,7 @@ public class CaseTypeEntityServiceTest {
     private Set teams = new HashSet<String>() {{ add("74c79583-1375-494c-9883-f574e7e36541, 8b532de4-4915-4783-a19a-c79fd6754d5c"); }};
     @Before
     public void setUp() {
-        this.caseTypeService = new CaseTypeService(caseTypeRepository, requestData,userPermissionsService);
+        this.caseTypeService = new CaseTypeService(caseTypeRepository,userPermissionsService);
     }
 
     @Test

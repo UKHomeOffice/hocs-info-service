@@ -53,7 +53,7 @@ public class Team implements Serializable {
     @JoinColumn(name = "unit_uuid", referencedColumnName = "uuid")
     private Unit unit;
 
-    @OneToMany(mappedBy = "team", orphanRemoval = true, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "team", orphanRemoval = true, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Permission> permissions;
 
     public void addPermission(Permission permission) {

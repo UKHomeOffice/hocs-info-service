@@ -30,13 +30,13 @@ public class StageTypeEntity implements Serializable {
     @Column(name = "type")
     private String type;
 
-    @Column(name = "tenant_role")
-    private String role;
-
     @Column(name = "deadline")
     private String deadline;
 
     @Column(name = "active")
     private boolean active;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "team_uuid", referencedColumnName = "uuid")
+    private Team team;
 }

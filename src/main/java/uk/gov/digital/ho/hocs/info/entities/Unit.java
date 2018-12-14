@@ -42,7 +42,7 @@ public class Unit implements Serializable {
     @Column(name = "active")
     private boolean active;
 
-    @OneToMany(mappedBy = "unit", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "unit", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Team> teams;
 
     public void addTeam(Team team) {
