@@ -16,18 +16,15 @@ import uk.gov.digital.ho.hocs.info.user.UserService;
 public class CaseTypeService {
 
     private final CaseTypeRepository caseTypeRepository;
-    private final RequestData requestData;
-private final UserPermissionsService userPermissionsService;
+    private final UserPermissionsService userPermissionsService;
     @Autowired
-    public CaseTypeService(CaseTypeRepository caseTypeRepository, RequestData requestData, UserPermissionsService userPermissionsService) {
+    public CaseTypeService(CaseTypeRepository caseTypeRepository, UserPermissionsService userPermissionsService) {
         this.caseTypeRepository = caseTypeRepository;
-        this.requestData = requestData;
         this.userPermissionsService = userPermissionsService;
     }
 
     CaseTypeEntity getCaseTypeByShortCode(String shortcode){
         return caseTypeRepository.findByShortCode(shortcode);
-
     }
 
     Set<CaseTypeEntity> getAllCaseTypes() {
@@ -44,6 +41,4 @@ private final UserPermissionsService userPermissionsService;
         log.debug("Requesting all case types for Bulk upload");
         return caseTypeRepository.findAllBulkCaseTypesByTeam(userPermissionsService.getUserTeams());
     }
-
-
 }

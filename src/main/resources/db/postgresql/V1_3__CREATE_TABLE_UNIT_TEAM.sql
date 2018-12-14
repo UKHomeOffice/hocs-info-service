@@ -60,4 +60,3 @@ CREATE INDEX idx_tenant_team_unit_uuid
 
 CREATE INDEX idx_tenant_team_case_type
   ON unit_case_type(case_type);
-
