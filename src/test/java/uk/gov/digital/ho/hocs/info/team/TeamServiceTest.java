@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.auditClient.AuditClient;
 import uk.gov.digital.ho.hocs.info.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.entities.*;
@@ -44,6 +45,9 @@ public class TeamServiceTest {
     @Mock
     private KeycloakService keycloakService;
 
+    @Mock
+    private AuditClient auditClient;
+
     private TeamService teamService;
 
     @Before
@@ -53,7 +57,8 @@ public class TeamServiceTest {
                 unitRepository,
                 caseTypeRepository,
                 parentTopicRepository,
-                keycloakService);
+                keycloakService,
+                auditClient);
     }
 
     private UUID team1UUID =UUID.randomUUID();
