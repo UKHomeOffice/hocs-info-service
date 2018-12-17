@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.team;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.digital.ho.hocs.info.auditClient.AuditClient;
 import uk.gov.digital.ho.hocs.info.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.dto.TeamDeleteActiveParentTopicsDto;
 import uk.gov.digital.ho.hocs.info.dto.TeamDto;
@@ -31,13 +32,15 @@ public class TeamService {
     private UnitRepository unitRepository;
     private CaseTypeRepository caseTypeRepository;
     private ParentTopicRepository parentTopicRepository;
+    private AuditClient auditClient;
 
-    public TeamService(TeamRepository teamRepository, UnitRepository unitRepository, CaseTypeRepository caseTypeRepository,ParentTopicRepository parentTopicRepository, KeycloakService keycloakService) {
+    public TeamService(TeamRepository teamRepository, UnitRepository unitRepository, CaseTypeRepository caseTypeRepository,ParentTopicRepository parentTopicRepository, KeycloakService keycloakService, AuditClient auditClient) {
         this.teamRepository = teamRepository;
         this.keycloakService = keycloakService;
         this.unitRepository = unitRepository;
         this.caseTypeRepository = caseTypeRepository;
         this.parentTopicRepository = parentTopicRepository;
+        this.auditClient = auditClient;
     }
 
     public Set<TeamDto> getTeamsForUnit(UUID unitUUID) {
@@ -71,6 +74,7 @@ public class TeamService {
         }
         createKeyCloakMappings(permissions, team.getUuid(), unit.getShortCode(), Optional.empty());
 
+        auditClient.createTeamAudit(team);
         log.info("Team with UUID {} created in Unit {}", team.getUuid().toString(), unit.getShortCode(), value(EVENT, TEAM_CREATED));
         return TeamDto.from(team);
     }
@@ -79,6 +83,7 @@ public class TeamService {
     public void updateTeamName(UUID teamUUID, String newName) {
         Team team = teamRepository.findByUuid(teamUUID);
         team.setDisplayName(newName);
+        auditClient.renameTeamAudit(team);
         log.info("Team with UUID {} name updated to {}", team.getUuid().toString(), newName, value(EVENT, TEAM_RENAMED));
     }
 
@@ -90,6 +95,7 @@ public class TeamService {
 
         createKeyCloakMappings(permissions, teamUUID, unit, Optional.of(userUUID));
 
+        auditClient.addUserToTeamAudit(userUUID, team);
         log.info("Added user with UUID {} to team with UUID {}", userUUID.toString(), team.getUuid().toString(), value(EVENT, USER_ADDED_TO_TEAM));
     }
 
@@ -106,6 +112,7 @@ public class TeamService {
 
         keycloakService.moveGroup(currentGroupPath, team.getUnit().getShortCode());
 
+        auditClient.moveToNewUnitAudit(teamUUID.toString(), oldUnit.getShortCode(), newUnit.getShortCode());
         log.info("Moved team {} from Unit {} to Unit {}", teamUUID.toString(), oldUnit.getShortCode(), newUnit.getShortCode(), value(EVENT, TEAM_ADDED_TO_UNIT));
     }
 
@@ -117,6 +124,7 @@ public class TeamService {
         String teamPath = String.format("/%s/%s", team.getUnit().getShortCode(), teamUUID.toString());
         createKeyCloakMappings(permissions, teamUUID, team.getUnit().getShortCode(), Optional.empty());
         keycloakService.updateUserTeamGroups(teamPath, permissionPaths);
+        auditClient.updateTeamPermissions(teamUUID, permissionsDto);
         log.info("Updated Permissions for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_UPDATED));
     }
 
@@ -143,8 +151,10 @@ public class TeamService {
     public void deleteTeam(UUID teamUUID) {
         List<ParentTopic> parentTopics = parentTopicRepository.findAllActiveParentTopicsForTeam(teamUUID);
         if(parentTopics.isEmpty()) {
+            log.info("parent topics is empty");
             Team team = teamRepository.findByUuid(teamUUID);
             team.setActive(false);
+            auditClient.deleteTeamAudit(team);
             log.info("Deleted team {}", teamUUID.toString(), value(EVENT, TEAM_DELETED));
         } else {
 
