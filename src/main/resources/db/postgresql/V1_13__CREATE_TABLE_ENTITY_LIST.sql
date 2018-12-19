@@ -95,7 +95,7 @@ VALUES ('6016e4cd-9f34-49fe-ac84-cd4dca135ff9', 'Forms', 'form');
 
 -- TODO: all the forms
 INSERT INTO entity (uuid, simple_name, entity_list_UUID, data)
-VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'DCU_CORRESPONDENCE_DETAILS','6016e4cd-9f34-49fe-ac84-cd4dca135ff9', '{ "title" : "Record Correspondence Details", "action" : "SUBMIT", "defaultActionLabel" : "Continue"}');
+VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'DCU_CORRESPONDENCE_DETAILS','6016e4cd-9f34-49fe-ac84-cd4dca135ff9', '{ "title" : "Record Correspondence Details", "defaultActionLabel" : "Continue"}');
 
 INSERT INTO entity_relation(entity_uuid, parent_entity_uuid) -- link form to Stage
 VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'f1fde35b-0618-4a03-842d-7495b936d1fe' );
