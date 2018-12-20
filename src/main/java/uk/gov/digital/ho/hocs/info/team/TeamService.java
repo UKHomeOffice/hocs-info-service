@@ -124,7 +124,7 @@ public class TeamService {
         String teamPath = String.format("/%s/%s", team.getUnit().getShortCode(), teamUUID.toString());
         createKeyCloakMappings(permissions, teamUUID, team.getUnit().getShortCode(), Optional.empty());
         keycloakService.updateUserTeamGroups(teamPath, permissionPaths);
-        auditClient.updateTeamPermissions(teamUUID, permissionsDto);
+        auditClient.updateTeamPermissionsAudit(teamUUID, permissionsDto);
         log.info("Updated Permissions for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_UPDATED));
     }
 
@@ -144,6 +144,7 @@ public class TeamService {
         if (team.getPermissions().isEmpty()) {
         permissionPathsCaseTypeLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
         }
+        auditClient.deleteTeamPermissionsAudit(teamUUID, permissionsDto);
         log.info("Deleted Permission for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_DELETED));
     }
 
@@ -161,7 +162,6 @@ public class TeamService {
             String msg = "Unable to delete team as active parent topic are assigned to team";
             log.error(msg, value(EVENT, TEAM_DELETED_FAILURE));
             throw new TeamDeleteException(msg, TeamDeleteActiveParentTopicsDto.from(parentTopics, msg));
-
         }
     }
 
