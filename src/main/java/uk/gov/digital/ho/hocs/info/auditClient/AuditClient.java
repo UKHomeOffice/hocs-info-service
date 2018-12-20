@@ -9,12 +9,10 @@ import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.info.RequestData;
 import uk.gov.digital.ho.hocs.info.auditClient.dto.CreateAuditRequest;
 import uk.gov.digital.ho.hocs.info.dto.PermissionDto;
-import uk.gov.digital.ho.hocs.info.entities.Permission;
 import uk.gov.digital.ho.hocs.info.entities.Team;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -24,7 +22,6 @@ import static uk.gov.digital.ho.hocs.info.LogEvent.AUDIT_FAILED;
 import static uk.gov.digital.ho.hocs.info.logging.LogEvent.EVENT;
 
 import static net.logstash.logback.argument.StructuredArguments.value;
-import static uk.gov.digital.ho.hocs.info.logging.LogEvent.*;
 
 @Slf4j
 @Component
@@ -37,6 +34,8 @@ public class AuditClient {
     private final ObjectMapper objectMapper;
 
     private final RequestData requestData;
+    private final JsonArrayBuilder permissionArray;
+
 
     @Autowired
     public AuditClient(ProducerTemplate producerTemplate,
@@ -51,10 +50,12 @@ public class AuditClient {
         this.namespace = namespace;
         this.objectMapper = objectMapper;
         this.requestData = requestData;
+        permissionArray = Json.createArrayBuilder();
     }
 
     public void createTeamAudit(Team team) {
-        String auditPayload = String.format("{\"teamUuid\":\"%s\"}", team.getUuid());
+        String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).build().toString();
+
         CreateAuditRequest request = new CreateAuditRequest(
                 requestData.correlationId(),
                 raisingService,
@@ -73,7 +74,7 @@ public class AuditClient {
     }
 
     public void renameTeamAudit(Team team) {
-        String auditPayload = String.format("{\"teamuuid\":\"%s\"}", team.getUuid());
+        String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).build().toString();
         CreateAuditRequest request = new CreateAuditRequest(
                 requestData.correlationId(),
                 raisingService,
@@ -92,7 +93,7 @@ public class AuditClient {
     }
 
     public void deleteTeamAudit(Team team){
-        String auditPayload = String.format("{\"teamUuid\":\"%s\"}", team.getUuid());
+        String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).build().toString();
         CreateAuditRequest request = new CreateAuditRequest(
                 requestData.correlationId(),
                 raisingService,
@@ -111,7 +112,7 @@ public class AuditClient {
     }
 
     public void addUserToTeamAudit(UUID userUUID, Team team) {
-        String auditPayload = String.format("{\"teamUuid\":\"%s\", \"userUuid\":\"%s\"}", team.getUuid(), userUUID);
+        String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).add("userUUID", userUUID.toString()).build().toString();
         CreateAuditRequest request = new CreateAuditRequest(
                 requestData.correlationId(),
                 raisingService,
@@ -130,7 +131,7 @@ public class AuditClient {
 
 
     public void moveToNewUnitAudit(String teamUUID, String oldUnitUUID, String newUnitUUID) {
-        String auditPayload = String.format("{\"teamUuid\":\"%s\", \"oldUnit\":\"%s\", \"newUnit\":\"%s\"}", teamUUID, oldUnitUUID, newUnitUUID);
+        String auditPayload = Json.createObjectBuilder().add("teamUUID", teamUUID).add("oldUnit", oldUnitUUID).add("newUnit", newUnitUUID).build().toString();
         CreateAuditRequest request = new CreateAuditRequest(
                 requestData.correlationId(),
                 raisingService,
@@ -147,30 +148,45 @@ public class AuditClient {
         }
     }
 
-    public void updateTeamPermissions(UUID teamUUID, Set<PermissionDto> permissions) {
-
-        JsonArrayBuilder permissionArray = Json.createArrayBuilder();
+    public void updateTeamPermissionsAudit(UUID teamUUID, Set<PermissionDto> permissions) {
         for (PermissionDto permission : permissions){
-            permissionArray.add(Json.createObjectBuilder().add("caseType", permission.getCaseTypeCode())
-                                                            .add("accessLevel", permission.getAccessLevel().toString())
-                                                            .build());
+            permissionArray.add(Json.createObjectBuilder().add("caseType", permission.getCaseTypeCode()).add("accessLevel", permission.getAccessLevel().toString()).build());
         }
         String auditPayload = Json.createObjectBuilder().add("permissions", permissionArray).build().toString();
-
         CreateAuditRequest request = new CreateAuditRequest(
                 requestData.correlationId(),
                 raisingService,
                 auditPayload,
                 namespace,
                 LocalDateTime.now(),
-                EventType.UPDATE_TEAM_PERMISSION.toString(),
+                EventType.UPDATE_TEAM_PERMISSIONS.toString(),
                 requestData.userId());
-
         try {
             producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
             log.info("Create audit for Update Team Permission, team UUID: {}, correlationID: {}, UserID: {}", teamUUID, requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
         } catch (Exception e) {
             log.error("Failed to create Update Team Permission audit event for team UUID {} for reason {}", teamUUID, e, value(EVENT, AUDIT_FAILED));
+        }
+    }
+
+    public void deleteTeamPermissionsAudit(UUID teamUUID, Set<PermissionDto> permissions) {
+        for (PermissionDto permission : permissions){
+            permissionArray.add(Json.createObjectBuilder().add("caseType", permission.getCaseTypeCode()).add("accessLevel", permission.getAccessLevel().toString()).build());
+        }
+        String auditPayload = Json.createObjectBuilder().add("permissions", permissionArray).build().toString();
+        CreateAuditRequest request = new CreateAuditRequest(
+                requestData.correlationId(),
+                raisingService,
+                auditPayload,
+                namespace,
+                LocalDateTime.now(),
+                EventType.REMOVE_PERMISSIONS_FROM_TEAM.toString(),
+                requestData.userId());
+        try {
+            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
+            log.info("Create audit for Delete Team Permission, team UUID: {}, correlationID: {}, UserID: {}", teamUUID, requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
+        } catch (Exception e) {
+            log.error("Failed to create Delete Team Permission audit event for team UUID {} for reason {}", teamUUID, e, value(EVENT, AUDIT_FAILED));
         }
     }
 }

@@ -9,6 +9,7 @@ import uk.gov.digital.ho.hocs.info.auditClient.AuditClient;
 import uk.gov.digital.ho.hocs.info.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.entities.*;
+import uk.gov.digital.ho.hocs.info.exception.EntityCreationException;
 import uk.gov.digital.ho.hocs.info.exception.EntityNotFoundException;
 import uk.gov.digital.ho.hocs.info.exception.TeamDeleteException;
 import uk.gov.digital.ho.hocs.info.repositories.CaseTypeRepository;
@@ -352,6 +353,33 @@ public class TeamServiceTest {
 
         teamService.deleteTeam(team1UUID);
     }
+
+    @Test
+    public void ShouldAuditCreateTeam(){
+        UUID unitUUID = UUID.randomUUID();
+        Team team = new Team( "Team1", team1UUID, true);
+        Unit unit = new Unit(1L,"UNIT1", "UNIT1", unitUUID,true,
+                new HashSet<Team>(){{
+                    add(team);
+                }});
+        TeamDto teamDto = new TeamDto( "Team1", team1UUID, true, new HashSet<>());
+
+        when(unitRepository.findByUuid(unitUUID)).thenReturn(unit);
+        teamService.createTeam(teamDto, unitUUID);
+
+        verify(auditClient, times(1)).createTeamAudit(team);
+    }
+
+    @Test
+    public void ShouldAuditUpdateTeamName(){
+        Team team = new Team( "Team1", team1UUID, true);
+
+        when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
+        teamService.updateTeamName(team1UUID,"" );
+
+        verify(auditClient, times(1)).renameTeamAudit(team);
+    }
+
 
     private List<Team> getTeams() {
         CaseTypeEntity caseType = new CaseTypeEntity(1L, "MIN","a1", "MIN", "ROLE","DCU_MIN_DISPATCH", true);
