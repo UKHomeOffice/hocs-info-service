@@ -5,18 +5,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.RequestData;
-import uk.gov.digital.ho.hocs.info.casetype.CaseTypeService;
-import uk.gov.digital.ho.hocs.info.correspondentType.CorrespondentTypeService;
-import uk.gov.digital.ho.hocs.info.entities.CaseTypeEntity;
-import uk.gov.digital.ho.hocs.info.entities.CorrespondentType;
-import uk.gov.digital.ho.hocs.info.entities.ParentTopic;
-import uk.gov.digital.ho.hocs.info.repositories.CaseTypeRepository;
-import uk.gov.digital.ho.hocs.info.repositories.CorrespondentTypeRepository;
+import uk.gov.digital.ho.hocs.info.api.correspondentType.CorrespondentTypeService;
+import uk.gov.digital.ho.hocs.info.domain.repository.CorrespondentTypeRepository;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

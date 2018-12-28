@@ -5,8 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.correspondentType.CorrespondentTypeResource;
-import uk.gov.digital.ho.hocs.info.correspondentType.CorrespondentTypeService;
+import uk.gov.digital.ho.hocs.info.api.correspondentType.CorrespondentTypeResource;
+import uk.gov.digital.ho.hocs.info.api.correspondentType.CorrespondentTypeService;
 
 import java.util.HashSet;
 

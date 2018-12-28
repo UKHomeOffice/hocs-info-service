@@ -15,8 +15,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import static net.logstash.logback.argument.StructuredArguments.value;
-import static uk.gov.digital.ho.hocs.info.logging.LogEvent.EVENT;
-import static uk.gov.digital.ho.hocs.info.logging.LogEvent.KEYCLOAK_FAILURE;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.EVENT;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.KEYCLOAK_FAILURE;
 
 @Service
 @Slf4j

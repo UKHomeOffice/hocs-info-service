@@ -1,11 +1,13 @@
 package uk.gov.digital.ho.hocs.info.security;
-import java.util.Arrays;
+
 import lombok.Getter;
 
+import java.util.Arrays;
 
 @Getter
 public enum AccessLevel {
-  SUMMARY(1), READ(2), WRITE(3), OWNER(5);
+    UNSET(0), SUMMARY(1), READ(2), WRITE(3), OWNER(5);
+
     private int level;
 
     AccessLevel(int level) {

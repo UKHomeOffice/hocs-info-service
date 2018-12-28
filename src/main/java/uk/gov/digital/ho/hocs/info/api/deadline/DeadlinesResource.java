@@ -1,0 +1,62 @@
+package uk.gov.digital.ho.hocs.info.api.deadline;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+import uk.gov.digital.ho.hocs.info.api.dto.GetDeadlinesResponse;
+import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
+import uk.gov.digital.ho.hocs.info.domain.model.Deadline;
+
+import java.time.LocalDate;
+import java.util.Set;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+
+@RestController
+public class DeadlinesResource {
+
+    private final DeadlinesService deadlinesService;
+
+    @Autowired
+    public DeadlinesResource(DeadlinesService deadlinesService) {
+        this.deadlinesService = deadlinesService;
+    }
+
+    @GetMapping(value = "/casetype/{caseType}/deadlines/{received}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetDeadlinesResponse> getDeadlines(@PathVariable String caseType, @PathVariable String received) {
+        try {
+            LocalDate receivedDate = LocalDate.parse(received);
+            Set<Deadline> deadlineDtos = deadlinesService.getDeadlines(caseType, receivedDate);
+            return ResponseEntity.ok(GetDeadlinesResponse.from(deadlineDtos));
+        } catch (ApplicationExceptions.EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @GetMapping(value = "/casetype/{caseType}/deadline/{received}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Deadline> getCaseDeadline(@PathVariable String caseType, @PathVariable String received) {
+        try {
+            LocalDate receivedDate = LocalDate.parse(received);
+            Deadline deadline = deadlinesService.getCaseDeadlineForCaseType(caseType,receivedDate);
+            return ResponseEntity.ok(deadline);
+        } catch (ApplicationExceptions.EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @GetMapping(value = "/stagetype/{stageType}/deadline/{received}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Deadline> getDeadlineByStage(@PathVariable String stageType, @PathVariable String received) {
+        try {
+            LocalDate receivedDate = LocalDate.parse(received);
+
+            Deadline deadline = deadlinesService.getDeadlineForStage(stageType, receivedDate);
+            return ResponseEntity.ok(deadline);
+        } catch (ApplicationExceptions.EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+}
+

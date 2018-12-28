@@ -8,8 +8,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import uk.gov.digital.ho.hocs.info.RequestData;
-import uk.gov.digital.ho.hocs.info.entities.CaseTypeEntity;
+import uk.gov.digital.ho.hocs.info.application.RequestData;
+import uk.gov.digital.ho.hocs.info.domain.model.CaseTypeEntity;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;

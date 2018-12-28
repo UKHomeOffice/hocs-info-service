@@ -5,12 +5,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.Minister.MinisterService;
-import uk.gov.digital.ho.hocs.info.entities.Minister;
-import uk.gov.digital.ho.hocs.info.repositories.MinisterRepository;
+import uk.gov.digital.ho.hocs.info.api.Minister.MinisterService;
+import uk.gov.digital.ho.hocs.info.domain.repository.MinisterRepository;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
