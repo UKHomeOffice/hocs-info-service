@@ -30,9 +30,9 @@ public class AuditClient {
     private final String auditQueue;
     private final String raisingService;
     private final String namespace;
+
     private final ProducerTemplate producerTemplate;
     private final ObjectMapper objectMapper;
-
     private final RequestData requestData;
     private final JsonArrayBuilder permissionArray;
 
@@ -55,15 +55,7 @@ public class AuditClient {
 
     public void createTeamAudit(Team team) {
         String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).build().toString();
-
-        CreateAuditRequest request = new CreateAuditRequest(
-                requestData.correlationId(),
-                raisingService,
-                auditPayload,
-                namespace,
-                LocalDateTime.now(),
-                EventType.CREATE_TEAM.toString(),
-                requestData.userId());
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.CREATE_TEAM.toString());
 
         try {
             producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
@@ -75,14 +67,7 @@ public class AuditClient {
 
     public void renameTeamAudit(Team team) {
         String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).build().toString();
-        CreateAuditRequest request = new CreateAuditRequest(
-                requestData.correlationId(),
-                raisingService,
-                auditPayload,
-                namespace,
-                LocalDateTime.now(),
-                EventType.RENAME_TEAM.toString(),
-                requestData.userId());
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.RENAME_TEAM.toString());
 
         try {
             producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
@@ -94,14 +79,7 @@ public class AuditClient {
 
     public void deleteTeamAudit(Team team){
         String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).build().toString();
-        CreateAuditRequest request = new CreateAuditRequest(
-                requestData.correlationId(),
-                raisingService,
-                auditPayload,
-                namespace,
-                LocalDateTime.now(),
-                EventType.DELETE_TEAM.toString(),
-                requestData.userId());
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.DELETE_TEAM.toString());
 
         try {
             producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
@@ -113,14 +91,8 @@ public class AuditClient {
 
     public void addUserToTeamAudit(UUID userUUID, Team team) {
         String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).add("userUUID", userUUID.toString()).build().toString();
-        CreateAuditRequest request = new CreateAuditRequest(
-                requestData.correlationId(),
-                raisingService,
-                auditPayload,
-                namespace,
-                LocalDateTime.now(),
-                EventType.ADD_USER_TO_TEAM.toString(),
-                requestData.userId());
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.ADD_USER_TO_TEAM.toString());
+
         try {
             producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
             log.info("Create audit for Add User to Team, team UUID: {}, added user UUID: {}, correlationID: {}, UserID: {}", team.getUuid(), userUUID, requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
@@ -132,14 +104,8 @@ public class AuditClient {
 
     public void moveToNewUnitAudit(String teamUUID, String oldUnitUUID, String newUnitUUID) {
         String auditPayload = Json.createObjectBuilder().add("teamUUID", teamUUID).add("oldUnit", oldUnitUUID).add("newUnit", newUnitUUID).build().toString();
-        CreateAuditRequest request = new CreateAuditRequest(
-                requestData.correlationId(),
-                raisingService,
-                auditPayload,
-                namespace,
-                LocalDateTime.now(),
-                EventType.MOVE_TEAM_TO_UNIT.toString(),
-                requestData.userId());
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.MOVE_TEAM_TO_UNIT.toString());
+
         try {
             producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
             log.info("Create audit for Move Team to New Unit, team UUID: {}, new unit UUID: {}, correlationID: {}, UserID: {}", teamUUID, newUnitUUID, requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
@@ -153,14 +119,8 @@ public class AuditClient {
             permissionArray.add(Json.createObjectBuilder().add("caseType", permission.getCaseTypeCode()).add("accessLevel", permission.getAccessLevel().toString()).build());
         }
         String auditPayload = Json.createObjectBuilder().add("permissions", permissionArray).build().toString();
-        CreateAuditRequest request = new CreateAuditRequest(
-                requestData.correlationId(),
-                raisingService,
-                auditPayload,
-                namespace,
-                LocalDateTime.now(),
-                EventType.UPDATE_TEAM_PERMISSIONS.toString(),
-                requestData.userId());
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.UPDATE_TEAM_PERMISSIONS.toString());
+
         try {
             producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
             log.info("Create audit for Update Team Permission, team UUID: {}, correlationID: {}, UserID: {}", teamUUID, requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
@@ -174,19 +134,24 @@ public class AuditClient {
             permissionArray.add(Json.createObjectBuilder().add("caseType", permission.getCaseTypeCode()).add("accessLevel", permission.getAccessLevel().toString()).build());
         }
         String auditPayload = Json.createObjectBuilder().add("permissions", permissionArray).build().toString();
-        CreateAuditRequest request = new CreateAuditRequest(
-                requestData.correlationId(),
-                raisingService,
-                auditPayload,
-                namespace,
-                LocalDateTime.now(),
-                EventType.REMOVE_PERMISSIONS_FROM_TEAM.toString(),
-                requestData.userId());
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REMOVE_PERMISSIONS_FROM_TEAM.toString());
+
         try {
             producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
             log.info("Create audit for Delete Team Permission, team UUID: {}, correlationID: {}, UserID: {}", teamUUID, requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
         } catch (Exception e) {
             log.error("Failed to create Delete Team Permission audit event for team UUID {} for reason {}", teamUUID, e, value(EVENT, AUDIT_FAILED));
         }
+    }
+
+    private CreateAuditRequest generateAuditRequest(String auditPayload, String eventType){
+        return new CreateAuditRequest(
+                requestData.correlationId(),
+                raisingService,
+                auditPayload,
+                namespace,
+                LocalDateTime.now(),
+                eventType,
+                requestData.userId());
     }
 }
