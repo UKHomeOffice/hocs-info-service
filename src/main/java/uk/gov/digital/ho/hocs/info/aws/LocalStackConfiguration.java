@@ -29,6 +29,9 @@ public class LocalStackConfiguration {
         return sqsClient();
     }
 
+    @Bean("auditSqsClient")
+    public AmazonSQS auditSqsClient() { return sqsClient(); }
+
     @Value("${aws.local.host:localhost}")
     private String awsHost;
 
