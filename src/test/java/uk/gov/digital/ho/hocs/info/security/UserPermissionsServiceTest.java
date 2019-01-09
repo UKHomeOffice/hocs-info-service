@@ -8,9 +8,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import uk.gov.digital.ho.hocs.info.RequestData;
-import uk.gov.digital.ho.hocs.info.entities.CaseTypeEntity;
+import uk.gov.digital.ho.hocs.info.application.RequestData;
+import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -74,7 +75,7 @@ public class UserPermissionsServiceTest {
 
         when(requestData.groupsArray()).thenReturn(groups);
         service = new UserPermissionsService(requestData);
-        Set<AccessLevel> userAccessLevels = service.getUserAccessLevels(new CaseTypeEntity(1L,"","MIN", "MIN", "", "",true));
+        Set<AccessLevel> userAccessLevels = service.getUserAccessLevels(new CaseType(1L, UUID.randomUUID(),"","MIN",  "",UUID.randomUUID(), "",true,true));
         assertThat(userAccessLevels.size()).isEqualTo(2);
         assertThat(userAccessLevels).contains(AccessLevel.WRITE);
         assertThat(userAccessLevels).contains(AccessLevel.OWNER);

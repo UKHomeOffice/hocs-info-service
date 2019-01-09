@@ -1,5 +1,5 @@
 package uk.gov.digital.ho.hocs.info.security;
-import uk.gov.digital.ho.hocs.info.logging.LogEvent;
+import uk.gov.digital.ho.hocs.info.application.LogEvent;
 
 public interface SecurityExceptions {
     class PermissionCheckException extends RuntimeException {

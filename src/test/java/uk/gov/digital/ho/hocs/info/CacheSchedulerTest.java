@@ -4,7 +4,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.user.UserService;
+import uk.gov.digital.ho.hocs.info.application.CacheScheduler;
+import uk.gov.digital.ho.hocs.info.api.UserService;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
