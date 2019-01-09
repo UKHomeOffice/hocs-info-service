@@ -1,6 +1,6 @@
 package uk.gov.digital.ho.hocs.info.client.auditClient;
 
- public enum EventType {
+public enum EventType {
     CREATE_TEAM,
     RENAME_TEAM,
     DELETE_TEAM,
@@ -9,4 +9,4 @@ package uk.gov.digital.ho.hocs.info.client.auditClient;
     MOVE_TEAM_TO_UNIT,
     UPDATE_TEAM_PERMISSIONS,
     REMOVE_PERMISSIONS_FROM_TEAM
-} 
+}
