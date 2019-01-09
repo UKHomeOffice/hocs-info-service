@@ -23,6 +23,13 @@ public class SqsConfiguration {
         return sqsClient(accessKey, secretKey, region);
     }
 
+    @Bean("auditSqsClient")
+    public AmazonSQS auditSqsClient(@Value("${audit.aws.sqs.access.key}") String accessKey,
+                                    @Value("${audit.aws.sqs.secret.key}") String secretKey,
+                                    @Value("${aws.region}") String region) {
+        return sqsClient(accessKey, secretKey, region);
+    }
+
     private AmazonSQS sqsClient(@Value("${aws.sqs.access.key}") String accessKey,
                                @Value("${aws.sqs.secret.key}") String secretKey,
                                @Value("${aws.region}") String region) {

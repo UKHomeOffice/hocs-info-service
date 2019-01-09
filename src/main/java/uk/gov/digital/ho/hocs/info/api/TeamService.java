@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDeleteActiveParentTopicsDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
+import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
@@ -28,13 +29,15 @@ public class TeamService {
     private UnitRepository unitRepository;
     private CaseTypeService caseTypeService;
     private ParentTopicRepository parentTopicRepository;
+    private AuditClient auditClient;
 
-    public TeamService(TeamRepository teamRepository, UnitRepository unitRepository, CaseTypeService caseTypeService,ParentTopicRepository parentTopicRepository, KeycloakService keycloakService) {
+    public TeamService(TeamRepository teamRepository, UnitRepository unitRepository, CaseTypeService caseTypeService,ParentTopicRepository parentTopicRepository, KeycloakService keycloakService, AuditClient auditClient) {
         this.teamRepository = teamRepository;
         this.keycloakService = keycloakService;
         this.unitRepository = unitRepository;
         this.caseTypeService = caseTypeService;
         this.parentTopicRepository = parentTopicRepository;
+        this.auditClient = auditClient;
     }
 
     public Set<Team> getTeamsForUnit(UUID unitUUID) {
@@ -77,7 +80,7 @@ public class TeamService {
             log.debug("Team {} exists, not creating.", newTeam.getDisplayName());
         }
         createKeyCloakMappings(permissions, team.getUuid(), unit.getShortCode(), Optional.empty());
-
+        auditClient.createTeamAudit(team);
         log.info("Team with UUID {} created in Unit {}", team.getUuid().toString(), unit.getShortCode(), value(EVENT, TEAM_CREATED));
         return team;
     }
@@ -87,6 +90,7 @@ public class TeamService {
         log.debug("Updating Team {} name", teamUUID);
         Team team = getTeam(teamUUID);
         team.setDisplayName(newName);
+        auditClient.renameTeamAudit(team);
         log.info("Team with UUID {} name updated to {}", team.getUuid().toString(), newName, value(EVENT, TEAM_RENAMED));
     }
 
@@ -98,6 +102,7 @@ public class TeamService {
 
         createKeyCloakMappings(permissions, teamUUID, unit, Optional.of(userUUID));
 
+        auditClient.addUserToTeamAudit(userUUID, team);
         log.info("Added user with UUID {} to team with UUID {}", userUUID.toString(), team.getUuid().toString(), value(EVENT, USER_ADDED_TO_TEAM));
     }
 
@@ -115,6 +120,7 @@ public class TeamService {
 
         keycloakService.moveGroup(currentGroupPath, team.getUnit().getShortCode());
 
+        auditClient.moveToNewUnitAudit(teamUUID.toString(), oldUnit.getShortCode(), newUnit.getShortCode());
         log.info("Moved team {} from Unit {} to Unit {}", teamUUID.toString(), oldUnit.getShortCode(), newUnit.getShortCode(), value(EVENT, TEAM_ADDED_TO_UNIT));
     }
 
@@ -128,6 +134,7 @@ public class TeamService {
         createKeyCloakMappings(permissions, teamUUID, team.getUnit().getShortCode(), Optional.empty());
         keycloakService.updateUserTeamGroups(teamPath, permissionPaths);
 
+        auditClient.updateTeamPermissionsAudit(teamUUID, permissionsDto);
         log.info("Updated Permissions for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_UPDATED));
     }
 
@@ -149,6 +156,8 @@ public class TeamService {
         if (team.getPermissions().isEmpty()) {
             permissionPathsCaseTypeLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
         }
+
+        auditClient.deleteTeamPermissionsAudit(teamUUID, permissionsDto);
         log.info("Deleted Permission for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_DELETED));
     }
 
@@ -160,6 +169,7 @@ public class TeamService {
             log.debug("No topics assigned to Team {}, safe to delete", teamUUID);
             Team team = getTeam(teamUUID);
             team.setActive(false);
+            auditClient.deleteTeamAudit(team);
             log.info("Deleted team {}", teamUUID, value(EVENT, TEAM_DELETED));
         } else {
             String msg = "Unable to delete team as active parent topic are assigned to team";
