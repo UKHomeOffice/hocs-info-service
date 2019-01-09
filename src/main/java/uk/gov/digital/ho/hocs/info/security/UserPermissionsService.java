@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.application.RequestData;
-import uk.gov.digital.ho.hocs.info.domain.model.CaseTypeEntity;
+import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,7 +36,7 @@ public class UserPermissionsService {
                         new SecurityExceptions.PermissionCheckException("User does not have any permissions for this case type", SECURITY_UNAUTHORISED));
     }
 
-    public Set<AccessLevel> getUserAccessLevels(CaseTypeEntity caseType) {
+    public Set<AccessLevel> getUserAccessLevels(CaseType caseType) {
 
         return getUserPermission()
                 .flatMap(unit -> unit.getValue().values().stream())

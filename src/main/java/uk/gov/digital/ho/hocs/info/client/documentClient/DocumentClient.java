@@ -63,11 +63,11 @@ public class DocumentClient {
         }
     }
 
-    public void deleteDocument(UUID externalReferenceUUID, UUID documentUUID) throws ApplicationExceptions.EntityCreationException {
+    public void deleteDocument(UUID documentUUID) throws ApplicationExceptions.EntityCreationException {
         ResponseEntity<Void> response = restHelper.delete(serviceBaseURL, String.format("/document/%s", documentUUID), Void.class);
 
         if(response.getStatusCodeValue() == 200) {
-            log.info("Deleted Document {}, Case {}", documentUUID, externalReferenceUUID);
+            log.info("Deleted Document {}", documentUUID);
         } else {
             throw new ApplicationExceptions.EntityCreationException("Could not delete Document; response: %s", response.getStatusCodeValue());
         }

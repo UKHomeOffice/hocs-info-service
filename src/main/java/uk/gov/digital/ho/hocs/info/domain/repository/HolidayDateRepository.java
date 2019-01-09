@@ -3,16 +3,17 @@ package uk.gov.digital.ho.hocs.info.domain.repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import uk.gov.digital.ho.hocs.info.domain.model.HolidayDate;
+import uk.gov.digital.ho.hocs.info.domain.model.ExemptionDate;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Repository
-public interface HolidayDateRepository extends CrudRepository<HolidayDate, String> {
+public interface HolidayDateRepository extends CrudRepository<ExemptionDate, String> {
 
-    @Query(value ="SELECT ed.* FROM holiday_date ed WHERE ed.case_type = ?1", nativeQuery = true )
-    Set<HolidayDate> findAllByCaseType(String caseType);
+    @Query(value ="SELECT ed.* FROM exemption_date ed WHERE ed.case_type_uuid = ?1", nativeQuery = true )
+    Set<ExemptionDate> findAllByCaseType(UUID caseTypeUUID);
 
-    @Query(value ="select h.* from holiday_date h join sla s on h.case_type = s.case_type where s.stage_type = ?1", nativeQuery = true )
-    Set<HolidayDate> findAllByStageType(String stageType);
+    @Query(value ="select ed.* from exemption_date ed join stage_type s on ed.case_type_uuid = s.case_type_uuid where s.type = ?1", nativeQuery = true )
+    Set<ExemptionDate> findAllByStageType(String stageType);
 }

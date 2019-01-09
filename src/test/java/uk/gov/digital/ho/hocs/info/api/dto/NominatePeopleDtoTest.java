@@ -1,7 +1,7 @@
 package uk.gov.digital.ho.hocs.info.api.dto;
 
 import org.junit.Test;
-import uk.gov.digital.ho.hocs.info.domain.model.NominatedPerson;
+import uk.gov.digital.ho.hocs.info.domain.model.NominatedContact;
 
 import java.util.UUID;
 
@@ -14,9 +14,9 @@ public class NominatePeopleDtoTest {
     @Test
     public void from() {
 
-        NominatedPerson nominatedPerson = new NominatedPerson(1l, uuid,"email");
+        NominatedContact nominatedContact = new NominatedContact(1l, uuid,"email");
 
-        NominatePeopleDto nominatePeopleDto = NominatePeopleDto.from(nominatedPerson);
+        NominatePeopleDto nominatePeopleDto = NominatePeopleDto.from(nominatedContact);
 
         assertThat(nominatePeopleDto.getEmailAddress()).isEqualTo("email");
     }

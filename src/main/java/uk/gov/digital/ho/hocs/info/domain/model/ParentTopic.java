@@ -22,11 +22,17 @@ public class ParentTopic implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "displayName")
-    private String displayName;
-
     @Column(name = "uuid")
     private UUID uuid;
+
+    @Column(name = "display_name")
+    private String displayName;
+
+    @Column(name = "responsible_team_uuid")
+    private UUID responsibleTeamUUID;
+
+    @Column(name = "responsible_minister_uuid")
+    private UUID responsibleMinisterUUID;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_topic_uuid", referencedColumnName = "uuid")

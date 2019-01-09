@@ -9,14 +9,26 @@ import uk.gov.digital.ho.hocs.info.domain.model.CorrespondentType;
 @Getter
 public class CorrespondentTypeDto {
 
+    //TODO: remove - used in UI
     @JsonProperty("label")
+    private String label;
+
+    //TODO: remove - used in UI
+    @JsonProperty("value")
+    private String value;
+
+    @JsonProperty("displayName")
     private String displayName;
 
-    @JsonProperty("value")
+    @JsonProperty("type")
     private String type;
 
     public static CorrespondentTypeDto from(CorrespondentType correspondentType) {
-        return new CorrespondentTypeDto(correspondentType.getDisplayName(), correspondentType.getType());
+        return new CorrespondentTypeDto(
+                correspondentType.getDisplayName(),
+                correspondentType.getType(),
+                correspondentType.getDisplayName(),
+                correspondentType.getType());
     }
 
 }

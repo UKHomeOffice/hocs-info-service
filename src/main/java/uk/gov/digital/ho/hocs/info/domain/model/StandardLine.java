@@ -34,14 +34,14 @@ public class StandardLine implements Serializable {
     @Column(name = "expires")
     private LocalDateTime expires;
 
-    public StandardLine(UUID uuid, String displayName, UUID topicUUID, LocalDateTime expires){
-        this.uuid = uuid;
+    public StandardLine(String displayName, UUID topicUUID, LocalDateTime expires){
+        this.uuid = UUID.randomUUID();
         this.displayName = displayName;
         this.topicUUID = topicUUID;
         this.expires = expires;
     }
 
-    public void setExpires() {
+    public void expire() {
         this.expires = LocalDateTime.now();
     }
 }

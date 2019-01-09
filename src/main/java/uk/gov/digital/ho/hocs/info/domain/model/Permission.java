@@ -6,16 +6,14 @@ import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 import javax.persistence.*;
 import java.io.Serializable;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 @Entity
 @Table(name = "permission")
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(of = {"accessLevel", "caseType", "team"})
-@Getter
-@Setter
+
 public class Permission implements Serializable {
 
-    public Permission(AccessLevel accessLevel, Team team, CaseTypeEntity caseType) {
+    public Permission(AccessLevel accessLevel, Team team, CaseType caseType) {
         this.accessLevel = accessLevel;
         this.team = team;
         this.caseType = caseType;
@@ -26,17 +24,21 @@ public class Permission implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "access_level")
-    @Enumerated(EnumType.STRING)
-    private AccessLevel accessLevel;
-
+    @Setter
+    @Getter
     @ManyToOne
     @JoinColumn(name = "team_uuid", referencedColumnName = "uuid")
     private Team team;
 
+    @Getter
     @ManyToOne
     @JoinColumn(name = "case_type", referencedColumnName = "type")
-    private CaseTypeEntity caseType;
+    private CaseType caseType;
+
+    @Getter
+    @Column(name = "access_level")
+    @Enumerated(EnumType.STRING)
+    private AccessLevel accessLevel;
 
 
 }

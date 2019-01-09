@@ -13,7 +13,7 @@ public class GetTemplateResponseTest {
 
     @Test
     public void from() {
-        Template template = new Template(1l, "DisplayName", "MIN", uuid, Boolean.FALSE);
+        Template template = new Template(1l, uuid, "DisplayName", "MIN", Boolean.FALSE);
 
         TemplateDto templateDto = TemplateDto.from(template);
 

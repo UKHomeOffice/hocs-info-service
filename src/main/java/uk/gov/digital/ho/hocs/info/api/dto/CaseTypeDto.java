@@ -3,31 +3,38 @@ package uk.gov.digital.ho.hocs.info.api.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import uk.gov.digital.ho.hocs.info.domain.model.CaseTypeEntity;
+import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
 @AllArgsConstructor
 @Getter
 public class CaseTypeDto {
 
+    //TODO: remove - used in UI
     @JsonProperty("label")
-    private String displayName;
+    private String label;
 
+    //TODO: remove - used in UI
     @JsonProperty("value")
-    private String type;
+    private String value;
 
-    @JsonProperty("displayCode")
-    private String displayCode;
+    @JsonProperty("displayName")
+    private String displayName;
 
     @JsonProperty("shortCode")
     private String shortCode;
 
-    public static CaseTypeDto from(CaseTypeEntity caseTypeEntity) {
+    @JsonProperty("type")
+    private String type;
+
+
+    public static CaseTypeDto from(CaseType caseType) {
 
         return new CaseTypeDto(
-                caseTypeEntity.getDisplayName(),
-                caseTypeEntity.getType(),
-                caseTypeEntity.getType(),
-                caseTypeEntity.getShortCode());
+                caseType.getDisplayName(),
+                caseType.getType(),
+                caseType.getDisplayName(),
+                caseType.getShortCode(),
+                caseType.getType());
     }
 
 }

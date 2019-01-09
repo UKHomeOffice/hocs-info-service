@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.digital.ho.hocs.info.domain.model.CaseTypeEntity;
+import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 import uk.gov.digital.ho.hocs.info.domain.model.Permission;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Unit;
@@ -59,14 +59,13 @@ public class UnitRepositoryTest {
 
         assertThat(teams.get(0).getUnit()).isEqualTo(unit);
         assertThat(teams.get(0).getUuid()).isEqualTo(teamUUID);
-        assertThat(teams.get(0).getId()).isNotNull();
     }
 
     @Test()
     public void shouldAddTeamWithPermissionsToUnit() {
         UUID teamUUID = UUID.randomUUID();
         Unit unit = repository.findByUuid(unitUUID);
-        CaseTypeEntity caseType = new CaseTypeEntity(null,"TEST","TEST","a1", "","TEST", true);
+        CaseType caseType = new CaseType(null,UUID.randomUUID(),"TEST","TEST","a1", unitUUID,"TEST", true,true);
         entityManager.persistAndFlush(caseType);
 
 
@@ -83,7 +82,6 @@ public class UnitRepositoryTest {
         List<Permission> savedPermissions = new ArrayList<>(teams.get(0).getPermissions());
         assertThat(savedPermissions.get(0).getTeam()).isEqualTo(team);
         assertThat(savedPermissions.get(0).getAccessLevel()).isEqualTo(AccessLevel.OWNER);
-        assertThat(savedPermissions.get(0).getId()).isNotNull();
         assertThat(savedPermissions.get(0).getCaseType()).isEqualTo(caseType);
     }
 

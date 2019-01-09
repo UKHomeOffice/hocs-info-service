@@ -70,7 +70,7 @@ public class DocumentClientTest {
 
         when(restHelper.delete(serviceBaseURL, String.format("/document/%s", uuid), Void.class)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
 
-        documentClient.deleteDocument(SL_EXT_REF, uuid);
+        documentClient.deleteDocument(uuid);
 
         verify(restHelper, times(1)).delete(serviceBaseURL, String.format("/document/%s", uuid),  Void.class);
         verifyNoMoreInteractions(restHelper);

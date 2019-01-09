@@ -8,12 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "team")
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 @EqualsAndHashCode(of = {"uuid"})
 public class Team implements Serializable {
 
@@ -21,14 +18,14 @@ public class Team implements Serializable {
         this.displayName = displayName;
         this.uuid = uuid;
         this.active = active;
-        this.permissions = new HashSet<>();
+        this.permissions = new HashSet<>(0);
     }
 
     public Team(String displayName, UUID uuid, Set<Permission> permissions) {
         this.displayName = displayName;
         this.uuid = uuid;
-        this.permissions = new HashSet<>();
-        if(permissions !=null) {
+        this.permissions = new HashSet<>(permissions.size());
+        if(permissions != null) {
             addPermissions(permissions);
         }
     }
@@ -38,19 +35,27 @@ public class Team implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "display_name")
-    private String displayName;
-
+    @Getter
     @Column(name = "uuid", columnDefinition = "uuid")
     private UUID uuid;
 
+    @Setter
+    @Getter
+    @Column(name = "display_name")
+    private String displayName;
+
+    @Setter
+    @Getter
     @Column(name = "active")
     private boolean active;
 
+    @Setter
+    @Getter
     @ManyToOne
     @JoinColumn(name = "unit_uuid", referencedColumnName = "uuid")
     private Unit unit;
 
+    @Getter
     @OneToMany(mappedBy = "team", orphanRemoval = true, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Permission> permissions;
 
@@ -62,17 +67,15 @@ public class Team implements Serializable {
     }
 
     public void deletePermission(Permission permission) {
-        if(permissions.contains(permission)) {
-            permissions.remove(permission);
-        }
+        permissions.remove(permission);
     }
 
     public void addPermissions(Set<Permission> newPermissions) {
-        newPermissions.stream().forEach(permission -> this.addPermission(permission));
+        newPermissions.forEach(this::addPermission);
     }
 
     public void deletePermissions(Set<Permission> newPermissions) {
-        newPermissions.stream().forEach(permission -> this.deletePermission(permission));
+        newPermissions.forEach(this::deletePermission);
     }
 
 }

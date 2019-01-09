@@ -1,7 +1,7 @@
 package uk.gov.digital.ho.hocs.info.api.dto;
 
 import org.junit.Test;
-import uk.gov.digital.ho.hocs.info.domain.model.CaseTypeEntity;
+import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 import uk.gov.digital.ho.hocs.info.domain.model.Permission;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Unit;
@@ -21,9 +21,9 @@ public class UnitDtoTest {
 
         Set<Permission> permissions = new HashSet<Permission>(){{
             add(new Permission(AccessLevel.OWNER, null,
-                    new CaseTypeEntity(1L, "MIN", "type","a1", "role", "DCU_MIN_DISPATCH",  true)));
+                    new CaseType(1L,UUID.randomUUID(), "MIN", "type","a1", UUID.randomUUID(), "DCU_MIN_DISPATCH", true,  true)));
             add(new Permission(AccessLevel.OWNER, null,
-                    new CaseTypeEntity(1L, "MIN", "type", "a1","role","DCU_MIN_DISPATCH",  true)));
+                    new CaseType(1L,UUID.randomUUID(), "MIN", "type", "a1",UUID.randomUUID(),"DCU_MIN_DISPATCH", true,  true)));
         }};
         Team team = new Team("Team 1", UUID.randomUUID(), permissions);
         Unit unit = new Unit("Unit 1", "TEST", UUID.randomUUID(), true);
@@ -41,9 +41,9 @@ public class UnitDtoTest {
 
         Set<Permission> permissions = new HashSet<Permission>(){{
             add(new Permission(AccessLevel.OWNER, null,
-                    new CaseTypeEntity(1L, "MIN", "type","a1", "role","DCU_MIN_DISPATCH",  true)));
+                    new CaseType(1L,UUID.randomUUID(), "MIN", "type","a1", UUID.randomUUID(),"DCU_MIN_DISPATCH", true,  true)));
             add(new Permission(AccessLevel.OWNER, null,
-                    new CaseTypeEntity(1L, "MIN", "type","a1", "role","DCU_MIN_DISPATCH",  true)));
+                    new CaseType(1L, UUID.randomUUID(), "MIN", "type","a1", UUID.randomUUID(),"DCU_MIN_DISPATCH", true,  true)));
         }};
         Team team = new Team("Team 1", UUID.randomUUID(), permissions);
         Unit unit = new Unit("Unit 1", "TEST", UUID.randomUUID(), true);

@@ -1,6 +1,6 @@
 package uk.gov.digital.ho.hocs.info.domain.model;
 
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,40 +10,42 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "unit")
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
 public class Unit implements Serializable {
-
-    public Unit(String displayName, String shortCode, UUID uuid, boolean active) {
-        this.displayName = displayName;
-        this.shortCode = shortCode;
-        this.uuid = uuid;
-        this.active = active;
-        this.teams = new HashSet<>();
-    }
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Getter
+    @Column(name = "uuid", columnDefinition = "uuid")
+    private UUID uuid;
+
+    @Getter
     @Column(name = "display_name")
     private String displayName;
 
+    @Getter
     @Column(name = "short_code")
     private String shortCode;
-
-    @Column(name = "uuid")
-    private UUID uuid;
 
     @Column(name = "active")
     private boolean active;
 
+    @Getter
     @OneToMany(mappedBy = "unit", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Team> teams;
+
+    public Unit(String displayName, String shortCode, UUID uuid, boolean active) {
+        this.displayName = displayName;
+        this.shortCode = shortCode;
+        this.uuid = uuid;
+        this.active = active;
+        this.teams = new HashSet<>(0);
+    }
 
     public void addTeam(Team team) {
         team.setUnit(this);

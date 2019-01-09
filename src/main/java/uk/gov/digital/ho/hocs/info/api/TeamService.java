@@ -1,0 +1,199 @@
+package uk.gov.digital.ho.hocs.info.api;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
+import uk.gov.digital.ho.hocs.info.api.dto.TeamDeleteActiveParentTopicsDto;
+import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
+import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
+import uk.gov.digital.ho.hocs.info.domain.model.*;
+import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
+import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
+import uk.gov.digital.ho.hocs.info.domain.repository.UnitRepository;
+import uk.gov.digital.ho.hocs.info.security.AccessLevel;
+import uk.gov.digital.ho.hocs.info.security.KeycloakService;
+
+import java.util.*;
+
+import static net.logstash.logback.argument.StructuredArguments.value;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.*;
+
+@Service
+@Slf4j
+public class TeamService {
+
+    private TeamRepository teamRepository;
+    private KeycloakService keycloakService;
+    private UnitRepository unitRepository;
+    private CaseTypeService caseTypeService;
+    private ParentTopicRepository parentTopicRepository;
+
+    public TeamService(TeamRepository teamRepository, UnitRepository unitRepository, CaseTypeService caseTypeService,ParentTopicRepository parentTopicRepository, KeycloakService keycloakService) {
+        this.teamRepository = teamRepository;
+        this.keycloakService = keycloakService;
+        this.unitRepository = unitRepository;
+        this.caseTypeService = caseTypeService;
+        this.parentTopicRepository = parentTopicRepository;
+    }
+
+    public Set<Team> getTeamsForUnit(UUID unitUUID) {
+        log.debug("Getting all Teams for Unit {}", unitUUID);
+        Set<Team> teams = teamRepository.findTeamsByUnitUuid(unitUUID);
+        log.info("Got {} Teams", teams.size());
+        return teams;
+    }
+
+    public Set<Team> getAllActiveTeams() {
+        log.debug("Getting all active Teams");
+        Set<Team> activeTeams = teamRepository.findAllByActiveTrue();
+        log.info("Got {} active Teams", activeTeams.size());
+        return activeTeams;
+    }
+
+    public Team getTeam(UUID teamUUID) {
+        log.debug("Getting Team {}", teamUUID);
+        Team team = teamRepository.findByUuid(teamUUID);
+        if (team != null) {
+            log.info("Got Team {}", teamUUID);
+            return team;
+        } else {
+            throw new ApplicationExceptions.EntityNotFoundException("Team not found for UUID %s", teamUUID);
+        }
+    }
+
+    @Transactional
+    public Team createTeam(TeamDto newTeam, UUID unitUUID) {
+        log.debug("Creating Team {}", newTeam.getDisplayName());
+        Team team = teamRepository.findByUuid(newTeam.getUuid());
+        Unit unit = unitRepository.findByUuid(unitUUID);
+        Set<Permission> permissions = getPermissionsFromDto(newTeam.getPermissions(), team);
+        if (team == null) {
+            log.debug("Team {} doesn't exist, creating.", newTeam.getDisplayName());
+            team = new Team(newTeam.getDisplayName(), newTeam.getUuid(), true);
+            team.addPermissions(getPermissionsFromDto(newTeam.getPermissions(), team));
+            unit.addTeam(team);
+        } else {
+            log.debug("Team {} exists, not creating.", newTeam.getDisplayName());
+        }
+        createKeyCloakMappings(permissions, team.getUuid(), unit.getShortCode(), Optional.empty());
+
+        log.info("Team with UUID {} created in Unit {}", team.getUuid().toString(), unit.getShortCode(), value(EVENT, TEAM_CREATED));
+        return team;
+    }
+
+    @Transactional
+    public void updateTeamName(UUID teamUUID, String newName) {
+        log.debug("Updating Team {} name", teamUUID);
+        Team team = getTeam(teamUUID);
+        team.setDisplayName(newName);
+        log.info("Team with UUID {} name updated to {}", team.getUuid().toString(), newName, value(EVENT, TEAM_RENAMED));
+    }
+
+    public void addUserToTeam(UUID userUUID, UUID teamUUID) {
+        log.debug("Adding User {} to Team {}", userUUID, teamUUID);
+        Team team = getTeam(teamUUID);
+        String unit = team.getUnit().getShortCode();
+        Set<Permission> permissions = team.getPermissions();
+
+        createKeyCloakMappings(permissions, teamUUID, unit, Optional.of(userUUID));
+
+        log.info("Added user with UUID {} to team with UUID {}", userUUID.toString(), team.getUuid().toString(), value(EVENT, USER_ADDED_TO_TEAM));
+    }
+
+    @Transactional
+    public void moveToNewUnit(UUID unitUUID, UUID teamUUID) {
+        log.debug("Moving Team {} to Unit {}", teamUUID, unitUUID);
+        Team team = getTeam(teamUUID);
+        String currentGroupPath = String.format("/%s/%s", team.getUnit().getShortCode(), team.getUuid());
+
+        Unit oldUnit = unitRepository.findByUuid(team.getUnit().getUuid());
+        oldUnit.removeTeam(teamUUID);
+
+        Unit newUnit = unitRepository.findByUuid(unitUUID);
+        newUnit.addTeam(team);
+
+        keycloakService.moveGroup(currentGroupPath, team.getUnit().getShortCode());
+
+        log.info("Moved team {} from Unit {} to Unit {}", teamUUID.toString(), oldUnit.getShortCode(), newUnit.getShortCode(), value(EVENT, TEAM_ADDED_TO_UNIT));
+    }
+
+    public void updateTeamPermissions(UUID teamUUID, Set<PermissionDto> permissionsDto) {
+        log.debug("Updating Team {} with {} permissions", permissionsDto.size());
+        Team team = getTeam(teamUUID);
+        Set<Permission> permissions = getPermissionsFromDto(permissionsDto, team);
+        team.addPermissions(permissions);
+        Set<String> permissionPaths = createKeyCloakMappings(permissions, teamUUID, team.getUnit().getShortCode(), Optional.empty());
+        String teamPath = String.format("/%s/%s", team.getUnit().getShortCode(), teamUUID.toString());
+        createKeyCloakMappings(permissions, teamUUID, team.getUnit().getShortCode(), Optional.empty());
+        keycloakService.updateUserTeamGroups(teamPath, permissionPaths);
+
+        log.info("Updated Permissions for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_UPDATED));
+    }
+
+    @Transactional
+    public void deleteTeamPermissions(UUID teamUUID, Set<PermissionDto> permissionsDto) {
+        log.debug("Deleting {} Team permissions for Team {}", permissionsDto.size(), teamUUID);
+        Team team = getTeam(teamUUID);
+        Set<Permission> permissions = getPermissionsFromDto(permissionsDto, team);
+        team.deletePermissions(permissions);
+        Set<String> permissionPathsAccessLevel = new HashSet<>(permissions.size());
+        Set<String> permissionPathsCaseTypeLevel = new HashSet<>(permissions.size());
+        permissions.forEach(permission -> {
+            permissionPathsAccessLevel.add(String.format("/%s/%s/%s/%s", team.getUnit().getShortCode(), teamUUID.toString(), permission.getCaseType().getType(), permission.getAccessLevel().toString()));
+            permissionPathsCaseTypeLevel.add(String.format("/%s/%s/%s", team.getUnit().getShortCode(), teamUUID.toString(), permission.getCaseType().getType()));
+        });
+
+        permissionPathsAccessLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
+
+        if (team.getPermissions().isEmpty()) {
+            permissionPathsCaseTypeLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
+        }
+        log.info("Deleted Permission for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_DELETED));
+    }
+
+    @Transactional
+    public void deleteTeam(UUID teamUUID) {
+        log.debug("Deleting Team {}", teamUUID);
+        List<ParentTopic> parentTopics = parentTopicRepository.findAllActiveParentTopicsForTeam(teamUUID);
+        if(parentTopics.isEmpty()) {
+            log.debug("No topics assigned to Team {}, safe to delete", teamUUID);
+            Team team = getTeam(teamUUID);
+            team.setActive(false);
+            log.info("Deleted team {}", teamUUID, value(EVENT, TEAM_DELETED));
+        } else {
+            String msg = "Unable to delete team as active parent topic are assigned to team";
+            log.error(msg, value(EVENT, TEAM_DELETED_FAILURE));
+            throw new ApplicationExceptions.TeamDeleteException(msg, TeamDeleteActiveParentTopicsDto.from(parentTopics, msg));
+        }
+    }
+
+    private Set<Permission> getPermissionsFromDto(Set<PermissionDto> permissionsDto, Team team) {
+        Set<Permission> permissions = new HashSet<>(permissionsDto.size());
+        for (PermissionDto permissionDto : permissionsDto) {
+            AccessLevel accessLevel = permissionDto.getAccessLevel();
+            CaseType caseType = caseTypeService.getCaseType(permissionDto.getCaseTypeCode());
+            permissions.add(new Permission(accessLevel, team, caseType));
+        }
+        return permissions;
+    }
+
+    private Set<String> createKeyCloakMappings(Set<Permission> permissions, UUID teamUUID, String unitShortCode, Optional<UUID> userUUID) {
+        String team = teamUUID.toString();
+        keycloakService.createUnitGroupIfNotExists(unitShortCode);
+        keycloakService.createGroupPathIfNotExists(unitShortCode, team);
+
+        userUUID.ifPresent(uuid -> keycloakService.addUserToGroup(uuid, String.format("/%s/%s", unitShortCode, team)));
+
+        Set<String> permissionPaths = new HashSet<>(permissions.size());
+        for (Permission permission : permissions) {
+            keycloakService.createGroupPathIfNotExists(String.format("/%s/%s", unitShortCode, team), permission.getCaseType().getType());
+            keycloakService.createGroupPathIfNotExists(String.format("/%s/%s/%s", unitShortCode, team, permission.getCaseType().getType()), permission.getAccessLevel().toString());
+            String permissionPath = String.format("/%s/%s/%s/%s", unitShortCode, team, permission.getCaseType().getType(), permission.getAccessLevel());
+            permissionPaths.add(permissionPath);
+            userUUID.ifPresent(uuid -> keycloakService.addUserToGroup(uuid, permissionPath));
+
+        }
+        return permissionPaths;
+    }
+}

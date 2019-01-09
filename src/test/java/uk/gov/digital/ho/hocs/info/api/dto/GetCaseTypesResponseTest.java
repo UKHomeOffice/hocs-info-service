@@ -1,7 +1,7 @@
 package uk.gov.digital.ho.hocs.info.api.dto;
 
 import org.junit.Test;
-import uk.gov.digital.ho.hocs.info.domain.model.CaseTypeEntity;
+import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
 import java.util.*;
 
@@ -11,10 +11,12 @@ public class GetCaseTypesResponseTest {
 
     @Test
     public void shouldCreateGetCaseTypesResponseDTOFromCaseTypesEntity() {
-        Set<CaseTypeEntity> caseTypeSet = new HashSet<>();
-        caseTypeSet.add(new CaseTypeEntity(1L,"DCU Ministerial","a1","MIN","DCU", "DCU_MIN_DISPATCH", true));
-        caseTypeSet.add(new CaseTypeEntity(2L,"DCU Treat Official","a2","TRO","DCU", "DCU_TRO_DISPATCH", true));
-        caseTypeSet.add(new CaseTypeEntity(3L,"DCU Number 10","a3","DTEN","DCU", "DCU_DTEN_DISPATCH", true));
+        UUID unitUUID = UUID.randomUUID();
+
+        Set<CaseType> caseTypeSet = new HashSet<>();
+        caseTypeSet.add(new CaseType(1L, UUID.randomUUID(), "DCU Ministerial","a1","MIN",unitUUID, "DCU_MIN_DISPATCH", true, true));
+        caseTypeSet.add(new CaseType(2L, UUID.randomUUID(), "DCU Treat Official","a2","TRO",unitUUID, "DCU_TRO_DISPATCH", true, true));
+        caseTypeSet.add(new CaseType(3L, UUID.randomUUID(), "DCU Number 10","a3","DTEN",unitUUID, "DCU_DTEN_DISPATCH", true, true));
 
         GetCaseTypesResponse getCaseTypesResponse = GetCaseTypesResponse.from(caseTypeSet);
 
@@ -23,6 +25,7 @@ public class GetCaseTypesResponseTest {
         CaseTypeDto result1 = responseAsList.stream().filter(x -> "MIN".equals(x.getType())).findAny().orElse(null);
         assertThat(result1).isNotNull();
         assertThat(result1.getDisplayName()).isEqualTo("DCU Ministerial");
+
         CaseTypeDto result2 = responseAsList.stream().filter(x -> "TRO".equals(x.getType())).findAny().orElse(null);
         assertThat(result2).isNotNull();
         assertThat(result2.getDisplayName()).isEqualTo("DCU Treat Official");

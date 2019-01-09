@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.digital.ho.hocs.info.domain.model.CaseTypeEntity;
+import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 import uk.gov.digital.ho.hocs.info.domain.model.Permission;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Unit;
@@ -38,7 +38,8 @@ public class TeamRepositoryTest {
     @Before
     public void setup() {
         Unit unit = new Unit("Unit 1", "UNIT_1", unitUUID,true);
-        CaseTypeEntity caseType = new CaseTypeEntity(null,"TEST","a5","TEST", "","TEST", true);
+        CaseType caseType = new CaseType(null,UUID.randomUUID(),"TEST","a5","TEST",unitUUID,"TEST", true, true);
+        entityManager.persistAndFlush(unit);
         entityManager.persistAndFlush(caseType);
         Set<Permission> permissions = new HashSet<Permission>(){{
             add(new Permission(AccessLevel.OWNER,null, caseType));
@@ -61,7 +62,6 @@ public class TeamRepositoryTest {
         Team team = repository.findByUuid(teamUUID);
         assertThat(team.getUnit().getUuid()).isEqualTo(unitUUID);
         assertThat(team.getUuid()).isEqualTo(teamUUID);
-        assertThat(team.getId()).isNotNull();
     }
 
     @Test()
@@ -92,7 +92,7 @@ public class TeamRepositoryTest {
     public void addPermissionsShouldBeIdempotent() {
         Team team = repository.findByUuid(teamUUID);
         assertThat(team.getPermissions().size()).isEqualTo(1);
-        CaseTypeEntity caseType = new CaseTypeEntity(null,"TEST","c7","TEST", "","TEST", true);
+        CaseType caseType = new CaseType(null,UUID.randomUUID(),"TEST","c7","TEST", UUID.randomUUID(),"TEST", true, true);
         team.addPermission(new Permission(AccessLevel.OWNER,null, caseType));
         assertThat(team.getPermissions().size()).isEqualTo(1);
 

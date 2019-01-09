@@ -16,7 +16,7 @@ public class TeamDtoTest {
     @Test
     public void from() {
 
-        Team team = new Team(1L,"displayName", uuid, true, null,new HashSet<Permission>());
+        Team team = new Team("displayName", uuid, true);
 
         TeamDto teamDto = TeamDto.from(team);
 

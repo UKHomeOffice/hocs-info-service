@@ -27,6 +27,8 @@ public class CaseworkClient {
         this.serviceBaseURL = caseService;
     }
 
+
+    // TODO: don't use this, make more specific calls (more cachable)
     public GetCaseworkCaseDataResponse getCase(UUID caseUUID) {
         ResponseEntity<GetCaseworkCaseDataResponse> response = restHelper.get(serviceBaseURL, String.format("/case/%s", caseUUID), GetCaseworkCaseDataResponse.class);
 

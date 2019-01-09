@@ -14,11 +14,10 @@ public class GetStandardLineResponseTest {
 
     @Test
     public void from() {
-        StandardLine standardLine = new StandardLine(uuid, "DisplayName", uuid, LocalDateTime.now());
+        StandardLine standardLine = new StandardLine("DisplayName", uuid, LocalDateTime.now());
 
         GetStandardLineResponse getStandardLineResponse = GetStandardLineResponse.from(standardLine);
 
         assertThat(getStandardLineResponse.getDisplayName()).isEqualTo("DisplayName");
-        assertThat(getStandardLineResponse.getUuid()).isEqualTo(uuid);
     }
 }

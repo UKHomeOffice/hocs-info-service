@@ -11,25 +11,22 @@ import java.util.stream.Collectors;
 @Getter
 public class Deadline implements Serializable {
 
-    private String type;
+    private final LocalDate date;
+    private final String type;
 
-    private LocalDate date;
-
-    public Deadline(LocalDate receivedDate, Sla sla, Set<HolidayDate> holidays) {
-        if(sla != null) {
-            type = sla.getStageType();
-            date = calculateDeadline(receivedDate, sla.getValue(), holidays);
-        }
+    public Deadline(LocalDate receivedDate, int sla, String type, Set<ExemptionDate> holidays) {
+        this.date = calculateDeadline(receivedDate, sla, holidays);
+        this.type = type;
     }
 
-    private static LocalDate calculateDeadline(LocalDate receivedDate, int sla, Set<HolidayDate> holidays) {
+    public static LocalDate calculateDeadline(LocalDate receivedDate, int sla, Set<ExemptionDate> holidays) {
         LocalDate deadline = receivedDate;
-        Set<LocalDate> holidayDates = holidays.stream().map(HolidayDate::getDate).collect(Collectors.toSet());
+        Set<LocalDate> holidayDates = holidays.stream().map(ExemptionDate::getDate).collect(Collectors.toSet());
         int i = 0;
         while (i < sla) {
             deadline = deadline.plusDays(1);
+            // Only increment Mon-Fri and non-holidays
             if (!(isWeekend(deadline) || holidayDates.contains(deadline))) {
-                // Only increment Mon-Fri and non-holidays
                 ++i;
             }
         }

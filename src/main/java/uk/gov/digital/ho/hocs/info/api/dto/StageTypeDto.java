@@ -9,25 +9,31 @@ import uk.gov.digital.ho.hocs.info.domain.model.StageTypeEntity;
 @Getter
 public class StageTypeDto {
 
+    //TODO: remove - used in UI
     @JsonProperty("label")
-    private String displayName;
+    private String label;
 
+    //TODO: remove - used in UI
     @JsonProperty("value")
-    private String type;
+    private String value;
 
-    @JsonProperty("displayCode")
-    private String displayCode;
+    @JsonProperty("displayName")
+    private String displayName;
 
     @JsonProperty("shortCode")
     private String shortCode;
+
+    @JsonProperty("type")
+    private String type;
 
     public static StageTypeDto from(StageTypeEntity stageTypeEntity) {
 
         return new StageTypeDto(
                 stageTypeEntity.getDisplayName(),
                 stageTypeEntity.getType(),
-                stageTypeEntity.getType(),
-                stageTypeEntity.getShortCode());
+                stageTypeEntity.getDisplayName(),
+                stageTypeEntity.getShortCode(),
+                stageTypeEntity.getType());
     }
 
 }

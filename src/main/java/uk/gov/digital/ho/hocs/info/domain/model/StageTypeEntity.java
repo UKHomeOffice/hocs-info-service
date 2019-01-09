@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.UUID;
 
 @Entity
 @Table(name = "stage_type")
@@ -21,6 +22,9 @@ public class StageTypeEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "uuid")
+    private UUID uuid;
+
     @Column(name = "display_name")
     private String displayName;
 
@@ -30,13 +34,16 @@ public class StageTypeEntity implements Serializable {
     @Column(name = "type")
     private String type;
 
+    @Column(name = "case_type_uuid")
+    private UUID caseTypeUUID;
+
     @Column(name = "deadline")
-    private String deadline;
+    private int deadline;
 
     @Column(name = "active")
     private boolean active;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "team_uuid", referencedColumnName = "uuid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "acting_team_uuid", referencedColumnName = "uuid")
     private Team team;
 }

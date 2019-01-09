@@ -20,6 +20,10 @@ public class Template implements Serializable {
     private Long id;
 
     @Getter
+    @Column(name = "uuid")
+    private UUID uuid;
+
+    @Getter
     @Column(name = "display_name")
     private String displayName;
 
@@ -28,19 +32,14 @@ public class Template implements Serializable {
     private String caseType;
 
     @Getter
-    @Column(name = "uuid")
-    private UUID uuid;
-
-    @Getter
     @Column(name = "deleted")
     private boolean deleted = false;
 
-    public Template(String displayName, String caseType, UUID uuid) {
+    public Template(String displayName, String caseType) {
+        this.uuid = UUID.randomUUID();
         this.displayName = displayName;
         this.caseType = caseType;
-        this.uuid = uuid;
     }
-
 
     public void delete() {
         this.deleted = Boolean.TRUE;
