@@ -11,10 +11,10 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "form")
+@Table(name = "screen_schema")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Form implements Serializable {
+public class Schema implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -30,26 +30,31 @@ public class Form implements Serializable {
     private String type;
 
     @Getter
-    @Column(name = "data")
-    private String data;
+    @Column(name = "title")
+    private String title;
+
+    @Getter
+    @Column(name = "action_label")
+    private String actionLabel;
 
     @Getter
     @Column(name = "active")
     private boolean active;
 
     @Getter
-    @OneToMany(mappedBy = "form", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "schema", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Field> fields;
 
-    public Form(String type, String data) {
+    public Schema(String type, String title, String actionLabel) {
         this.uuid = UUID.randomUUID();
         this.type = type;
-        this.data = data;
+        this.title = title;
+        this.actionLabel = actionLabel;
         this.fields = new HashSet<>(0);
     }
 
     public void addField(Field field) {
-        field.setForm(this);
+        field.setSchema(this);
         fields.add(field);
     }
     public void removeField(UUID fieldUUID) {

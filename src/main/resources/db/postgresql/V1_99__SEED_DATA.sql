@@ -10,7 +10,6 @@ VALUES ('TEAM 1', '44444444-2222-2222-2222-222222222222', 'd9a93c21-a1a8-4a5d-aa
        ('TEAM 3', '33333333-3333-3333-3333-333333333333', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),
        ('TEAM 14', '33333333-4444-3333-3333-333333333333', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true);
 
-
 Insert INTO case_type (uuid, display_name, short_code, type, owning_unit_uuid, deadline_stage, active, bulk)
 VALUES ('a3d491ff-3ee1-42be-bcad-840c4c4b9f0a','DCU Ministerial', 'a1', 'MIN', 'c875dca8-8679-47e7-a589-7cea64b2e13c', 'DCU_MIN_DISPATCH', true, true),
        ('63c7215f-aefc-4492-aa08-7fe30959f95f','DCU Treat Official', 'a2', 'TRO', 'c875dca8-8679-47e7-a589-7cea64b2e13c', 'DCU_TRO_DISPATCH', true, true),
@@ -248,14 +247,14 @@ VALUES ('ccd92f16-16d3-4b88-a4c8-e90e6cdf2a2a','44444444-2222-2222-2222-22222222
        ('2a2dccd7-5ced-441b-ab16-f9c26bd77530','11111111-1111-1111-1111-111111111111', 'edward.liddiard@homeoffice.gsi.gov.uk'),
        ('3f078a1d-9583-48f8-886d-475224ae9cf5','33333333-3333-3333-3333-333333333333', 'edward.liddiard@homeoffice.gsi.gov.uk');
 
-INSERT INTO form (uuid, type, active, data)
-VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'DCU_CORRESPONDENCE_DETAILS', true, '{ "title" : "Record Correspondence Details", "defaultActionLabel" : "Continue"}');
+INSERT INTO screen_schema (uuid, type, active, title, action_label)
+VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'DCU_CORRESPONDENCE_DETAILS', true, 'Record Correspondence Details', 'Continue');
 
-INSERT INTO form_case_type (form_uuid, case_type)
+INSERT INTO case_type_schema (schema_uuid, case_type)
 VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'MIN');
 
-INSERT INTO field (uuid, form_uuid, summary, active, data)
-VALUES ('ede4aa5d-80d5-4703-aeed-82167d927ad7','afa670fa-8048-4207-a0f6-35e856ffb70d', true, true, '{ "component" : "radio",  "validation" : [ "required" ], "props" : { "name" : "OriginalChannel", "label" : "How was the correspondence received?", "choices" : [ { "checked" : "checked", "label" : "Email", "value" : "EMAIL" }, { "label" : "Post", "value" : "POST" }, { "label" : "Phone", "value" : "PHONE" }, { "label" : "No. 10", "value" : "NO10" } ] } }'),
-       ('03548dc4-76bb-4ac8-8992-b555fd59fa0a','afa670fa-8048-4207-a0f6-35e856ffb70d', false, true, '{ "component" : "date", "validation" : [ "required" ], "props" : { "name" : "DateOfCorrespondence", "label" : "When was the correspondence sent?" } }'),
-       ('1cb5ee23-b82d-448d-8574-00421841acdc','afa670fa-8048-4207-a0f6-35e856ffb70d', false, true, '{ "component" : "date", "validation" : [ "required" ], "props" : { "name" : "DateReceived", "label" : "When was the correspondence received?" } }'),
-       ('157a00e6-3b96-4a12-9b34-f73c328c332c','afa670fa-8048-4207-a0f6-35e856ffb70d', true, true, '{ "component" : "checkbox", "validation" : [ ], "props" : { "name" : "CopyNumberTen", "label" : "", "choices" : [ { "label" : "Send a copy to Number 10?" , "value" : "TRUE" } ] } }');
+INSERT INTO field (uuid, schema_uuid, component, name, label, validation, summary, active, choices)
+VALUES ('ede4aa5d-80d5-4703-aeed-82167d927ad7','afa670fa-8048-4207-a0f6-35e856ffb70d', 'radio', 'OriginalChannel', 'How was the correspondence received?', '[ "required" ]', true, true,  '[ { "checked" : "checked", "label" : "Email", "value" : "EMAIL" }, { "label" : "Post", "value" : "POST" }, { "label" : "Phone", "value" : "PHONE" }, { "label" : "No. 10", "value" : "NO10" } ]'),
+       ('03548dc4-76bb-4ac8-8992-b555fd59fa0a','afa670fa-8048-4207-a0f6-35e856ffb70d', 'date', 'DateOfCorrespondence', 'When was the correspondence sent?', '[ "required" ]',  false, true,  '[]'),
+       ('1cb5ee23-b82d-448d-8574-00421841acdc','afa670fa-8048-4207-a0f6-35e856ffb70d', 'date', 'DateReceived', 'When was the correspondence received?', '[ "required" ]', false, true, '[]'),
+       ('157a00e6-3b96-4a12-9b34-f73c328c332c','afa670fa-8048-4207-a0f6-35e856ffb70d', 'checkbox', 'CopyNumberTen', 'Send a copy to Number 10?','[]', true, true, '[]');
