@@ -40,4 +40,5 @@ cd kd
 kd --insecure-skip-tls-verify \
    --timeout 10m \
     -f deployment.yaml \
-    -f service.yaml
+    -f service.yaml \
+    -f refreshmembers.yaml

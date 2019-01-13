@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: CronJob
+metadata:
+  name: hocs-info-service
+spec:
+  schedule: "* 10 * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      template:
+        spec:
+          containers:
+            - name: hocs-info-service
+              image: quay.io/ukhomeofficedigital/openjdk11
+              command: ["/bin/sh", "-c"]
+              args:
+                - http_status=$( curl -s -o /dev/null -w '%{http_code}' https://hocs-info-service.{{.KUBE_NAMESPACE}}.svc.cluster.local ); if [[ $http_status -eq 200 ]]; then exit 0; else exit 1; fi
+          restartPolicy: OnFailure
