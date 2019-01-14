@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.application.RequestData;
+import uk.gov.digital.ho.hocs.info.client.auditClient.dto.CreateAuditRequest;
+import uk.gov.digital.ho.hocs.info.client.auditClient.dto.EventType;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 
 import javax.json.Json;
@@ -33,7 +35,6 @@ public class AuditClient {
     private final ObjectMapper objectMapper;
     private final RequestData requestData;
     private final JsonArrayBuilder permissionArray;
-
 
     @Autowired
     public AuditClient(ProducerTemplate producerTemplate,
@@ -98,7 +99,6 @@ public class AuditClient {
             log.error("Failed to create Add User to Team audit event for team UUID {} for reason {}", team.getUuid(), e, value(EVENT, AUDIT_FAILED));
         }
     }
-
 
     public void moveToNewUnitAudit(String teamUUID, String oldUnitUUID, String newUnitUUID) {
         String auditPayload = Json.createObjectBuilder().add("teamUUID", teamUUID).add("oldUnit", oldUnitUUID).add("newUnit", newUnitUUID).build().toString();
