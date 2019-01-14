@@ -10,11 +10,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class SqsConfigurationTest {
 
 
-    private SqsConfiguration config;
+    private uk.gov.digital.ho.hocs.info.aws.SqsConfiguration config;
 
     @Before
     public void setup() {
-        config = new SqsConfiguration();
+        config = new uk.gov.digital.ho.hocs.info.aws.SqsConfiguration();
     }
 
     @Test
