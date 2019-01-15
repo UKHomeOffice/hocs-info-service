@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.application.RequestData;
-import uk.gov.digital.ho.hocs.info.client.auditClient.dto.CreateAuditRequest;
+import uk.gov.digital.ho.hocs.info.client.auditClient.dto.EventType;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 
 import javax.json.Json;
@@ -17,11 +17,10 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
-import static uk.gov.digital.ho.hocs.info.LogEvent.AUDIT_EVENT_CREATED;
-import static uk.gov.digital.ho.hocs.info.LogEvent.AUDIT_FAILED;
-import static uk.gov.digital.ho.hocs.info.LogEvent.EVENT;
-
 import static net.logstash.logback.argument.StructuredArguments.value;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.AUDIT_EVENT_CREATED;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.AUDIT_FAILED;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.EVENT;
 
 @Slf4j
 @Component
@@ -35,7 +34,6 @@ public class AuditClient {
     private final ObjectMapper objectMapper;
     private final RequestData requestData;
     private final JsonArrayBuilder permissionArray;
-
 
     @Autowired
     public AuditClient(ProducerTemplate producerTemplate,
@@ -77,7 +75,7 @@ public class AuditClient {
         }
     }
 
-    public void deleteTeamAudit(Team team){
+    public void deleteTeamAudit(Team team) {
         String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.DELETE_TEAM.toString());
 
@@ -110,12 +108,12 @@ public class AuditClient {
             producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
             log.info("Create audit for Move Team to New Unit, team UUID: {}, new unit UUID: {}, correlationID: {}, UserID: {}", teamUUID, newUnitUUID, requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
         } catch (Exception e) {
-            log.error("Failed to create Move Team to New Unit audit event for team UUID {} for reason {}",  teamUUID, e, value(EVENT, AUDIT_FAILED));
+            log.error("Failed to create Move Team to New Unit audit event for team UUID {} for reason {}", teamUUID, e, value(EVENT, AUDIT_FAILED));
         }
     }
 
     public void updateTeamPermissionsAudit(UUID teamUUID, Set<PermissionDto> permissions) {
-        for (PermissionDto permission : permissions){
+        for (PermissionDto permission : permissions) {
             permissionArray.add(Json.createObjectBuilder().add("caseType", permission.getCaseTypeCode()).add("accessLevel", permission.getAccessLevel().toString()).build());
         }
         String auditPayload = Json.createObjectBuilder().add("permissions", permissionArray).build().toString();
@@ -130,7 +128,7 @@ public class AuditClient {
     }
 
     public void deleteTeamPermissionsAudit(UUID teamUUID, Set<PermissionDto> permissions) {
-        for (PermissionDto permission : permissions){
+        for (PermissionDto permission : permissions) {
             permissionArray.add(Json.createObjectBuilder().add("caseType", permission.getCaseTypeCode()).add("accessLevel", permission.getAccessLevel().toString()).build());
         }
         String auditPayload = Json.createObjectBuilder().add("permissions", permissionArray).build().toString();
@@ -144,7 +142,7 @@ public class AuditClient {
         }
     }
 
-    private CreateAuditRequest generateAuditRequest(String auditPayload, String eventType){
+    private CreateAuditRequest generateAuditRequest(String auditPayload, String eventType) {
         return new CreateAuditRequest(
                 requestData.correlationId(),
                 raisingService,
