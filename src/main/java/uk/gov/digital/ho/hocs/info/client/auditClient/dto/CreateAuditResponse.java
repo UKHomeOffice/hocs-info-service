@@ -1,23 +1,23 @@
 package uk.gov.digital.ho.hocs.info.client.auditClient.dto;
 
- import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
- import java.util.UUID;
+import java.util.UUID;
 
- @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class CreateAuditResponse {
 
-     @JsonProperty("uuid")
+    @JsonProperty("uuid")
     private final UUID uuid;
 
-     @JsonProperty("correlation_id")
+    @JsonProperty("correlation_id")
     private String correlationID;
 
-     @JsonProperty("user_id")
+    @JsonProperty("user_id")
     private String userID;
 
- } 
+}

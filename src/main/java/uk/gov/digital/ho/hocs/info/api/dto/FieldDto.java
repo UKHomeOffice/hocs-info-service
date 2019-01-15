@@ -16,8 +16,14 @@ public class FieldDto {
     @JsonProperty("uuid")
     private UUID uuid;
 
+    @JsonProperty("component")
+    private String component;
+
     @JsonRawValue
-    private String data;
+    private String validation;
+
+    @JsonProperty("props")
+    private PropertyDto properties;
 
     @JsonProperty("summary")
     private boolean summary;
@@ -26,6 +32,7 @@ public class FieldDto {
     private boolean active;
 
     public static FieldDto from(Field field) {
-        return new FieldDto(field.getUuid(), field.getData(), field.isSummary(), field.isActive());
+        PropertyDto propertyDto = PropertyDto.from(field.getName(), field.getLabel(), field.getChoices());
+        return new FieldDto(field.getUuid(), field.getComponent(), field.getValidation(), propertyDto, field.isSummary(), field.isActive());
     }
 }

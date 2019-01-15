@@ -100,6 +100,7 @@ public class AuditClient {
         }
     }
 
+
     public void moveToNewUnitAudit(String teamUUID, String oldUnitUUID, String newUnitUUID) {
         String auditPayload = Json.createObjectBuilder().add("teamUUID", teamUUID).add("oldUnit", oldUnitUUID).add("newUnit", newUnitUUID).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.MOVE_TEAM_TO_UNIT.toString());

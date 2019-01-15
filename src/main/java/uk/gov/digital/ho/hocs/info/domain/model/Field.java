@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -26,8 +25,24 @@ public class Field implements Serializable {
     private UUID uuid;
 
     @Getter
-    @Column(name = "data")
-    private String data;
+    @Column(name = "component")
+    private String component;
+
+    @Getter
+    @Column(name = "name")
+    private String name;
+
+    @Getter
+    @Column(name = "label")
+    private String label;
+
+    @Getter
+    @Column(name = "validation")
+    private String validation;
+
+    @Getter
+    @Column(name = "choices")
+    private String choices;
 
     @Getter
     @Column(name = "summary")
@@ -40,12 +55,16 @@ public class Field implements Serializable {
     @Setter
     @Getter
     @ManyToOne
-    @JoinColumn(name = "form_uuid", referencedColumnName = "uuid")
-    private Form form;
+    @JoinColumn(name = "schema_uuid", referencedColumnName = "uuid")
+    private Schema schema;
 
-    public Field(String data, boolean summary) {
+    public Field(UUID schemaUUID, String component, String name, String label, String validation, String choices, boolean summary) {
         this.uuid = UUID.randomUUID();
-        this.data = data;
+        this.component = component;
+        this.name = name;
+        this.label = label;
+        this.validation = validation;
+        this.choices = choices;
         this.summary = summary;
     }
 
