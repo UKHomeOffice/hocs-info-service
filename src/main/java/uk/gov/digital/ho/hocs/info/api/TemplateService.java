@@ -56,7 +56,7 @@ public class TemplateService {
     }
 
     Template getTemplateForCaseType(String caseType) {
-        Template template = templateRepository.findAllByCaseType(caseType);
+        Template template = templateRepository.findActiveTemplateByCaseType(caseType);
         if (template != null) {
             log.info("Got Template for CaseType {} ", caseType);
             return template;
