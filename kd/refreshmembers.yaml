@@ -13,10 +13,6 @@ spec:
             - name: hocs-info-service
               securityContext:
                 runAsNonRoot: true
-                capabilities:
-                drop:
-                  - SETUID
-                  - SETGID
               image: quay.io/ukhomeofficedigital/openjdk11
               command: ["/bin/sh", "-c"]
               args:
