@@ -15,7 +15,13 @@ spec:
                 runAsNonRoot: true
                 runAsUser: 1000
               image: quay.io/ukhomeofficedigital/openjdk11
+              env:
+                - name: HOCS_BASICAUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: ui-casework-creds
+                      key: plaintext
               command: ["/bin/sh", "-c"]
               args:
-                - http_status=$( curl -svk -w '%{http_code}' https://hocs-info-service.{{.KUBE_NAMESPACE}}.svc.cluster.local/admin/member/refresh ); if [[ $http_status -eq 200 ]]; then exit 0; else exit 1; fi
+                - http_status=$( curl -vk -u ${HOCS_BASICAUTH} -w '%{http_code}' https://hocs-info-service.cs-dev.svc.cluster.local/admin/member/refresh ); if [[ $http_status -eq 200 ]]; then exit 0; else exit 1; fi
           restartPolicy: OnFailure
