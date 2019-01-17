@@ -17,5 +17,5 @@ spec:
               image: quay.io/ukhomeofficedigital/openjdk11
               command: ["/bin/sh", "-c"]
               args:
-                - http_status=$( curl -s -v -w '%{http_code}' https://hocs-info-service.{{.KUBE_NAMESPACE}}.svc.cluster.local/admin/memers/refresh ); if [[ $http_status -eq 200 ]]; then exit 0; else exit 1; fi
+                - http_status=$( curl -svk -w '%{http_code}' https://hocs-info-service.{{.KUBE_NAMESPACE}}.svc.cluster.local/admin/member/refresh ); if [[ $http_status -eq 200 ]]; then exit 0; else exit 1; fi
           restartPolicy: OnFailure
