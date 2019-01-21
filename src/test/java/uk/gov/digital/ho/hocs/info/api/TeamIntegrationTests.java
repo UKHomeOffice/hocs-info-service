@@ -297,7 +297,7 @@ public class TeamIntegrationTests {
 
     @Test
     public void shouldDeleteTeam() {
-        String teamId = "5d584129-66ea-4e97-9277-7576ab1d32c0";
+        String teamId = "8b3b4366-a37c-48b6-b274-4c50f8083843";
 
         ResponseEntity<String> result = restTemplate.exchange(
                 getBasePath() + "/team/" + teamId
