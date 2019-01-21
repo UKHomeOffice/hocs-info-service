@@ -3,6 +3,8 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetTopicResponse;
 import uk.gov.digital.ho.hocs.info.client.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.client.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
@@ -20,15 +22,18 @@ public class StandardLineService {
 
     private final StandardLineRepository standardLineRepository;
     private final DocumentClient documentClient;
+    private final CaseworkClient caseworkClient;
 
     private final LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
 
     @Autowired
     public StandardLineService(
             StandardLineRepository standardLineRepository,
-            DocumentClient documentClient) {
+            DocumentClient documentClient,
+            CaseworkClient caseworkClient) {
         this.standardLineRepository = standardLineRepository;
         this.documentClient = documentClient;
+        this.caseworkClient = caseworkClient;
     }
 
     void createStandardLine(String displayName, UUID topicUUID, LocalDate expires, String s3URL) {
@@ -52,13 +57,15 @@ public class StandardLineService {
         log.info("Created Standard Line - {}", displayName);
     }
 
-    StandardLine getStandardLinesForTopic(UUID topicUUID) {
-        StandardLine standardLine = standardLineRepository.findStandardLinesByTopicAndExpires(topicUUID, endOfDay);
+    StandardLine getStandardLinesForCase(UUID caseUUID) {
+        UUID primaryTopic = caseworkClient.getCase(caseUUID).getPrimaryTopic();
+        GetTopicResponse topicResponse = caseworkClient.getTopic(caseUUID, primaryTopic);
+        StandardLine standardLine = standardLineRepository.findStandardLinesByTopicAndExpires(topicResponse.getTopicUUID(), endOfDay);
         if (standardLine != null) {
-            log.info("Got Standard Lines for Topic {} ", topicUUID);
+            log.info("Got Standard Lines for Topic {} ", topicResponse.getTopicUUID());
             return standardLine;
         } else {
-            throw new ApplicationExceptions.EntityNotFoundException("Standard Line for Topic: %s, not found!", topicUUID);
+            throw new ApplicationExceptions.EntityNotFoundException("Standard Line for Topic: %s, not found!", topicResponse.getTopicUUID());
         }
     }
 }

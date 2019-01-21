@@ -24,6 +24,18 @@ VALUES ('08612f06-bae2-4d2f-90d2-2254a68414b8', 'CT1', 'OWNER'),
        ('8b3b4366-a37c-48b6-b274-4c50f8083843', 'CT3', 'WRITE'),
        ('8b3b4366-a37c-48b6-b274-4c50f8083843', 'CT3', 'READ');
 
-INSERT INTO parent_topic (display_name, UUID, responsible_team_uuid, responsible_minister_uuid )
-VALUES ('Parent topic 100', '94a10f9f-a42e-44c0-8ebe-1227cb347f1d', '8b3b4366-a37c-48b6-b274-4c50f8083843', '5d584129-66ea-4e97-9277-7576ab1d32c0'),
-       ('Parent topic 101', '1abf7a0c-ea2d-478d-b6c8-d739fb60ef04', '7c33c878-9404-4f67-9bbc-ca52dff285ca', '5d584129-66ea-4e97-9277-7576ab1d32c0');
+INSERT INTO parent_topic (display_name, UUID)
+VALUES ('test Parent topic 100', '94a10f9f-a42e-44c0-8ebe-1227cb347f1d'),
+       ('test Parent topic 101', '1abf7a0c-ea2d-478d-b6c8-d739fb60ef04');
+
+INSERT INTO topic (display_name, UUID, parent_topic_uuid)
+VALUES ('test topic 1', '11111111-ffff-1111-1111-111111111131', '94a10f9f-a42e-44c0-8ebe-1227cb347f1d'),
+       ('test topic 2', '11111111-ffff-1111-1111-111111111132', '1abf7a0c-ea2d-478d-b6c8-d739fb60ef04');
+
+
+INSERT INTO topic_team (topic_uuid, case_type, responsible_team_uuid, stage_type)
+VALUES ('11111111-ffff-1111-1111-111111111131', 'MIN', '08612f06-bae2-4d2f-90d2-2254a68414b8' ,'DCU_MIN_INITIAL_DRAFT'),
+       ('11111111-ffff-1111-1111-111111111132', 'MIN', '5d584129-66ea-4e97-9277-7576ab1d32c0' ,'DCU_MIN_INITIAL_DRAFT'),
+       ('11111111-ffff-1111-1111-111111111131', 'MIN', '7c33c878-9404-4f67-9bbc-ca52dff285ca' ,'DCU_MIN_PRIVATE_OFFICE'),
+       ('11111111-ffff-1111-1111-111111111132', 'MIN', '5d584129-66ea-4e97-9277-7576ab1d32c0' ,'DCU_MIN_PRIVATE_OFFICE');
+

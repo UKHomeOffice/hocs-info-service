@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.info.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,8 +23,14 @@ public class FieldDto {
     @JsonRawValue
     private String validation;
 
-    @JsonProperty("props")
-    private PropertyDto properties;
+    @JsonProperty("name")
+    private String name;
+
+    @JsonProperty("label")
+    private String label;
+
+    @JsonRawValue
+    private String props;
 
     @JsonProperty("summary")
     private boolean summary;
@@ -32,7 +39,6 @@ public class FieldDto {
     private boolean active;
 
     public static FieldDto from(Field field) {
-        PropertyDto propertyDto = PropertyDto.from(field.getName(), field.getLabel(), field.getChoices());
-        return new FieldDto(field.getUuid(), field.getComponent(), field.getValidation(), propertyDto, field.isSummary(), field.isActive());
+        return new FieldDto(field.getUuid(), field.getComponent(), field.getValidation(), field.getName(), field.getLabel(), field.getProps(), field.isSummary(), field.isActive());
     }
 }

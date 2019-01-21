@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+
 @RestController
 public class TeamResource {
     private TeamService teamService;
@@ -78,6 +80,24 @@ public class TeamResource {
     public ResponseEntity<Set<TeamDto>> getActiveTeams() {
         Set<Team> teams = teamService.getAllActiveTeams();
         return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
+    }
+
+    @GetMapping(value = "/teams", params = {"unit"}, produces = APPLICATION_JSON_UTF8_VALUE)
+    ResponseEntity<Set<TeamDto>> getCaseTypes(@RequestParam("unit") String unitShortCode) {
+        Set<Team> teams = teamService.getAllActiveTeamsByUnitShortCode(unitShortCode);
+        return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
+    }
+
+    @GetMapping(value = "/teams/drafters")
+    public ResponseEntity<Set<TeamDto>> getdraftingteams() {
+        Set<Team> teams = teamService.getAllActiveTeams();
+        return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
+    }
+
+    @GetMapping(value = "/team/case/{caseUUID}/topic/{topicUUID}/stage/{stageType}")
+    public ResponseEntity<TeamDto> getActiveTeams(@PathVariable UUID caseUUID, @PathVariable UUID topicUUID, @PathVariable String stageType) {
+        Team team = teamService.getTeamByTopicAndStage(caseUUID, topicUUID, stageType);
+        return ResponseEntity.ok(TeamDto.from(team));
     }
 }
 

@@ -18,7 +18,7 @@ public class ParentTopicAndTopicDtoTest {
     public void from() {
         Set<Topic> topics = new HashSet<>();
         topics.add(new Topic(1l,"Topic Display Name", topicUUID));
-        ParentTopic parentTopic = new ParentTopic(1l, parentTopicUUID,"Parent Topic Display Name", UUID.randomUUID(), UUID.randomUUID(), topics);
+        ParentTopic parentTopic = new ParentTopic(1l, parentTopicUUID,"Parent Topic Display Name", topics);
 
         ParentTopicAndTopicDto parentTopicAndTopicDto = ParentTopicAndTopicDto.from(parentTopic);
 

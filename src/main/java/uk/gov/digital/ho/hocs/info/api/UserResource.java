@@ -34,5 +34,11 @@ public class UserResource {
         return ResponseEntity.ok(userService.getUsersForTeam(teamUUID));
     }
 
+    @GetMapping(value = "/case/{caseUUID}/stage/{stageUUID}/team/members")
+    public ResponseEntity<List<UserDto>> getUsersForTeamByStage(@PathVariable UUID caseUUID, @PathVariable UUID stageUUID) {
+        List<UserDto> users = userService.getUsersForTeamByStage(caseUUID, stageUUID);
+        return ResponseEntity.ok(users);
+    }
+
 }
 

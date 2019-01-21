@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
@@ -45,6 +46,9 @@ public class TeamServiceTest {
     @Mock
     private AuditClient auditClient;
 
+    @Mock
+    private CaseworkClient caseworkClient;
+
     private TeamService teamService;
 
     @Before
@@ -55,7 +59,8 @@ public class TeamServiceTest {
                 caseTypeService,
                 parentTopicRepository,
                 keycloakService,
-                auditClient);
+                auditClient,
+                caseworkClient);
     }
 
     private UUID team1UUID =UUID.randomUUID();

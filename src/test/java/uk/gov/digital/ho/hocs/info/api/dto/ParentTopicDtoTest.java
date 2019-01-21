@@ -14,7 +14,7 @@ public class ParentTopicDtoTest {
 
     @Test
     public void from() {
-        ParentTopic parentTopic = new ParentTopic(1l, uuid,"Display Name", UUID.randomUUID(), UUID.randomUUID(), new HashSet<>());
+        ParentTopic parentTopic = new ParentTopic(1l, uuid,"Display Name", new HashSet<>());
 
         ParentTopicDto parentTopicDto = ParentTopicDto.from(parentTopic);
 

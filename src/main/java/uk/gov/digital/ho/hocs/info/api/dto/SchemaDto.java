@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,10 +31,10 @@ public class SchemaDto {
     private boolean active;
 
     @JsonProperty("fields")
-    private Set<FieldDto> fields;
+    private List<FieldDto> fields;
 
     public static SchemaDto from(Schema schema) {
-        Set<FieldDto> fieldDtos = schema.getFields().stream().map(FieldDto::from).collect(Collectors.toSet());
+        List<FieldDto> fieldDtos = schema.getFields().stream().map(FieldDto::from).collect(Collectors.toList());
 
         return new SchemaDto(schema.getUuid(), schema.getType(), schema.getTitle(), schema.getActionLabel(), schema.isActive(), fieldDtos);
     }

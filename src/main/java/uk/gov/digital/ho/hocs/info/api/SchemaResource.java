@@ -27,9 +27,9 @@ public class SchemaResource {
         this.schemaService = schemaService;
     }
 
-    @GetMapping(value = "/schema/{formType}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<SchemaDto> getSchema(@PathVariable String formType) throws IOException {
-        Schema schema = schemaService.getSchemaByType(formType);
+    @GetMapping(value = "/schema/{type}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<SchemaDto> getSchema(@PathVariable String type) throws IOException {
+        Schema schema = schemaService.getSchemaByType(type);
         return ResponseEntity.ok(SchemaDto.from(schema));
     }
 

@@ -19,8 +19,8 @@ public class GetParentTopicsResponseTest {
         Set<Topic> topics = new HashSet<>();
         topics.add(new Topic(1l, "Topic Display Name", topicUUID));
         List<ParentTopic> parentTopics = new ArrayList<>();
-        parentTopics.add(new ParentTopic(1l,parentTopicUUID1,  "Display Name 1", UUID.randomUUID(), UUID.randomUUID(), topics ));
-        parentTopics.add(new ParentTopic(2l, parentTopicUUID2, "Display Name 2",  UUID.randomUUID(), UUID.randomUUID(),topics ));
+        parentTopics.add(new ParentTopic(1l,parentTopicUUID1,  "Display Name 1", topics ));
+        parentTopics.add(new ParentTopic(2l, parentTopicUUID2, "Display Name 2",  topics ));
 
         GetParentTopicsResponse getParentTopicsResponse = GetParentTopicsResponse.from(parentTopics);
 

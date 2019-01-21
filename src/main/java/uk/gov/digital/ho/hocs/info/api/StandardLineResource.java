@@ -21,9 +21,9 @@ public class StandardLineResource {
         this.standardLineService = standardLineService;
     }
 
-    @GetMapping(value = "/standardLine/topic/{topicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetStandardLineResponse> getStandardLinesForPrimaryTopic(@PathVariable UUID topicUUID) {
-        StandardLine standardLines = standardLineService.getStandardLinesForTopic(topicUUID);
+    @GetMapping(value = "/standardLine/case/{caseUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetStandardLineResponse> getStandardLinesForPrimaryTopic(@PathVariable UUID caseUUID) {
+        StandardLine standardLines = standardLineService.getStandardLinesForCase(caseUUID);
         return ResponseEntity.ok(GetStandardLineResponse.from(standardLines));
     }
 
