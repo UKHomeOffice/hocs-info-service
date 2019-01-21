@@ -74,8 +74,8 @@ public class TopicServiceTest {
 
     private List<ParentTopic> getParentTopics() {
         return new ArrayList<ParentTopic>() {{
-            add(new ParentTopic(1l, UUID.randomUUID(), "ParentTopic1", UUID.randomUUID(), UUID.randomUUID(), new HashSet<>()));
-            add(new ParentTopic(2l, UUID.randomUUID(), "ParentTopic2", UUID.randomUUID(), UUID.randomUUID(), new HashSet<>()));
+            add(new ParentTopic(1l, UUID.randomUUID(), "ParentTopic1", new HashSet<>()));
+            add(new ParentTopic(2l, UUID.randomUUID(), "ParentTopic2", new HashSet<>()));
         }};
 
     }

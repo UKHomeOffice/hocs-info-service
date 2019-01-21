@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.info.application.RestHelper;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCaseworkCaseDataResponse;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetTopicResponse;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 
 
@@ -37,6 +38,28 @@ public class CaseworkClient {
             return response.getBody();
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("Could not get Input; response: %s", response.getStatusCodeValue());
+        }
+    }
+
+    public UUID getStageTeam(UUID caseUUID, UUID stageUUID) {
+        ResponseEntity<UUID> response = restHelper.get(serviceBaseURL, String.format("/case/%s/stage/%s/team", caseUUID, stageUUID), UUID.class);
+
+        if (response.getStatusCodeValue() == 200) {
+            log.info("Got Team for stage: {}", stageUUID);
+            return response.getBody();
+        } else {
+            throw new ApplicationExceptions.EntityNotFoundException("Could not get Team for stage %s; response: %s", stageUUID, response.getStatusCodeValue());
+        }
+    }
+
+    public GetTopicResponse getTopic(UUID caseUUID, UUID topicUUID) {
+        ResponseEntity<GetTopicResponse> response = restHelper.get(serviceBaseURL, String.format("/case/%s/topic/%s", caseUUID, topicUUID), GetTopicResponse.class);
+
+        if (response.getStatusCodeValue() == 200) {
+            log.info("Got Topic {} for Case: {}", topicUUID, caseUUID);
+            return response.getBody();
+        } else {
+            throw new ApplicationExceptions.EntityNotFoundException("Could not get Topic %s for Case: %s response: %s",  topicUUID, caseUUID, response.getStatusCodeValue());
         }
     }
 

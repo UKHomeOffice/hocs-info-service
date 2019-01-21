@@ -41,8 +41,8 @@ public class Field implements Serializable {
     private String validation;
 
     @Getter
-    @Column(name = "choices")
-    private String choices;
+    @Column(name = "props")
+    private String props;
 
     @Getter
     @Column(name = "summary")
@@ -52,19 +52,13 @@ public class Field implements Serializable {
     @Column(name = "active")
     private boolean active = true;
 
-    @Setter
-    @Getter
-    @ManyToOne
-    @JoinColumn(name = "schema_uuid", referencedColumnName = "uuid")
-    private Schema schema;
-
-    public Field(UUID schemaUUID, String component, String name, String label, String validation, String choices, boolean summary) {
+    public Field(String component, String name, String label, String validation, String props, boolean summary) {
         this.uuid = UUID.randomUUID();
         this.component = component;
         this.name = name;
         this.label = label;
         this.validation = validation;
-        this.choices = choices;
+        this.props = props;
         this.summary = summary;
     }
 

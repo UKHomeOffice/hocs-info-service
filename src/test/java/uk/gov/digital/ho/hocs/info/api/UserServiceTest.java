@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.UserService;
 import uk.gov.digital.ho.hocs.info.api.dto.UserDto;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Unit;
@@ -33,9 +34,12 @@ public class UserServiceTest {
     @Mock
     private TeamRepository teamRepository;
 
+    @Mock
+    private CaseworkClient caseworkClient;
+
     @Before
     public void setUp() {
-        this.service = new UserService(keycloakService, teamRepository);
+        this.service = new UserService(keycloakService, teamRepository, caseworkClient);
     }
 
     UUID userUUID = UUID.randomUUID();

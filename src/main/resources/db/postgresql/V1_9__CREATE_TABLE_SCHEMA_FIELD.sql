@@ -49,15 +49,24 @@ CREATE TABLE IF NOT EXISTS field
 (
   id     BIGSERIAL PRIMARY KEY,
   uuid   UUID    NOT NULL,
-  schema_uuid   UUID    NOT NULL,
   component TEXT NOT NULL,
-  name      TEXT NOT NULL,
-  label     TEXT NOT NULL,
+  name      TEXT,
+  label     TEXT,
   validation JSONB NOT NULL DEFAULT '{}',
-  choices JSONB DEFAULT '{}',
+  props JSONB DEFAULT '{}',
   summary BOOLEAN NOT NULL DEFAULT FALSE,
   active BOOLEAN NOT NULL DEFAULT TRUE,
 
-  CONSTRAINT field_uuid_idempotent UNIQUE (uuid),
-  CONSTRAINT fk_field_case_type_uuid FOREIGN KEY (schema_uuid) REFERENCES screen_schema (uuid)
+  CONSTRAINT field_uuid_idempotent UNIQUE (uuid)
+);
+
+DROP TABLE IF EXISTS field_screen;
+
+CREATE TABLE IF NOT EXISTS field_screen
+(
+  schema_uuid   UUID    NOT NULL,
+  field_uuid   UUID    NOT NULL,
+
+    CONSTRAINT fk_field_case_type_uuid FOREIGN KEY (schema_uuid) REFERENCES screen_schema (uuid)
+
 );

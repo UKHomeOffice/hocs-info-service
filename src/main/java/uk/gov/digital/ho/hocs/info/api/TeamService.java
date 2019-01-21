@@ -7,6 +7,8 @@ import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDeleteActiveParentTopicsDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetTopicResponse;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
@@ -30,14 +32,16 @@ public class TeamService {
     private CaseTypeService caseTypeService;
     private ParentTopicRepository parentTopicRepository;
     private AuditClient auditClient;
+    private CaseworkClient caseworkClient;
 
-    public TeamService(TeamRepository teamRepository, UnitRepository unitRepository, CaseTypeService caseTypeService,ParentTopicRepository parentTopicRepository, KeycloakService keycloakService, AuditClient auditClient) {
+    public TeamService(TeamRepository teamRepository, UnitRepository unitRepository, CaseTypeService caseTypeService,ParentTopicRepository parentTopicRepository, KeycloakService keycloakService, AuditClient auditClient, CaseworkClient caseworkClient) {
         this.teamRepository = teamRepository;
         this.keycloakService = keycloakService;
         this.unitRepository = unitRepository;
         this.caseTypeService = caseTypeService;
         this.parentTopicRepository = parentTopicRepository;
         this.auditClient = auditClient;
+        this.caseworkClient = caseworkClient;
     }
 
     public Set<Team> getTeamsForUnit(UUID unitUUID) {
@@ -54,6 +58,13 @@ public class TeamService {
         return activeTeams;
     }
 
+    public Set<Team> getAllActiveTeamsByUnitShortCode(String unitShortCode) {
+        log.debug("Getting all active Teams by Unit ShortCode {}", unitShortCode );
+        Set<Team> activeTeams = teamRepository.findAllByActiveTrueAndUnitShortCodeEquals(unitShortCode);
+        log.info("Got {} active Teams by Unit ShortCode {}", activeTeams.size(), unitShortCode);
+        return activeTeams;
+    }
+
     public Team getTeam(UUID teamUUID) {
         log.debug("Getting Team {}", teamUUID);
         Team team = teamRepository.findByUuid(teamUUID);
@@ -62,6 +73,18 @@ public class TeamService {
             return team;
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("Team not found for UUID %s", teamUUID);
+        }
+    }
+
+    public Team getTeamByTopicAndStage(UUID caseUUID, UUID topicUUID, String stageType) {
+        log.debug("Getting Team for Topic {} and Stage {}", topicUUID, stageType);
+        GetTopicResponse topicResponse = caseworkClient.getTopic(caseUUID, topicUUID);
+        Team team = teamRepository.findByTopicAndStage(topicResponse.getTopicUUID(), stageType);
+        if (team != null) {
+            log.info("Got Team for Topic {} and Stage {}", topicUUID, stageType);
+            return team;
+        } else {
+            throw new ApplicationExceptions.EntityNotFoundException("Team not found for Topic %s and Stage %s", topicUUID, stageType);
         }
     }
 

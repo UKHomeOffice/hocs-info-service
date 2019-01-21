@@ -11,9 +11,9 @@ import java.util.UUID;
 @Repository
 public interface ParentTopicRepository extends CrudRepository<ParentTopic, String> {
 
-    @Query(value = "select * from parent_topic pt join parent_topic_case_type ptct on pt.uuid = ptct.parent_topic_uuid where ptct.case_type = ?1", nativeQuery = true)
+    @Query(value = "SELECT DISTINCT pt.* from topic t join topic_team tt on t.uuid = tt.topic_uuid join parent_topic pt on t.parent_topic_uuid = pt.uuid where tt.case_type = ?1 and pt.active = true", nativeQuery = true)
     List<ParentTopic>  findAllParentTopicByCaseType(String caseType);
 
-    @Query(value = "SELECT * from parent_topic pt where pt.responsible_team_uuid = ?1 AND pt.active = true", nativeQuery = true)
+    @Query(value = "SELECT DISTINCT pt.* from topic t join topic_team tt on t.uuid = tt.topic_uuid join parent_topic pt on t.parent_topic_uuid = pt.uuid where tt.responsible_team_uuid = ?1 and pt.active = true", nativeQuery = true)
     List<ParentTopic>  findAllActiveParentTopicsForTeam(UUID teamUUID);
 }

@@ -6,9 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "screen_schema")
@@ -42,19 +40,23 @@ public class Schema implements Serializable {
     private boolean active;
 
     @Getter
-    @OneToMany(mappedBy = "schema", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    private Set<Field> fields;
+    @OneToMany
+    @JoinTable(
+            name="field_screen",
+            joinColumns = @JoinColumn(name="schema_uuid", referencedColumnName="uuid"),
+            inverseJoinColumns = @JoinColumn( name="field_uuid", referencedColumnName="uuid")
+    )
+    private List<Field> fields;
 
     public Schema(String type, String title, String actionLabel) {
         this.uuid = UUID.randomUUID();
         this.type = type;
         this.title = title;
         this.actionLabel = actionLabel;
-        this.fields = new HashSet<>(0);
+        this.fields = new ArrayList<>(0);
     }
 
     public void addField(Field field) {
-        field.setSchema(this);
         fields.add(field);
     }
     public void removeField(UUID fieldUUID) {

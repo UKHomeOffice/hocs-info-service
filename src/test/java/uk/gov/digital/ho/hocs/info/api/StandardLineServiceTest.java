@@ -5,6 +5,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCaseworkCaseDataResponse;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetTopicResponse;
 import uk.gov.digital.ho.hocs.info.client.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.client.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateStandardLineDocumentDto;
@@ -29,6 +32,9 @@ public class StandardLineServiceTest {
     @Mock
     private DocumentClient documentClient;
 
+    @Mock
+    private CaseworkClient caseworkClient;
+
     private StandardLineService standardLineService;
 
     private static final UUID SL_EXT_REF = UUID.fromString("77777777-7777-7777-7777-777777777777");
@@ -40,13 +46,15 @@ public class StandardLineServiceTest {
 
     @Before
     public void setUp() {
-        this.standardLineService = new StandardLineService(standardLineRepository, documentClient);
+        this.standardLineService = new StandardLineService(standardLineRepository, documentClient, caseworkClient);
     }
 
     @Test
     public void shouldReturnStandardLineForPrimaryTopic(){
         when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid, END_OF_DAY)).thenReturn(new StandardLine());
-        standardLineService.getStandardLinesForTopic(uuid);
+        when(caseworkClient.getCase(uuid)).thenReturn(new GetCaseworkCaseDataResponse(uuid, null, null, null, null, uuid, uuid));
+        when(caseworkClient.getTopic(eq(uuid),any(UUID.class))).thenReturn(new GetTopicResponse(uuid, null, null, null, uuid));
+        standardLineService.getStandardLinesForCase(uuid);
         verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
         verifyNoMoreInteractions(standardLineRepository);
     }
@@ -88,7 +96,9 @@ public class StandardLineServiceTest {
 
     @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
     public void shouldNotGetCaseWithValidParamsNotFoundException() {
+        when(caseworkClient.getTopic(eq(uuid),any(UUID.class))).thenReturn(new GetTopicResponse(uuid, null, null, null, null));
+        when(caseworkClient.getCase(uuid)).thenReturn(new GetCaseworkCaseDataResponse(uuid, null, null, null, null, uuid, uuid));
 
-        standardLineService.getStandardLinesForTopic(uuid);
+        standardLineService.getStandardLinesForCase(uuid);
     }
 }

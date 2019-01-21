@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.api.dto.UserDto;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
@@ -22,11 +23,13 @@ public class UserService {
 
     private KeycloakService keycloakService;
     private TeamRepository teamRepository;
+    private CaseworkClient caseworkClient;
 
     @Autowired
-    public UserService(KeycloakService keycloakService, TeamRepository teamRepository) {
+    public UserService(KeycloakService keycloakService, TeamRepository teamRepository, CaseworkClient caseworkClient) {
         this.keycloakService = keycloakService;
         this.teamRepository = teamRepository;
+        this.caseworkClient = caseworkClient;
     }
 
     @Cacheable("users")
@@ -51,6 +54,11 @@ public class UserService {
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("Team does not exist");
         }
-
     }
+
+    public List<UserDto> getUsersForTeamByStage(UUID caseUUID, UUID stageUUID) {
+        UUID teamUUID = caseworkClient.getStageTeam(caseUUID, stageUUID);
+        return getUsersForTeam(teamUUID.toString());
+    }
+
 }
