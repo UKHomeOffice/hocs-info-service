@@ -9,5 +9,4 @@ public class HocsInfoServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(HocsInfoServiceApplication.class, args);
     }
-
 }
