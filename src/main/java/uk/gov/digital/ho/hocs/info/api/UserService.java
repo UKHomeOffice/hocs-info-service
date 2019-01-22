@@ -26,6 +26,7 @@ public class UserService {
     @Autowired
     public UserService(KeycloakService keycloakService, CaseworkClient caseworkClient) {
         this.keycloakService = keycloakService;
+
         this.caseworkClient = caseworkClient;
     }
 
@@ -45,7 +46,7 @@ public class UserService {
 
     @Cacheable(value = "teamMembers")
     public List<UserDto> getUsersForTeam(UUID teamUUID) {
-            return keycloakService.getUsersForTeam(teamUUID).stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
+        return keycloakService.getUsersForTeam(teamUUID).stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
 
     }
 
