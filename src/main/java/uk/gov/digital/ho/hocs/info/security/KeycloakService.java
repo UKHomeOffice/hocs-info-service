@@ -10,9 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static net.logstash.logback.argument.StructuredArguments.value;
 import static uk.gov.digital.ho.hocs.info.application.LogEvent.EVENT;
@@ -44,15 +43,15 @@ public class KeycloakService {
         }
     }
 
-    public void createUnitGroupIfNotExists(String unit) {
+    public void createTeamGroupIfNotExists(String team) {
         try {
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
-            GroupRepresentation unitGroup = new GroupRepresentation();
-            unitGroup.setName(unit);
-            Response response = hocsRealm.groups().add(unitGroup);
+            GroupRepresentation teamGroup = new GroupRepresentation();
+            teamGroup.setName(team);
+            Response response = hocsRealm.groups().add(teamGroup);
             response.close();
         } catch (Exception e) {
-            log.error("Failed to create group for unit {} for reason: {}", unit, e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            log.error("Failed to create group for team {} for reason: {}", team, e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }
@@ -91,39 +90,32 @@ public class KeycloakService {
         return keycloakClient.realm(hocsRealmName).users().get(userUUID.toString()).toRepresentation();
     }
 
-    public List<UserRepresentation> getUsersForTeam(String path, String teamUUID) {
-        String id = keycloakClient.realm(hocsRealmName).getGroupByPath(path).getId();
-        return keycloakClient.realm(hocsRealmName).groups().group(id).members();
+    public Set<UserRepresentation> getUsersForTeam(UUID teamUUID) {
+        String encodedTeamUUID = Base64UUID.UUIDToBase64String(teamUUID);
+        Map<String, UserRepresentation> members = new HashMap<>();
+        List<GroupRepresentation> groups = keycloakClient.realm(hocsRealmName).groups().groups(encodedTeamUUID, 0, 1);
+        groups.stream().flatMap(teamGroup -> teamGroup.getSubGroups().stream())
+                        .flatMap(caseTypeGroup -> caseTypeGroup.getSubGroups().stream())
+                        .map(permissionGroup -> keycloakClient.realm(hocsRealmName).groups().group(permissionGroup.getId()).members().stream()
+                                .collect(Collectors.toMap(UserRepresentation::getId, u -> u))).forEach(members::putAll);
+
+            return new HashSet<>(members.values());
     }
 
-    public void updateUserTeamGroups(String teamGroupPath, Set<String> permissionPaths) {
+    public void updateUserTeamGroups(UUID teamUUID, Set<String> permissionPaths) {
         try {
-            RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
-            GroupRepresentation group = hocsRealm.getGroupByPath(teamGroupPath);
-            List<UserRepresentation> users = hocsRealm.groups().group(group.getId()).members();
-
+            Set<UserRepresentation> users = getUsersForTeam(teamUUID);
             for (UserRepresentation user : users) {
                 for (String path : permissionPaths) {
                     addUserToGroup(UUID.fromString(user.getId()), path);
                 }
             }
         } catch (Exception e) {
-            log.error("Failed to update Keycloak user groups for group {} for reason: {}. WARNING: User groups may now be out of sync.", teamGroupPath, e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            log.error("Failed to update Keycloak user groups for group {} for reason: {}. WARNING: User groups may now be out of sync.", teamUUID, e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }
 
-    public void moveGroup(String currentGroupPath, String newParent) {
-        try {
-            RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
-            GroupRepresentation group = hocsRealm.getGroupByPath(currentGroupPath);
-            createUnitGroupIfNotExists(newParent);
-            GroupRepresentation newParentGroup = hocsRealm.getGroupByPath(newParent);
-            hocsRealm.groups().group(newParentGroup.getId()).subGroup(group);
-        } catch (Exception e) {
-            log.error("Failed to move Keycloak group {} to new parent {} for reason: {}.", currentGroupPath, newParent, e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
-            throw new KeycloakException(e.getMessage(), e);
-        }
-    }
+
 
 }

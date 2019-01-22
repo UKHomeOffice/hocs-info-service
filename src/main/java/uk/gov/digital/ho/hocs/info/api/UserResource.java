@@ -18,7 +18,6 @@ public class UserResource {
         this.userService = userService;
     }
 
-
     @GetMapping(value = "/users")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
@@ -30,7 +29,7 @@ public class UserResource {
     }
 
     @GetMapping(value = "/teams/{teamUUID}/members")
-    public ResponseEntity<List<UserDto>> getUsersForTeam(@PathVariable String teamUUID) {
+    public ResponseEntity<List<UserDto>> getUsersForTeam(@PathVariable UUID teamUUID) {
         return ResponseEntity.ok(userService.getUsersForTeam(teamUUID));
     }
 

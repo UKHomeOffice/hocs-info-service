@@ -14,6 +14,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.UnitRepository;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
+import uk.gov.digital.ho.hocs.info.security.Base64UUID;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
 import java.util.*;
@@ -59,7 +60,10 @@ public class TeamServiceTest {
     }
 
     private UUID team1UUID =UUID.randomUUID();
+    private String base64Team1UUID = Base64UUID.UUIDToBase64String(team1UUID);
+
     private UUID team2UUID =UUID.randomUUID();
+
 
 
     @Test
@@ -129,8 +133,7 @@ public class TeamServiceTest {
         assertThat(result.getUuid()).isEqualTo(team1UUID);
         verify(teamRepository, times(1)).findByUuid(team1UUID);
         verify(unitRepository, times(1)).findByUuid(unitUUID);
-        verify(keycloakService, times(1)).createUnitGroupIfNotExists("UNIT1");
-        verify(keycloakService, times(1)).createGroupPathIfNotExists("UNIT1", team1UUID.toString());
+        verify(keycloakService, times(1)).createTeamGroupIfNotExists(base64Team1UUID);
         verifyNoMoreInteractions(teamRepository);
         verifyNoMoreInteractions(keycloakService);
     }
@@ -150,8 +153,7 @@ public class TeamServiceTest {
         teamService.createTeam(teamDto, unitUUID);
         verify(unitRepository, times(1)).findByUuid(unitUUID);
         verify(unitRepository, never()).save(unit);
-        verify(keycloakService, times(1)).createUnitGroupIfNotExists("UNIT1");
-        verify(keycloakService, times(1)).createGroupPathIfNotExists("UNIT1", team1UUID.toString());
+        verify(keycloakService, times(1)).createTeamGroupIfNotExists(base64Team1UUID);
         verifyNoMoreInteractions(keycloakService);
     }
 
@@ -187,16 +189,14 @@ public class TeamServiceTest {
         when(unitRepository.findByUuid(unitUUID)).thenReturn(unit);
         when(oldUnit.getUuid()).thenReturn(oldUnitUUID);
         when(team.getUnit()).thenReturn(oldUnit);
-        when(team.getUuid()).thenReturn(team1UUID);
         when(team.getUnit().getShortCode()).thenReturn("UNIT1");
 
         teamService.moveToNewUnit(unitUUID, team1UUID);
 
         verify(unit, times(1)).addTeam(team);
         verify(oldUnit, times(1)).removeTeam(team1UUID);
-        verify(keycloakService, times(1)).moveGroup("/UNIT1/" + team1UUID.toString(), "UNIT1");
-    }
 
+    }
 
     @Test
     public void shouldAddUserToTeam() {
@@ -213,20 +213,15 @@ public class TeamServiceTest {
         team.setUnit(unit);
         team.addPermissions(permissions);
 
-        String unitGroupPath = "UNIT";
-        String teamGroupPath = "/UNIT/" + team1UUID.toString();
-        String caseGroupPath = "/UNIT/" + team1UUID.toString() + "/MIN";
-        String accessLevelGroupPath = "/UNIT/" + team1UUID.toString() + "/MIN/OWNER";
+        String teamGroupPath =  "/" + base64Team1UUID;
+        String caseGroupPath =  teamGroupPath + "/MIN";
+        String accessLevelGroupPath = teamGroupPath + "/MIN/5";
 
         when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
-
-//        teamService = new TeamService(teamRepository, unitRepository, caseTypeRepository, keycloakService);
         teamService.addUserToTeam(userUUID, team1UUID);
-
-        verify(keycloakService, times(1)).createGroupPathIfNotExists(unitGroupPath, team1UUID.toString());
+        verify(keycloakService, times(1)).createTeamGroupIfNotExists(base64Team1UUID);
         verify(keycloakService, times(1)).createGroupPathIfNotExists(teamGroupPath, "MIN");
-        verify(keycloakService, times(1)).createGroupPathIfNotExists(caseGroupPath, "OWNER");
-        verify(keycloakService, times(1)).addUserToGroup(userUUID, teamGroupPath);
+        verify(keycloakService, times(1)).createGroupPathIfNotExists(caseGroupPath, "5");
         verify(keycloakService, times(1)).addUserToGroup(userUUID, accessLevelGroupPath);
     }
 
@@ -249,8 +244,8 @@ public class TeamServiceTest {
         }};
 
         Set<String> permissionPaths = new HashSet<String>() {{
-            add("/UNIT/" + team1UUID + "/MIN/READ");
-            add("/UNIT/" + team1UUID + "/MIN/OWNER");
+            add("/" + base64Team1UUID + "/MIN/2");
+            add("/" + base64Team1UUID + "/MIN/5");
         }};
 
         assertThat(team.getPermissions().size()).isEqualTo(0);
@@ -259,7 +254,7 @@ public class TeamServiceTest {
 
 
         verify(teamRepository, times(1)).findByUuid(team1UUID);
-        verify(keycloakService, times(1)).updateUserTeamGroups("/UNIT/" + team1UUID.toString(),permissionPaths);
+        verify(keycloakService, times(1)).updateUserTeamGroups(team1UUID,permissionPaths);
         verifyNoMoreInteractions(teamRepository);
     }
 
@@ -290,7 +285,7 @@ public class TeamServiceTest {
 
 
         verify(teamRepository, times(1)).findByUuid(team1UUID);
-        verify(keycloakService, times(1)).deleteTeamPermisisons("/UNIT/"+ team1UUID+"/MIN/READ");
+        verify(keycloakService, times(1)).deleteTeamPermisisons("/"+ base64Team1UUID+"/MIN/2");
         verifyNoMoreInteractions(teamRepository);
     }
 
@@ -322,9 +317,8 @@ public class TeamServiceTest {
 
 
         verify(teamRepository, times(1)).findByUuid(team1UUID);
-        verify(keycloakService, times(1)).deleteTeamPermisisons("/UNIT/"+ team1UUID+"/MIN/READ");
-        verify(keycloakService, times(1)).deleteTeamPermisisons("/UNIT/"+ team1UUID+"/MIN/OWNER");
-        verify(keycloakService, times(1)).deleteTeamPermisisons("/UNIT/"+ team1UUID+"/MIN");
+        verify(keycloakService, times(1)).deleteTeamPermisisons("/" + base64Team1UUID+"/MIN/2");
+        verify(keycloakService, times(1)).deleteTeamPermisisons("/" + base64Team1UUID+"/MIN/5");
         verifyNoMoreInteractions(teamRepository);
     }
 
@@ -412,7 +406,6 @@ public class TeamServiceTest {
         when(newUnit.getShortCode()).thenReturn("UNIT2");
 
         when(team.getUnit()).thenReturn(oldUnit);
-        when(team.getUuid()).thenReturn(team1UUID);
 
         teamService.moveToNewUnit(newUnitUUID, team1UUID);
 
@@ -438,8 +431,8 @@ public class TeamServiceTest {
         }};
 
         Set<String> permissionPaths = new HashSet<String>() {{
-            add("/UNIT/" + team1UUID + "/MIN/READ");
-            add("/UNIT/" + team1UUID + "/MIN/OWNER");
+            add("/" + team1UUID + "/MIN/2");
+            add("/" + team1UUID + "/MIN/5");
         }};
 
         teamService.updateTeamPermissions(team1UUID, permissions);
