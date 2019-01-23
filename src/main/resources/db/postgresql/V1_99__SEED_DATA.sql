@@ -415,9 +415,9 @@ VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 
 
        ('c0a9fb65-ec01-40a1-9df7-a70779352715', 'inset', null, null,'[ ]', false, true, '{ "children" : "These teams have been selected based on the correspondence topic. You are able to override the selection." }'),
        ('c2837864-53a0-4373-9695-f1f5e23552a0', 'text', 'DraftingTeamName', 'Initial Draft Team','[ ]', false, true, '{ "disabled" : "disabled"}'),
-       ('cb170956-1fac-4b92-8572-d2db6c97e72a', 'dropdown', 'OverrideDraftingTeam', 'Override Initial Draft Team','[ ]', false, true, '{ "choices" : "DRAFT_TEAMS" }'),
+       ('cb170956-1fac-4b92-8572-d2db6c97e72a', 'dropdown', 'OverrideDraftingTeamUUID', 'Override Initial Draft Team','[ ]', false, true, '{ "choices" : "DRAFT_TEAMS" }'),
        ('760e7c6c-17ca-420b-badf-1833f59feeed', 'text', 'POTeamName', 'Private Office Team','[ ]', false, true, '{ "disabled" : "disabled"}'),
-       ('b8baa4c7-d6bc-4657-ab6f-ae237b73247b', 'dropdown', 'OverridePOTeam', 'Override Private Office Team','[ ]', false, true, '{ "choices" : "PRIVATE_OFFICE_TEAMS" }'),
+       ('b8baa4c7-d6bc-4657-ab6f-ae237b73247b', 'dropdown', 'OverridePOTeamUUID', 'Override Private Office Team','[ ]', false, true, '{ "choices" : "PRIVATE_OFFICE_TEAMS" }'),
 
        ('16bcc0f3-1cbd-4570-9fdb-7d91e008ad94', 'radio', 'InitialDraftDecision', 'Can this correspondence be answered by your team?','[ "required" ]', false, true, '{ "choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" } ] }'),
        ('d650ff40-9000-448b-ac99-04f762e8768d', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''No'' you will be asked to explain why and the case will be returned to Markup." }'),
@@ -462,12 +462,12 @@ VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 
 
        ('ee4b9198-5194-4ba9-bf6a-e9a63c970e10', 'text-area', 'CaseNote_MinisterReject', 'What is your feedback about the response?','[ "required" ]', false, true, '{}'),
 
-       ('f098de70-7ea0-44b7-86a4-e2fb5715fee5', 'text', 'ResponseChannel', 'How do you intend to respond?','["required" ]', false, true, '{ "disabled" : "disabled", "choices" : [ {  "label" : "Letter", "value" : "LETTER" }, { "label" : "Phone", "value" : "PHONE" } ] }'),
+       ('f098de70-7ea0-44b7-86a4-e2fb5715fee5', 'text', 'ResponseChannel', 'How do you intend to respond?','[ ]', false, true, '{ "disabled" : "disabled", "choices" : [ {  "label" : "Letter", "value" : "LETTER" }, { "label" : "Phone", "value" : "PHONE" } ] }'),
 
        ('a572f7cd-7b1b-4020-a0ca-b83178f86cd8', 'radio', 'DispatchDecision', 'Are you able to dispatch this?','["required" ]', false, true, '{"choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" } ] }'),
        ('3f84ba5c-167f-4963-be71-556a66f20296', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''No'' you will be asked to explain why and the case will be returned." }'),
 
-       ('967ba403-1c6a-4620-9ac5-d61f00c433c5', 'text-area', 'CaseNote_DispatchDecisionReject', 'why are you unable to dispatch this?','[ "required" ]', false, true, '{}');
+       ('967ba403-1c6a-4620-9ac5-d61f00c433c5', 'text-area', 'CaseNote_DispatchDecisionReject', 'Why are you unable to dispatch this?','[ "required" ]', false, true, '{}');
 
 
 INSERT INTO field_screen(schema_uuid, field_uuid)
@@ -553,4 +553,6 @@ VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', '03548dc4-76bb-4ac8-8992-b555fd5
 
        ('47f0f8a0-71b1-42b4-be3c-1908121c3fb5', 'f098de70-7ea0-44b7-86a4-e2fb5715fee5'),
        ('47f0f8a0-71b1-42b4-be3c-1908121c3fb5', 'a572f7cd-7b1b-4020-a0ca-b83178f86cd8'),
-       ('47f0f8a0-71b1-42b4-be3c-1908121c3fb5', '3f84ba5c-167f-4963-be71-556a66f20296');
+       ('47f0f8a0-71b1-42b4-be3c-1908121c3fb5', '3f84ba5c-167f-4963-be71-556a66f20296'),
+
+       ('1c14536c-ded9-41b8-8b39-e558087970e1', '967ba403-1c6a-4620-9ac5-d61f00c433c5');
