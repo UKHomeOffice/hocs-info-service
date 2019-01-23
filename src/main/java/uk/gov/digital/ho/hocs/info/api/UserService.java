@@ -44,6 +44,7 @@ public class UserService {
         return UserDto.from(keycloakService.getUserFromUUID(userUUID));
     }
 
+    @Cacheable(value = "teamMembers")
     public List<UserDto> getUsersForTeam(UUID teamUUID) {
             return keycloakService.getUsersForTeam(teamUUID).stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
     }
