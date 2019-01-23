@@ -76,6 +76,12 @@ public class TeamResource {
         return ResponseEntity.ok(TeamDto.from(team));
     }
 
+    @GetMapping(value = "/team/{teamUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<TeamDto> getTeam(@PathVariable UUID teamUUID) {
+        Team team = teamService.getTeam(teamUUID);
+        return ResponseEntity.ok(TeamDto.from(team));
+    }
+
     @GetMapping(value = "/team")
     public ResponseEntity<Set<TeamDto>> getActiveTeams() {
         Set<Team> teams = teamService.getAllActiveTeams();
