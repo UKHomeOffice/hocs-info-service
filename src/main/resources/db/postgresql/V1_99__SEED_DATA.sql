@@ -415,6 +415,7 @@ VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 
 
        ('c0a9fb65-ec01-40a1-9df7-a70779352715', 'inset', null, null,'[ ]', false, true, '{ "children" : "These teams have been selected based on the correspondence topic. You are able to override the selection." }'),
        ('c2837864-53a0-4373-9695-f1f5e23552a0', 'text', 'DraftingTeamName', 'Initial Draft Team','[ ]', false, true, '{ "disabled" : "disabled"}'),
+
        ('cb170956-1fac-4b92-8572-d2db6c97e72a', 'dropdown', 'OverrideDraftingTeamUUID', 'Override Initial Draft Team','[ ]', false, true, '{ "choices" : "DRAFT_TEAMS" }'),
        ('760e7c6c-17ca-420b-badf-1833f59feeed', 'text', 'POTeamName', 'Private Office Team','[ ]', false, true, '{ "disabled" : "disabled"}'),
        ('b8baa4c7-d6bc-4657-ab6f-ae237b73247b', 'dropdown', 'OverridePOTeamUUID', 'Override Private Office Team','[ ]', false, true, '{ "choices" : "PRIVATE_OFFICE_TEAMS" }'),
