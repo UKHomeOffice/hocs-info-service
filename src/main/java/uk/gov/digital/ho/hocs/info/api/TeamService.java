@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.info.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
@@ -95,6 +96,7 @@ public class TeamService {
         log.info("Team with UUID {} name updated to {}", team.getUuid().toString(), newName, value(EVENT, TEAM_RENAMED));
     }
 
+    @CacheEvict(value = "teamMembers", key = "#teamUUID")
     public void addUserToTeam(UUID userUUID, UUID teamUUID) {
         log.debug("Adding User {} to Team {}", userUUID, teamUUID);
         Team team = getTeam(teamUUID);
