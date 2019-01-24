@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS stage_type
   short_code            TEXT    NOT NULL,
   type                  TEXT    NOT NULL,
   case_type_uuid        UUID    NOT NULL,
-  acting_team_uuid      UUID    NOT NULL,
+  acting_team_uuid      UUID    ,
   deadline              int     NOT NULL,
   active                boolean NOT NULL,
 
