@@ -1,9 +1,9 @@
 
 INSERT INTO unit (display_name, uuid, short_code, active)
 VALUES ('UNIT 1', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', 'UNIT1', TRUE),
-       ('PRIVATE_UNIT', 'e1111111-5555-4a5d-aa7b-597bb95a782c', 'PRIVATE_OFFICE', TRUE),
-       ('DCU', 'c875dca8-8679-47e7-a589-7cea64b2e13c', 'DCU', TRUE),
-       ('UKVI', '09c30d4b-b427-4b49-bec7-545eafb4019a', 'UKVI', TRUE);
+       ('PRIVATE_UNIT', 'e1111111-5555-4a5d-aa7b-597bb95a782c', 'PRIVATE', TRUE),
+       ('DCU_TEST', 'c875dca8-8679-47e7-a589-7cea64b2e13c', 'DCUT', TRUE),
+       ('UKVI_TEST', '09c30d4b-b427-4b49-bec7-545eafb4019a', 'UKVIT', TRUE);
 
 INSERT INTO team (display_name, uuid, unit_uuid, active)
 VALUES ('TEAM 1', '44444444-2222-2222-2222-222222222222', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.domain.model.Permission;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Unit;
+import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.UnitRepository;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -27,15 +28,15 @@ public class BulkImportService {
     private Keycloak keycloakClient;
     private String hocsRealmName;
 
-    private UnitRepository unitRepository;
+    private TeamRepository teamRepository;
 
     public BulkImportService(
             Keycloak keycloakClient,
             @Value("${keycloak.realm}") String hocsRealmName,
-            UnitRepository unitRepository) {
+            TeamRepository teamRepository) {
         this.keycloakClient = keycloakClient;
         this.hocsRealmName = hocsRealmName;
-        this.unitRepository = unitRepository;
+        this.teamRepository = teamRepository;
     }
 
     public PartialImportResults refreshAllGroups() {
@@ -59,20 +60,11 @@ public class BulkImportService {
         List<GroupRepresentation> groups = new ArrayList<>();
         keyCloakImport.setIfResourceExists(PartialImportRepresentation.Policy.OVERWRITE.toString());
         try {
-
-            Set<Unit> units = unitRepository.findAll();
-            for (Unit unit : units) {
-
-                GroupRepresentation unitGroup = new GroupRepresentation();
-                unitGroup.setSubGroups(new ArrayList<>());
-                unitGroup.setName(unit.getShortCode());
-                unitGroup.setPath(String.format("/%s", unit.getShortCode()));
-
-                for (Team team : unit.getTeams()) {
+                for (Team team : teamRepository.findAllByActiveTrue()) {
                     GroupRepresentation teamGroup = new GroupRepresentation();
                     teamGroup.setSubGroups(new ArrayList<>());
                     teamGroup.setName(team.getUuid().toString());
-                    teamGroup.setPath(String.format("/%s/%s", unit.getShortCode(), team.getUuid()));
+                    teamGroup.setPath(String.format("/%s", team.getUuid()));
 
                     for (Permission permission : team.getPermissions()) {
 
@@ -80,21 +72,21 @@ public class BulkImportService {
                         caseTypeGroup.setSubGroups(new ArrayList<>());
                         caseTypeGroup.setName(permission.getCaseType().getType());
                         caseTypeGroup.setPath(
-                                String.format("/%s/%s/%s", unit.getShortCode(), team.getUuid(),
+                                String.format("/%s/%s", team.getUuid(),
                                         permission.getCaseType().getType()));
 
                         GroupRepresentation permissionGroup = new GroupRepresentation();
                         permissionGroup.setName(permission.getAccessLevel().name());
                         permissionGroup.setPath(
-                                String.format("/%s/%s/%s/%s", unit.getShortCode(), team.getUuid(),
+                                String.format("/%s/%s/%s", team.getUuid(),
                                         permission.getCaseType().getType(), permission.getAccessLevel().name()));
 
                         caseTypeGroup.getSubGroups().add(permissionGroup);
                         teamGroup.getSubGroups().add(caseTypeGroup);
                     }
-                    unitGroup.getSubGroups().add(teamGroup);
-                }
-                groups.add(unitGroup);
+                    groups.add(teamGroup);
+
+
                 keyCloakImport.setGroups(groups);
             }
         } catch (Exception e) {
