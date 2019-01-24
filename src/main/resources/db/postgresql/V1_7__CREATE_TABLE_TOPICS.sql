@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS topic
   parent_topic_uuid UUID NOT NULL,
 
   CONSTRAINT topic_uuid_idempotent UNIQUE (uuid),
-  CONSTRAINT topic_name_idempotent UNIQUE (display_name)
+  CONSTRAINT topic_name_idempotent UNIQUE (display_name, parent_topic_uuid)
 );
 
 CREATE INDEX idx_topic_uuid
