@@ -168,14 +168,14 @@ public class TeamService {
         Set<String> permissionPathsCaseTypeLevel = new HashSet<>(permissions.size());
         permissions.forEach(permission -> {
             permissionPathsAccessLevel.add(String.format("/%s/%s/%s", encodedTeamUUID, permission.getCaseType().getType(),permission.getAccessLevel().getLevel()));
-           // permissionPathsCaseTypeLevel.add(String.format("/%s/%s", encodedTeamUUID, permission.getCaseType().getType()));
+            permissionPathsCaseTypeLevel.add(String.format("/%s/%s", encodedTeamUUID, permission.getCaseType().getType()));
         });
 
         permissionPathsAccessLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
 
-//        if (team.getPermissions().isEmpty()) {
-//            permissionPathsCaseTypeLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
-//        }
+        if (team.getPermissions().isEmpty()) {
+            permissionPathsCaseTypeLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
+        }
 
         auditClient.deleteTeamPermissionsAudit(teamUUID, permissionsDto);
         log.info("Deleted Permission for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_DELETED));
