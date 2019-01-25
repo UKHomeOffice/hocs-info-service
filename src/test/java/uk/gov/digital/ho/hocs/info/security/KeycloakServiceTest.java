@@ -7,7 +7,9 @@ import org.keycloak.admin.client.resource.GroupResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.mockito.*;
+import org.mockito.Answers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.ws.rs.core.Response;
@@ -35,7 +37,7 @@ public class KeycloakServiceTest {
 
     @Test
     public void shouldCallKeyCloakToAddUserToGroup() {
-        String accessLevelGroupPath = "/UNIT/TEAMUUID/MIN/OWNER";
+        String accessLevelGroupPath = "/TEAM/MIN/5";
         org.keycloak.admin.client.resource.UserResource userResource = mock(org.keycloak.admin.client.resource.UserResource.class);
         GroupRepresentation accessLevelGroup = mock(GroupRepresentation.class);
 
@@ -47,7 +49,8 @@ public class KeycloakServiceTest {
 
         service = new KeycloakService(keycloakClient, HOCS_REALM);
         service.addUserToGroup(userUUID, accessLevelGroupPath);
-        verify(userResource, times(1)).joinGroup("ACCESS_GROUP");;
+        verify(userResource, times(1)).joinGroup("ACCESS_GROUP");
+        ;
 
     }
 
@@ -57,30 +60,30 @@ public class KeycloakServiceTest {
         when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
         when(hocsRealm.groups().add(any())).thenReturn(mock(Response.class));
         service = new KeycloakService(keycloakClient, HOCS_REALM);
-        service.createUnitGroupIfNotExists("UNIT");
+        service.createTeamGroupIfNotExists("TEAM");
         verify(hocsRealm.groups(), times(1)).add(any());
     }
 
     @Test
     public void shouldCreateGroupPathIfNotExists() {
-        String unitGroupPath = "UNIT";
-        String unitGroupId = "UNIT_GROUP";
-        GroupRepresentation unitGroup = mock(GroupRepresentation.class);
+        String groupPath = "TEAM";
+        String groupId = "TEAM_GROUP";
+        GroupRepresentation group = mock(GroupRepresentation.class);
         when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
-        when(unitGroup.getId()).thenReturn(unitGroupId);
-        when(hocsRealm.getGroupByPath(unitGroupPath)).thenReturn(unitGroup);
+        when(group.getId()).thenReturn(groupId);
+        when(hocsRealm.getGroupByPath(groupPath)).thenReturn(group);
 
         service = new KeycloakService(keycloakClient, HOCS_REALM);
-        service.createGroupPathIfNotExists(unitGroupPath, "TEAM");
+        service.createGroupPathIfNotExists(groupPath, "TEAM");
 
-        verify(hocsRealm.groups().group(unitGroupId), times(1)).subGroup(any());
+        verify(hocsRealm.groups().group(groupId), times(1)).subGroup(any());
     }
 
     @Test
     public void shouldGetAllUsers() {
 
         List<UserRepresentation> userRepresentations = new ArrayList<UserRepresentation>();
-        UserRepresentation user =  new UserRepresentation();
+        UserRepresentation user = new UserRepresentation();
         user.setId(userUUID.toString());
         user.setFirstName("FirstName");
         user.setLastName("LastName");
@@ -88,7 +91,7 @@ public class KeycloakServiceTest {
 
         when(keycloakClient.realm(HOCS_REALM).users().list()).thenReturn(userRepresentations);
         service = new KeycloakService(keycloakClient, HOCS_REALM);
-        List<UserRepresentation> result =service.getAllUsers();
+        List<UserRepresentation> result = service.getAllUsers();
         assertThat(result.size()).isEqualTo(1);
     }
 
@@ -96,7 +99,7 @@ public class KeycloakServiceTest {
     @Test
     public void shouldGetUserForUUID() {
 
-         UserRepresentation user =  new UserRepresentation();
+        UserRepresentation user = new UserRepresentation();
         user.setId(userUUID.toString());
         user.setFirstName("FirstName");
         user.setLastName("LastName");
@@ -111,63 +114,59 @@ public class KeycloakServiceTest {
 
     @Test
     public void shouldGetUsersForTeam() {
-        String teamUUID = UUID.randomUUID().toString();
-        String path = String.format("/%s/%s","UNIT1",teamUUID);
-        List<UserRepresentation> userRepresentations = new ArrayList<UserRepresentation>();
-        UserRepresentation user =  new UserRepresentation();
+        UUID teamUUID = UUID.randomUUID();
+        List<UserRepresentation> userRepresentations = new ArrayList<>();
+        UserRepresentation user = new UserRepresentation();
         user.setId(userUUID.toString());
         user.setFirstName("FirstName");
         user.setLastName("LastName");
         userRepresentations.add(user);
 
-        when(keycloakClient.realm(HOCS_REALM).groups().group(any()).members()).thenReturn(userRepresentations);
+        String encodedTeamUUID = Base64UUID.UUIDToBase64String(teamUUID);
+        GroupRepresentation permissionGroup =  new GroupRepresentation() {
+            {
+                setName("5");
+                setPath("/" + teamUUID + "/MIN/5");
+            }};
+
+        GroupRepresentation caseTypeGroup =  new GroupRepresentation() {
+            {
+                setId("GROUPID");
+                setName("MIN");
+                setPath("/" + teamUUID + "/MIN");
+
+            }};
+
+        caseTypeGroup.setSubGroups(Arrays.asList(permissionGroup));
+
+        GroupRepresentation group = new GroupRepresentation(){
+            {
+                setPath("/" + teamUUID);
+                setId(teamUUID.toString());
+            }};
+        group.setSubGroups(Arrays.asList(caseTypeGroup));
+
+
+        List<GroupRepresentation> groups = Arrays.asList(group);
+
+        when(keycloakClient.realm(HOCS_REALM).groups().groups(encodedTeamUUID, 0, 1)).thenReturn(groups);
+        when(keycloakClient.realm(HOCS_REALM).groups().group(permissionGroup.getId()).members()).thenReturn(userRepresentations);;
+
         service = new KeycloakService(keycloakClient, HOCS_REALM);
-        List<UserRepresentation> result = service.getUsersForTeam(path, teamUUID);
+        Set<UserRepresentation> result = service.getUsersForTeam(teamUUID);
         assertThat(result.size()).isEqualTo(1);
+
     }
-
-    @Test
-    public void shouldMoveGroupToNewParent() {
-        String currentGroupPath = "/CURRENT_UNIT/teamUUID";
-        String newGroupPath = "/NEW_UNIT";
-
-
-        GroupRepresentation oldGroup = new GroupRepresentation();
-        oldGroup.setPath(currentGroupPath);
-        oldGroup.setId("OLD_ID");
-
-        GroupRepresentation newParentGroup = new GroupRepresentation();
-        newParentGroup.setPath(newGroupPath);
-        newParentGroup.setId("NEW_ID");
-
-        GroupResource newParentGroupResource = mock(GroupResource.class);
-        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
-        when(hocsRealm.getGroupByPath(currentGroupPath)).thenReturn(oldGroup);
-        when(hocsRealm.getGroupByPath(newGroupPath)).thenReturn(newParentGroup);
-        when(hocsRealm.groups().group("NEW_ID")).thenReturn(newParentGroupResource);
-
-        service = new KeycloakService(keycloakClient, HOCS_REALM);
-        service.moveGroup(currentGroupPath, newGroupPath);
-
-        verify(hocsRealm.groups().group("NEW_ID"), times(1)).subGroup(oldGroup);
-    }
-
 
     @Test
     public void shouldUpdateGroupMemberPermissions() {
-        String groupPath = "/UNIT1/teamUUID";
-
-        GroupRepresentation group = new GroupRepresentation();
-        group.setPath(groupPath);
-        group.setId("GROUP_ID");
-
-        Set<String> permissions = new HashSet<String>(){{
-            add("/UNIT1/teamUUID/CASETYPE1/OWNER");
+        UUID teamUUID = UUID.randomUUID();
+        Set<String> permissions = new HashSet<String>() {{
+            add("/" + teamUUID.toString() + "/CASETYPE1/5");
         }};
 
-
-        List<UserRepresentation> userRepresentations = new ArrayList<>();
-        UserRepresentation user =  new UserRepresentation();
+        Set<UserRepresentation> userRepresentations = new HashSet<>();
+        UserRepresentation user = new UserRepresentation();
         user.setId(userUUID.toString());
         user.setFirstName("FirstName");
         user.setFirstName("LastName");
@@ -175,12 +174,11 @@ public class KeycloakServiceTest {
 
         KeycloakService spyService = Mockito.spy(new KeycloakService(keycloakClient, HOCS_REALM));
         when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
-        doNothing().when(spyService).addUserToGroup(userUUID, "/UNIT1/teamUUID/CASETYPE1/OWNER");
-        when(hocsRealm.getGroupByPath(groupPath)).thenReturn(group);
-        when(hocsRealm.groups().group(group.getId()).members()).thenReturn(userRepresentations);
+        doReturn(userRepresentations).when(spyService).getUsersForTeam(teamUUID);
+        doNothing().when(spyService).addUserToGroup(userUUID, "/" + teamUUID.toString() + "/CASETYPE1/5");
 
-        spyService.updateUserTeamGroups(groupPath, permissions);
-        verify(spyService, times(1)).addUserToGroup(userUUID, "/UNIT1/teamUUID/CASETYPE1/OWNER");
+        spyService.updateUserTeamGroups(teamUUID, permissions);
+        verify(spyService, times(1)).addUserToGroup(userUUID, "/" + teamUUID.toString() + "/CASETYPE1/5");
 
     }
 

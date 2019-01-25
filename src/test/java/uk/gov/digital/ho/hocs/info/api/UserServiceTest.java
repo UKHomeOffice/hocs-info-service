@@ -6,19 +6,13 @@ import org.junit.runner.RunWith;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.api.UserService;
 import uk.gov.digital.ho.hocs.info.api.dto.UserDto;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
-import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Unit;
-import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -32,14 +26,11 @@ public class UserServiceTest {
     private KeycloakService keycloakService;
 
     @Mock
-    private TeamRepository teamRepository;
-
-    @Mock
     private CaseworkClient caseworkClient;
 
     @Before
     public void setUp() {
-        this.service = new UserService(keycloakService, teamRepository, caseworkClient);
+        this.service = new UserService(keycloakService, caseworkClient);
     }
 
     UUID userUUID = UUID.randomUUID();
@@ -84,9 +75,8 @@ public class UserServiceTest {
         Unit unit = new Unit("UNIT ONE", "UNIT1", UUID.randomUUID(), Boolean.TRUE);
         Team team = new Team("Team1",teamUUID,Boolean.TRUE);
         team.setUnit(unit);
-        when(teamRepository.findByUuid(teamUUID)).thenReturn(team);
 
-        List<UserRepresentation> userRepresentations = new ArrayList<UserRepresentation>();
+        Set<UserRepresentation> userRepresentations = new HashSet<>();
         UserRepresentation user = new UserRepresentation();
         user.setId(userUUID.toString());
         user.setFirstName("FirstName");
@@ -98,21 +88,13 @@ public class UserServiceTest {
         user2.setFirstName("LastName2");
         userRepresentations.add(user2);
 
-        String path = String.format("/%s/%s",team.getUnit().getShortCode(),teamUUID);
-        when(keycloakService.getUsersForTeam(path,teamUUID.toString())).thenReturn(userRepresentations);
+        when(keycloakService.getUsersForTeam(teamUUID)).thenReturn(userRepresentations);
 
-        List<UserDto> result = service.getUsersForTeam(teamUUID.toString());
+        List<UserDto> result = service.getUsersForTeam(teamUUID);
         assertThat(result.size()).isEqualTo(2);
-        verify(keycloakService, times(1)).getUsersForTeam(path,teamUUID.toString());
+        verify(keycloakService, times(1)).getUsersForTeam(teamUUID);
         verifyNoMoreInteractions(keycloakService);
     }
 
-    @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
-    public void shouldThrowExceptionWhenTeamDoesntExsist(){
-        UUID teamUUID = UUID.randomUUID();
-        when(teamRepository.findByUuid(teamUUID)).thenReturn(null);
-
-        service.getUsersForTeam(teamUUID.toString());
-    }
 
 }

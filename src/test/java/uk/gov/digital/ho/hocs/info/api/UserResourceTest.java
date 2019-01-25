@@ -62,7 +62,7 @@ public class UserResourceTest {
     public void shouldGetAllUsersForTeam() {
         String user1UUID = UUID.randomUUID().toString();
         String user2UUID = UUID.randomUUID().toString();
-        String teamUUID = UUID.randomUUID().toString();
+        UUID teamUUID = UUID.randomUUID();
 
         List<UserDto> users = new ArrayList<>();
         UserDto user1 =  new UserDto(user1UUID,"some user","FirstName", "LastName","user1@noemail.com");
