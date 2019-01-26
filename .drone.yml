@@ -144,7 +144,7 @@ pipeline:
 
 services:
   keycloak:
-    image: jboss/keycloak:master
+    image: jboss/keycloak
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: password1
