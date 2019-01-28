@@ -307,7 +307,9 @@ VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'DCU_CORRESPONDENCE_DETAILS', tr
 
        ('1c14536c-ded9-41b8-8b39-e558087970e1', 'DCU_DISPATCH_REJECTION_NOTE', true, 'Dispatch', 'Finish'),
 
-       ('2212fd30-f34e-43b8-a904-23e3ffbc885a', 'DISPATCH', true, 'Dispatch', 'Finish')     ,
+       ('2212fd30-f34e-43b8-a904-23e3ffbc885a', 'DISPATCH', true, 'Dispatch', 'Finish'),
+
+       ('fa52bcc8-93b8-44cb-837f-82e8343f5b0f', 'DCU_DTEN_APPROVE_DISPATCH', true, 'Dispatch', 'Continue'),
 
        ('dedbf417-5604-4c5f-9731-9d4d23599c9b', 'COPY_NUMBER_TEN_RESPONSE', true, 'Copy To Number Ten', 'Finish')
 
@@ -380,7 +382,7 @@ VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'MIN'),
        ('bdf78e93-2cde-44d0-b5c7-04186c5d71b7', 'DTEN'),
        ('47f0f8a0-71b1-42b4-be3c-1908121c3fb5', 'MIN'),
        ('47f0f8a0-71b1-42b4-be3c-1908121c3fb5', 'TRO'),
-       ('47f0f8a0-71b1-42b4-be3c-1908121c3fb5', 'DTEN'),
+       ('fa52bcc8-93b8-44cb-837f-82e8343f5b0f', 'DTEN'),
        ('1c14536c-ded9-41b8-8b39-e558087970e1', 'MIN'),
        ('1c14536c-ded9-41b8-8b39-e558087970e1', 'TRO'),
        ('1c14536c-ded9-41b8-8b39-e558087970e1', 'DTEN'),
@@ -395,7 +397,7 @@ INSERT INTO field (uuid, component, name, label, validation, summary, active, pr
 VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 'When was the correspondence sent?', '[ "required" ]',  true, true,  '{}'),
        ('1cb5ee23-b82d-448d-8574-00421841acdc', 'date', 'DateReceived', 'When was the correspondence received?', '[ "required" ]', true, true, '{}'),
        ('ede4aa5d-80d5-4703-aeed-82167d927ad7', 'radio', 'OriginalChannel', 'How was the correspondence received?', '[ "required" ]', true, true,  '{ "choices" : [ {  "label" : "Email", "value" : "EMAIL" }, { "label" : "Post", "value" : "POST" }, { "label" : "Phone", "value" : "PHONE" }, { "label" : "No. 10", "value" : "NO10" } ]}'),
-       ('157a00e6-3b96-4a12-9b34-f73c328c332c', 'checkbox', 'CopyNumberTen', 'Should the response be copied to Number 10?','[]', false, true, '{ "choices" : [ {"label" : "Yes", "value" : "TRUE"} ]}'),
+       ('157a00e6-3b96-4a12-9b34-f73c328c332c', 'checkbox', 'CopyNumberTen', 'Should the response be copied to Number 10?','[]', true, true, '{ "choices" : [ {"label" : "Yes", "value" : "TRUE"} ]}'),
        ('dc502507-c333-43be-a562-f6d0e456502e', 'entity-list', 'Correspondents', 'Which is the primary correspondent?','[ "required" ]', false, true, '{ "hasRemoveLink" : true, "hasAddLink" : true, "action" : "CORRESPONDENT", "choices" : "CASE_CORRESPONDENTS", "entity" : "correspondent" }'),
        ('1d8ae1c0-8ebf-4185-8fda-b7dc2eefbc6a', 'radio', 'MarkupDecision', 'What sort of response is required?','[ "required" ]', false, true, '{"choices" : [ {  "label" : "Policy Response", "value" : "PR" }, { "label" : "FAQ Response", "value" : "FAQ" }, { "label" : "Refer To OGD", "value" : "OGD" }, { "label" : "No Response Needed", "value" : "NRN"} ] }'),
        ('20086634-e128-407c-a22d-fc845b9074dc', 'text', 'OGDDept', 'Where should this case be transferred to?','[ "required" ]', false, true, '{}'),
@@ -450,8 +452,6 @@ VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 
        ('0ffde77e-ff96-40c1-aab3-08102063d63d', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''No'' you will be asked to explain why and the case will be returned to the Draft stage." }'),
        ('4a9aa75d-719b-4c60-8608-af84c6d06048', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''Change Minister'' you will be asked to explain why and the case will be assigned to that Private Office team." }'),
 
-
-
        ('0f08cabb-a822-411c-8352-765dd20e252c', 'text-area', 'CaseNote_PrivateOfficeReject', 'What is your feedback about the response?','[ "required" ]', false, true, '{}'),
 
        ('bd3ff7f7-8b27-45e8-8636-e0ec6f0b40dc', 'dropdown', 'PrivateOfficeOverridePOTeam', 'Override Private Office Team','[ "required" ]', false, true, '{ "choices" : "PRIVATE_OFFICE_TEAMS" }'),
@@ -462,7 +462,7 @@ VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 
 
        ('ee4b9198-5194-4ba9-bf6a-e9a63c970e10', 'text-area', 'CaseNote_MinisterReject', 'What is your feedback about the response?','[ "required" ]', false, true, '{}'),
 
-       ('f098de70-7ea0-44b7-86a4-e2fb5715fee5', 'text', 'ResponseChannel', 'How do you intend to respond?','[ ]', false, true, '{ "disabled" : "disabled", "choices" : [ {  "label" : "Letter", "value" : "LETTER" }, { "label" : "Phone", "value" : "PHONE" } ] }'),
+       ('f098de70-7ea0-44b7-86a4-e2fb5715fee5', 'text', 'ResponseChannel', 'How do you intend to respond?','[ ]', false, true, '{ "disabled" : "disabled" }'),
 
        ('a572f7cd-7b1b-4020-a0ca-b83178f86cd8', 'radio', 'DispatchDecision', 'Are you able to dispatch this?','["required" ]', false, true, '{"choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" } ] }'),
        ('3f84ba5c-167f-4963-be71-556a66f20296', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''No'' you will be asked to explain why and the case will be returned." }'),
@@ -554,5 +554,8 @@ VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', '03548dc4-76bb-4ac8-8992-b555fd5
        ('47f0f8a0-71b1-42b4-be3c-1908121c3fb5', 'f098de70-7ea0-44b7-86a4-e2fb5715fee5'),
        ('47f0f8a0-71b1-42b4-be3c-1908121c3fb5', 'a572f7cd-7b1b-4020-a0ca-b83178f86cd8'),
        ('47f0f8a0-71b1-42b4-be3c-1908121c3fb5', '3f84ba5c-167f-4963-be71-556a66f20296'),
+
+       ('fa52bcc8-93b8-44cb-837f-82e8343f5b0f', 'a572f7cd-7b1b-4020-a0ca-b83178f86cd8'),
+       ('fa52bcc8-93b8-44cb-837f-82e8343f5b0f', '3f84ba5c-167f-4963-be71-556a66f20296'),
 
        ('1c14536c-ded9-41b8-8b39-e558087970e1', '967ba403-1c6a-4620-9ac5-d61f00c433c5');
