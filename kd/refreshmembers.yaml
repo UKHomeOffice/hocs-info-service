@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: hocs-info-service
 spec:
-  schedule: "* 10 * * *"
+  schedule: "0 22 * * *"
   jobTemplate:
     spec:
       backoffLimit: 3
