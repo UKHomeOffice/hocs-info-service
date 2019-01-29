@@ -26,19 +26,14 @@ public class TemplateServiceTest {
     @Mock
     private DocumentClient documentClient;
 
-    @Mock
-    private CaseTypeService caseTypeService;
-
     private TemplateService templateService;
-    private static final UUID TEMPLATE_EXT_REF = UUID.fromString("88888888-8888-8888-8888-888888888888");
-    private static final UUID DOCUMENT_UUID = UUID.randomUUID();
     private static final UUID NEW_DOCUMENT_UUID = UUID.randomUUID();
     private static final String DISPLAY_NAME = "dn";
     private static final String CASE_TYPE = "MIN";
 
     @Before
     public void setUp() {
-        this.templateService = new TemplateService(templateRepository,documentClient, caseTypeService);
+        this.templateService = new TemplateService(templateRepository,documentClient);
     }
 
     @Test
