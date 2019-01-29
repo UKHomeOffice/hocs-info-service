@@ -88,12 +88,6 @@ public class CaseTypeService {
         return deadlines;
     }
 
-    CaseType getCaseTypeByUUID(UUID caseUUID) {
-        String shortCode = caseUUID.toString().substring(34);
-        log.debug("Looking up CaseType for Case: {} Shortcode: {}", caseUUID, shortCode);
-        return getCaseTypeByShortCode(shortCode);
-    }
-
     CaseType getCaseType(String type) {
         log.debug("Getting CaseType for type {}", type);
         CaseType caseType = caseTypeRepository.findByType(type);

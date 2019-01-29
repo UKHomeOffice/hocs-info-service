@@ -21,14 +21,7 @@ public class TemplateResource {
         this.templateService = templateService;
     }
 
-    //TODO: Is this the right place for this orchestration?
-    @GetMapping(value = "/template/case/{caseUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetTemplateResponse> getTemplate(@PathVariable UUID caseUUID) {
-        Template template =  templateService.getTemplateForCase(caseUUID);
-        return ResponseEntity.ok(GetTemplateResponse.from(template));
-    }
-
-    @GetMapping(value = "/template/caseType/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/caseType/{caseType}/template", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetTemplateResponse> getTemplatesForCaseType(@PathVariable String caseType) {
         Template template = templateService.getTemplateForCaseType(caseType);
         return ResponseEntity.ok(GetTemplateResponse.from(template));

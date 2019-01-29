@@ -13,10 +13,10 @@ import java.util.UUID;
 @Getter
 public class GetTemplateResponse {
 
-    @JsonProperty("label")
+    @JsonProperty("displayName")
     private String displayName;
 
-    @JsonProperty("value")
+    @JsonProperty("uuid")
     private UUID uuid;
 
     public static GetTemplateResponse from(Template template) {

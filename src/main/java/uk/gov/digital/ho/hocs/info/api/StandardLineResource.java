@@ -21,10 +21,10 @@ public class StandardLineResource {
         this.standardLineService = standardLineService;
     }
 
-    @GetMapping(value = "/standardLine/case/{caseUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetStandardLineResponse> getStandardLinesForPrimaryTopic(@PathVariable UUID caseUUID) {
-        StandardLine standardLines = standardLineService.getStandardLinesForCase(caseUUID);
-        return ResponseEntity.ok(GetStandardLineResponse.from(standardLines));
+    @GetMapping(value = "/topic/{topicUUID}/standardLine", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetStandardLineResponse> getStandardLinesForPrimaryTopic(@PathVariable UUID topicUUID) {
+        StandardLine standardLine = standardLineService.getStandardLineForTopic(topicUUID);
+        return ResponseEntity.ok(GetStandardLineResponse.from(standardLine));
     }
 
     @PostMapping(value = "/standardLine", produces = APPLICATION_JSON_UTF8_VALUE)
