@@ -7,7 +7,6 @@ import uk.gov.digital.ho.hocs.info.client.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.client.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateTemplateDocumentDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
-import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 import uk.gov.digital.ho.hocs.info.domain.model.Template;
 import uk.gov.digital.ho.hocs.info.domain.repository.TemplateRepository;
 
@@ -19,15 +18,12 @@ public class TemplateService {
 
     private final TemplateRepository templateRepository;
     private final DocumentClient documentClient;
-    private final CaseTypeService caseTypeService;
 
     @Autowired
     public TemplateService(TemplateRepository templateRepository,
-                           DocumentClient documentClient,
-                           CaseTypeService caseTypeService) {
+                           DocumentClient documentClient) {
         this.templateRepository = templateRepository;
         this.documentClient = documentClient;
-        this.caseTypeService = caseTypeService;
     }
 
     void createTemplate(CreateTemplateDocumentDto request) {
@@ -48,11 +44,6 @@ public class TemplateService {
 
         documentClient.processDocument(ManagedDocumentType.TEMPLATE, templateDocumentUUID, request.getS3UntrustedUrl());
         log.info("Created Template {} for CaseType {} ", request.getDisplayName(), request.getCaseType());
-    }
-
-    Template getTemplateForCase(UUID caseUUID) {
-        CaseType caseType = caseTypeService.getCaseTypeByUUID(caseUUID);
-        return getTemplateForCaseType(caseType.getType());
     }
 
     Template getTemplateForCaseType(String caseType) {

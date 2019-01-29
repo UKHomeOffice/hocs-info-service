@@ -36,12 +36,12 @@ public class StandardLineResourceTest {
     @Test
     public void shouldReturnStandardLineForPrimaryTopic() {
 
-        when(standardLineService.getStandardLinesForCase(uuid)).thenReturn(new StandardLine());
+        when(standardLineService.getStandardLineForTopic(uuid)).thenReturn(new StandardLine());
 
         ResponseEntity<GetStandardLineResponse> response =
                 standardLineResource.getStandardLinesForPrimaryTopic(uuid);
 
-        verify(standardLineService, times(1)).getStandardLinesForCase(uuid);
+        verify(standardLineService, times(1)).getStandardLineForTopic(uuid);
         verifyNoMoreInteractions(standardLineService);
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
