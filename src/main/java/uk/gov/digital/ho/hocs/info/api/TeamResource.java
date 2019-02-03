@@ -85,7 +85,7 @@ public class TeamResource {
     @GetMapping(value = "/team")
     public ResponseEntity<Set<TeamDto>> getActiveTeams() {
         Set<Team> teams = teamService.getAllActiveTeams();
-        return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
+        return ResponseEntity.ok(teams.stream().map(TeamDto::from).collect(Collectors.toSet()));
     }
 
     @GetMapping(value = "/teams", params = {"unit"}, produces = APPLICATION_JSON_UTF8_VALUE)

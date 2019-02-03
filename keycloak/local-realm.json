@@ -253,246 +253,7 @@
           "attributes": {},
           "realmRoles": [],
           "clientRoles": {},
-          "subGroups": [
-            {
-              "id": "d8b8061d-33f0-440f-adfa-2ca2b8be788e",
-              "name": "MIN",
-              "path": "/RERERCIiIiIiIiIiIiIiIg/MIN",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "ad6e35ed-6765-4925-8b3f-827a540c69c0",
-                  "name": "5",
-                  "path": "/RERERCIiIiIiIiIiIiIiIg/MIN/5",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "0a9c6824-1889-4a14-91e4-ef10c9622f7d",
-              "name": "IMCB",
-              "path": "/RERERCIiIiIiIiIiIiIiIg/IMCB",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "8126723d-399d-4a25-9df5-4c215ebdff97",
-                  "name": "5",
-                  "path": "/RERERCIiIiIiIiIiIiIiIg/IMCB/5",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "ebadfd8b-83d9-4433-a8ed-e0d0890be414",
-              "name": "UTEN",
-              "path": "/RERERCIiIiIiIiIiIiIiIg/UTEN",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "f91517a2-4082-4697-80dd-a15e40964805",
-                  "name": "5",
-                  "path": "/RERERCIiIiIiIiIiIiIiIg/UTEN/5",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "a1acfee0-9572-4e2a-9269-2b204b0bfeab",
-              "name": "TRO",
-              "path": "/RERERCIiIiIiIiIiIiIiIg/TRO",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "71f1613b-f3fd-4226-a28a-a818ef8b9b0b",
-                  "name": "5",
-                  "path": "/RERERCIiIiIiIiIiIiIiIg/TRO/5",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "34d8e262-90e0-4be3-bbc0-d9ff3798dcd9",
-              "name": "IMCM",
-              "path": "/RERERCIiIiIiIiIiIiIiIg/IMCM",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "aa6825dc-9e2c-442a-afdc-89c6afbfbf3f",
-                  "name": "5",
-                  "path": "/RERERCIiIiIiIiIiIiIiIg/IMCM/5",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "13a92e63-ec8d-48f7-9dd2-f868d5d92210",
-              "name": "DTEN",
-              "path": "/RERERCIiIiIiIiIiIiIiIg/DTEN",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "bf5343c1-973f-44cb-bcee-3c515d09a6b6",
-                  "name": "5",
-                  "path": "/RERERCIiIiIiIiIiIiIiIg/DTEN/5",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "62e93615-fb28-474e-b64e-b96fd9153ace",
-          "name": "EREREREREREREREREREREQ",
-          "path": "/EREREREREREREREREREREQ",
-          "attributes": {},
-          "realmRoles": [],
-          "clientRoles": {},
-          "subGroups": [
-            {
-              "id": "c951a1a6-266b-4172-84ef-73e8ef59a8ad",
-              "name": "MIN",
-              "path": "/EREREREREREREREREREREQ/MIN",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "c5871618-40bb-43d8-a4af-b08b2877e70f",
-                  "name": "2",
-                  "path": "/EREREREREREREREREREREQ/MIN/2",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "c5d54b97-40d7-4b03-8436-90d1ec6180b4",
-              "name": "IMCB",
-              "path": "/EREREREREREREREREREREQ/IMCB",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "d84c28e4-97ca-4281-83e4-578d1142c971",
-                  "name": "2",
-                  "path": "/EREREREREREREREREREREQ/IMCB/2",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "417ffffe-8c62-45ff-a9c5-fec20a5cccd2",
-              "name": "IMCM",
-              "path": "/EREREREREREREREREREREQ/IMCM",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "91444167-9f82-4d94-a62d-3ce1f88a6c94",
-                  "name": "2",
-                  "path": "/EREREREREREREREREREREQ/IMCM/2",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "20411fbb-ec44-4375-ae4c-ac94b65f6fcf",
-              "name": "UTEN",
-              "path": "/EREREREREREREREREREREQ/UTEN",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "5954952e-db9f-4b4d-8920-12bfd165010c",
-                  "name": "2",
-                  "path": "/EREREREREREREREREREREQ/UTEN/2",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "103c960f-cf7d-493c-a317-08ef13812e8c",
-              "name": "TRO",
-              "path": "/EREREREREREREREREREREQ/TRO",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "311d5430-b71b-40b1-966a-ff81e0484578",
-                  "name": "2",
-                  "path": "/EREREREREREREREREREREQ/TRO/2",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "278e3062-d216-4f15-ab81-6d3f01c5c528",
-              "name": "DTEN",
-              "path": "/EREREREREREREREREREREQ/DTEN",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "a029f126-f67d-4ada-b526-80b1c38bae2f",
-                  "name": "2",
-                  "path": "/EREREREREREREREREREREQ/DTEN/2",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            }
-          ]
+          "subGroups": []
         },
         {
           "id": "3a195c4d-6be8-420b-9f60-06003e3b575a",
@@ -501,151 +262,16 @@
           "attributes": {},
           "realmRoles": [],
           "clientRoles": {},
-          "subGroups": [
-            {
-              "id": "ebe21ecf-157b-4824-b570-badcb836bb9d",
-              "name": "TRO",
-              "path": "/MzMzMzMzMzMzMzMzMzMzMw/TRO",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "45711c82-5c09-4a9b-9a5c-881ef290f0db",
-                  "name": "3",
-                  "path": "/MzMzMzMzMzMzMzMzMzMzMw/TRO/3",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "fe4d73f9-7b55-4684-a779-1add3814bfd0",
-              "name": "MIN",
-              "path": "/MzMzMzMzMzMzMzMzMzMzMw/MIN",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "d05e0b96-b285-46aa-b5b1-88d72277a27b",
-                  "name": "3",
-                  "path": "/MzMzMzMzMzMzMzMzMzMzMw/MIN/3",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "518d5703-da58-4d1d-bb6d-a07496dacde4",
-              "name": "IMCB",
-              "path": "/MzMzMzMzMzMzMzMzMzMzMw/IMCB",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "cf9bcd94-5ff3-4f6e-b88c-d293c9ca65dc",
-                  "name": "3",
-                  "path": "/MzMzMzMzMzMzMzMzMzMzMw/IMCB/3",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "55eefff4-a957-4726-856e-43f0922d371f",
-              "name": "IMCM",
-              "path": "/MzMzMzMzMzMzMzMzMzMzMw/IMCM",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "b63e8389-dc1c-4058-bf56-297f9869039b",
-                  "name": "3",
-                  "path": "/MzMzMzMzMzMzMzMzMzMzMw/IMCM/3",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "79b23677-a9f5-4b54-a879-0f795073d1e0",
-              "name": "UTEN",
-              "path": "/MzMzMzMzMzMzMzMzMzMzMw/UTEN",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "9ee4fef2-b660-4e94-b5fb-8f95caaab398",
-                  "name": "3",
-                  "path": "/MzMzMzMzMzMzMzMzMzMzMw/UTEN/3",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            },
-            {
-              "id": "b78d8984-93ec-4fca-9ce9-eb9213dde7cf",
-              "name": "DTEN",
-              "path": "/MzMzMzMzMzMzMzMzMzMzMw/DTEN",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "4e393380-3cb7-40db-8153-ca34e70c1482",
-                  "name": "3",
-                  "path": "/MzMzMzMzMzMzMzMzMzMzMw/DTEN/3",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            }
-          ]
+          "subGroups": []
         },
-    {
+        {
           "id": "abf7617c-058c-4287-9f41-b95384fdbc7d",
           "name": "Q0pOM0N_Tm2PBBTqQP2_og",
           "path": "/Q0pOM0N_Tm2PBBTqQP2_og",
           "attributes": {},
           "realmRoles": [],
           "clientRoles": {},
-          "subGroups": [
-            {
-              "id": "a6f5c195-b625-4a95-9789-6609ef87cb38",
-              "name": "CT2",
-              "path": "/Q0pOM0N_Tm2PBBTqQP2_og/CT2",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "a9faabdd-4e39-47c0-94ee-6548bf5b3547",
-                  "name": "3",
-                  "path": "/Q0pOM0N_Tm2PBBTqQP2_og/CT2/3",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            }
-          ]
+          "subGroups": []
         },
         {
           "id": "abf7617c-058c-4287-9f41-b95384fdbc7e",
@@ -654,36 +280,7 @@
           "attributes": {},
           "realmRoles": [],
           "clientRoles": {},
-          "subGroups": [
-            {
-              "id": "a6f5c195-b625-4a95-9789-6609ef87cb39",
-              "name": "CT3",
-              "path": "/iztDZqN8SLaydExQ-Ag4Qw/CT3",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": [
-                {
-                  "id": "a9faabdd-4e39-47c0-94ee-6548bf5b354a",
-                  "name": "3",
-                  "path": "/iztDZqN8SLaydExQ-Ag4Qw/CT3/3",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                },
-                {
-                  "id": "a9faabdd-4e39-47c0-94ee-6548bf5b354b",
-                  "name": "2",
-                  "path": "/iztDZqN8SLaydExQ-Ag4Qw/CT3/2",
-                  "attributes": {},
-                  "realmRoles": [],
-                  "clientRoles": {},
-                  "subGroups": []
-                }
-              ]
-            }
-          ]
+          "subGroups": []
         }
   ],
   "defaultRoles" : [ "uma_authorization", "offline_access" ],
@@ -722,7 +319,7 @@
       "account" : [ "view-profile", "manage-account" ]
     },
     "notBefore" : 0,
-    "groups" : [ "/Q0pOM0N_Tm2PBBTqQP2_og/CT2/3", "/iztDZqN8SLaydExQ-Ag4Qw/CT3/3", "/iztDZqN8SLaydExQ-Ag4Qw/CT3/2"]
+    "groups" : [ "/Q0pOM0N_Tm2PBBTqQP2_og", "/iztDZqN8SLaydExQ-Ag4Qw"]
   },
 
     {
@@ -741,24 +338,9 @@
       },
       "notBefore" : 0,
       "groups" : [
-                  "/EREREREREREREREREREREQ/MIN/2",
-                  "/EREREREREREREREREREREQ/IMCB/2",
-                  "/EREREREREREREREREREREQ/DTEN/2",
-                  "/EREREREREREREREREREREQ/IMCM/2",
-                  "/EREREREREREREREREREREQ/TRO/2",
-                  "/EREREREREREREREREREREQ/UTEN/2",
-                  "/MzMzMzMzMzMzMzMzMzMzMw/UTEN/3",
-                  "/MzMzMzMzMzMzMzMzMzMzMw/IMCB/3",
-                  "/MzMzMzMzMzMzMzMzMzMzMw/TRO/3",
-                  "/MzMzMzMzMzMzMzMzMzMzMw/IMCM/3",
-                  "/MzMzMzMzMzMzMzMzMzMzMw/DTEN/3",
-                  "/MzMzMzMzMzMzMzMzMzMzMw/MIN/3",
-                  "/RERERCIiIiIiIiIiIiIiIg/UTEN/5",
-                  "/RERERCIiIiIiIiIiIiIiIg/MIN/5",
-                  "/RERERCIiIiIiIiIiIiIiIg/TRO/5",
-                  "/RERERCIiIiIiIiIiIiIiIg/DTEN/5",
-                  "/RERERCIiIiIiIiIiIiIiIg/IMCM/5",
-                  "/RERERCIiIiIiIiIiIiIiIg/IMCB/5"]
+                  "/EREREREREREREREREREREQ",
+                  "/MzMzMzMzMzMzMzMzMzMzMw",
+                  "/RERERCIiIiIiIiIiIiIiIg"]
     },
     {
       "id" : "968672ca-9fc1-491c-b2b9-d13c58b12d7a",
@@ -786,7 +368,7 @@
         "account" : [ "view-profile", "manage-account" ]
       },
       "notBefore" : 0,
-      "groups" : [ "/EREREREREREREREREREREQ/MIN/2", "/EREREREREREREREREREREQ/TRO/2", "/EREREREREREREREREREREQ/IMCB/2", "/MzMzMzMzMzMzMzMzMzMzMw/MIN/3", "/EREREREREREREREREREREQ/DTEN/2", "/EREREREREREREREREREREQ/UTEN/2", "/EREREREREREREREREREREQ/IMCM/2" ]
+      "groups" : [ "/EREREREREREREREREREREQ", "/MzMzMzMzMzMzMzMzMzMzMw" ]
     }, {
       "id" : "fc72ee08-7972-40df-a801-501d3a271fa3",
       "createdTimestamp" : 1544174692718,
@@ -813,7 +395,7 @@
         "account" : [ "view-profile", "manage-account" ]
       },
       "notBefore" : 0,
-      "groups" : [ "/EREREREREREREREREREREQ/MIN/2" ]
+      "groups" : [ "/EREREREREREREREREREREQ" ]
     }
   ],
   "scopeMappings" : [ {

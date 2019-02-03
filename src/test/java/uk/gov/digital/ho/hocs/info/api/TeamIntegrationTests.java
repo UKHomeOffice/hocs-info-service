@@ -90,7 +90,7 @@ public class TeamIntegrationTests {
 
 
     @Test
-    public void shouldGetAllTeams() {
+    public void shouldGetAllTeamsForUnit() {
         HttpEntity httpEntity = new HttpEntity(headers);
         ResponseEntity<Set<TeamDto>> result = restTemplate.exchange(
                 getBasePath() + "/unit/" + unitUUID.toString() + "/teams"
@@ -118,7 +118,7 @@ public class TeamIntegrationTests {
         assertThat(teamRepository.findByUuid(result.getBody().getUuid())).isNotNull();
 
         GroupRepresentation group = keycloakClient.realm("hocs")
-                .getGroupByPath("/" + Base64UUID.UUIDToBase64String(team.getUuid()) + "/CT1/5");
+                .getGroupByPath("/" + Base64UUID.UUIDToBase64String(team.getUuid()));
 
         assertThat(group).isNotNull();
     }
@@ -139,7 +139,7 @@ public class TeamIntegrationTests {
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         GroupRepresentation group = keycloakClient.realm(HOCS_REALM)
-                .getGroupByPath("/" + base64TeamUUID + "/CT2/3");
+                .getGroupByPath("/" + base64TeamUUID);
 
         assertThat(keycloakClient.realm(HOCS_REALM)
                 .users().get(userId).groups().stream()
@@ -147,35 +147,11 @@ public class TeamIntegrationTests {
 
     }
 
-    @Test
-    public void shouldUpdateTeamPermissions() {
-        String teamId = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
-        String base64TeamUUID = Base64UUID.UUIDToBase64String(UUID.fromString(teamId));
-        Set<PermissionDto> permissions = new HashSet<PermissionDto>() {{
-            add(new PermissionDto("CT2", AccessLevel.READ));
-        }};
-
-        UpdateTeamPermissionsRequest request = new UpdateTeamPermissionsRequest(permissions);
-
-        HttpEntity<UpdateTeamPermissionsRequest> httpEntity = new HttpEntity<>(request, headers);
-
-        ResponseEntity<String> result = restTemplate.exchange(
-                getBasePath() + "/team/" + teamId + "/permissions"
-                , HttpMethod.PUT, httpEntity, String.class);
-
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        GroupRepresentation permissionGroup = keycloakClient.realm(HOCS_REALM)
-                .getGroupByPath("/" + base64TeamUUID + "/CT2/2");
-        assertThat(permissionGroup).isNotNull();
-
-    }
 
     @Test
     @Transactional
     public void shouldDeleteTeamPermission() {
         String teamId = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
-        String base64TeamUUID = Base64UUID.UUIDToBase64String(UUID.fromString(teamId));
         Set<PermissionDto> permissions = new HashSet<PermissionDto>() {{
             add(new PermissionDto("CT2", AccessLevel.WRITE));
         }};
@@ -188,12 +164,7 @@ public class TeamIntegrationTests {
                 getBasePath() + "/team/" + teamId + "/permissions"
                 , HttpMethod.DELETE, httpEntity, String.class);
 
-
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        assertThatThrownBy(() -> keycloakClient.realm(HOCS_REALM)
-                .getGroupByPath("/" + teamId + "/CT2/3")).isInstanceOf(NotFoundException.class);
-
         assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).getPermissions()).size().isEqualTo(0);
     }
 
@@ -201,7 +172,6 @@ public class TeamIntegrationTests {
     @Transactional
     public void shouldDeleteOnePermissionForTeam() {
         String teamId = "8b3b4366-a37c-48b6-b274-4c50f8083843";
-        String base64TeamUUID = Base64UUID.UUIDToBase64String(UUID.fromString(teamId));
         Set<PermissionDto> permissions = new HashSet<PermissionDto>() {{
             add(new PermissionDto("CT3", AccessLevel.WRITE));
         }};
@@ -214,45 +184,8 @@ public class TeamIntegrationTests {
                 getBasePath() + "/team/" + teamId + "/permissions"
                 , HttpMethod.DELETE, httpEntity, String.class);
 
-
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        assertThatThrownBy(() -> keycloakClient.realm(HOCS_REALM)
-                .getGroupByPath("/" + base64TeamUUID + "/CT3/3")).isInstanceOf(NotFoundException.class);
-
-        GroupRepresentation permissionGroup = keycloakClient.realm(HOCS_REALM)
-                .getGroupByPath("/" + base64TeamUUID + "/CT3/2");
-        assertThat(permissionGroup).isNotNull();
-
         assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).getPermissions()).size().isEqualTo(1);
-    }
-
-
-    @Test
-    public void shouldUpdateUserPermissionsOnTeamUpdate() {
-        String teamId = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
-        String base64TeamUUID = Base64UUID.UUIDToBase64String(UUID.fromString(teamId));
-
-        Set<PermissionDto> permissions = new HashSet<PermissionDto>() {{
-            add(new PermissionDto("CT2", AccessLevel.READ));
-        }};
-
-        UpdateTeamPermissionsRequest request = new UpdateTeamPermissionsRequest(permissions);
-
-        HttpEntity<UpdateTeamPermissionsRequest> httpEntity = new HttpEntity<>(request, headers);
-
-        ResponseEntity<String> result = restTemplate.exchange(
-                getBasePath() + "/team/" + teamId + "/permissions"
-                , HttpMethod.PUT, httpEntity, String.class);
-
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        GroupRepresentation permissionGroup = keycloakClient.realm(HOCS_REALM)
-                .getGroupByPath("/" + base64TeamUUID + "/CT2/2");
-
-        assertThat(keycloakClient.realm(HOCS_REALM).groups().group(permissionGroup.getId()).members().get(0).getUsername())
-                .isEqualTo("admin");
-
     }
 
     @Test

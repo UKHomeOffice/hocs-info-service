@@ -40,7 +40,7 @@ public class CaseTypeService {
 
     Set<CaseType> getAllCaseTypesForUser(boolean bulkOnly) {
         log.debug("Getting case types by User, bulkOnly = {}", bulkOnly);
-        Set<String> userTeams = userPermissionsService.getUserTeams();
+        Set<UUID> userTeams = userPermissionsService.getUserTeams();
         log.debug("Found {} teams", userTeams.size());
         if(userTeams.isEmpty()) {
             log.warn("No Teams - Returning 0 CaseTypes");

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Set;
+import java.util.UUID;
 
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
@@ -11,10 +12,10 @@ import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 public interface CaseTypeRepository extends CrudRepository<CaseType, String> {
 
     @Query(value = "SELECT ct.* FROM case_type ct JOIN permission ON ct.type = permission.case_type WHERE permission.team_uuid IN ?1 AND ct.active = TRUE", nativeQuery = true)
-    Set<CaseType> findAllCaseTypesByTeam(Set<String> team);
+    Set<CaseType> findAllCaseTypesByTeam(Set<UUID> team);
 
     @Query(value = "SELECT ct.* FROM case_type ct JOIN permission ON ct.type = permission.case_type WHERE permission.team_uuid IN ?1 AND ct.active = TRUE AND ct.bulk = TRUE", nativeQuery = true)
-    Set<CaseType> findAllBulkCaseTypesByTeam(Set<String> team);
+    Set<CaseType> findAllBulkCaseTypesByTeam(Set<UUID> team);
 
     Set<CaseType> findAll();
 

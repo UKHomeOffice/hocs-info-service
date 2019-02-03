@@ -8,8 +8,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import uk.gov.digital.ho.hocs.info.api.TeamService;
 import uk.gov.digital.ho.hocs.info.application.RequestData;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
+import uk.gov.digital.ho.hocs.info.domain.model.Permission;
+import uk.gov.digital.ho.hocs.info.domain.model.Team;
+
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,11 +28,9 @@ public class UserPermissionsServiceTest {
     private RequestData requestData;
 
     private UserPermissionsService service;
-
     private String uuid1 = Base64UUID.UUIDToBase64String(UUID.fromString("1325fe16-b864-42c7-85c2-7cab2863fe01"));
     private String uuid2 = Base64UUID.UUIDToBase64String(UUID.fromString("f1825c7d-baff-4c09-8056-2166760ccbd2"));
     private String uuid3 = Base64UUID.UUIDToBase64String(UUID.fromString("1c1e2f17-d5d9-4ff6-a023-6c40d76e1e9d"));
-
 
     @Before
     public void setup() {
@@ -36,90 +39,33 @@ public class UserPermissionsServiceTest {
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 
-
-    @Test
-    public void shouldParseValidUserGroups() {
-
-        String[] groups =
-                        ("/" + uuid1 + "/TRO/2," +
-                         "/" + uuid1 + "/TRO/3," +
-                         "/" + uuid2 + "/MIN/3," +
-                         "/" + uuid3 + "/MIN/3," +
-                         "/" + uuid1 + "/MIN/5").split(",");
-
-        when(requestData.groupsArray()).thenReturn(groups);
-        service = new UserPermissionsService(requestData);
-        assertThat(service.getUserPermission().count()).isEqualTo(3);
-    }
-
-
     @Test
     public void shouldIgnoreInvalidUserGroups() {
 
         String[] groups =
-                ("/" + uuid1 + "/TRO/2," +
-                        "/" + uuid1 + "/TRO/3," +
-                        "/" + uuid2 + "/MIN/3," +
-                        "/B@d***UU!D/MIN/3," +
-                        "/" + uuid1 + "/MIN/5").split(",");
+                (uuid2 + "," +
+                        uuid3 + "," +
+                        "INVALID_UUID").split(",");
 
         when(requestData.groupsArray()).thenReturn(groups);
         service = new UserPermissionsService(requestData);
-        assertThat(service.getUserPermission().count()).isEqualTo(2);
-    }
-
-
-
-    @Test
-    public void shouldGetPermissionsForCaseType() {
-
-        String[] groups =
-                ("/" + uuid1 + "/TRO/2," +
-                        "/" + uuid1 + "/TRO/3," +
-                        "/" + uuid2 + "/MIN/3," +
-                        "/" + uuid3 + "/MIN/3," +
-                        "/" + uuid1 + "/MIN/5").split(",");
-
-        when(requestData.groupsArray()).thenReturn(groups);
-        service = new UserPermissionsService(requestData);
-        Set<AccessLevel> userAccessLevels = service.getUserAccessLevels(new CaseType(1L, UUID.randomUUID(),"","MIN",  "",UUID.randomUUID(), "",true,true));
-        assertThat(userAccessLevels.size()).isEqualTo(2);
-        assertThat(userAccessLevels).contains(AccessLevel.WRITE);
-        assertThat(userAccessLevels).contains(AccessLevel.OWNER);
-
+        assertThat(service.getUserTeams()).size().isEqualTo(2);
     }
 
 
     @Test
     public void shouldGetTeamsForUser() {
         String[] groups =
-                ("/" + uuid1 + "/TRO/2," +
-                        "/" + uuid1 + "/TRO/3," +
-                        "/" + uuid2 + "/MIN/3," +
-                        "/" + uuid3 + "/MIN/3," +
-                        "/" + uuid1 + "/MIN/5").split(",");
+                (uuid2 + "," +
+                        uuid3 + "," +
+                        uuid1).split(",");
 
         when(requestData.groupsArray()).thenReturn(groups);
         service = new UserPermissionsService(requestData);
-        Set<String> teams = service.getUserTeams();
-        assertThat(teams).contains("1c1e2f17-d5d9-4ff6-a023-6c40d76e1e9d");
-        assertThat(teams).contains("f1825c7d-baff-4c09-8056-2166760ccbd2");
-        assertThat(teams).contains("1325fe16-b864-42c7-85c2-7cab2863fe01");
-    }
-
-    @Test
-    public void shouldGetCaseTypesForUser() {
-        String[] groups =
-                ("/" + uuid1 + "/TRO/2," +
-                        "/" + uuid1 + "/TRO/3," +
-                        "/" + uuid2 + "/MIN/3," +
-                        "/" + uuid3 + "/MIN/3," +
-                        "/" + uuid1 + "/MIN/5").split(",");
-
-        when(requestData.groupsArray()).thenReturn(groups);
-        service = new UserPermissionsService(requestData);
-        Set<String> caseTypes = service.getUserCaseTypes();
-        assertThat(caseTypes.stream().anyMatch(c -> c.equals("TRO"))).isTrue();
-        assertThat(caseTypes.stream().anyMatch(c -> c.equals("MIN"))).isTrue();
+        Set<UUID> teams = service.getUserTeams();
+        assertThat(teams).size().isEqualTo(3);
+        assertThat(teams).contains(UUID.fromString("1c1e2f17-d5d9-4ff6-a023-6c40d76e1e9d"));
+        assertThat(teams).contains(UUID.fromString("f1825c7d-baff-4c09-8056-2166760ccbd2"));
+        assertThat(teams).contains(UUID.fromString("1325fe16-b864-42c7-85c2-7cab2863fe01"));
     }
 }
