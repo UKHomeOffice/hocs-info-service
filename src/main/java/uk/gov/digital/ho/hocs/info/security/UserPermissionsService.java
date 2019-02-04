@@ -27,10 +27,12 @@ public class UserPermissionsService {
     }
 
     private UUID getUUIDFromBase64(String uuid) {
+        if (uuid.startsWith("/")) {
+            uuid = uuid.substring(1);
+        }
         try {
             return Base64UUID.Base64StringToUUID(uuid);
-        }
-        catch (BufferUnderflowException e) {
+        } catch (BufferUnderflowException e) {
             return null;
         }
     }

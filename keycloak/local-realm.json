@@ -246,42 +246,52 @@
     }
   },
   "groups": [
-        {
-          "id": "59d92ab1-82f4-44b4-9c44-3f4e904bef8b",
-          "name": "RERERCIiIiIiIiIiIiIiIg",
-          "path": "/RERERCIiIiIiIiIiIiIiIg",
-          "attributes": {},
-          "realmRoles": [],
-          "clientRoles": {},
-          "subGroups": []
-        },
-        {
-          "id": "3a195c4d-6be8-420b-9f60-06003e3b575a",
-          "name": "MzMzMzMzMzMzMzMzMzMzMw",
-          "path": "/MzMzMzMzMzMzMzMzMzMzMw",
-          "attributes": {},
-          "realmRoles": [],
-          "clientRoles": {},
-          "subGroups": []
-        },
-        {
-          "id": "abf7617c-058c-4287-9f41-b95384fdbc7d",
-          "name": "Q0pOM0N_Tm2PBBTqQP2_og",
-          "path": "/Q0pOM0N_Tm2PBBTqQP2_og",
-          "attributes": {},
-          "realmRoles": [],
-          "clientRoles": {},
-          "subGroups": []
-        },
-        {
-          "id": "abf7617c-058c-4287-9f41-b95384fdbc7e",
-          "name": "iztDZqN8SLaydExQ-Ag4Qw",
-          "path": "/iztDZqN8SLaydExQ-Ag4Qw",
-          "attributes": {},
-          "realmRoles": [],
-          "clientRoles": {},
-          "subGroups": []
-        }
+    {
+      "id": "59d92ab1-82f4-44b4-9c44-3f4e904bef8b",
+      "name": "RERERCIiIiIiIiIiIiIiIg",
+      "path": "/RERERCIiIiIiIiIiIiIiIg",
+      "attributes": {},
+      "realmRoles": [],
+      "clientRoles": {},
+      "subGroups": []
+    },
+    {
+      "id": "3a195c4d-6be8-420b-9f60-06003e3b575a",
+      "name": "MzMzMzMzMzMzMzMzMzMzMw",
+      "path": "/MzMzMzMzMzMzMzMzMzMzMw",
+      "attributes": {},
+      "realmRoles": [],
+      "clientRoles": {},
+      "subGroups": []
+    },
+    {
+      "id": "abf7617c-058c-4287-9f41-b95384fdbc7d",
+      "name": "Q0pOM0N_Tm2PBBTqQP2_og",
+      "path": "/Q0pOM0N_Tm2PBBTqQP2_og",
+      "attributes": {},
+      "realmRoles": [],
+      "clientRoles": {},
+      "subGroups": []
+    },
+    {
+      "id": "abf7617c-058c-4287-9f41-b95384fdbc7e",
+      "name": "iztDZqN8SLaydExQ-Ag4Qw",
+      "path": "/iztDZqN8SLaydExQ-Ag4Qw",
+      "attributes": {},
+      "realmRoles": [],
+      "clientRoles": {},
+      "subGroups": []
+    },
+    {
+      "id": "abf7617c-058c-4287-9f41-b95384fdbc7f",
+      "name": "EREREREREREREREREREREQ",
+      "path": "/EREREREREREREREREREREQ",
+      "attributes": {},
+      "realmRoles": [],
+      "clientRoles": {},
+      "subGroups": []
+    }
+
   ],
   "defaultRoles" : [ "uma_authorization", "offline_access" ],
   "requiredCredentials" : [ "password" ],
@@ -338,9 +348,9 @@
       },
       "notBefore" : 0,
       "groups" : [
-                  "/EREREREREREREREREREREQ",
-                  "/MzMzMzMzMzMzMzMzMzMzMw",
-                  "/RERERCIiIiIiIiIiIiIiIg"]
+        "/EREREREREREREREREREREQ",
+        "/MzMzMzMzMzMzMzMzMzMzMw",
+        "/RERERCIiIiIiIiIiIiIiIg"]
     },
     {
       "id" : "968672ca-9fc1-491c-b2b9-d13c58b12d7a",

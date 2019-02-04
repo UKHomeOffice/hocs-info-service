@@ -41,18 +41,19 @@ public class CaseTypeService {
     Set<CaseType> getAllCaseTypesForUser(boolean bulkOnly) {
         log.debug("Getting case types by User, bulkOnly = {}", bulkOnly);
         Set<UUID> userTeams = userPermissionsService.getUserTeams();
-        log.debug("Found {} teams", userTeams.size());
+        Set<String> teams = userTeams.stream().map(uuid -> uuid.toString()).collect(Collectors.toSet());
+        log.debug("Finding case types for {} teams", teams);
         if(userTeams.isEmpty()) {
             log.warn("No Teams - Returning 0 CaseTypes");
             return new HashSet<>(0);
         } else {
             Set<CaseType> caseTypes;
             if (bulkOnly) {
-                caseTypes = caseTypeRepository.findAllBulkCaseTypesByTeam(userTeams);
+                caseTypes = caseTypeRepository.findAllBulkCaseTypesByTeam(teams);
             } else {
-                caseTypes = caseTypeRepository.findAllCaseTypesByTeam(userTeams);
+                caseTypes = caseTypeRepository.findAllCaseTypesByTeam(teams);
             }
-            log.info("Got {} CaseTypes (bulkOnly = {}", caseTypes.size(), bulkOnly);
+            log.info("Got {} CaseTypes (bulkOnly = {})", caseTypes.size(), bulkOnly);
             return caseTypes;
         }
     }
