@@ -2,6 +2,8 @@ package uk.gov.digital.ho.hocs.info.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
@@ -53,7 +55,17 @@ public class TeamService {
         return teams;
     }
 
+    @Cacheable("teams")
     public Set<Team> getAllActiveTeams() {
+        return getTeams();
+    }
+
+    @CachePut("teams")
+    public Set<Team> refreshTeamCache() {
+        return getTeams();
+    }
+
+    private Set<Team> getTeams() {
         log.debug("Getting all active Teams");
         Set<Team> activeTeams = teamRepository.findAllByActiveTrue();
         log.info("Got {} active Teams", activeTeams.size());
@@ -104,7 +116,7 @@ public class TeamService {
         } else {
             log.debug("Team {} exists, not creating.", newTeam.getDisplayName());
         }
-        createKeyCloakMappings(permissions, team.getUuid(), Optional.empty());
+        createKeyCloakMappings(team.getUuid(), Optional.empty());
         auditClient.createTeamAudit(team);
         log.info("Team with UUID {} created in Unit {}", team.getUuid().toString(), unit.getShortCode(), value(EVENT, TEAM_CREATED));
         return team;
@@ -123,10 +135,7 @@ public class TeamService {
     public void addUserToTeam(UUID userUUID, UUID teamUUID) {
         log.debug("Adding User {} to Team {}", userUUID, teamUUID);
         Team team = getTeam(teamUUID);
-        Set<Permission> permissions = team.getPermissions();
-
-        createKeyCloakMappings(permissions, teamUUID, Optional.of(userUUID));
-
+        createKeyCloakMappings(teamUUID, Optional.of(userUUID));
         auditClient.addUserToTeamAudit(userUUID, team);
         log.info("Added user with UUID {} to team with UUID {}", userUUID.toString(), team.getUuid().toString(), value(EVENT, USER_ADDED_TO_TEAM));
     }
@@ -150,9 +159,7 @@ public class TeamService {
         Team team = getTeam(teamUUID);
         Set<Permission> permissions = getPermissionsFromDto(permissionsDto, team);
         team.addPermissions(permissions);
-        Set<String> permissionPaths = createKeyCloakMappings(permissions, teamUUID, Optional.empty());;
-        keycloakService.updateUserTeamGroups(team.getUuid(), permissionPaths);
-
+        createKeyCloakMappings(teamUUID, Optional.empty());
         auditClient.updateTeamPermissionsAudit(teamUUID, permissionsDto);
         log.info("Updated Permissions for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_UPDATED));
     }
@@ -161,22 +168,8 @@ public class TeamService {
     public void deleteTeamPermissions(UUID teamUUID, Set<PermissionDto> permissionsDto) {
         log.debug("Deleting {} Team permissions for Team {}", permissionsDto.size(), teamUUID);
         Team team = getTeam(teamUUID);
-        String encodedTeamUUID = Base64UUID.UUIDToBase64String(teamUUID);
         Set<Permission> permissions = getPermissionsFromDto(permissionsDto, team);
         team.deletePermissions(permissions);
-        Set<String> permissionPathsAccessLevel = new HashSet<>(permissions.size());
-        Set<String> permissionPathsCaseTypeLevel = new HashSet<>(permissions.size());
-        permissions.forEach(permission -> {
-            permissionPathsAccessLevel.add(String.format("/%s/%s/%s", encodedTeamUUID, permission.getCaseType().getType(),permission.getAccessLevel().getLevel()));
-            permissionPathsCaseTypeLevel.add(String.format("/%s/%s", encodedTeamUUID, permission.getCaseType().getType()));
-        });
-
-        permissionPathsAccessLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
-
-        if (team.getPermissions().isEmpty()) {
-            permissionPathsCaseTypeLevel.forEach(permissionPath -> keycloakService.deleteTeamPermisisons(permissionPath));
-        }
-
         auditClient.deleteTeamPermissionsAudit(teamUUID, permissionsDto);
         log.info("Deleted Permission for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_DELETED));
     }
@@ -208,18 +201,8 @@ public class TeamService {
         return permissions;
     }
 
-    private Set<String> createKeyCloakMappings(Set<Permission> permissions, UUID teamUUID, Optional<UUID> userUUID) {
-        String team = Base64UUID.UUIDToBase64String(teamUUID);
-        keycloakService.createTeamGroupIfNotExists(team);
-
-        Set<String> permissionPaths = new HashSet<>(permissions.size());
-        for (Permission permission : permissions) {
-            keycloakService.createGroupPathIfNotExists(String.format("/%s", team), permission.getCaseType().getType());
-            keycloakService.createGroupPathIfNotExists(String.format("/%s/%s", team,permission.getCaseType().getType()), String.valueOf(permission.getAccessLevel().getLevel()));
-            String permissionPath = String.format("/%s/%s/%s", team, permission.getCaseType().getType(), String.valueOf(permission.getAccessLevel().getLevel()));
-            permissionPaths.add(permissionPath);
-            userUUID.ifPresent(uuid -> keycloakService.addUserToGroup(uuid, permissionPath));
-        }
-        return permissionPaths;
+    private void createKeyCloakMappings(UUID teamUUID, Optional<UUID> userUUID) {
+        keycloakService.createTeamGroupIfNotExists(teamUUID);
+        userUUID.ifPresent(uuid -> keycloakService.addUserToTeam(uuid, teamUUID));
     }
 }

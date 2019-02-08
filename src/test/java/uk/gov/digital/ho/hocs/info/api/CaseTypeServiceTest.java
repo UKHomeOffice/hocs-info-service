@@ -11,6 +11,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.security.UserPermissionsService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,8 +33,11 @@ public class CaseTypeServiceTest {
     private UserPermissionsService userPermissionsService;
 
     private CaseTypeService caseTypeService;
-    private Set team = new HashSet<String>() {{ add("74c79583-1375-494c-9883-f574e7e36541");}};
-    private Set teams = new HashSet<String>() {{ add("74c79583-1375-494c-9883-f574e7e36541, 8b532de4-4915-4783-a19a-c79fd6754d5c"); }};
+    private Set<UUID> team = new HashSet<UUID>() {{  add(UUID.fromString("74c79583-1375-494c-9883-f574e7e36541"));}};
+    Set<String> teamString = team.stream().map(uuid -> uuid.toString()).collect(Collectors.toSet());
+    private Set<UUID> teams = new HashSet<UUID>() {{ add(UUID.fromString("74c79583-1375-494c-9883-f574e7e36541"));
+                                                add(UUID.fromString("8b532de4-4915-4783-a19a-c79fd6754d5c"));}};
+    Set<String> teamsString = teams.stream().map(uuid -> uuid.toString()).collect(Collectors.toSet());
     private UUID unitUUID = UUID.randomUUID();
 
     @Before
@@ -54,7 +58,7 @@ public class CaseTypeServiceTest {
     public void shouldGetCaseTypesSingleTenantRequested() {
 
         when(userPermissionsService.getUserTeams()).thenReturn(team);
-        when(caseTypeRepository.findAllCaseTypesByTeam(team)).thenReturn(getDCUCaseType());
+        when(caseTypeRepository.findAllCaseTypesByTeam(teamString)).thenReturn(getDCUCaseType());
 
         Set<CaseType> caseTypeDtos = caseTypeService.getAllCaseTypesForUser(false);
 
@@ -71,7 +75,7 @@ public class CaseTypeServiceTest {
     @Test
     public void shouldGetCaseTypesMultipleTeamsRequested() {
         when(userPermissionsService.getUserTeams()).thenReturn(teams);
-        when(caseTypeRepository.findAllCaseTypesByTeam(teams)).thenReturn(getDCUAndUKVICaseType());
+        when(caseTypeRepository.findAllCaseTypesByTeam(teamsString)).thenReturn(getDCUAndUKVICaseType());
 
         Set<CaseType> caseTypeDtos = caseTypeService.getAllCaseTypesForUser(false);
 
@@ -89,11 +93,11 @@ public class CaseTypeServiceTest {
     public void shouldGetBulkCaseTypesSingleTeamRequested() {
 
         when(userPermissionsService.getUserTeams()).thenReturn(team);
-        when(caseTypeRepository.findAllBulkCaseTypesByTeam(team)).thenReturn(getDCUCaseTypeBulk());
+        when(caseTypeRepository.findAllBulkCaseTypesByTeam(teamString)).thenReturn(getDCUCaseTypeBulk());
 
         Set<CaseType> caseTypeDtos = caseTypeService.getAllCaseTypesForUser(true);
 
-        verify(caseTypeRepository, times(1)).findAllBulkCaseTypesByTeam(team);
+        verify(caseTypeRepository, times(1)).findAllBulkCaseTypesByTeam(teamString);
 
         assertThat(caseTypeDtos.size()).isEqualTo(2);
 
@@ -106,11 +110,11 @@ public class CaseTypeServiceTest {
     @Test
     public void shouldGetBulkCaseTypesMultipleTeamRequested() {
         when(userPermissionsService.getUserTeams()).thenReturn(teams);
-        when(caseTypeRepository.findAllBulkCaseTypesByTeam(teams)).thenReturn(getDCUAndUKVICaseTypeBulk());
+        when(caseTypeRepository.findAllBulkCaseTypesByTeam(teamsString)).thenReturn(getDCUAndUKVICaseTypeBulk());
 
         Set<CaseType> caseTypeDtos = caseTypeService.getAllCaseTypesForUser(true);
 
-        verify(caseTypeRepository, times(1)).findAllBulkCaseTypesByTeam(teams);
+        verify(caseTypeRepository, times(1)).findAllBulkCaseTypesByTeam(teamsString);
 
         assertThat(caseTypeDtos.size()).isEqualTo(5);
 

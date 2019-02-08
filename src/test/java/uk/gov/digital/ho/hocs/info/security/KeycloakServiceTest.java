@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.GroupResource;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.Answers;
@@ -33,51 +34,36 @@ public class KeycloakServiceTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     RealmResource hocsRealm;
 
-    UUID userUUID = UUID.randomUUID();
+    private UUID userUUID = UUID.randomUUID();
 
     @Test
     public void shouldCallKeyCloakToAddUserToGroup() {
-        String accessLevelGroupPath = "/TEAM/MIN/5";
-        org.keycloak.admin.client.resource.UserResource userResource = mock(org.keycloak.admin.client.resource.UserResource.class);
-        GroupRepresentation accessLevelGroup = mock(GroupRepresentation.class);
+        UUID teamUUID = UUID.randomUUID();
+        String teamUUIDPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
+        UserResource userResource = mock(UserResource.class);
+        GroupRepresentation teamGroup = mock(GroupRepresentation.class);
 
         when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
         when(hocsRealm.users().get(userUUID.toString())).thenReturn(userResource);
-        when(hocsRealm.getGroupByPath(accessLevelGroupPath)).thenReturn(accessLevelGroup);
-        when(accessLevelGroup.getId()).thenReturn("ACCESS_GROUP");
-        doNothing().when(userResource).joinGroup("ACCESS_GROUP");
+        when(hocsRealm.getGroupByPath(teamUUIDPath)).thenReturn(teamGroup);
+        when(teamGroup.getId()).thenReturn("TEAM_GROUP");
+        doNothing().when(userResource).joinGroup("TEAM_GROUP");
 
         service = new KeycloakService(keycloakClient, HOCS_REALM);
-        service.addUserToGroup(userUUID, accessLevelGroupPath);
-        verify(userResource, times(1)).joinGroup("ACCESS_GROUP");
-        ;
-
+        service.addUserToTeam(userUUID, teamUUID);
+        verify(userResource, times(1)).joinGroup("TEAM_GROUP");
     }
 
     @Test
-    public void shouldCallKeycloakToCreatUnitGroup() {
+    public void shouldCallKeycloakToCreateTeamGroup() {
 
         when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
         when(hocsRealm.groups().add(any())).thenReturn(mock(Response.class));
         service = new KeycloakService(keycloakClient, HOCS_REALM);
-        service.createTeamGroupIfNotExists("TEAM");
+        service.createTeamGroupIfNotExists(UUID.randomUUID());
         verify(hocsRealm.groups(), times(1)).add(any());
     }
 
-    @Test
-    public void shouldCreateGroupPathIfNotExists() {
-        String groupPath = "TEAM";
-        String groupId = "TEAM_GROUP";
-        GroupRepresentation group = mock(GroupRepresentation.class);
-        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
-        when(group.getId()).thenReturn(groupId);
-        when(hocsRealm.getGroupByPath(groupPath)).thenReturn(group);
-
-        service = new KeycloakService(keycloakClient, HOCS_REALM);
-        service.createGroupPathIfNotExists(groupPath, "TEAM");
-
-        verify(hocsRealm.groups().group(groupId), times(1)).subGroup(any());
-    }
 
     @Test
     public void shouldGetAllUsers() {
@@ -123,63 +109,18 @@ public class KeycloakServiceTest {
         userRepresentations.add(user);
 
         String encodedTeamUUID = Base64UUID.UUIDToBase64String(teamUUID);
-        GroupRepresentation permissionGroup =  new GroupRepresentation() {
-            {
-                setName("5");
-                setPath("/" + teamUUID + "/MIN/5");
-            }};
-
-        GroupRepresentation caseTypeGroup =  new GroupRepresentation() {
-            {
-                setId("GROUPID");
-                setName("MIN");
-                setPath("/" + teamUUID + "/MIN");
-
-            }};
-
-        caseTypeGroup.setSubGroups(Arrays.asList(permissionGroup));
-
         GroupRepresentation group = new GroupRepresentation(){
             {
-                setPath("/" + teamUUID);
-                setId(teamUUID.toString());
+                setPath("/" + encodedTeamUUID);
+                setName(encodedTeamUUID);
+                setId("1");
             }};
-        group.setSubGroups(Arrays.asList(caseTypeGroup));
-
-
-        List<GroupRepresentation> groups = Arrays.asList(group);
-
-        when(keycloakClient.realm(HOCS_REALM).groups().groups(encodedTeamUUID, 0, 1)).thenReturn(groups);
-        when(keycloakClient.realm(HOCS_REALM).groups().group(permissionGroup.getId()).members()).thenReturn(userRepresentations);;
+        when(keycloakClient.realm(HOCS_REALM).getGroupByPath("/" + encodedTeamUUID)).thenReturn(group);
+        when(keycloakClient.realm(HOCS_REALM).groups().group("1").members()).thenReturn(userRepresentations);
 
         service = new KeycloakService(keycloakClient, HOCS_REALM);
         Set<UserRepresentation> result = service.getUsersForTeam(teamUUID);
         assertThat(result.size()).isEqualTo(1);
-
-    }
-
-    @Test
-    public void shouldUpdateGroupMemberPermissions() {
-        UUID teamUUID = UUID.randomUUID();
-        Set<String> permissions = new HashSet<String>() {{
-            add("/" + teamUUID.toString() + "/CASETYPE1/5");
-        }};
-
-        Set<UserRepresentation> userRepresentations = new HashSet<>();
-        UserRepresentation user = new UserRepresentation();
-        user.setId(userUUID.toString());
-        user.setFirstName("FirstName");
-        user.setFirstName("LastName");
-        userRepresentations.add(user);
-
-        KeycloakService spyService = Mockito.spy(new KeycloakService(keycloakClient, HOCS_REALM));
-        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
-        doReturn(userRepresentations).when(spyService).getUsersForTeam(teamUUID);
-        doNothing().when(spyService).addUserToGroup(userUUID, "/" + teamUUID.toString() + "/CASETYPE1/5");
-
-        spyService.updateUserTeamGroups(teamUUID, permissions);
-        verify(spyService, times(1)).addUserToGroup(userUUID, "/" + teamUUID.toString() + "/CASETYPE1/5");
-
     }
 
 }

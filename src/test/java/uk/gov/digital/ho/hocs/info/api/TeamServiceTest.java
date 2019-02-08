@@ -138,7 +138,7 @@ public class TeamServiceTest {
         assertThat(result.getUuid()).isEqualTo(team1UUID);
         verify(teamRepository, times(1)).findByUuid(team1UUID);
         verify(unitRepository, times(1)).findByUuid(unitUUID);
-        verify(keycloakService, times(1)).createTeamGroupIfNotExists(base64Team1UUID);
+        verify(keycloakService, times(1)).createTeamGroupIfNotExists(team1UUID);
         verifyNoMoreInteractions(teamRepository);
         verifyNoMoreInteractions(keycloakService);
     }
@@ -158,7 +158,7 @@ public class TeamServiceTest {
         teamService.createTeam(teamDto, unitUUID);
         verify(unitRepository, times(1)).findByUuid(unitUUID);
         verify(unitRepository, never()).save(unit);
-        verify(keycloakService, times(1)).createTeamGroupIfNotExists(base64Team1UUID);
+        verify(keycloakService, times(1)).createTeamGroupIfNotExists(team1UUID);
         verifyNoMoreInteractions(keycloakService);
     }
 
@@ -218,20 +218,14 @@ public class TeamServiceTest {
         team.setUnit(unit);
         team.addPermissions(permissions);
 
-        String teamGroupPath =  "/" + base64Team1UUID;
-        String caseGroupPath =  teamGroupPath + "/MIN";
-        String accessLevelGroupPath = teamGroupPath + "/MIN/5";
-
         when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
         teamService.addUserToTeam(userUUID, team1UUID);
-        verify(keycloakService, times(1)).createTeamGroupIfNotExists(base64Team1UUID);
-        verify(keycloakService, times(1)).createGroupPathIfNotExists(teamGroupPath, "MIN");
-        verify(keycloakService, times(1)).createGroupPathIfNotExists(caseGroupPath, "5");
-        verify(keycloakService, times(1)).addUserToGroup(userUUID, accessLevelGroupPath);
+        verify(keycloakService, times(1)).createTeamGroupIfNotExists(team1UUID);
+        verify(keycloakService, times(1)).addUserToTeam(userUUID, team1UUID);
     }
 
     @Test
-    public void shouldUpdatePermissionsInDatabaseAndKeycloak() {
+    public void shouldUpdatePermissionsInDatabase() {
 
         UUID unitUUID = UUID.randomUUID();
         Unit unit = new Unit("a unit", "UNIT", unitUUID, true);
@@ -248,23 +242,16 @@ public class TeamServiceTest {
             add(new PermissionDto("MIN", AccessLevel.OWNER));
         }};
 
-        Set<String> permissionPaths = new HashSet<String>() {{
-            add("/" + base64Team1UUID + "/MIN/2");
-            add("/" + base64Team1UUID + "/MIN/5");
-        }};
-
         assertThat(team.getPermissions().size()).isEqualTo(0);
         teamService.updateTeamPermissions(team1UUID, permissions);
         assertThat(team.getPermissions().size()).isEqualTo(2);
 
-
         verify(teamRepository, times(1)).findByUuid(team1UUID);
-        verify(keycloakService, times(1)).updateUserTeamGroups(team1UUID,permissionPaths);
         verifyNoMoreInteractions(teamRepository);
     }
 
     @Test
-    public void shouldDeleteSinglePermissionInDatabaseAndKeycloak() {
+    public void shouldDeleteSinglePermissionInDatabase() {
 
         UUID unitUUID = UUID.randomUUID();
         Set<Permission> permissions = new HashSet<>();
@@ -278,7 +265,6 @@ public class TeamServiceTest {
 
         when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
         when(caseTypeService.getCaseType(any())).thenReturn(caseType);
-        doNothing().when(keycloakService).deleteTeamPermisisons(any());
 
         Set<PermissionDto> permissionDtoSet = new HashSet<PermissionDto>() {{
             add(new PermissionDto("MIN", AccessLevel.READ));
@@ -290,7 +276,6 @@ public class TeamServiceTest {
 
 
         verify(teamRepository, times(1)).findByUuid(team1UUID);
-        verify(keycloakService, times(1)).deleteTeamPermisisons("/"+ base64Team1UUID+"/MIN/2");
         verifyNoMoreInteractions(teamRepository);
     }
 
@@ -309,7 +294,6 @@ public class TeamServiceTest {
 
         when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
         when(caseTypeService.getCaseType(any())).thenReturn(caseType);
-        doNothing().when(keycloakService).deleteTeamPermisisons(any());
 
         Set<PermissionDto> permissionDtoSet = new HashSet<PermissionDto>() {{
             add(new PermissionDto("MIN", AccessLevel.READ));
@@ -322,8 +306,6 @@ public class TeamServiceTest {
 
 
         verify(teamRepository, times(1)).findByUuid(team1UUID);
-        verify(keycloakService, times(1)).deleteTeamPermisisons("/" + base64Team1UUID+"/MIN/2");
-        verify(keycloakService, times(1)).deleteTeamPermisisons("/" + base64Team1UUID+"/MIN/5");
         verifyNoMoreInteractions(teamRepository);
     }
 
@@ -459,7 +441,6 @@ public class TeamServiceTest {
 
         when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
         when(caseTypeService.getCaseType(any())).thenReturn(caseType);
-        doNothing().when(keycloakService).deleteTeamPermisisons(any());
 
         Set<PermissionDto> permissionDtoSet = new HashSet<PermissionDto>() {{
             add(new PermissionDto("MIN", AccessLevel.READ));

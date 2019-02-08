@@ -9,8 +9,7 @@ import java.io.Serializable;
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 @Entity
 @Table(name = "permission")
-@EqualsAndHashCode(of = {"accessLevel", "caseType", "team"})
-
+@EqualsAndHashCode(of = {"accessLevel", "caseType"})
 public class Permission implements Serializable {
 
     public Permission(AccessLevel accessLevel, Team team, CaseType caseType) {

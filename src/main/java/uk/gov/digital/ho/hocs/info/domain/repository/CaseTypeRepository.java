@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Set;
+import java.util.UUID;
 
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
