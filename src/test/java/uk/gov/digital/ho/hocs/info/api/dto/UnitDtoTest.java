@@ -25,8 +25,8 @@ public class UnitDtoTest {
             add(new Permission(AccessLevel.OWNER, null,
                     new CaseType(1L,UUID.randomUUID(), "MIN", "type", "a1",UUID.randomUUID(),"DCU_MIN_DISPATCH", true,  true)));
         }};
-        Team team = new Team("Team 1", UUID.randomUUID(), permissions);
-        Unit unit = new Unit("Unit 1", "TEST", UUID.randomUUID(), true);
+        Team team = new Team("Team 1",  permissions);
+        Unit unit = new Unit("Unit 1", "TEST", true);
         unit.addTeam(team);
 
 
@@ -45,8 +45,8 @@ public class UnitDtoTest {
             add(new Permission(AccessLevel.OWNER, null,
                     new CaseType(1L, UUID.randomUUID(), "MIN", "type","a1", UUID.randomUUID(),"DCU_MIN_DISPATCH", true,  true)));
         }};
-        Team team = new Team("Team 1", UUID.randomUUID(), permissions);
-        Unit unit = new Unit("Unit 1", "TEST", UUID.randomUUID(), true);
+        Team team = new Team("Team 1", permissions);
+        Unit unit = new Unit("Unit 1", "TEST", true);
         unit.addTeam(team);
 
         TeamDto teamDto = TeamDto.from(team);

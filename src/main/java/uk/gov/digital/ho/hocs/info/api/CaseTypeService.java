@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
@@ -98,5 +100,17 @@ public class CaseTypeService {
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("CaseType for type %s was not found", type);
         }
+    }
+
+    public void createCaseType(CreateCaseTypeDto caseType) {
+
+        caseTypeRepository.save(new CaseType(caseType.getDisplayName(),
+                caseType.getShortCode(),
+                caseType.getType(),
+                caseType.getDeadlineStage(),
+                caseType.isBulk(),
+                caseType.isActive()));
+
+
     }
 }

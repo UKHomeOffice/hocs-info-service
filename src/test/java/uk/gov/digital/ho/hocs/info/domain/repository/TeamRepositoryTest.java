@@ -32,21 +32,23 @@ public class TeamRepositoryTest {
     @Autowired
     private TeamRepository repository;
 
-    private final UUID unitUUID = UUID.randomUUID();
-    private final UUID teamUUID = UUID.randomUUID();
+    UUID unitUUID;
+    UUID teamUUID;
 
     @Before
     public void setup() {
-        Unit unit = new Unit("Unit 1", "UNIT_1", unitUUID,true);
-        CaseType caseType = new CaseType(null,UUID.randomUUID(),"TEST","a5","TEST",unitUUID,"TEST", true, true);
+        Unit unit = new Unit("Unit 1", "UNIT_1",true);
+        CaseType caseType = new CaseType(null,UUID.randomUUID(),"TEST","a5","TEST",unit.getUuid(),"TEST", true, true);
         entityManager.persistAndFlush(unit);
         entityManager.persistAndFlush(caseType);
         Set<Permission> permissions = new HashSet<Permission>(){{
             add(new Permission(AccessLevel.OWNER,null, caseType));
         }};
-        Team team = new Team("a team", teamUUID, permissions);
+        Team team = new Team("a team", permissions);
         unit.addTeam(team);
         this.entityManager.persist(unit);
+        teamUUID = team.getUuid();
+        unitUUID = unit.getUuid();
     }
 
     @Test()
@@ -61,7 +63,7 @@ public class TeamRepositoryTest {
     public void shouldFindTeamByUUID() {
         Team team = repository.findByUuid(teamUUID);
         assertThat(team.getUnit().getUuid()).isEqualTo(unitUUID);
-        assertThat(team.getUuid()).isEqualTo(teamUUID);
+        assertThat(team.getUuid()).isEqualTo(team.getUuid());
     }
 
     @Test()
@@ -71,21 +73,14 @@ public class TeamRepositoryTest {
         List<Permission> permissions = new ArrayList<>(team.getPermissions());
         assertThat(permissions.get(0).getCaseType().getType()).isEqualTo("TEST");
         assertThat(permissions.get(0).getAccessLevel()).isEqualTo(AccessLevel.OWNER);
-        assertThat(permissions.get(0).getTeam().getUuid()).isEqualTo(teamUUID);
-    }
-
-    @Test(expected = PersistenceException.class)
-    public void shouldThrowExceptionWhenuplicateUUID() {
-       UUID teamUUID = UUID.randomUUID();
-        entityManager.persist(new Team("test 1", teamUUID, true));
-        entityManager.persist(new Team("test 2", teamUUID, true));
+        assertThat(permissions.get(0).getTeam().getUuid()).isEqualTo(team.getUuid());
     }
 
     @Test(expected = PersistenceException.class)
     public void shouldThrowExceptionWhenuplicateDisplayName() {
         UUID teamUUID = UUID.randomUUID();
-        entityManager.persist(new Team("test 1", teamUUID, true));
-        entityManager.persist(new Team("test 1", UUID.randomUUID(), true));
+        entityManager.persist(new Team("test 1", true));
+        entityManager.persist(new Team("test 1", true));
     }
 
     @Test

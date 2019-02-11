@@ -118,7 +118,7 @@ public class TeamIntegrationTests {
         assertThat(teamRepository.findByUuid(result.getBody().getUuid())).isNotNull();
 
         GroupRepresentation group = keycloakClient.realm("hocs")
-                .getGroupByPath("/" + Base64UUID.UUIDToBase64String(team.getUuid()));
+                .getGroupByPath("/" + Base64UUID.UUIDToBase64String(result.getBody().getUuid()));
 
         assertThat(group).isNotNull();
     }

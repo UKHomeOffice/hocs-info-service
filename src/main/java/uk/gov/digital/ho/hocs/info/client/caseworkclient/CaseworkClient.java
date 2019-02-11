@@ -52,6 +52,7 @@ public class CaseworkClient {
         }
     }
 
+    //TODO: this service should not contain any reference to CaseUUIDs and should not call Casework service
     public GetTopicResponse getTopic(UUID caseUUID, UUID topicUUID) {
         ResponseEntity<GetTopicResponse> response = restHelper.get(serviceBaseURL, String.format("/case/%s/topic/%s", caseUUID, topicUUID), GetTopicResponse.class);
 

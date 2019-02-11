@@ -33,7 +33,6 @@ public class TeamDto {
     @JsonCreator
     public TeamDto(@JsonProperty("displayName") String displayName,@JsonProperty("permissions") Set<PermissionDto> permissions) {
         this.displayName = displayName;
-        this.uuid = UUID.randomUUID();
         this.permissions = Optional.ofNullable(permissions).orElse(new HashSet<>());
     }
 

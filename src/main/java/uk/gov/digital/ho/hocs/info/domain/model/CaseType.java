@@ -50,4 +50,13 @@ public class CaseType implements Serializable {
     @Column(name = "active")
     private boolean active;
 
+    public CaseType(String displayName, String shortCode, String type, String deadlineStage, boolean bulk, boolean active) {
+        this.displayName = displayName;
+        this.shortCode = shortCode;
+        this.type = type;
+        this.unitUUID = UUID.randomUUID();
+        this.deadlineStage = deadlineStage;
+        this.bulk = bulk;
+        this.active = active;
+    }
 }

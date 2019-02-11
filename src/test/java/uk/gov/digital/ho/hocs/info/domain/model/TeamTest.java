@@ -11,7 +11,7 @@ public class TeamTest {
 
     @Test
     public void shouldAddPermissionsToTeam() {
-        Team team = new Team("Team 1", UUID.randomUUID(), true);
+        Team team = new Team("Team 1", true);
 
         Permission permission1 = new Permission(AccessLevel.OWNER, team,
                 new CaseType(1L,UUID.randomUUID(), "MIN", "type","a1", UUID.randomUUID(), "DCU_MIN_DISPATCH", true,true));
