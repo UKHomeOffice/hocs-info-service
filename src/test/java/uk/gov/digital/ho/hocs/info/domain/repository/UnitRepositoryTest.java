@@ -32,11 +32,13 @@ public class UnitRepositoryTest {
     @Autowired
     private UnitRepository repository;
 
-    private final UUID unitUUID = UUID.randomUUID();
+    private UUID unitUUID;
 
     @Before
     public void setup() {
-        this.entityManager.persist(new Unit("Unit 1", "UNIT_1", unitUUID,true));
+        Unit unit = new Unit("Unit 1", "UNIT_1",true);
+        this.entityManager.persist(unit);
+        unitUUID = unit.getUuid();
     }
 
     @Test()
@@ -49,21 +51,20 @@ public class UnitRepositoryTest {
     @Test()
     public void shouldAddTeamToUnit() {
         Unit unit = repository.findByUuid(unitUUID);
-        UUID teamUUID = UUID.randomUUID();
 
-        Team team = new Team("a team", teamUUID, true);
+        Team team = new Team("a team", true);
         unit.addTeam(team);
         entityManager.persistAndFlush(unit);
         Unit newUnit = repository.findByUuid(unitUUID);
         List<Team> teams = new ArrayList<>(newUnit.getTeams());
 
         assertThat(teams.get(0).getUnit()).isEqualTo(unit);
-        assertThat(teams.get(0).getUuid()).isEqualTo(teamUUID);
+        assertThat(teams.get(0).getUuid()).isEqualTo(team.getUuid());
     }
 
     @Test()
     public void shouldAddTeamWithPermissionsToUnit() {
-        UUID teamUUID = UUID.randomUUID();
+
         Unit unit = repository.findByUuid(unitUUID);
         CaseType caseType = new CaseType(null,UUID.randomUUID(),"TEST","TEST","a1", unitUUID,"TEST", true,true);
         entityManager.persistAndFlush(caseType);
@@ -72,7 +73,7 @@ public class UnitRepositoryTest {
         Set<Permission> permissions = new HashSet<Permission>(){{
             add(new Permission(AccessLevel.OWNER,null, caseType));
         }};
-        Team team = new Team("a team", teamUUID, permissions);
+        Team team = new Team("a team", permissions);
         unit.addTeam(team);
         entityManager.persistAndFlush(unit);
 
@@ -87,19 +88,19 @@ public class UnitRepositoryTest {
 
     @Test(expected = PersistenceException.class)
     public void shouldThrowExceptionWhenuplicateUUID() {
-        this.entityManager.persist(new Unit("Unit 1", "UNIT_1", unitUUID,true));
+        this.entityManager.persist(new Unit("Unit 1", "UNIT_1",true));
     }
 
     @Test(expected = PersistenceException.class)
     public void shouldThrowExceptionWhenuplicateShortCode() {
-        this.entityManager.persist(new Unit("Unit 1", "UNIT_1", unitUUID,true));
-        this.entityManager.persist(new Unit("Unit 2", "UNIT_1", UUID.randomUUID(),true));
+        this.entityManager.persist(new Unit("Unit 1", "UNIT_1",true));
+        this.entityManager.persist(new Unit("Unit 2", "UNIT_1",true));
     }
 
     @Test(expected = PersistenceException.class)
     public void shouldThrowExceptionWhenuplicateDisplayName() {
-        this.entityManager.persist(new Unit("Unit 1", "UNIT_1", unitUUID,true));
-        this.entityManager.persist(new Unit("Unit 1", "UNIT_2", UUID.randomUUID(),true));
+        this.entityManager.persist(new Unit("Unit 1", "UNIT_1",true));
+        this.entityManager.persist(new Unit("Unit 1", "UNIT_2",true));
     }
 
 }

@@ -27,7 +27,7 @@ public class UnitService {
     }
 
     public void createUnit(UnitDto unit) {
-        Unit newUnit = new Unit(unit.getDisplayName(),unit.getShortCode(), UUID.fromString(unit.getUuid()), true);
+        Unit newUnit = new Unit(unit.getDisplayName(),unit.getShortCode(), true);
         try {
             unitRepository.save(newUnit);
         }

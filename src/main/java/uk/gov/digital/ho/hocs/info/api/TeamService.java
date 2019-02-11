@@ -107,10 +107,9 @@ public class TeamService {
         log.debug("Creating Team {}", newTeam.getDisplayName());
         Team team = teamRepository.findByUuid(newTeam.getUuid());
         Unit unit = unitRepository.findByUuid(unitUUID);
-        Set<Permission> permissions = getPermissionsFromDto(newTeam.getPermissions(), team);
         if (team == null) {
             log.debug("Team {} doesn't exist, creating.", newTeam.getDisplayName());
-            team = new Team(newTeam.getDisplayName(), newTeam.getUuid(), true);
+            team = new Team(newTeam.getDisplayName(), true);
             team.addPermissions(getPermissionsFromDto(newTeam.getPermissions(), team));
             unit.addTeam(team);
         } else {

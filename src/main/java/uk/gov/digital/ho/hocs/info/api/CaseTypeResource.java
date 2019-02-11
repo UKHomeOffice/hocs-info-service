@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.GetCaseTypesResponse;
 
 import java.time.LocalDate;
@@ -54,5 +55,11 @@ public class CaseTypeResource {
         LocalDate receivedDate = LocalDate.parse(received);
         Map<String, LocalDate> deadlines = caseTypeService.getAllStageDeadlinesForCaseType(caseType, receivedDate);
         return ResponseEntity.ok(deadlines);
+    }
+
+    @PostMapping
+    public ResponseEntity createCaseType(CreateCaseTypeDto caseType) {
+        caseTypeService.createCaseType(caseType);
+        return ResponseEntity.ok().build();
     }
 }

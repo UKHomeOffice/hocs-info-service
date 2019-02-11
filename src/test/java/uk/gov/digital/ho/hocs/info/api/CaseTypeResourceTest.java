@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.api.CaseTypeResource;
 import uk.gov.digital.ho.hocs.info.api.CaseTypeService;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.GetCaseTypesResponse;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
@@ -32,58 +33,8 @@ public class CaseTypeResourceTest {
     }
 
     @Test
-    public void shouldReturnCaseTypesWhenSingleTenantRequestedForSingleCase() {
-
-
-        when(caseTypeService.getAllCaseTypesForUser(false)).thenReturn(getMockCaseTypesSingleTenant());
-
-        ResponseEntity<GetCaseTypesResponse> response =
-                caseTypeResource.getCaseTypes(false);
-
-        verify(caseTypeService, times(1)).getAllCaseTypesForUser(false);
-
-        List<CaseTypeDto> responseEntityAsList = new ArrayList<>(Objects.requireNonNull(response.getBody()).getCaseTypes());
-
-        assertThat(response).isNotNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        CaseTypeDto result1 = responseEntityAsList.stream().filter(x -> "MIN".equals(x.getType())).findAny().orElse(null);
-        assertThat(result1).isNotNull();
-        assertThat(result1.getDisplayName()).isEqualTo("DCU Ministerial");
-        CaseTypeDto result2 = responseEntityAsList.stream().filter(x -> "TRO".equals(x.getType())).findAny().orElse(null);
-        assertThat(result2).isNotNull();
-        assertThat(result2.getDisplayName()).isEqualTo("DCU Treat Official");
-        CaseTypeDto result3 = responseEntityAsList.stream().filter(x -> "DTEN".equals(x.getType())).findAny().orElse(null);
-        assertThat(result3).isNotNull();
-        assertThat(result3.getDisplayName()).isEqualTo("DCU Number 10");
-    }
-
-    @Test
-    public void shouldReturnCaseTypesWhenSingleTenantRequestedForBulkCaseExcludingDTENCaseType() {
-
-        when(caseTypeService.getAllCaseTypesForUser(true)).thenReturn(getMockCaseTypesSingleTenantBulk());
-
-        ResponseEntity<GetCaseTypesResponse> response =
-                caseTypeResource.getCaseTypes(true);
-
-        verify(caseTypeService, times(1)).getAllCaseTypesForUser(true);
-
-        List<CaseTypeDto> responseEntityAsList = new ArrayList<>(Objects.requireNonNull(response.getBody()).getCaseTypes());
-
-        assertThat(response).isNotNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        CaseTypeDto result1 = responseEntityAsList.stream().filter(x -> "MIN".equals(x.getType())).findAny().orElse(null);
-        assertThat(result1).isNotNull();
-        assertThat(result1.getDisplayName()).isEqualTo("DCU Ministerial");
-        CaseTypeDto result2 = responseEntityAsList.stream().filter(x -> "TRO".equals(x.getType())).findAny().orElse(null);
-        assertThat(result2).isNotNull();
-        assertThat(result2.getDisplayName()).isEqualTo("DCU Treat Official");
-        CaseTypeDto result3 = responseEntityAsList.stream().filter(x -> "DTEN".equals(x.getType())).findAny().orElse(null);
-        assertThat(result3).isNull();
-    }
-
-    @Test
-    public void shouldReturnCaseTypesWhenMultipleTenantsRequestedForSingleCase() {
-        when(caseTypeService.getAllCaseTypesForUser(false)).thenReturn(getMockCaseTypesMultipleTenant());
+    public void shouldReturnCaseTypesForSingleCase() {
+        when(caseTypeService.getAllCaseTypesForUser(false)).thenReturn(getMockCaseTypes());
 
         ResponseEntity<GetCaseTypesResponse> response =
                 caseTypeResource.getCaseTypes(false);
@@ -115,8 +66,8 @@ public class CaseTypeResourceTest {
     }
 
     @Test
-    public void shouldReturnCaseTypesWhenMultipleTenantsRequestedForBulkCaseExcludingDTENCaseType() {
-        when(caseTypeService.getAllCaseTypesForUser(true)).thenReturn(getMockCaseTypesMultipleTenantBulk());
+    public void shouldReturnCaseTypesForBulkCaseExcludingDTENCaseType() {
+        when(caseTypeService.getAllCaseTypesForUser(true)).thenReturn(getMockCaseTypesBulk());
 
         ResponseEntity<GetCaseTypesResponse> response =
                 caseTypeResource.getCaseTypes(true);
@@ -146,24 +97,21 @@ public class CaseTypeResourceTest {
         assertThat(result6.getDisplayName()).isEqualTo("UKVI Number 10");
     }
 
-    private static Set<CaseType> getMockCaseTypesSingleTenant() {
-        UUID unitUUID = UUID.randomUUID();
-        Set<CaseType> caseTypesSet = new HashSet<>();
-        caseTypesSet.add(new CaseType(1L,UUID.randomUUID(),"DCU Ministerial","a1", "MIN",unitUUID, "DCU_MIN_DISPATCH", true, true));
-        caseTypesSet.add(new CaseType(2L,UUID.randomUUID(),"DCU Treat Official","a2", "TRO",unitUUID, "DCU_TRO_DISPATCH", true, true));
-        caseTypesSet.add(new CaseType(3L,UUID.randomUUID(),"DCU Number 10","a3", "DTEN",unitUUID, "DCU_DTEN_DISPATCH", true, true));
-        return caseTypesSet;
+    @Test
+    public void shouldAddNewCaseType() {
+        CreateCaseTypeDto caseType = new CreateCaseTypeDto("NEW Case Type", "NEW", "New Case Type", "c1", "NEW",true,true,"STAGE_ONE");
+        doNothing().when(caseTypeService).createCaseType(caseType);
+
+        ResponseEntity response =
+                caseTypeResource.createCaseType(caseType);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(caseTypeService, times(1)).createCaseType(caseType);
+
     }
 
-    private static Set<CaseType> getMockCaseTypesSingleTenantBulk() {
-        UUID unitUUID = UUID.randomUUID();
-        Set<CaseType> caseTypesSet = new HashSet<>();
-        caseTypesSet.add(new CaseType(1L,UUID.randomUUID(),"DCU Ministerial", "a1", "MIN",unitUUID,"DCU_MIN_DISPATCH",  true, true));
-        caseTypesSet.add(new CaseType(2L,UUID.randomUUID(),"DCU Treat Official","a2", "TRO",unitUUID,"DCU_TRO_DISPATCH",  true, true));
-        return caseTypesSet;
-    }
-
-    private Set<CaseType> getMockCaseTypesMultipleTenant() {
+    private Set<CaseType> getMockCaseTypes() {
         UUID unitUUID1 = UUID.randomUUID();
         UUID unitUUID2 = UUID.randomUUID();
 
@@ -177,7 +125,7 @@ public class CaseTypeResourceTest {
         return caseTypesSet;
     }
 
-    private Set<CaseType> getMockCaseTypesMultipleTenantBulk() {
+    private Set<CaseType> getMockCaseTypesBulk() {
         UUID unitUUID1 = UUID.randomUUID();
         UUID unitUUID2 = UUID.randomUUID();
 

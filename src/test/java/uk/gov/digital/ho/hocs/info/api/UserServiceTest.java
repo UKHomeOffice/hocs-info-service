@@ -72,8 +72,8 @@ public class UserServiceTest {
     @Test
     public void shouldGetAllUsersForTeam(){
         UUID teamUUID = UUID.randomUUID();
-        Unit unit = new Unit("UNIT ONE", "UNIT1", UUID.randomUUID(), Boolean.TRUE);
-        Team team = new Team("Team1",teamUUID,Boolean.TRUE);
+        Unit unit = new Unit("UNIT ONE", "UNIT1", Boolean.TRUE);
+        Team team = new Team("Team1",Boolean.TRUE);
         team.setUnit(unit);
 
         Set<UserRepresentation> userRepresentations = new HashSet<>();

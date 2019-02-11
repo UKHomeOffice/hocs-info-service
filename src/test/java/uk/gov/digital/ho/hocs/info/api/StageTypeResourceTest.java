@@ -28,8 +28,7 @@ public class StageTypeResourceTest {
     StageTypeService stageTypeService;
 
     StageTypeResource service;
-    UUID teamUUID = UUID.randomUUID();
-    Team team = new Team( "Team1",teamUUID , new HashSet<>());
+    Team team = new Team( "Team1" , new HashSet<>());
 
     @Before
     public void setup() {
@@ -57,11 +56,11 @@ public class StageTypeResourceTest {
 
     @Test
     public void shouldGetTeamForStageType() {
-        Team team = new Team( "Team1",teamUUID , true);
+        Team team = new Team( "Team1" , true);
         when(stageTypeService.getTeamForStageType("STAGE_TYPE")).thenReturn(team);
 
         ResponseEntity<TeamDto> result = service.getTeamForStageType("STAGE_TYPE");
-        assertThat(result.getBody().getUuid()).isEqualTo(teamUUID);
+        assertThat(result.getBody().getUuid()).isEqualTo(team.getUuid());
         assertThat(result.getBody().getDisplayName()).isEqualTo("Team1");
 
     }

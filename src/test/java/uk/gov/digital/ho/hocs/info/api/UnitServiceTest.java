@@ -45,8 +45,8 @@ public class UnitServiceTest {
         UUID unitUUID = UUID.randomUUID();
 
         Set<Unit> units = new HashSet<Unit>(){{
-            add(new Unit( "UNIT1", "TEST1", unitUUID,true));
-            add(new Unit( "UNIT2", "TEST2", unitUUID,true));
+            add(new Unit( "UNIT1", "TEST1",true));
+            add(new Unit( "UNIT2", "TEST2",true));
 
         }};
 
@@ -67,7 +67,7 @@ public class UnitServiceTest {
         UUID unitUUID = UUID.randomUUID();
 
         Set<Unit> units = new HashSet<Unit>(){{
-            add(new Unit("UNIT1", "TEST1", unitUUID,true));
+            add(new Unit("UNIT1", "TEST1",true));
         }};
         when(unitRepository.findAll()).thenReturn(units);
 

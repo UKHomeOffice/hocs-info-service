@@ -11,12 +11,10 @@ public class UnitTest {
 
     @Test
     public void shouldAddTeamsToEntity() {
-        UUID team1UUID = UUID.randomUUID();
-        UUID team2UUID = UUID.randomUUID();
-        Unit unit = new Unit("Unit 1", "TEST", UUID.randomUUID(), true);
+        Unit unit = new Unit("Unit 1", "TEST", true);
 
-        Team team1 = new Team("Team 2", team1UUID, true);
-        Team team2 = new Team("Team 2", team2UUID, true);
+        Team team1 = new Team("Team 2", true);
+        Team team2 = new Team("Team 2", true);
 
         assertThat(unit.getTeams().size()).isEqualTo(0);
         unit.addTeam(team1);
@@ -28,16 +26,14 @@ public class UnitTest {
 
     @Test
     public void shouldRemoveTeam() {
-        UUID team1UUID = UUID.randomUUID();
-        UUID team2UUID = UUID.randomUUID();
-        Unit unit = new Unit("Unit 1", "TEST", UUID.randomUUID(), true);
+        Unit unit = new Unit("Unit 1", "TEST", true);
 
-        Team team1 = new Team("Team 2", team1UUID, true);
-        Team team2 = new Team("Team 2", team2UUID, true);
+        Team team1 = new Team("Team 2", true);
+        Team team2 = new Team("Team 2", true);
         unit.addTeam(team1);
         unit.addTeam(team2);
 
-        unit.removeTeam(team2UUID);
+        unit.removeTeam(team2.getUuid());
 
         assertThat(unit.getTeams()).contains(team1);
         assertThat(unit.getTeams()).doesNotContain(team2);

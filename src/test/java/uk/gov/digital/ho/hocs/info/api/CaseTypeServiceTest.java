@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
@@ -124,6 +126,19 @@ public class CaseTypeServiceTest {
         assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "IMCB", "UKVI B REF", unitUUID);
         assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "IMCM", "UKVI Ministerial REF", unitUUID);
         assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "UTEN", "UKVI Number 10", unitUUID);
+    }
+
+    @Test
+    public void shouldCreateNewCaseTypeInRepository() {
+
+        CreateCaseTypeDto caseType = new CreateCaseTypeDto("NEW Case Type", "NEW", "New Case Type", "c1", "NEW",true,true,"STAGE_ONE");
+
+        CaseType response = mock(CaseType.class);
+        when(caseTypeRepository.save(any(CaseType.class))).thenReturn(response);
+
+        caseTypeService.createCaseType(caseType);
+
+        verify(caseTypeRepository, times(1)).save(any(CaseType.class));
     }
 
     private void assetCaseTypeDtoContainsCorrectElements(Set<CaseType> caseTypeDtos, String CaseType, String DisplayName, UUID tenant) {

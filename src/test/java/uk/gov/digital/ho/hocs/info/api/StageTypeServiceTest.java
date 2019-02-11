@@ -27,8 +27,7 @@ public class StageTypeServiceTest {
     private HolidayDateRepository holidayDateRepository;
 
     private StageTypeService service;
-    private final UUID teamUUID = UUID.randomUUID();
-    private final Team team = new Team( "Team1",teamUUID , new HashSet<>());
+    private final Team team = new Team( "Team1" , new HashSet<>());
 
     @Before
     public void setup() {
@@ -55,7 +54,7 @@ public class StageTypeServiceTest {
         when(stageTypeRepository.findByType("STAGE_TYPE")).thenReturn(stage);
 
         Team result = service.getTeamForStageType("STAGE_TYPE");
-        assertThat(result.getUuid()).isEqualTo(teamUUID);
+        assertThat(result.getUuid()).isEqualTo(team.getUuid());
         assertThat(result.getDisplayName()).isEqualTo("Team1");
 
     }

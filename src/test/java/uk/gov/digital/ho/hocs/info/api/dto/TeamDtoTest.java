@@ -11,16 +11,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TeamDtoTest {
 
-    UUID uuid = UUID.randomUUID();
-
     @Test
     public void from() {
 
-        Team team = new Team("displayName", uuid, true);
+        Team team = new Team("displayName", true);
 
         TeamDto teamDto = TeamDto.from(team);
 
         assertThat(teamDto.getDisplayName()).isEqualTo("displayName");
-        assertThat(teamDto.getUuid()).isEqualTo(uuid);
+        assertThat(teamDto.getUuid()).isEqualTo(team.getUuid());
     }
 }

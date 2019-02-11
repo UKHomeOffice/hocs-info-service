@@ -39,10 +39,10 @@ public class Unit implements Serializable {
     @OneToMany(mappedBy = "unit", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Team> teams;
 
-    public Unit(String displayName, String shortCode, UUID uuid, boolean active) {
+    public Unit(String displayName, String shortCode, boolean active) {
         this.displayName = displayName;
         this.shortCode = shortCode;
-        this.uuid = uuid;
+        this.uuid = UUID.randomUUID();
         this.active = active;
         this.teams = new HashSet<>(0);
     }

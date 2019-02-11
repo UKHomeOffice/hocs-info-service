@@ -14,16 +14,16 @@ import java.util.UUID;
 @EqualsAndHashCode(of = {"uuid"})
 public class Team implements Serializable {
 
-    public Team(String displayName, UUID uuid, boolean active) {
+    public Team(String displayName, boolean active) {
         this.displayName = displayName;
-        this.uuid = uuid;
+        this.uuid = UUID.randomUUID();
         this.active = active;
         this.permissions = new HashSet<>(0);
     }
 
-    public Team(String displayName, UUID uuid, Set<Permission> permissions) {
+    public Team(String displayName, Set<Permission> permissions) {
         this.displayName = displayName;
-        this.uuid = uuid;
+        this.uuid = UUID.randomUUID();
         this.permissions = new HashSet<>(permissions.size());
         if(permissions != null) {
             addPermissions(permissions);

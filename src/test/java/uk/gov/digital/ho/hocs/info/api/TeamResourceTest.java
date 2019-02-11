@@ -94,15 +94,14 @@ public class TeamResourceTest {
 
     @Test
     public void shouldGetTeamForUUID() {
-        UUID teamUUID = UUID.randomUUID();
         UUID unitUUID = UUID.randomUUID();
-        Team team = new Team("Team1", teamUUID, true);
-        when(teamService.getTeam(teamUUID)).thenReturn(team);
+        Team team = new Team("Team1", true);
+        when(teamService.getTeam(team.getUuid())).thenReturn(team);
 
-        ResponseEntity<TeamDto> result = teamResource.getTeam(unitUUID.toString(), teamUUID.toString());
-        assertThat(result.getBody().getUuid()).isEqualTo(teamUUID);
+        ResponseEntity<TeamDto> result = teamResource.getTeam(unitUUID.toString(), team.getUuid().toString());
+        assertThat(result.getBody().getUuid()).isEqualTo(team.getUuid());
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(teamService, times(1)).getTeam(teamUUID);
+        verify(teamService, times(1)).getTeam(team.getUuid());
         verifyNoMoreInteractions(teamService);
     }
 
@@ -121,7 +120,7 @@ public class TeamResourceTest {
     public void shouldCreateNewTeam() {
         UUID teamUUID = UUID.randomUUID();
         UUID unitUUID = UUID.randomUUID();
-        Team team = new Team("Team1", teamUUID, true);
+        Team team = new Team("Team1", true);
         TeamDto teamDto = TeamDto.from(team);
         when(teamService.createTeam(teamDto, unitUUID)).thenReturn(team);
 
@@ -175,8 +174,8 @@ public class TeamResourceTest {
 
     private Set<Team> getTeams() {
         return new HashSet<Team>() {{
-            add(new Team("Team1", UUID.randomUUID(), true));
-            add(new Team("Team2", UUID.randomUUID(), true));
+            add(new Team("Team1", true));
+            add(new Team("Team2", true));
         }};
     }
 
