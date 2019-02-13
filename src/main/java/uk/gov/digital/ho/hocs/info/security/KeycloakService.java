@@ -86,4 +86,7 @@ public class KeycloakService {
     }
 
 
+    public void removeUserFromTeam(UUID userUUID, UUID teamUUID){
+
+    }
 }

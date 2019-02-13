@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.info.application.RestHelper;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCasesForUserResponse;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCaseworkCaseDataResponse;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetTopicResponse;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
@@ -64,4 +65,13 @@ public class CaseworkClient {
         }
     }
 
+    public GetCasesForUserResponse getCasesForUser(UUID userUUID){
+        ResponseEntity<GetCasesForUserResponse> response = restHelper.get(serviceBaseURL, String.format("user/%s", userUUID), GetCasesForUserResponse.class);
+        if (response.getStatusCodeValue() == 200) {
+            log.info("Got cases for User: {}", userUUID);
+            return response.getBody();
+        } else {
+            throw new ApplicationExceptions.EntityNotFoundException("Could not get cases for User %s", userUUID, response.getStatusCodeValue());
+        }
+    }
 }

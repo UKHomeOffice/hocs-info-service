@@ -123,4 +123,5 @@ public class KeycloakServiceTest {
         assertThat(result.size()).isEqualTo(1);
     }
 
+
 }

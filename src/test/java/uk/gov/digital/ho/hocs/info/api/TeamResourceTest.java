@@ -179,4 +179,28 @@ public class TeamResourceTest {
         }};
     }
 
+    @Test
+    public void shouldRemoveUserFromTeam()
+    {
+        UUID teamUUID = UUID.randomUUID();
+        UUID userUUID = UUID.randomUUID();
+
+        doNothing().when(teamService).removeUserFromTeam(userUUID, teamUUID);
+        ResponseEntity result = teamResource.removeUserFromTeam(userUUID.toString(), teamUUID.toString());
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(teamService, times(1)).removeUserFromTeam(userUUID, teamUUID);
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test(expected = ApplicationExceptions.UserRemoveException.class)
+    public void shouldNotRemoveUserFromTeamWhenUserHasCases()
+    {
+        UUID teamUUID = UUID.randomUUID();
+        UUID userUUID = UUID.randomUUID();
+
+        doThrow(new ApplicationExceptions.UserRemoveException()).when(teamService).removeUserFromTeam(userUUID,teamUUID);
+        ResponseEntity result = teamResource.removeUserFromTeam(userUUID.toString(), teamUUID.toString());
+        verify(teamService, times(1)).removeUserFromTeam(userUUID, teamUUID);
+        verifyNoMoreInteractions(teamService);
+    }
 }

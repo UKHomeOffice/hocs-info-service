@@ -23,6 +23,7 @@ public enum LogEvent {
     REST_HELPER_MALFORMED_RESPONSE,
     FORM_CREATED,
     AUDIT_EVENT_CREATED,
-    AUDIT_FAILED;
+    AUDIT_FAILED,
+    USER_REMOVED_FROM_TEAM;
     public static final String EVENT = "event_id";
 }

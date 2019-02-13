@@ -171,4 +171,23 @@ public interface ApplicationExceptions {
 
     }
 
+
+    class UserRemoveException extends RuntimeException {
+        private final LogEvent event;
+
+        public UserRemoveException(String msg, LogEvent event, Object... args) {
+            super(String.format(msg, args));
+            this.event = event;
+        }
+
+        public UserRemoveException(String msg, Object... args) {
+            super(String.format(msg, args));
+            this.event = LogEvent.UNCAUGHT_EXCEPTION;
+        }
+
+        public LogEvent getEvent() {
+            return event;
+        }
+    }
+
 }

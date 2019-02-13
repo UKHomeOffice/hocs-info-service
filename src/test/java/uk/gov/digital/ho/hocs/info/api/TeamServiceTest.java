@@ -9,6 +9,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCasesForUserResponse;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
@@ -467,5 +468,36 @@ public class TeamServiceTest {
             add(new Team("Team1",permissions));
             add(new Team( "Team2", new HashSet<>()));
         }};
+    }
+
+    @Test
+    public void shouldRemoveUserFromTeam(){
+        Team team = new Team("a team", true);
+        UUID userUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        Set<UUID> casesSet = new HashSet<>();
+        casesSet.add(UUID.randomUUID());
+        GetCasesForUserResponse response = new GetCasesForUserResponse(casesSet);
+
+//        when(parentTopicRepository.findAllActiveParentTopicsForTeam(team.getUuid())).thenReturn(new ArrayList<>());
+//        when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
+
+//        assertThat(team.isActive()).isTrue();
+//        teamService.deleteTeam(team.getUuid());
+//        assertThat(team.isActive()).isFalse();
+
+//        verify(parentTopicRepository, times(1)).findAllActiveParentTopicsForTeam(team.getUuid());
+//        verify(teamRepository, times(1)).findByUuid(team.getUuid());
+//        verifyNoMoreInteractions(parentTopicRepository);
+//        verifyNoMoreInteractions(teamRepository);
+        when(caseworkClient.getCasesForUser(userUUID)).thenReturn(response);
+
+        teamService.removeUserFromTeam(userUUID,teamUUID);
+        verify(keycloakService, times(1)).removeUserFromTeam(userUUID, teamUUID);
+        verifyNoMoreInteractions(keycloakService);
+
+
+
     }
 }
