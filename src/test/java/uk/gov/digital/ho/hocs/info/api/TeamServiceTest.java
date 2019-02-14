@@ -478,7 +478,7 @@ public class TeamServiceTest {
 
         Set<UUID> casesSet = new HashSet<>();
         casesSet.add(UUID.randomUUID());
-        GetCasesForUserResponse response = new GetCasesForUserResponse(casesSet);
+        GetCasesForUserResponse response = new GetCasesForUserResponse(new HashSet<>());
 
 //        when(parentTopicRepository.findAllActiveParentTopicsForTeam(team.getUuid())).thenReturn(new ArrayList<>());
 //        when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
@@ -491,7 +491,7 @@ public class TeamServiceTest {
 //        verify(teamRepository, times(1)).findByUuid(team.getUuid());
 //        verifyNoMoreInteractions(parentTopicRepository);
 //        verifyNoMoreInteractions(teamRepository);
-        when(caseworkClient.getCasesForUser(userUUID)).thenReturn(response);
+        when(caseworkClient.getCasesForUser(userUUID, teamUUID)).thenReturn(response);
 
         teamService.removeUserFromTeam(userUUID,teamUUID);
         verify(keycloakService, times(1)).removeUserFromTeam(userUUID, teamUUID);

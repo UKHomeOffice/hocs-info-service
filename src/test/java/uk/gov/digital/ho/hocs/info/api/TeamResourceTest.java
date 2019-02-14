@@ -198,7 +198,7 @@ public class TeamResourceTest {
         UUID teamUUID = UUID.randomUUID();
         UUID userUUID = UUID.randomUUID();
 
-        doThrow(new ApplicationExceptions.UserRemoveException()).when(teamService).removeUserFromTeam(userUUID,teamUUID);
+        doThrow(ApplicationExceptions.UserRemoveException.class).when(teamService).removeUserFromTeam(userUUID,teamUUID);
         ResponseEntity result = teamResource.removeUserFromTeam(userUUID.toString(), teamUUID.toString());
         verify(teamService, times(1)).removeUserFromTeam(userUUID, teamUUID);
         verifyNoMoreInteractions(teamService);

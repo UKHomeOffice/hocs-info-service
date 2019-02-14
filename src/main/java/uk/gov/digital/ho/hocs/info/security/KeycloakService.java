@@ -44,6 +44,19 @@ public class KeycloakService {
         }
     }
 
+    public void removeUserFromTeam(UUID userUUID, UUID teamUUID) {
+        try {
+            String teamPath = "/" +  Base64UUID.UUIDToBase64String(teamUUID);
+            RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
+            UserResource user = hocsRealm.users().get(userUUID.toString());
+            GroupRepresentation group = hocsRealm.getGroupByPath(teamPath);
+            user.leaveGroup(group.getId());
+        } catch (Exception e) {
+            log.error("Failed to remove user {} from team {} for reason: {}", userUUID, teamUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            throw new KeycloakException(e.getMessage(), e);
+        }
+    }
+
     public void createTeamGroupIfNotExists(UUID teamUUID) {
         try {
             String encodedTeamUUID = Base64UUID.UUIDToBase64String(teamUUID);
@@ -85,8 +98,4 @@ public class KeycloakService {
         return keycloakClient.realm(hocsRealmName).groups().group((group).getId()).members().stream().collect(Collectors.toSet());
     }
 
-
-    public void removeUserFromTeam(UUID userUUID, UUID teamUUID){
-
-    }
 }

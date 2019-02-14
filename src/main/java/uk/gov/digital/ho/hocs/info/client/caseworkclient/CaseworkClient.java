@@ -65,8 +65,8 @@ public class CaseworkClient {
         }
     }
 
-    public GetCasesForUserResponse getCasesForUser(UUID userUUID){
-        ResponseEntity<GetCasesForUserResponse> response = restHelper.get(serviceBaseURL, String.format("user/%s", userUUID), GetCasesForUserResponse.class);
+    public GetCasesForUserResponse getCasesForUser(UUID userUUID, UUID teamUUID){
+        ResponseEntity<GetCasesForUserResponse> response = restHelper.get(serviceBaseURL, String.format("stage/team/%s/user/%s", teamUUID, userUUID), GetCasesForUserResponse.class);
         if (response.getStatusCodeValue() == 200) {
             log.info("Got cases for User: {}", userUUID);
             return response.getBody();

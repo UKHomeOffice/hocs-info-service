@@ -208,10 +208,8 @@ public class TeamService {
     public void removeUserFromTeam(UUID userUUID, UUID teamUUID) {
         log.debug("Removing User {} from Team {}", userUUID, teamUUID);
 
-        if (caseworkClient.getCasesForUser(userUUID).getCaseUUIDs().isEmpty()) {
-
-            //remove user from keycloak
-
+        if (caseworkClient.getCasesForUser(userUUID, teamUUID).getCaseUUIDs().isEmpty()) {
+            keycloakService.removeUserFromTeam(userUUID, teamUUID);
             auditClient.removeUserFromTeam(userUUID, teamUUID);
             log.info("Removed user with UUID {} from team with UUID {}", userUUID.toString(), teamUUID.toString(), value(EVENT, USER_REMOVED_FROM_TEAM));
         } else {
