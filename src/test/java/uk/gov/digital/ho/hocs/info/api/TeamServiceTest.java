@@ -351,7 +351,6 @@ public class TeamServiceTest {
     @Test
     public void ShouldAuditCreateTeam(){
 
-
         Unit unit = new Unit("UNIT1", "UNIT1",true);
 
         TeamDto teamDto = new TeamDto( "Team1", new HashSet<>());
