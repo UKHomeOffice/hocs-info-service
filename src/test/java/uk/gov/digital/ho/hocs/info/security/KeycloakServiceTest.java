@@ -56,20 +56,20 @@ public class KeycloakServiceTest {
 
     @Test
     public void shouldCallKeyCloakToRemoveUserFromGroup() {
-//        UUID teamUUID = UUID.randomUUID();
-//        String teamUUIDPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
-//        UserResource userResource = mock(UserResource.class);
-//        GroupRepresentation teamGroup = mock(GroupRepresentation.class);
-//
-//        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
-//        when(hocsRealm.users().get(userUUID.toString())).thenReturn(userResource);
-//        when(hocsRealm.getGroupByPath(teamUUIDPath)).thenReturn(teamGroup);
-//        when(teamGroup.getId()).thenReturn("TEAM_GROUP");
-//        doNothing().when(userResource).joinGroup("TEAM_GROUP");
-//
-//        service = new KeycloakService(keycloakClient, HOCS_REALM);
-//        service.addUserToTeam(userUUID, teamUUID);
-//        verify(userResource, times(1)).joinGroup("TEAM_GROUP");
+        UUID teamUUID = UUID.randomUUID();
+        String teamUUIDPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
+        UserResource userResource = mock(UserResource.class);
+        GroupRepresentation teamGroup = mock(GroupRepresentation.class);
+
+        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
+        when(hocsRealm.users().get(userUUID.toString())).thenReturn(userResource);
+        when(hocsRealm.getGroupByPath(teamUUIDPath)).thenReturn(teamGroup);
+        when(teamGroup.getId()).thenReturn("TEAM_GROUP");
+        doNothing().when(userResource).leaveGroup("TEAM_GROUP");
+
+        service = new KeycloakService(keycloakClient, HOCS_REALM);
+        service.removeUserFromTeam(userUUID, teamUUID);
+        verify(userResource, times(1)).leaveGroup("TEAM_GROUP");
     }
 
     @Test
@@ -140,6 +140,5 @@ public class KeycloakServiceTest {
         Set<UserRepresentation> result = service.getUsersForTeam(teamUUID);
         assertThat(result.size()).isEqualTo(1);
     }
-
-
+    
 }

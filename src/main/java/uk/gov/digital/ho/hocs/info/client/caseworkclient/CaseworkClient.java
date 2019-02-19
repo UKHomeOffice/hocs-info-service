@@ -12,6 +12,7 @@ import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetTopicResponse;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 
 
+import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
@@ -65,8 +66,8 @@ public class CaseworkClient {
         }
     }
 
-    public GetCasesForUserResponse getCasesForUser(UUID userUUID, UUID teamUUID){
-        ResponseEntity<GetCasesForUserResponse> response = restHelper.get(serviceBaseURL, String.format("stage/team/%s/user/%s", teamUUID, userUUID), GetCasesForUserResponse.class);
+    public Set getCasesForUser(UUID userUUID, UUID teamUUID){
+        ResponseEntity<Set> response = restHelper.get(serviceBaseURL, String.format("stage/team/%s/user/%s", teamUUID, userUUID), Set.class);
         if (response.getStatusCodeValue() == 200) {
             log.info("Got cases for User: {}", userUUID);
             return response.getBody();

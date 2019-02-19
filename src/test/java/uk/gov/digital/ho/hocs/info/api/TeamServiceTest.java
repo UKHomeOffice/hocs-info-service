@@ -214,6 +214,34 @@ public class TeamServiceTest {
     }
 
     @Test
+    public void shouldRemoveUserWithNoCasesFromTeam(){
+        Team team = new Team("a team", true);
+        UUID userUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        when(caseworkClient.getCasesForUser(userUUID, teamUUID)).thenReturn(new HashSet<>());
+
+        teamService.removeUserFromTeam(userUUID,teamUUID);
+        verify(keycloakService, times(1)).removeUserFromTeam(userUUID, teamUUID);
+        verifyNoMoreInteractions(keycloakService);
+    }
+
+    @Test(expected = ApplicationExceptions.UserRemoveException.class)
+    public void shouldNotRemoveUserWithCasesFromTeam(){
+        Team team = new Team("a team", true);
+        UUID userUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        Set<UUID> casesSet = new HashSet<>();
+        casesSet.add(UUID.randomUUID());
+        when(caseworkClient.getCasesForUser(userUUID, teamUUID)).thenReturn(casesSet);
+
+        teamService.removeUserFromTeam(userUUID, teamUUID);
+
+        verifyZeroInteractions(keycloakService);
+    }
+
+    @Test
     public void shouldUpdatePermissionsInDatabase() {
 
         Unit unit = new Unit("a unit", "UNIT", true);
@@ -471,33 +499,34 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void shouldRemoveUserFromTeam(){
+    public void shouldAuditSuccessfulRemoveUserFromTeam(){
+        Team team = new Team("a team", true);
+        UUID userUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        when(caseworkClient.getCasesForUser(userUUID, teamUUID)).thenReturn(new HashSet<>());
+
+        teamService.removeUserFromTeam(userUUID,teamUUID);
+        verify(auditClient, times(1)).removeUserFromTeam(userUUID, teamUUID);
+    }
+
+    @Test
+    public void shouldNotAuditWhenRemoveUserFromTeamThrowsException(){
         Team team = new Team("a team", true);
         UUID userUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
 
         Set<UUID> casesSet = new HashSet<>();
         casesSet.add(UUID.randomUUID());
-        GetCasesForUserResponse response = new GetCasesForUserResponse(new HashSet<>());
+        when(caseworkClient.getCasesForUser(userUUID, teamUUID)).thenReturn(casesSet);
 
-//        when(parentTopicRepository.findAllActiveParentTopicsForTeam(team.getUuid())).thenReturn(new ArrayList<>());
-//        when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
+        try {
+            teamService.removeUserFromTeam(userUUID, teamUUID);
+        } catch (ApplicationExceptions.UserRemoveException e) {
+            //Do nothing
+        }
 
-//        assertThat(team.isActive()).isTrue();
-//        teamService.deleteTeam(team.getUuid());
-//        assertThat(team.isActive()).isFalse();
-
-//        verify(parentTopicRepository, times(1)).findAllActiveParentTopicsForTeam(team.getUuid());
-//        verify(teamRepository, times(1)).findByUuid(team.getUuid());
-//        verifyNoMoreInteractions(parentTopicRepository);
-//        verifyNoMoreInteractions(teamRepository);
-        when(caseworkClient.getCasesForUser(userUUID, teamUUID)).thenReturn(response);
-
-        teamService.removeUserFromTeam(userUUID,teamUUID);
-        verify(keycloakService, times(1)).removeUserFromTeam(userUUID, teamUUID);
-        verifyNoMoreInteractions(keycloakService);
-
-
-
+        verifyZeroInteractions(auditClient);
     }
+
 }

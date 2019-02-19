@@ -109,7 +109,7 @@ public class TeamResource {
 
 
 
-    @PostMapping(value = "/unit/{unitUUID}/teams/{teamUUID}")
+    @DeleteMapping(value = "/users/{userUUID}/team/{teamUUID}")
     public ResponseEntity removeUserFromTeam(@PathVariable String userUUID, @PathVariable String teamUUID) {
         teamService.removeUserFromTeam(UUID.fromString(userUUID), UUID.fromString(teamUUID));
         return ResponseEntity.ok().build();
