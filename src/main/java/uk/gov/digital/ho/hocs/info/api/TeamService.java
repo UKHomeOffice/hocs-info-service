@@ -18,7 +18,6 @@ import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.UnitRepository;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
-import uk.gov.digital.ho.hocs.info.security.Base64UUID;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
 import java.util.*;
@@ -204,4 +203,18 @@ public class TeamService {
         keycloakService.createTeamGroupIfNotExists(teamUUID);
         userUUID.ifPresent(uuid -> keycloakService.addUserToTeam(uuid, teamUUID));
     }
+
+    @Transactional
+    public void removeUserFromTeam(UUID userUUID, UUID teamUUID) {
+        log.debug("Removing User {} from Team {}", userUUID, teamUUID);
+
+        if (caseworkClient.getCasesForUser(userUUID, teamUUID).isEmpty()) {
+            keycloakService.removeUserFromTeam(userUUID, teamUUID);
+            auditClient.removeUserFromTeam(userUUID, teamUUID);
+            log.info("Removed user with UUID {} from team with UUID {}", userUUID.toString(), teamUUID.toString(), value(EVENT, USER_REMOVED_FROM_TEAM));
+        } else {
+            throw new ApplicationExceptions.UserRemoveException("Unable to remove user {} from team {} as user has assigned cases", userUUID, teamUUID);
+        }
+    }
+
 }

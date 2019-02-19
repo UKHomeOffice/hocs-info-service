@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.info.application.RestHelper;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCasesForUserResponse;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCaseworkCaseDataResponse;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetTopicResponse;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 
 
+import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
@@ -64,4 +66,13 @@ public class CaseworkClient {
         }
     }
 
+    public Set getCasesForUser(UUID userUUID, UUID teamUUID){
+        ResponseEntity<Set> response = restHelper.get(serviceBaseURL, String.format("stage/team/%s/user/%s", teamUUID, userUUID), Set.class);
+        if (response.getStatusCodeValue() == 200) {
+            log.info("Got cases for User: {}", userUUID);
+            return response.getBody();
+        } else {
+            throw new ApplicationExceptions.EntityNotFoundException("Could not get cases for User %s", userUUID, response.getStatusCodeValue());
+        }
+    }
 }

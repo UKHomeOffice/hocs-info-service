@@ -9,6 +9,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCasesForUserResponse;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
@@ -213,6 +214,34 @@ public class TeamServiceTest {
     }
 
     @Test
+    public void shouldRemoveUserWithNoCasesFromTeam(){
+        Team team = new Team("a team", true);
+        UUID userUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        when(caseworkClient.getCasesForUser(userUUID, teamUUID)).thenReturn(new HashSet<>());
+
+        teamService.removeUserFromTeam(userUUID,teamUUID);
+        verify(keycloakService, times(1)).removeUserFromTeam(userUUID, teamUUID);
+        verifyNoMoreInteractions(keycloakService);
+    }
+
+    @Test(expected = ApplicationExceptions.UserRemoveException.class)
+    public void shouldNotRemoveUserWithCasesFromTeam(){
+        Team team = new Team("a team", true);
+        UUID userUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        Set<UUID> casesSet = new HashSet<>();
+        casesSet.add(UUID.randomUUID());
+        when(caseworkClient.getCasesForUser(userUUID, teamUUID)).thenReturn(casesSet);
+
+        teamService.removeUserFromTeam(userUUID, teamUUID);
+
+        verifyZeroInteractions(keycloakService);
+    }
+
+    @Test
     public void shouldUpdatePermissionsInDatabase() {
 
         Unit unit = new Unit("a unit", "UNIT", true);
@@ -321,7 +350,6 @@ public class TeamServiceTest {
 
     @Test
     public void ShouldAuditCreateTeam(){
-
 
         Unit unit = new Unit("UNIT1", "UNIT1",true);
 
@@ -468,4 +496,36 @@ public class TeamServiceTest {
             add(new Team( "Team2", new HashSet<>()));
         }};
     }
+
+    @Test
+    public void shouldAuditSuccessfulRemoveUserFromTeam(){
+        Team team = new Team("a team", true);
+        UUID userUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        when(caseworkClient.getCasesForUser(userUUID, teamUUID)).thenReturn(new HashSet<>());
+
+        teamService.removeUserFromTeam(userUUID,teamUUID);
+        verify(auditClient, times(1)).removeUserFromTeam(userUUID, teamUUID);
+    }
+
+    @Test
+    public void shouldNotAuditWhenRemoveUserFromTeamThrowsException(){
+        Team team = new Team("a team", true);
+        UUID userUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        Set<UUID> casesSet = new HashSet<>();
+        casesSet.add(UUID.randomUUID());
+        when(caseworkClient.getCasesForUser(userUUID, teamUUID)).thenReturn(casesSet);
+
+        try {
+            teamService.removeUserFromTeam(userUUID, teamUUID);
+        } catch (ApplicationExceptions.UserRemoveException e) {
+            //Do nothing
+        }
+
+        verifyZeroInteractions(auditClient);
+    }
+
 }

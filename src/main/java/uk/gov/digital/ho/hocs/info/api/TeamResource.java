@@ -105,6 +105,12 @@ public class TeamResource {
         Team team = teamService.getTeamByTopicAndStage(caseUUID, topicUUID, stageType);
         return ResponseEntity.ok(TeamDto.from(team));
     }
+
+    @DeleteMapping(value = "/users/{userUUID}/team/{teamUUID}")
+    public ResponseEntity removeUserFromTeam(@PathVariable String userUUID, @PathVariable String teamUUID) {
+        teamService.removeUserFromTeam(UUID.fromString(userUUID), UUID.fromString(teamUUID));
+        return ResponseEntity.ok().build();
+    }
 }
 
 

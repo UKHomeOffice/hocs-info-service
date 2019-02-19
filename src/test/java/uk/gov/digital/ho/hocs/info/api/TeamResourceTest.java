@@ -7,8 +7,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.api.TeamResource;
-import uk.gov.digital.ho.hocs.info.api.TeamService;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateTeamPermissionsRequest;
@@ -179,4 +177,16 @@ public class TeamResourceTest {
         }};
     }
 
+    @Test
+    public void shouldRemoveUserFromTeam()
+    {
+        UUID teamUUID = UUID.randomUUID();
+        UUID userUUID = UUID.randomUUID();
+
+        doNothing().when(teamService).removeUserFromTeam(userUUID, teamUUID);
+        ResponseEntity result = teamResource.removeUserFromTeam(userUUID.toString(), teamUUID.toString());
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(teamService, times(1)).removeUserFromTeam(userUUID, teamUUID);
+        verifyNoMoreInteractions(teamService);
+    }
 }
