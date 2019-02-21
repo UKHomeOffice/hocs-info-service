@@ -153,4 +153,17 @@ public class AuditClient {
                 eventType,
                 requestData.userId());
     }
+
+    public void removeUserFromTeam(UUID userUUID, UUID teamUUID) {
+        String auditPayload = Json.createObjectBuilder().add("teamUUID", teamUUID.toString()).add("userUUID", userUUID.toString()).build().toString();
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REMOVE_USER_FROM_TEAM.toString());
+
+        try {
+            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
+            log.info("Create audit for Remove User from Team, user UUID: {}, team UUID: {}, correlationID: {}, UserID: {}",
+                            userUUID, teamUUID, requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
+        } catch (Exception e) {
+            log.error("Failed to create Move Team to New Unit audit event for team UUID {} for reason {}", teamUUID, e, value(EVENT, AUDIT_FAILED));
+        }
+    }
 }
