@@ -15,4 +15,5 @@ public interface UnitRepository extends CrudRepository<Unit, Long> {
     Set<Unit> findAllActiveUnitsByCaseType(String caseType);
     Set<Unit> findAll();
     Unit findByUuid(UUID uuid);
+
 }
