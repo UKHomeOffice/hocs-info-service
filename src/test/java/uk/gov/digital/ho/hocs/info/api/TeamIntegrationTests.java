@@ -24,6 +24,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 import uk.gov.digital.ho.hocs.info.security.Base64UUID;
@@ -145,6 +146,33 @@ public class TeamIntegrationTests {
                 .users().get(userId).groups().stream()
                 .anyMatch(g -> g.getId().equals(group.getId()))).isTrue();
 
+    }
+
+    @Test
+    public void shouldRemoveUserFromGroup() {
+
+        String userId = keycloakClient.realm(HOCS_REALM).users().search("admin").get(0).getId();
+
+        String teamId = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
+        String base64TeamUUID = Base64UUID.UUIDToBase64String(UUID.fromString(teamId));
+        HttpEntity httpEntity = new HttpEntity(headers);
+
+        GroupRepresentation group = keycloakClient.realm(HOCS_REALM)
+                .getGroupByPath("/" + base64TeamUUID);
+
+        assertThat(keycloakClient.realm(HOCS_REALM)
+                .users().get(userId).groups().stream()
+                .anyMatch(g -> g.getId().equals(group.getId()))).isTrue();
+
+        ResponseEntity<String> result = restTemplate.exchange(
+                getBasePath() + "/users/" + userId + "/team/" + teamId
+                , HttpMethod.DELETE, httpEntity, String.class);
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        assertThat(keycloakClient.realm(HOCS_REALM)
+                .users().get(userId).groups().stream()
+                .anyMatch(g -> g.getId().equals(group.getId()))).isFalse();
     }
 
 

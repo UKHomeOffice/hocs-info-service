@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.UnitDto;
 
 import java.util.Set;
+import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
@@ -36,6 +37,12 @@ public class UnitResource {
     @PostMapping(value = "/unit", produces= APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity createUnit(@RequestBody UnitDto unit) {
         unitService.createUnit(unit);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping(value = "/unit/{unitUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity deleteUnit(@PathVariable UUID unitUUID) {
+        unitService.deleteUnit(unitUUID);
         return ResponseEntity.ok().build();
     }
 }

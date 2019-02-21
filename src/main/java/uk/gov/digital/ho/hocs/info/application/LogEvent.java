@@ -2,6 +2,9 @@ package uk.gov.digital.ho.hocs.info.application;
 
 public enum LogEvent {
     UNIT_CREATED,
+    UNIT_NOT_FOUND,
+    UNIT_RETRIEVED,
+    UNIT_DELETED,
     TEAM_CREATED,
     TEAM_ADDED_TO_UNIT,
     TEAM_RENAMED,
