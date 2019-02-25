@@ -217,4 +217,9 @@ public class TeamService {
         }
     }
 
+
+     Set<Team> findActiveTeamsByUnitUuid(UUID unitUUID) {
+         log.debug("Getting active teams for Unit {}", unitUUID);
+         return teamRepository.findActiveTeamsByUnitUuid(unitUUID);
+    }
 }

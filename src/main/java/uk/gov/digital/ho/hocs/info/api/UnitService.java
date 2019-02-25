@@ -8,7 +8,6 @@ import uk.gov.digital.ho.hocs.info.api.dto.UnitDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Unit;
-import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.UnitRepository;
 import java.util.Set;
 import java.util.UUID;
@@ -22,12 +21,12 @@ public class UnitService {
 
     private final UnitRepository unitRepository;
 
-    private final TeamRepository teamRepository;
+    private final TeamService teamService;
 
     @Autowired
-    public UnitService(UnitRepository unitRepository, TeamRepository teamRepository) {
+    public UnitService(UnitRepository unitRepository, TeamService teamService) {
         this.unitRepository = unitRepository;
-        this.teamRepository = teamRepository;
+        this.teamService = teamService;
     }
 
     public void createUnit(UnitDto unit) {
@@ -65,7 +64,7 @@ public class UnitService {
 
     public void deleteUnit(UUID unitUUID) {
         log.debug("Deleting Unit: {}", unitUUID);
-        Set<Team> teams = teamRepository.findActiveTeamsByUnitUuid(unitUUID);
+        Set<Team> teams = teamService.findActiveTeamsByUnitUuid(unitUUID);
         if (teams.isEmpty()){
             Unit unit = getUnit(unitUUID);
             unit.setActive(false);

@@ -28,13 +28,13 @@ public class UnitServiceTest {
     UnitRepository unitRepository;
 
     @Mock
-    TeamRepository teamRepository;
+    TeamService teamService;
 
     UnitService unitService;
 
     @Before
     public void setUp() {
-        unitService = new UnitService(unitRepository, teamRepository);
+        unitService = new UnitService(unitRepository, teamService);
     }
 
 
@@ -57,7 +57,7 @@ public class UnitServiceTest {
         Set<Team> teams = new HashSet<Team>();
 
         when(unitRepository.findByUuid(unitUUID)).thenReturn(unit);
-        when(teamRepository.findActiveTeamsByUnitUuid(unitUUID)).thenReturn(teams);
+        when(teamService.findActiveTeamsByUnitUuid(unitUUID)).thenReturn(teams);
 
         unitService.deleteUnit(unitUUID);
 
@@ -76,7 +76,7 @@ public class UnitServiceTest {
         teams.add(new Team("a team", true));
 
         when(unitRepository.findByUuid(unitUUID)).thenReturn(unit);
-        when(teamRepository.findActiveTeamsByUnitUuid(unitUUID)).thenReturn(teams);
+        when(teamService.findActiveTeamsByUnitUuid(unitUUID)).thenReturn(teams);
 
         unitService.deleteUnit(unitUUID);
 
