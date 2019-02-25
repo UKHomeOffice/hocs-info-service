@@ -75,7 +75,6 @@ public class UnitServiceTest {
         Set<Team> teams = new HashSet<Team>();
         teams.add(new Team("a team", true));
 
-        when(unitRepository.findByUuid(unitUUID)).thenReturn(unit);
         when(teamService.findActiveTeamsByUnitUuid(unitUUID)).thenReturn(teams);
 
         unitService.deleteUnit(unitUUID);
