@@ -8,12 +8,12 @@ import uk.gov.digital.ho.hocs.info.domain.model.NominatedContact;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class NominatePeopleDto {
+public class NominatedContactDto {
 
     @JsonProperty("emailAddress")
     String emailAddress;
 
-    public static NominatePeopleDto from(NominatedContact nominatedContact){
-        return new NominatePeopleDto(nominatedContact.getEmailAddress());
+    public static NominatedContactDto from(NominatedContact nominatedContact){
+        return new NominatedContactDto(nominatedContact.getEmailAddress());
     }
 }

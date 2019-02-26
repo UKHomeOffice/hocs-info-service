@@ -207,4 +207,22 @@ public interface ApplicationExceptions {
         }
     }
 
+    class NominatedContactDeleteException extends RuntimeException{
+        private final LogEvent event;
+
+        public NominatedContactDeleteException(String msg, LogEvent event, Object... args) {
+            super(String.format(msg, args));
+            this.event = event;
+        }
+
+        public NominatedContactDeleteException(String msg, Object... args) {
+            super(msg);
+            this.event = LogEvent.UNCAUGHT_EXCEPTION;
+        }
+
+        public LogEvent getEvent() {
+            return event;
+        }
+    }
+
 }

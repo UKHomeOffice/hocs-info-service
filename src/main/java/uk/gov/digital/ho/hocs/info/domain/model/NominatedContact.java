@@ -22,10 +22,22 @@ public class NominatedContact {
     private Long id;
 
     @Getter
+    @Setter
+    @Column(name = "uuid")
+    private UUID uuid;
+
+    @Getter
     @Column(name = "team_uuid")
     UUID teamUUID;
 
     @Getter
+    @Setter
     @Column(name = "email_address")
     String emailAddress;
+
+    public NominatedContact(UUID teamUUID, String emailAddress){
+        this.teamUUID = teamUUID;
+        this.uuid = UUID.randomUUID();
+        this.emailAddress = emailAddress;
+    }
 }

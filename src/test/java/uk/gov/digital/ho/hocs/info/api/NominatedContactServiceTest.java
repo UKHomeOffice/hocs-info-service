@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.api.NominatedContactService;
+import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.NominatedContact;
 import uk.gov.digital.ho.hocs.info.domain.repository.NominatedContactRepository;
 
@@ -22,30 +22,106 @@ public class NominatedContactServiceTest {
     @Mock
     private NominatedContactRepository nominatedContactRepository;
 
-    private uk.gov.digital.ho.hocs.info.api.NominatedContactService NominatedContactService;
+    private NominatedContactService nominatedContactService;
 
     private static UUID teamUUID = UUID.randomUUID();
+    private static String emailAddress = "email@test.com";
+
     @Before
     public void setUp() {
-        this.NominatedContactService = new NominatedContactService(nominatedContactRepository);
+        this.nominatedContactService = new NominatedContactService(nominatedContactRepository);
     }
 
+
+//    @Test
+//    public void shouldReturnNominatedContact() {
+//
+//        NominatedContact contact = new NominatedContact(teamUUID, emailAddress);
+//
+//        when(nominatedContactRepository.findByTeamUUID(teamUUID)).thenReturn(contact);
+//
+//        nominatedContactService.getNominatedContact(teamUUID);
+//
+//        verify(nominatedContactRepository, times(1)).findByTeamUUID(teamUUID);
+//        verifyNoMoreInteractions(nominatedContactRepository);
+//    }
+
     @Test
-    public void shouldReturnNominatedContactSet() {
+    public void shouldReturnNominatedContacts() {
 
-        when(nominatedContactRepository.findAllByTeamUUID(teamUUID)).thenReturn(getMockNominatedContactForTeam());
+        Set<NominatedContact> contacts = new HashSet<NominatedContact>();
+        contacts.add(new NominatedContact(teamUUID, "one@email.com"));
+        contacts.add(new NominatedContact(teamUUID, "two@email.com"));
 
-        Set<NominatedContact> NominatedContact = NominatedContactService.getNominatedContact(teamUUID);
+        when(nominatedContactRepository.findAllByTeamUUID(teamUUID)).thenReturn(contacts);
+
+        nominatedContactService.getNominatedContacts(teamUUID);
 
         verify(nominatedContactRepository, times(1)).findAllByTeamUUID(teamUUID);
         verifyNoMoreInteractions(nominatedContactRepository);
-        assertThat(NominatedContact.size()).isEqualTo(2);
     }
 
-    private static Set<NominatedContact> getMockNominatedContactForTeam() {
-        Set<NominatedContact> NominatedContact = new HashSet<>();
+    @Test
+    public void shouldCreateNominatedContact() {
 
-        NominatedContact.add(new NominatedContact(1l, teamUUID, "test@test.com"));
-        NominatedContact.add(new NominatedContact(2l, teamUUID, "test@test.com"));
-        return NominatedContact;
-}}
+        NominatedContact contact = nominatedContactService.createNominatedContact(teamUUID, emailAddress);
+
+        assertThat(contact.getUuid()).isNotNull();
+        verify(nominatedContactRepository, times(1)).save(any(NominatedContact.class));
+        verifyNoMoreInteractions(nominatedContactRepository);
+    }
+
+    @Test
+    public void shouldUpdateNominatedContact() {
+
+        UUID nominatedContactUUID = UUID.randomUUID();
+        NominatedContact contact = new NominatedContact(teamUUID, emailAddress);
+
+        when(nominatedContactRepository.findByUuid(nominatedContactUUID)).thenReturn(contact);
+
+        nominatedContactService.updateNominatedContact(nominatedContactUUID, "new@email.com");
+
+        verify(nominatedContactRepository, times(1)).findByUuid(nominatedContactUUID);
+        verify(nominatedContactRepository, times(1)).save(any(NominatedContact.class));
+        verifyNoMoreInteractions(nominatedContactRepository);
+
+    }
+
+    @Test
+    public void shouldDeleteNominatedContact() {
+        NominatedContact contact = new NominatedContact(teamUUID, emailAddress);
+        Set<NominatedContact> contacts = new HashSet<>();
+        contacts.add(new NominatedContact(teamUUID, "one@email.com"));
+        contacts.add(contact);
+
+        UUID contactUUID = UUID.randomUUID();
+
+        when(nominatedContactRepository.findAllByTeamUUID(teamUUID)).thenReturn(contacts);
+        when(nominatedContactRepository.findByUuid(contactUUID)).thenReturn(contact);
+        doNothing().when(nominatedContactRepository).delete(any());
+
+        nominatedContactService.deleteNominatedContact(teamUUID, contactUUID);
+
+        verify(nominatedContactRepository, times(1)).findAllByTeamUUID(teamUUID);
+        verify(nominatedContactRepository, times(1)).findByUuid(contactUUID);
+        verify(nominatedContactRepository, times(1)).delete(contact);
+        verifyNoMoreInteractions(nominatedContactRepository);
+
+    }
+
+    @Test (expected = ApplicationExceptions.NominatedContactDeleteException.class)
+    public void shouldNotDeleteNominatedContactWhenTeamHasNoOthers() {
+        NominatedContact contact = new NominatedContact(teamUUID, emailAddress);
+        Set<NominatedContact> contacts = new HashSet<>();
+        contacts.add(contact);
+
+        UUID contactUUID = UUID.randomUUID();
+
+        when(nominatedContactRepository.findAllByTeamUUID(teamUUID)).thenReturn(contacts);
+
+        nominatedContactService.deleteNominatedContact(teamUUID, contactUUID);
+
+        verify(nominatedContactRepository, times(1)).findAllByTeamUUID(teamUUID);
+        verifyNoMoreInteractions(nominatedContactRepository);
+    }
+}

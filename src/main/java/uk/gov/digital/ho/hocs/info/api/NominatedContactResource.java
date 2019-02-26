@@ -2,10 +2,9 @@ package uk.gov.digital.ho.hocs.info.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
-import uk.gov.digital.ho.hocs.info.api.dto.GetNominatedContactResponse;
+import org.springframework.web.bind.annotation.*;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateNominatedContactDto;
+import uk.gov.digital.ho.hocs.info.api.dto.UpdateNominatedContactDto;
 import uk.gov.digital.ho.hocs.info.domain.model.NominatedContact;
 
 import java.util.Set;
@@ -24,8 +23,26 @@ public class NominatedContactResource {
     }
 
     @GetMapping(value = "/team/{teamUUID}/contact", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<GetNominatedContactResponse> getNominatedContact(@PathVariable UUID teamUUID) {
-        Set<NominatedContact> contact = nominatedContactService.getNominatedContact(teamUUID);
-        return ResponseEntity.ok(GetNominatedContactResponse.from(contact));
+    public ResponseEntity<Set<NominatedContact>> getNominatedContacts(@PathVariable UUID teamUUID) {
+        Set<NominatedContact> contacts = nominatedContactService.getNominatedContacts(teamUUID);
+        return ResponseEntity.ok(contacts);
+    }
+
+    @PostMapping(value = "/team/{teamUUID}/contact", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<UUID> createNominatedContact(@PathVariable UUID teamUUID, @RequestBody CreateNominatedContactDto createNominatedContactDto){
+        NominatedContact nominatedContact = nominatedContactService.createNominatedContact(teamUUID, createNominatedContactDto.getEmailAddress());
+        return ResponseEntity.ok(nominatedContact.getUuid());
+    }
+
+    @PutMapping(value="/team/{teamUUID}/contact/{nominatedContactUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity updateNominatedContact(@PathVariable UUID nominatedContactUUID, @RequestBody UpdateNominatedContactDto updateNominatedContactDto){
+        nominatedContactService.updateNominatedContact(nominatedContactUUID, updateNominatedContactDto.getEmailAddress());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping(value="/team/{teamUUID}/contact/{nominatedContactUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity deleteNominatedContact(@PathVariable UUID teamUUID, @PathVariable UUID nominatedContactUUID){
+        nominatedContactService.deleteNominatedContact(teamUUID, nominatedContactUUID);
+        return ResponseEntity.ok().build();
     }
 }
