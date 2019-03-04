@@ -32,20 +32,6 @@ public class NominatedContactServiceTest {
         this.nominatedContactService = new NominatedContactService(nominatedContactRepository);
     }
 
-
-//    @Test
-//    public void shouldReturnNominatedContact() {
-//
-//        NominatedContact contact = new NominatedContact(teamUUID, emailAddress);
-//
-//        when(nominatedContactRepository.findByTeamUUID(teamUUID)).thenReturn(contact);
-//
-//        nominatedContactService.getNominatedContact(teamUUID);
-//
-//        verify(nominatedContactRepository, times(1)).findByTeamUUID(teamUUID);
-//        verifyNoMoreInteractions(nominatedContactRepository);
-//    }
-
     @Test
     public void shouldReturnNominatedContacts() {
 
@@ -55,10 +41,11 @@ public class NominatedContactServiceTest {
 
         when(nominatedContactRepository.findAllByTeamUUID(teamUUID)).thenReturn(contacts);
 
-        nominatedContactService.getNominatedContacts(teamUUID);
+        Set<NominatedContact> NominatedContact = nominatedContactService.getNominatedContacts(teamUUID);
 
         verify(nominatedContactRepository, times(1)).findAllByTeamUUID(teamUUID);
         verifyNoMoreInteractions(nominatedContactRepository);
+        assertThat(NominatedContact.size()).isEqualTo(2);
     }
 
     @Test

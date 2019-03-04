@@ -336,9 +336,3 @@ public class TeamIntegrationTests {
                 .andRespond(withSuccess(mapper.writeValueAsString(caseUUIDs), MediaType.APPLICATION_JSON));
     }
 }
-
-
-
-
-
-
