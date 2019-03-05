@@ -6,14 +6,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.api.dto.UnitDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
+import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Unit;
 import uk.gov.digital.ho.hocs.info.domain.repository.UnitRepository;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import static net.logstash.logback.argument.StructuredArguments.value;
-import static uk.gov.digital.ho.hocs.info.application.LogEvent.EVENT;
-import static uk.gov.digital.ho.hocs.info.application.LogEvent.UNIT_CREATED;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.*;
 
 @Service
 @Slf4j
@@ -21,9 +21,12 @@ public class UnitService {
 
     private final UnitRepository unitRepository;
 
+    private final TeamService teamService;
+
     @Autowired
-    public UnitService(UnitRepository unitRepository) {
+    public UnitService(UnitRepository unitRepository, TeamService teamService) {
         this.unitRepository = unitRepository;
+        this.teamService = teamService;
     }
 
     public void createUnit(UnitDto unit) {
@@ -45,6 +48,31 @@ public class UnitService {
     public Set<UnitDto> getAllUnitsForCaseType(String caseType) {
         return unitRepository.findAllActiveUnitsByCaseType(caseType).stream()
                 .map(UnitDto::fromWithoutTeams).collect(Collectors.toSet());
+    }
+
+    Unit getUnit(UUID unitUUID){
+        log.debug("Getting Unit: {}", unitUUID);
+        Unit unit = unitRepository.findByUuid(unitUUID);
+        if (unit == null){
+            log.info("Unit with UUID {} not found", unitUUID, value(EVENT, UNIT_NOT_FOUND));
+            throw new ApplicationExceptions.EntityNotFoundException("Unit with UUID {} not found", unitUUID);
+        } else {
+            log.info("Retrieved unit with UUID {}", unitUUID, value(EVENT, UNIT_RETRIEVED));
+            return unit;
+        }
+    }
+
+    public void deleteUnit(UUID unitUUID) {
+        log.debug("Deleting Unit: {}", unitUUID);
+        Set<Team> teams = teamService.findActiveTeamsByUnitUuid(unitUUID);
+        if (teams.isEmpty()){
+            Unit unit = getUnit(unitUUID);
+            unit.setActive(false);
+            unitRepository.save(unit);
+        } else {
+            throw new ApplicationExceptions.UnitDeleteException("Unable to delete Unit {}, active teams are allocated to unit", unitUUID);
+        }
+        log.info("Deleted Unit: {}", unitUUID, value(EVENT, UNIT_DELETED));
     }
 }
 

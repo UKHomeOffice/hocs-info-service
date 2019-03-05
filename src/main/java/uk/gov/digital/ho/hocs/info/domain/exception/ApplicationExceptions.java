@@ -171,6 +171,23 @@ public interface ApplicationExceptions {
 
     }
 
+    class UnitDeleteException extends RuntimeException{
+        private final LogEvent event;
+
+        public UnitDeleteException(String msg, LogEvent event, Object... args) {
+            super(String.format(msg, args));
+            this.event = event;
+        }
+
+        public UnitDeleteException(String msg, Object... args) {
+            super(msg);
+            this.event = LogEvent.UNCAUGHT_EXCEPTION;
+        }
+
+        public LogEvent getEvent() {
+            return event;
+        }
+    }
 
     class UserRemoveException extends RuntimeException {
         private final LogEvent event;
@@ -182,6 +199,24 @@ public interface ApplicationExceptions {
 
         public UserRemoveException(String msg, Object... args) {
             super(String.format(msg, args));
+            this.event = LogEvent.UNCAUGHT_EXCEPTION;
+        }
+
+        public LogEvent getEvent() {
+            return event;
+        }
+    }
+
+    class NominatedContactDeleteException extends RuntimeException{
+        private final LogEvent event;
+
+        public NominatedContactDeleteException(String msg, LogEvent event, Object... args) {
+            super(String.format(msg, args));
+            this.event = event;
+        }
+
+        public NominatedContactDeleteException(String msg, Object... args) {
+            super(msg);
             this.event = LogEvent.UNCAUGHT_EXCEPTION;
         }
 

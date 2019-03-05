@@ -11,4 +11,6 @@ public interface NominatedContactRepository extends CrudRepository<NominatedCont
 
     @Query(value ="SELECT * FROM team_contact np WHERE team_uuid = ?1" , nativeQuery = true )
     Set<NominatedContact> findAllByTeamUUID(UUID teamUUID);
+
+    NominatedContact findByUuid(UUID nominatedContactUUID);
 }

@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -32,6 +33,8 @@ public class Unit implements Serializable {
     @Column(name = "short_code")
     private String shortCode;
 
+    @Setter
+    @Getter
     @Column(name = "active")
     private boolean active;
 

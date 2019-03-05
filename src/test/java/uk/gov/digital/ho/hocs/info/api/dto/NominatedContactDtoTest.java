@@ -7,17 +7,17 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NominatePeopleDtoTest {
+public class NominatedContactDtoTest {
 
     UUID uuid = UUID.randomUUID();
 
     @Test
     public void from() {
 
-        NominatedContact nominatedContact = new NominatedContact(1l, uuid,"email");
+        NominatedContact nominatedContact = new NominatedContact(uuid,"email");
 
-        NominatePeopleDto nominatePeopleDto = NominatePeopleDto.from(nominatedContact);
+        NominatedContactDto nominatedContactDto = NominatedContactDto.from(nominatedContact);
 
-        assertThat(nominatePeopleDto.getEmailAddress()).isEqualTo("email");
+        assertThat(nominatedContactDto.getEmailAddress()).isEqualTo("email");
     }
 }

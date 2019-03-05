@@ -7,8 +7,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.api.NominatedContactResource;
-import uk.gov.digital.ho.hocs.info.api.dto.GetNominatedContactResponse;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateNominatedContactDto;
+import uk.gov.digital.ho.hocs.info.api.dto.UpdateNominatedContactDto;
 import uk.gov.digital.ho.hocs.info.domain.model.NominatedContact;
 
 import java.util.HashSet;
@@ -22,37 +22,88 @@ import static org.mockito.Mockito.*;
 public class NominatedContactResourceTest {
 
     @Mock
-    private uk.gov.digital.ho.hocs.info.api.NominatedContactService NominatedContactService;
+    private NominatedContactService nominatedContactService;
 
-    private uk.gov.digital.ho.hocs.info.api.NominatedContactResource NominatedContactResource;
+    private NominatedContactResource nominatedContactResource;
 
     private static UUID teamUUID = UUID.randomUUID();
+    private static String email = "email@test.com";
 
     @Before
     public void setUp() {
-        NominatedContactResource = new NominatedContactResource(NominatedContactService);
+        nominatedContactResource = new NominatedContactResource(nominatedContactService);
     }
 
     @Test
     public void shouldReturnNominatedContactForRequestedTeam() {
 
-        when(NominatedContactService.getNominatedContact(teamUUID)).thenReturn(getMockNominatedContactForTeam());
+        when(nominatedContactService.getNominatedContacts(teamUUID)).thenReturn(getMockNominatedContactsForTeam());
 
-        ResponseEntity<GetNominatedContactResponse> response =
-                NominatedContactResource.getNominatedContact(teamUUID);
+        ResponseEntity<Set<NominatedContact>> response =
+                nominatedContactResource.getNominatedContacts(teamUUID);
 
-        verify(NominatedContactService, times(1)).getNominatedContact(teamUUID);
-        verifyNoMoreInteractions(NominatedContactService);
+        verify(nominatedContactService, times(1)).getNominatedContacts(teamUUID);
+        verifyNoMoreInteractions(nominatedContactService);
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    private static Set<NominatedContact> getMockNominatedContactForTeam() {
+    private static Set<NominatedContact> getMockNominatedContactsForTeam() {
         Set<NominatedContact> NominatedContact = new HashSet<>();
 
-        NominatedContact.add(new NominatedContact(1l, teamUUID, "test@test.com"));
-        NominatedContact.add(new NominatedContact(2l, teamUUID, "test@test.com"));
+        NominatedContact.add(new NominatedContact(teamUUID, email));
+        NominatedContact.add(new NominatedContact(teamUUID, email));
         return NominatedContact;
+    }
+
+    @Test
+    public void shouldCreateNominatedContactForRequestedTeam() {
+
+        CreateNominatedContactDto request = new CreateNominatedContactDto(email);
+        NominatedContact contact = new NominatedContact(teamUUID, email);
+        when(nominatedContactService.createNominatedContact(teamUUID, email)).thenReturn(contact);
+
+        ResponseEntity<UUID> response = nominatedContactResource.createNominatedContact(teamUUID, request);
+
+        verify(nominatedContactService, times(1)).createNominatedContact(teamUUID, email);
+        verifyNoMoreInteractions(nominatedContactService);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    }
+
+    @Test
+    public void shouldUpdateRequestedNominatedContact() {
+
+        UUID contactUUID = UUID.randomUUID();
+        String newEmail = "new@test.com";
+
+        UpdateNominatedContactDto request = new UpdateNominatedContactDto(newEmail);
+        NominatedContact contact = new NominatedContact(contactUUID, newEmail);
+
+        ResponseEntity<UUID> response = nominatedContactResource.updateNominatedContact(contactUUID, request);
+
+        verify(nominatedContactService, times(1)).updateNominatedContact(contactUUID, newEmail);
+        verifyNoMoreInteractions(nominatedContactService);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    }
+
+    @Test
+    public void shouldDeleteRequestedNominatedContact() {
+
+        UUID contactUUID = UUID.randomUUID();
+        String newEmail = "new@test.com";
+
+        NominatedContact contact = new NominatedContact(contactUUID, newEmail);
+
+        ResponseEntity<UUID> response = nominatedContactResource.deleteNominatedContact(teamUUID, contactUUID);
+
+        verify(nominatedContactService, times(1)).deleteNominatedContact(teamUUID, contactUUID);
+        verifyNoMoreInteractions(nominatedContactService);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
     }
 }
