@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.api;
 
+import com.amazonaws.services.sns.model.CreateTopicRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,10 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.api.TopicResource;
 import uk.gov.digital.ho.hocs.info.api.TopicService;
-import uk.gov.digital.ho.hocs.info.api.dto.GetAllTopicsResponse;
-import uk.gov.digital.ho.hocs.info.api.dto.GetParentTopicsResponse;
-import uk.gov.digital.ho.hocs.info.api.dto.GetTopicsResponse;
-import uk.gov.digital.ho.hocs.info.api.dto.TopicDto;
+import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 
@@ -73,7 +71,7 @@ public class TopicResourceTest {
 
     @Test
     public void getTopicByUUID() {
-        when(topicService.getTopic(any())).thenReturn(new Topic(1l, "Topic1", UUID.randomUUID()));
+        when(topicService.getTopic(any())).thenReturn(new Topic("Topic1", UUID.randomUUID()));
 
         ResponseEntity<TopicDto> response = topicResource.getTopicByUUID(UUID.randomUUID());
 
@@ -84,16 +82,43 @@ public class TopicResourceTest {
 
     private List<ParentTopic> getParentTopics() {
         return new ArrayList<ParentTopic>() {{
-            add(new ParentTopic(1l, UUID.randomUUID(), "ParentTopic1", new HashSet<>()));
-            add(new ParentTopic(2l, UUID.randomUUID(), "ParentTopic2", new HashSet<>()));
+            add(new ParentTopic(1l, UUID.randomUUID(), "ParentTopic1", new HashSet<>(), true));
+            add(new ParentTopic(2l, UUID.randomUUID(), "ParentTopic2", new HashSet<>(), true));
         }};
     }
 
     private List<Topic> getTopics() {
         return new ArrayList<Topic>() {{
-            add(new Topic(1l, "Topic1", UUID.randomUUID()));
-            add(new Topic(2l, "Topic2", UUID.randomUUID()));
+            add(new Topic("Topic1", UUID.randomUUID()));
+            add(new Topic("Topic2", UUID.randomUUID()));
         }};
     }
 
+    @Test
+    public void shouldCreateParentTopic() {
+
+        CreateParentTopicDto request = new CreateParentTopicDto("ParentTopic");
+
+        when(topicService.createParentTopic(request)).thenReturn(UUID.randomUUID());
+
+        ResponseEntity<UUID> response = topicResource.createParentTopic(request);
+
+        verify(topicService, times(1)).createParentTopic(any());
+        verifyNoMoreInteractions(topicService);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+//
+//    @Test
+//    public void shouldCreateTopic() {
+//
+//        CreateTopicDto request = new CreateTopicDto("ParentTopic", UUID.randomUUID());
+//
+//        when(topicService.createTopic(request).thenReturn(UUID.randomUUID()));
+//
+//        ResponseEntity<UUID> response = topicResource.createTopic(request);
+//
+//        verify(topicService, times(1)).createTopic(any(), any());
+//        verifyNoMoreInteractions(topicService);
+//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//    }
 }

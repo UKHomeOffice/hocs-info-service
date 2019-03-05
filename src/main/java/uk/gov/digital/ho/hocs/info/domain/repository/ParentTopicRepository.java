@@ -16,4 +16,10 @@ public interface ParentTopicRepository extends CrudRepository<ParentTopic, Strin
 
     @Query(value = "SELECT DISTINCT pt.* from topic t join topic_team tt on t.uuid = tt.topic_uuid join parent_topic pt on t.parent_topic_uuid = pt.uuid where tt.responsible_team_uuid = ?1 and pt.active = true", nativeQuery = true)
     List<ParentTopic>  findAllActiveParentTopicsForTeam(UUID teamUUID);
+
+    ParentTopic findByUuid(UUID uuid);
+
+    ParentTopic findByDisplayName(String displayName);
+
+
 }

@@ -12,8 +12,11 @@ import java.util.UUID;
 public interface TopicRepository extends CrudRepository<Topic, String> {
 
     @Query(value = "select * from topic t where t.parent_topic_uuid = ?1", nativeQuery = true)
-    List<Topic> findTopicByParentTopic(UUID parentTopicUUID);
+    List<Topic> findTopicByParentTopic(UUID parent_topic_uuid);
 
     @Query(value = "select * from topic t where t.uuid = ?1", nativeQuery = true)
     Topic findTopicByUUID(UUID topicUUID);
+
+    @Query(value = "SELECT * FROM topic t WHERE t.display_name = ?1 AND t.parent_topic_uuid = ?2", nativeQuery = true)
+    Topic findTopicByNameAndParentTopic(String displayName, UUID parent_topic_uuid);
 }

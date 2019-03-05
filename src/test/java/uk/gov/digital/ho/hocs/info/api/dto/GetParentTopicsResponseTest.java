@@ -17,10 +17,10 @@ public class GetParentTopicsResponseTest {
     @Test
     public void from() {
         Set<Topic> topics = new HashSet<>();
-        topics.add(new Topic(1l, "Topic Display Name", topicUUID));
+        topics.add(new Topic(1l, "Topic Display Name", topicUUID, parentTopicUUID1, true));
         List<ParentTopic> parentTopics = new ArrayList<>();
-        parentTopics.add(new ParentTopic(1l,parentTopicUUID1,  "Display Name 1", topics ));
-        parentTopics.add(new ParentTopic(2l, parentTopicUUID2, "Display Name 2",  topics ));
+        parentTopics.add(new ParentTopic(1l,parentTopicUUID1,  "Display Name 1", topics , true));
+        parentTopics.add(new ParentTopic(2l, parentTopicUUID2, "Display Name 2",  topics, true));
 
         GetParentTopicsResponse getParentTopicsResponse = GetParentTopicsResponse.from(parentTopics);
 

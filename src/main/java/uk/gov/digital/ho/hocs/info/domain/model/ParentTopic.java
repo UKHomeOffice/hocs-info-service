@@ -31,4 +31,19 @@ public class ParentTopic implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_topic_uuid", referencedColumnName = "uuid")
     private Set<Topic> topic = new HashSet<>();
+
+    @Column(name = "active")
+    private Boolean active;
+
+    public ParentTopic(String displayName) {
+        this.displayName = displayName;
+        this.uuid = UUID.randomUUID();
+        this.active = true;
+    }
+
+    public ParentTopic(String displayName, Boolean active) {
+        this.displayName = displayName;
+        this.uuid = UUID.randomUUID();
+        this.active = active;
+    }
 }

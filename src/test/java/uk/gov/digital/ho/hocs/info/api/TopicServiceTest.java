@@ -6,7 +6,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.TopicService;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateParentTopicDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateTopicDto;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
+import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
@@ -36,6 +39,7 @@ public class TopicServiceTest {
     private TopicService topicService;
 
     private UUID uuid = UUID.randomUUID();
+    private UUID parentUuid = UUID.randomUUID();
 
     @Before
     public void setUp() {
@@ -64,7 +68,7 @@ public class TopicServiceTest {
 
     @Test
     public void shouldReturnTopicsByCaseType() {
-        when(topicRepository.findTopicByUUID(uuid)).thenReturn(new Topic(1l, "Topic1", UUID.randomUUID()));
+        when(topicRepository.findTopicByUUID(uuid)).thenReturn(new Topic("Topic1", parentUuid));
 
         topicService.getTopic(uuid);
 
@@ -72,18 +76,86 @@ public class TopicServiceTest {
         verifyNoMoreInteractions(parentTopicRepository);
     }
 
+    @Test
+    public void shouldCreateParentTopic() {
+
+        CreateParentTopicDto request = new CreateParentTopicDto("ParentTopic");
+
+        when(parentTopicRepository.findByDisplayName(any())).thenReturn(null);
+
+        topicService.createParentTopic(request);
+
+        verify(parentTopicRepository, times(1)).findByDisplayName(any());
+        verify(parentTopicRepository, times(1)).save(any());
+        verifyNoMoreInteractions(parentTopicRepository);
+    }
+
+
+    @Test (expected = ApplicationExceptions.TopicCreationException.class)
+    public void shouldNotCreateParentTopicWhenOneExistsWithGivenName() {
+
+        ParentTopic parentTopic = new ParentTopic("ParentTopic");
+        CreateParentTopicDto request = new CreateParentTopicDto("ParentTopic");
+
+        when(parentTopicRepository.findByDisplayName(any())).thenReturn(parentTopic);
+
+        topicService.createParentTopic(request);
+
+        verify(parentTopicRepository, times(1)).findByDisplayName(any());
+        verifyNoMoreInteractions(parentTopicRepository);
+    }
+
+//    @Test
+//    public void shouldCreateTopicWithValidParent() {
+//
+//        CreateTopicDto request = new CreateTopicDto("ParentTopic", UUID.randomUUID());
+//
+//        when(parentTopicRepository.findByUUID(any())).thenReturn(new ParentTopic("ParentTopic"));
+//        doNothing().when(topicRepository.save(any()));
+//
+//        topicService.createTopic(request);
+//
+//        verify(topicRepository, times(1)).save(any());
+//        verifyNoMoreInteractions(topicRepository);
+//    }
+//
+//    @Test (expected = ApplicationExceptions.TopicAlreadyExistsException.class)
+//    public void shouldNotCreateTopicWithNonexistentParent() {
+//
+//        CreateTopicDto request = new CreateTopicDto("ParentTopic", UUID.randomUUID());
+//
+//        when(parentTopicRepository.findByUUID(any())).thenReturn(null);
+//
+//        topicService.createTopic(request);
+//
+//        verifyZeroInteractions(topicRepository);
+//    }
+//
+//    @Test (expected = ApplicationExceptions.TopicAlreadyExistsException.class)
+//    public void shouldCreateTopicWithInactiveParent() {
+//
+//        CreateTopicDto request = new CreateTopicDto("ParentTopic", UUID.randomUUID());
+//
+//        ParentTopic parentTopic = new ParentTopic("ParentTopic", false);
+//        when(parentTopicRepository.findByUUID(any())).thenReturn(parentTopic);
+//
+//        topicService.createTopic(request);
+//
+//        verifyZeroInteractions(topicRepository);
+//    }
+
     private List<ParentTopic> getParentTopics() {
         return new ArrayList<ParentTopic>() {{
-            add(new ParentTopic(1l, UUID.randomUUID(), "ParentTopic1", new HashSet<>()));
-            add(new ParentTopic(2l, UUID.randomUUID(), "ParentTopic2", new HashSet<>()));
+            add(new ParentTopic(1l, UUID.randomUUID(), "ParentTopic1", new HashSet<>(), true));
+            add(new ParentTopic(2l, UUID.randomUUID(), "ParentTopic2", new HashSet<>(), true));
         }};
 
     }
 
     private List<Topic> getTopics() {
         return new ArrayList<Topic>() {{
-            add(new Topic(1l, "Topic1", UUID.randomUUID()));
-            add(new Topic(2l, "Topic2", UUID.randomUUID()));
+            add(new Topic("Topic1", UUID.randomUUID()));
+            add(new Topic("Topic2", UUID.randomUUID()));
         }};
 
     }

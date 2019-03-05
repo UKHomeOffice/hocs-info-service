@@ -3,13 +3,8 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
-import uk.gov.digital.ho.hocs.info.api.dto.GetAllTopicsResponse;
-import uk.gov.digital.ho.hocs.info.api.dto.GetParentTopicsResponse;
-import uk.gov.digital.ho.hocs.info.api.dto.GetTopicsResponse;
-import uk.gov.digital.ho.hocs.info.api.dto.TopicDto;
+import org.springframework.web.bind.annotation.*;
+import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 
@@ -61,5 +56,19 @@ public class TopicResource {
         log.info("requesting topic {}", topicUUID);
         Topic topics = topicService.getTopic(topicUUID);
         return ResponseEntity.ok(TopicDto.from(topics));
+    }
+
+    @PostMapping(value = "topic/parent/", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<UUID> createParentTopic(@RequestBody CreateParentTopicDto request) {
+        log.info("Creating new parent topic {}", request.getDisplayName());
+        UUID parentTopicUUID = topicService.createParentTopic(request);
+        return ResponseEntity.ok(parentTopicUUID);
+    }
+
+    @PostMapping(value = "topic/parent/{parentTopicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<UUID> createTopic(@RequestBody CreateTopicDto request, @PathVariable UUID parentTopicUUID) {
+        log.info("Creating new topic {}", request.getDisplayName());
+        UUID topicUUID = topicService.createTopic(request, parentTopicUUID);
+        return ResponseEntity.ok(topicUUID);
     }
 }

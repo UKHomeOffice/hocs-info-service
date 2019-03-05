@@ -25,4 +25,19 @@ public class Topic implements Serializable {
 
     @Column(name = "uuid")
     private UUID uuid;
+
+    @Column(name = "parent_topic_uuid")
+    private UUID parentTopic;
+
+    @Column(name = "active")
+    private Boolean active;
+
+    public Topic(String displayName, UUID parentTopic) {
+        this.displayName = displayName;
+        this.uuid = UUID.randomUUID();
+        this.parentTopic = parentTopic;
+        this.active = true;
+    }
 }
+
+

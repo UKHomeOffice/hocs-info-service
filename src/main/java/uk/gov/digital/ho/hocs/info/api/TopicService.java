@@ -3,8 +3,11 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateParentTopicDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateTopicDto;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCaseworkCaseDataResponse;
+import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
@@ -30,21 +33,76 @@ public class TopicService {
 
     public List<ParentTopic> getParentTopics(String caseType) {
         log.debug("Requesting all parent topics for {}", caseType);
-            return  parentTopicRepository.findAllParentTopicByCaseType(caseType);
+        return parentTopicRepository.findAllParentTopicByCaseType(caseType);
     }
 
     public List<Topic> getAllTopicsForParentTopic(UUID parentTopicUUID) {
         log.debug("Requesting all topics for parent topic UUID{}", parentTopicUUID);
-        return  topicRepository.findTopicByParentTopic(parentTopicUUID);
+        return topicRepository.findTopicByParentTopic(parentTopicUUID);
     }
 
     public Topic getTopic(UUID topicUUID) {
         log.debug("Requesting topics {}", topicUUID);
-        return  topicRepository.findTopicByUUID(topicUUID);
+        return topicRepository.findTopicByUUID(topicUUID);
     }
 
     public List<ParentTopic> getTopicList(UUID caseUUID) {
         GetCaseworkCaseDataResponse caseTypeResponse = caseworkClient.getCase(caseUUID);
         return getParentTopics(caseTypeResponse.getType());
     }
+
+    public UUID createParentTopic(CreateParentTopicDto request) {
+        String displayName = request.getDisplayName();
+        new ParentTopic(displayName);
+        log.debug("Creating parent topic: {}", displayName);
+        ParentTopic parentTopic = parentTopicRepository.findByDisplayName(displayName);
+
+        if (parentTopic == null) {
+            ParentTopic newParentTopic = new ParentTopic(displayName);
+            parentTopicRepository.save(newParentTopic);
+            log.info("Created topic: {}, with UUID: {}", displayName, newParentTopic.getUuid());
+            return newParentTopic.getUuid();
+        } else {
+            if (parentTopic.getActive() == true) {
+                log.debug("Unable to create parent topic, active parent topic with the same name already exists");
+            } else {
+                log.debug("Unable to create parent topic, inactive parent topic with the same name already exists");
+            }
+            throw new ApplicationExceptions.TopicCreationException("Parent topic already exists with this name");
+        }
+    }
+
+    public UUID createTopic(CreateTopicDto request, UUID parentTopicUUID) {
+        String displayName = request.getDisplayName();
+        log.debug("Creating topic: {}, for parent topic: {}", displayName, parentTopicUUID);
+        ParentTopic parentTopic = parentTopicRepository.findByUuid(parentTopicUUID);
+        if (parentTopic == null) {
+            throw new ApplicationExceptions.TopicCreationException(
+                    "Unable to create topic, the given parent topic does not exist");
+        } else {
+            if (parentTopic.getActive() == false) {
+                throw new ApplicationExceptions.TopicCreationException(
+                        "Unable to create topic, the given parent topic is inactive");
+            } else {
+                Topic existingTopic = topicRepository.findTopicByNameAndParentTopic(displayName, parentTopicUUID);
+                if (existingTopic == null) {
+                    Topic topic = new Topic(displayName, parentTopicUUID);
+                    topicRepository.save(topic);
+                    log.info("Created topic: {}, for parent topic: {}", displayName, parentTopicUUID);
+                    return topic.getUuid();
+                } else {
+                    if (existingTopic.getActive() == true) {
+                        log.debug(
+                                "Unable to create topic, active topic with this name already exists for this parent");
+                    } else {
+                        log.debug(
+                                "Unable to create topic, inactive topic with this name already exists for this parent");
+                    }
+                    throw new ApplicationExceptions.TopicCreationException(
+                            "Topic already exists with this name for the given parent");
+                }
+            }
+        }
+    }
 }
+
