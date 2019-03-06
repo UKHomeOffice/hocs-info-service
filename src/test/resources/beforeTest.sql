@@ -27,7 +27,7 @@ VALUES ('08612f06-bae2-4d2f-90d2-2254a68414b8', 'CT1', 'OWNER'),
        ('8b3b4366-a37c-48b6-b274-4c50f8083843', 'CT3', 'READ');
 
 
-INSERT INTO parent_topic (display_name, UUID)
+INSERT INTO parent_topic (display_name, UUID, active)
 VALUES ('test Parent topic 100', '94a10f9f-a42e-44c0-8ebe-1227cb347f1d', TRUE),
        ('test Parent topic 101', '1abf7a0c-ea2d-478d-b6c8-d739fb60ef04', TRUE),
        ('test inactive Parent topic 102', '71caee7b-4632-4ac6-9c15-b91d4c0d27e5', FALSE);
@@ -36,7 +36,8 @@ VALUES ('test Parent topic 100', '94a10f9f-a42e-44c0-8ebe-1227cb347f1d', TRUE),
 INSERT INTO topic (display_name, UUID, parent_topic_uuid, active)
 VALUES ('test topic 1', '11111111-ffff-1111-1111-111111111131', '94a10f9f-a42e-44c0-8ebe-1227cb347f1d', TRUE),
        ('test topic 2', '11111111-ffff-1111-1111-111111111132', '1abf7a0c-ea2d-478d-b6c8-d739fb60ef04', TRUE),
-       ('test inactive topic 3', '11111111-ffff-1111-1111-111111111133', '94a10f9f-a42e-44c0-8ebe-1227cb347f1d', TRUE);
+       ('test inactive topic 3', '11111111-ffff-1111-1111-111111111133', '94a10f9f-a42e-44c0-8ebe-1227cb347f1d', FALSE),
+       ('test topic 4', '11111111-ffff-1111-1111-111111111134', '94a10f9f-a42e-44c0-8ebe-1227cb347f1d', TRUE);
 
 
 INSERT INTO topic_team (topic_uuid, case_type, responsible_team_uuid, stage_type)

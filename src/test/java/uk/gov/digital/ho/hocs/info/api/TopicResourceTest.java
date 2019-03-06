@@ -1,6 +1,5 @@
 package uk.gov.digital.ho.hocs.info.api;
 
-import com.amazonaws.services.sns.model.CreateTopicRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -101,24 +100,44 @@ public class TopicResourceTest {
 
         when(topicService.createParentTopic(request)).thenReturn(UUID.randomUUID());
 
-        ResponseEntity<UUID> response = topicResource.createParentTopic(request);
+        ResponseEntity<CreateParentTopicResponse> response = topicResource.createParentTopic(request);
 
         verify(topicService, times(1)).createParentTopic(any());
         verifyNoMoreInteractions(topicService);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-//
-//    @Test
-//    public void shouldCreateTopic() {
-//
-//        CreateTopicDto request = new CreateTopicDto("ParentTopic", UUID.randomUUID());
-//
-//        when(topicService.createTopic(request).thenReturn(UUID.randomUUID()));
-//
-//        ResponseEntity<UUID> response = topicResource.createTopic(request);
-//
-//        verify(topicService, times(1)).createTopic(any(), any());
-//        verifyNoMoreInteractions(topicService);
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//    }
+
+    @Test
+    public void shouldCreateTopic() {
+
+        CreateTopicDto request = new CreateTopicDto("ParentTopic");
+
+        when(topicService.createTopic(any(), any())).thenReturn(UUID.randomUUID());
+
+        ResponseEntity<CreateTopicResponse> response = topicResource.createTopic(request, UUID.randomUUID());
+
+        verify(topicService, times(1)).createTopic(any(), any());
+        verifyNoMoreInteractions(topicService);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void shouldDeleteParentTopic() {
+
+        ResponseEntity response = topicResource.deleteParentTopic(UUID.randomUUID());
+
+        verify(topicService, times(1)).deleteParentTopic(any());
+        verifyNoMoreInteractions(topicService);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void shouldDeleteTopic() {
+
+        ResponseEntity response = topicResource.deleteTopic(UUID.randomUUID());
+
+        verify(topicService, times(1)).deleteTopic(any());
+        verifyNoMoreInteractions(topicService);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 }

@@ -5,11 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
-public class CreateTopicDto {
+public class CreateNominatedContactResponse {
 
-    @JsonProperty("displayName")
-    private String displayName;
+    @JsonProperty("uuid")
+    String uuid;
+
 }

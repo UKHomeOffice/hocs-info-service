@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -32,6 +33,7 @@ public class ParentTopic implements Serializable {
     @JoinColumn(name = "parent_topic_uuid", referencedColumnName = "uuid")
     private Set<Topic> topic = new HashSet<>();
 
+    @Setter
     @Column(name = "active")
     private Boolean active;
 

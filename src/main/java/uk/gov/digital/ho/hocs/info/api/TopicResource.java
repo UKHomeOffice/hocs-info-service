@@ -26,9 +26,9 @@ public class TopicResource {
 
     @GetMapping(value = "/topics/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetAllTopicsResponse> getAllTopicsByCaseType(@PathVariable String caseType) {
-            log.info("requesting all Parent topics and topics for case type {}", caseType);
-            List<ParentTopic> parentTopics = topicService.getParentTopics(caseType);
-            return ResponseEntity.ok(GetAllTopicsResponse.from(parentTopics));
+        log.info("requesting all Parent topics and topics for case type {}", caseType);
+        List<ParentTopic> parentTopics = topicService.getParentTopics(caseType);
+        return ResponseEntity.ok(GetAllTopicsResponse.from(parentTopics));
     }
 
     @GetMapping(value = "/case/{caseUUID}/topiclist", produces = APPLICATION_JSON_UTF8_VALUE)
@@ -46,9 +46,9 @@ public class TopicResource {
 
     @GetMapping(value = "/topic/all/{parentTopicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetTopicsResponse> getTopicsByParentTopic(@PathVariable UUID parentTopicUUID) {
-            log.info("requesting all topics for parent topic uuid {}", parentTopicUUID);
-            List<Topic> topics = topicService.getAllTopicsForParentTopic(parentTopicUUID);
-            return ResponseEntity.ok(GetTopicsResponse.from(topics));
+        log.info("requesting all topics for parent topic uuid {}", parentTopicUUID);
+        List<Topic> topics = topicService.getAllTopicsForParentTopic(parentTopicUUID);
+        return ResponseEntity.ok(GetTopicsResponse.from(topics));
     }
 
     @GetMapping(value = "/topic/{topicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
@@ -58,17 +58,29 @@ public class TopicResource {
         return ResponseEntity.ok(TopicDto.from(topics));
     }
 
-    @PostMapping(value = "topic/parent/", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<UUID> createParentTopic(@RequestBody CreateParentTopicDto request) {
+    @PostMapping(value = "/topic/parent", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<CreateParentTopicResponse> createParentTopic(@RequestBody CreateParentTopicDto request) {
         log.info("Creating new parent topic {}", request.getDisplayName());
         UUID parentTopicUUID = topicService.createParentTopic(request);
-        return ResponseEntity.ok(parentTopicUUID);
+        return ResponseEntity.ok(new CreateParentTopicResponse(parentTopicUUID.toString()));
     }
 
-    @PostMapping(value = "topic/parent/{parentTopicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<UUID> createTopic(@RequestBody CreateTopicDto request, @PathVariable UUID parentTopicUUID) {
+    @PostMapping(value = "/topic/parent/{parentTopicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<CreateTopicResponse> createTopic(@RequestBody CreateTopicDto request, @PathVariable UUID parentTopicUUID) {
         log.info("Creating new topic {}", request.getDisplayName());
         UUID topicUUID = topicService.createTopic(request, parentTopicUUID);
-        return ResponseEntity.ok(topicUUID);
+        return ResponseEntity.ok(new CreateTopicResponse(topicUUID.toString()));
+    }
+
+    @DeleteMapping(value = "/topic/parent/{parentTopicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity deleteParentTopic(@PathVariable UUID parentTopicUUID) {
+        topicService.deleteParentTopic(parentTopicUUID);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping(value = "/topic/{topicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity deleteTopic(@PathVariable UUID topicUUID) {
+        topicService.deleteTopic(topicUUID);
+        return ResponseEntity.ok().build();
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateNominatedContactDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateNominatedContactResponse;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateNominatedContactDto;
 import uk.gov.digital.ho.hocs.info.domain.model.NominatedContact;
 
@@ -29,9 +30,10 @@ public class NominatedContactResource {
     }
 
     @PostMapping(value = "/team/{teamUUID}/contact", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<UUID> createNominatedContact(@PathVariable UUID teamUUID, @RequestBody CreateNominatedContactDto createNominatedContactDto){
+    public ResponseEntity<CreateNominatedContactResponse> createNominatedContact(@PathVariable UUID teamUUID, @RequestBody CreateNominatedContactDto createNominatedContactDto){
         NominatedContact nominatedContact = nominatedContactService.createNominatedContact(teamUUID, createNominatedContactDto.getEmailAddress());
-        return ResponseEntity.ok(nominatedContact.getUuid());
+        CreateNominatedContactResponse response = new CreateNominatedContactResponse(nominatedContact.getUuid().toString());
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping(value="/team/{teamUUID}/contact/{nominatedContactUUID}", produces = APPLICATION_JSON_UTF8_VALUE)

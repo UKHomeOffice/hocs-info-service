@@ -5,11 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-public class CreateTopicDto {
 
-    @JsonProperty("displayName")
-    private String displayName;
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+public class CreateParentTopicResponse {
+
+    @JsonProperty("topicUUID")
+    String parentTopicUUID;
+
 }

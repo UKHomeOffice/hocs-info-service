@@ -14,6 +14,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.TopicRepository;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
@@ -102,6 +103,45 @@ public class TopicService {
                             "Topic already exists with this name for the given parent");
                 }
             }
+        }
+    }
+
+    public void deleteParentTopic(UUID parentTopicUUID) {
+
+        log.debug("Deleting parent topic: {}", parentTopicUUID);
+
+        ParentTopic parentTopic = parentTopicRepository.findByUuid(parentTopicUUID);
+        if (parentTopic == null){
+            log.debug("Unable to delete parent topic, UUID: {} does not exist", parentTopicUUID);
+            throw new ApplicationExceptions.EntityNotFoundException("Unable to delete parent topic, UUID: {} does not exist", parentTopicUUID);
+        } else {
+            Set<Topic> childrenTopics = topicRepository.findAllActiveTopicsByParentTopic(parentTopicUUID);
+            if (!childrenTopics.isEmpty()) {
+                for (Topic childTopic : childrenTopics) {
+                    childTopic.setActive(false);
+                    topicRepository.save(childTopic);
+                    log.info("Deleted child topic: {}", childTopic.getDisplayName());
+                }
+            }
+            parentTopic.setActive(false);
+            parentTopicRepository.save(parentTopic);
+            log.info("Deleted parent topic: {}", parentTopic.getDisplayName());
+
+        }
+    }
+
+    public void deleteTopic(UUID topicUUID) {
+
+        log.debug("Deleting topic: {}", topicUUID);
+
+        Topic topic = topicRepository.findTopicByUUID(topicUUID);
+        if (topic == null){
+            log.debug("Unable to delete  topic, UUID: {} does not exist", topicUUID);
+            throw new ApplicationExceptions.EntityNotFoundException("Unable to delete topic, UUID: {} does not exist", topicUUID);
+        } else {
+            topic.setActive(false);
+            topicRepository.save(topic);
+            log.info("Deleted topic: {}", topic.getDisplayName());
         }
     }
 }

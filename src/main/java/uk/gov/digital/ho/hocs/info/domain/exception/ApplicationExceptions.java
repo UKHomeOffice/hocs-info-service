@@ -242,4 +242,7 @@ public interface ApplicationExceptions {
             return event;
         }
     }
+
+    class TopicDeletionException extends RuntimeException {
+    }
 }

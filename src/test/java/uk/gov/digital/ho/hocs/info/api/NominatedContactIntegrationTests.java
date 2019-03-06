@@ -78,14 +78,15 @@ public class NominatedContactIntegrationTests {
 
         String email = "new@email.com";
         CreateNominatedContactDto request = new CreateNominatedContactDto(email);
-        HttpEntity<CreateNominatedContactDto> httpEntity = new HttpEntity(request);
+        HttpEntity<CreateNominatedContactDto> httpEntity = new HttpEntity(request, headers);
 
-        ResponseEntity<UUID> result = restTemplate.exchange(
+        ResponseEntity<CreateNominatedContactResponse> result = restTemplate.exchange(
                 getBasePath() + "/team/" + teamUUID.toString() + "/contact"
-                , HttpMethod.POST, httpEntity, UUID.class);
+                , HttpMethod.POST, httpEntity, CreateNominatedContactResponse.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(nominatedContactRepository.findByUuid(result.getBody())).isNotNull();
+        UUID uuid = UUID.fromString(result.getBody().getUuid());
+        assertThat(nominatedContactRepository.findByUuid(uuid)).isNotNull();
 
     }
 
@@ -145,5 +146,3 @@ public class NominatedContactIntegrationTests {
     }
 
 }
-
-

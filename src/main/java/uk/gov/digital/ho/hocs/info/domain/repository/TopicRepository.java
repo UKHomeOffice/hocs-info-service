@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Repository
@@ -19,4 +20,7 @@ public interface TopicRepository extends CrudRepository<Topic, String> {
 
     @Query(value = "SELECT * FROM topic t WHERE t.display_name = ?1 AND t.parent_topic_uuid = ?2", nativeQuery = true)
     Topic findTopicByNameAndParentTopic(String displayName, UUID parent_topic_uuid);
+
+    @Query(value = "SELECT * FROM topic t WHERE t.active = true AND t.parent_topic_uuid = ?1", nativeQuery = true)
+    Set<Topic> findAllActiveTopicsByParentTopic(UUID parent_topic_uuid);
 }

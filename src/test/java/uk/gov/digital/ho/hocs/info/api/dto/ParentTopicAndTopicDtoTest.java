@@ -10,14 +10,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ParentTopicAndTopicDtoTest {
 
-    UUID topicUUID = UUID.randomUUID();
     UUID parentTopicUUID = UUID.randomUUID();
 
 
     @Test
     public void from() {
         Set<Topic> topics = new HashSet<>();
-        topics.add(new Topic(1l,"Topic Display Name", parentTopicUUID, topicUUID, true));
+        Topic topic = new Topic("Topic Display Name", parentTopicUUID);
+        UUID topicUUID = topic.getUuid();
+        topics.add(topic);
         ParentTopic parentTopic = new ParentTopic(1l, parentTopicUUID,"Parent Topic Display Name", topics, true);
 
         ParentTopicAndTopicDto parentTopicAndTopicDto = ParentTopicAndTopicDto.from(parentTopic);

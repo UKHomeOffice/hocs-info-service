@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -29,6 +30,7 @@ public class Topic implements Serializable {
     @Column(name = "parent_topic_uuid")
     private UUID parentTopic;
 
+    @Setter
     @Column(name = "active")
     private Boolean active;
 
