@@ -140,4 +140,50 @@ public class TopicResourceTest {
         verifyNoMoreInteractions(topicService);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
+    @Test
+    public void shouldReactivateParentTopic() {
+
+        ResponseEntity response = topicResource.reactivateParentTopic(UUID.randomUUID());
+
+        verify(topicService, times(1)).reactivateParentTopic(any());
+        verifyNoMoreInteractions(topicService);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void shouldReactivateTopic() {
+
+        ResponseEntity response = topicResource.reactivateTopic(UUID.randomUUID());
+
+        verify(topicService, times(1)).reactivateTopic(any());
+        verifyNoMoreInteractions(topicService);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+
+    @Test
+    public void shouldRenameTopic() {
+
+        UpdateTopicNameDto request = new UpdateTopicNameDto("New name");
+
+        ResponseEntity response = topicResource.updateTopicName(UUID.randomUUID(), request);
+
+        verify(topicService, times(1)).updateTopicName(any(), any());
+        verifyNoMoreInteractions(topicService);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void shouldUpdateParentOfTopic() {
+
+        UpdateTopicParentDto request = new UpdateTopicParentDto(UUID.randomUUID().toString());
+
+        ResponseEntity response = topicResource.updateTopicParent(UUID.randomUUID(), request);
+
+        verify(topicService, times(1)).updateTopicParent(any(), any());
+        verifyNoMoreInteractions(topicService);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
 }

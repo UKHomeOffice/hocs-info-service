@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Repository
@@ -20,6 +21,8 @@ public interface ParentTopicRepository extends CrudRepository<ParentTopic, Strin
     ParentTopic findByUuid(UUID uuid);
 
     ParentTopic findByDisplayName(String displayName);
+
+    Set<ParentTopic> findAllByActiveIsTrue();
 
 
 }

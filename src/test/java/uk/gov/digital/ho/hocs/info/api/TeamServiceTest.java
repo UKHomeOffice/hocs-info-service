@@ -9,14 +9,12 @@ import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
-import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCasesForUserResponse;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.UnitRepository;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
-import uk.gov.digital.ho.hocs.info.security.Base64UUID;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
 import java.util.*;
@@ -506,7 +504,7 @@ public class TeamServiceTest {
         when(caseworkClient.getCasesForUser(userUUID, teamUUID)).thenReturn(new HashSet<>());
 
         teamService.removeUserFromTeam(userUUID,teamUUID);
-        verify(auditClient, times(1)).removeUserFromTeam(userUUID, teamUUID);
+        verify(auditClient, times(1)).removeUserFromTeamAudit(userUUID, teamUUID);
     }
 
     @Test

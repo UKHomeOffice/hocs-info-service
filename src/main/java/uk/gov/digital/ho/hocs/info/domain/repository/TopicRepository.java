@@ -23,4 +23,6 @@ public interface TopicRepository extends CrudRepository<Topic, String> {
 
     @Query(value = "SELECT * FROM topic t WHERE t.active = true AND t.parent_topic_uuid = ?1", nativeQuery = true)
     Set<Topic> findAllActiveTopicsByParentTopic(UUID parent_topic_uuid);
+
+    List<Topic> findAllByActiveIsTrue();
 }

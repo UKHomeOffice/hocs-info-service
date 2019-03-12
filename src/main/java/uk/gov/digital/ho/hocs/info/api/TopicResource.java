@@ -83,4 +83,29 @@ public class TopicResource {
         topicService.deleteTopic(topicUUID);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping(value = "/topic/parent/{parentTopicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity reactivateParentTopic(@PathVariable UUID parentTopicUUID){
+        topicService.reactivateParentTopic(parentTopicUUID);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(value = "/topic/{topicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity reactivateTopic(@PathVariable UUID topicUUID){
+        topicService.reactivateTopic(topicUUID);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(value = "/topic/{topicUUID}/name", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity updateTopicName(@PathVariable UUID topicUUID, @RequestBody UpdateTopicNameDto request){
+        topicService.updateTopicName(request.getDisplayName(), topicUUID);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(value = "/topic/{topicUUID}/parent", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity updateTopicParent(@PathVariable UUID topicUUID, @RequestBody UpdateTopicParentDto request){
+        topicService.updateTopicParent(UUID.fromString(request.getParentTopicUUID()), topicUUID);
+        return ResponseEntity.ok().build();
+
+    }
 }

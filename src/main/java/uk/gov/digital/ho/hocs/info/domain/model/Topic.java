@@ -21,12 +21,14 @@ public class Topic implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Column(name = "displayName")
     private String displayName;
 
     @Column(name = "uuid")
     private UUID uuid;
 
+    @Setter
     @Column(name = "parent_topic_uuid")
     private UUID parentTopic;
 

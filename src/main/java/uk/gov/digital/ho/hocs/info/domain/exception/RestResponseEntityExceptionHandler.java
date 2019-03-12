@@ -93,6 +93,12 @@ public class RestResponseEntityExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
     }
 
+    @ExceptionHandler(ApplicationExceptions.TopicUpdateException.class)
+    public ResponseEntity handle(ApplicationExceptions.TopicUpdateException e) {
+        log.error("TopicCreationException: {}", e.getMessage(),value(EVENT, BAD_REQUEST));
+        return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity handle(Exception e) {
         log.error("Exception: {}", e.getMessage(), value(EVENT, UNCAUGHT_EXCEPTION));

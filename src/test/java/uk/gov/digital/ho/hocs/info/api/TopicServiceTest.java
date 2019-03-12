@@ -8,6 +8,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.TopicService;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateParentTopicDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateTopicDto;
+import uk.gov.digital.ho.hocs.info.api.dto.UpdateTopicParentDto;
+import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
@@ -33,6 +35,9 @@ public class TopicServiceTest {
     @Mock
     private CaseworkClient caseworkClient;
 
+    @Mock
+    private AuditClient auditClient;
+
     private TopicService topicService;
 
     private UUID uuid = UUID.randomUUID();
@@ -40,7 +45,7 @@ public class TopicServiceTest {
 
     @Before
     public void setUp() {
-        this.topicService = new TopicService(parentTopicRepository, topicRepository, caseworkClient);
+        this.topicService = new TopicService(parentTopicRepository, topicRepository, caseworkClient, auditClient);
     }
 
     @Test
@@ -98,8 +103,6 @@ public class TopicServiceTest {
 
         topicService.createParentTopic(request);
 
-        verify(parentTopicRepository, times(1)).findByDisplayName(any());
-        verifyNoMoreInteractions(parentTopicRepository);
     }
 
     @Test
@@ -150,12 +153,9 @@ public class TopicServiceTest {
         Topic topic = new Topic("Topic", UUID.randomUUID());
 
         when(parentTopicRepository.findByUuid(any())).thenReturn(parentTopic);
-        when(topicRepository.findTopicByNameAndParentTopic(any(), any())).thenReturn(topic);
 
         topicService.createTopic(request, UUID.randomUUID());
 
-        verify(topicRepository, times(1)).findTopicByNameAndParentTopic(any(), any());
-        verifyNoMoreInteractions(topicRepository);
     }
 
 
@@ -177,14 +177,11 @@ public class TopicServiceTest {
 
         topicService.deleteTopic(UUID.randomUUID());
 
-        verify(topicRepository, times(1)).findTopicByUUID(any());
-        verifyNoMoreInteractions(topicRepository);
     }
 
     @Test
     public void shouldDeleteParentTopicWithNoChildrenTopics() {
         when(parentTopicRepository.findByUuid(any())).thenReturn(new ParentTopic("Parent topic"));
-        when(topicRepository.findAllActiveTopicsByParentTopic(UUID.randomUUID())).thenReturn(new HashSet<>());
 
         topicService.deleteParentTopic(UUID.randomUUID());
 
@@ -215,6 +212,104 @@ public class TopicServiceTest {
         verify(topicRepository, times(1)).save(any());
 
         verifyNoMoreInteractions(topicRepository);
+    }
+
+
+    @Test
+    public void shouldReactivateTopicWithActiveParent(){
+        Topic inactive_topic = new Topic(1L, "topic", UUID.randomUUID(), UUID.randomUUID(), false);
+
+        when(topicRepository.findTopicByUUID(any())).thenReturn(inactive_topic);
+        when(parentTopicRepository.findByUuid(any())).thenReturn(new ParentTopic("topic"));
+
+        topicService.reactivateTopic(UUID.randomUUID());
+
+        verify(parentTopicRepository, times(1)).findByUuid(any());
+        verifyNoMoreInteractions(parentTopicRepository);
+
+        verify(topicRepository, times(1)).findTopicByUUID(any());
+        verify(topicRepository, times(1)).save(any());
+
+        verifyNoMoreInteractions(topicRepository);
+    }
+
+    @Test(expected = ApplicationExceptions.TopicUpdateException.class)
+    public void shouldNotReactivateTopicWithInactiveParent(){
+        Topic inactive_topic = new Topic(1L, "topic", UUID.randomUUID(), UUID.randomUUID(), false);
+
+        when(topicRepository.findTopicByUUID(any())).thenReturn(inactive_topic);
+        when(parentTopicRepository.findByUuid(any())).thenReturn(new ParentTopic("topic", false));
+
+        topicService.reactivateTopic(UUID.randomUUID());
+
+    }
+
+    @Test
+    public void shouldReactivateInactiveParentTopic(){
+
+        when(parentTopicRepository.findByUuid(any())).thenReturn(new ParentTopic("parent topic", false));
+        topicService.reactivateParentTopic(UUID.randomUUID());
+
+        verify(parentTopicRepository, times(1)).findByUuid(any());
+        verify(parentTopicRepository, times(1)).save(any());
+        verifyNoMoreInteractions(parentTopicRepository);
+
+    }
+
+    @Test
+    public void shouldNotChangeActiveParentTopicWhenReactivated(){
+
+        when(parentTopicRepository.findByUuid(any())).thenReturn(new ParentTopic("parent topic", true));
+        topicService.reactivateParentTopic(UUID.randomUUID());
+
+        verify(parentTopicRepository, times(1)).findByUuid(any());
+        verifyNoMoreInteractions(parentTopicRepository);
+
+    }
+
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
+    public void shouldNotUpdateTopicWithGivenNonexistentParent() {
+
+        when(topicRepository.findTopicByUUID(any())).thenReturn(new Topic("topic", UUID.randomUUID()));
+        when(parentTopicRepository.findByUuid(any())).thenReturn(null);
+
+        topicService.updateTopicParent(UUID.randomUUID(), UUID.randomUUID());
+
+    }
+
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
+    public void shouldNotUpdateTopicWithInactiveParent() {
+
+        when(topicRepository.findTopicByUUID(any())).thenReturn(new Topic("topic", UUID.randomUUID()));
+        when(parentTopicRepository.findByUuid(any())).thenReturn(new ParentTopic("parent topic", false));
+
+        topicService.updateTopicParent(UUID.randomUUID(), UUID.randomUUID());
+
+    }
+
+    @Test
+    public void shouldUpdateTopicWithGivenDisplayName(){
+
+        when(topicRepository.findTopicByUUID(any())).thenReturn(new Topic("topic", UUID.randomUUID()));
+        when(topicRepository.findTopicByNameAndParentTopic(any(), any())).thenReturn(null);
+
+        topicService.updateTopicName("new name", UUID.randomUUID());
+
+        verify(topicRepository, times(1)).findTopicByUUID(any());
+        verify(topicRepository, times(1)).findTopicByNameAndParentTopic(any(), any());
+        verify(topicRepository, times(1)).save(any());
+        verifyNoMoreInteractions(topicRepository);
+
+    }
+
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
+    public void shouldNotUpdateTopicDisplayNameWhenParentAlreadyHasTopicWithGivenName() {
+
+        when(topicRepository.findTopicByUUID(any())).thenReturn(new Topic("topic", UUID.randomUUID()));
+        when(topicRepository.findTopicByNameAndParentTopic(any(), any())).thenReturn(new Topic());
+
+        topicService.updateTopicName("new name", UUID.randomUUID());
+
     }
 
     private List<ParentTopic> getParentTopics() {
