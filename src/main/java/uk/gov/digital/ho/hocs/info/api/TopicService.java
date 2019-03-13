@@ -71,7 +71,7 @@ public class TopicService {
             return newParentTopic.getUuid();
         } else {
             log.debug("Unable to create parent topic, parent topic with the same name already exists");
-            if (parentTopic.getActive() == true) {
+            if (parentTopic.isActive() == true) {
                 throw new ApplicationExceptions.TopicCreationException("Active parent topic already exists with this name");
             } else {
                 throw new ApplicationExceptions.TopicCreationException("Inactive parent topic already exists with this name");
@@ -95,7 +95,7 @@ public class TopicService {
                 auditClient.createTopicAudit(topic);
                 return topic.getUuid();
             } else {
-                if (existingTopic.getActive() == true) {
+                if (existingTopic.isActive() == true) {
                     log.debug(
                             "Unable to create topic, active topic with this name already exists for this parent");
                 } else {
@@ -160,7 +160,7 @@ public class TopicService {
             throw new ApplicationExceptions.EntityNotFoundException(
                     "Parent topic with UUID {} does not exist", parentTopicUUID.toString());
         }
-        if (parentTopic.getActive() == true) {
+        if (parentTopic.isActive() == true) {
             log.debug("Parent topic is already active");
         } else {
             parentTopic.setActive(true);
@@ -178,7 +178,7 @@ public class TopicService {
             throw new ApplicationExceptions.EntityNotFoundException("Topic with UUID {} does not exist", topicUUID.toString());
         }
         ParentTopic parentTopic = parentTopicRepository.findByUuid(topic.getParentTopic());
-        if(parentTopic.getActive() == false){
+        if(parentTopic.isActive() == false){
             log.debug("Unable to activate topic: {}, parent topic is inactive", topicUUID);
             throw new ApplicationExceptions.TopicUpdateException("Unable to activate topic, parent topic is inactive");
         } else {
@@ -217,7 +217,7 @@ public class TopicService {
             log.debug("The given parent topic does not exist");
             return false;
         } else {
-            if (parentTopic.getActive() == false) {
+            if (parentTopic.isActive() == false) {
                 log.debug("The given parent topic is inactive");
                 return false;
             } else {

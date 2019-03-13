@@ -1,6 +1,5 @@
 package uk.gov.digital.ho.hocs.info.api.dto;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 
@@ -10,7 +9,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-@Ignore
+
 public class GetTopicsResponseTest {
 
     UUID uuid1 = UUID.randomUUID();

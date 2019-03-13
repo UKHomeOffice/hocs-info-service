@@ -19,7 +19,7 @@ public class Topic implements Serializable {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Setter
     @Column(name = "displayName")
@@ -34,7 +34,7 @@ public class Topic implements Serializable {
 
     @Setter
     @Column(name = "active")
-    private Boolean active;
+    private boolean active;
 
     public Topic(String displayName, UUID parentTopic) {
         this.displayName = displayName;
@@ -42,6 +42,7 @@ public class Topic implements Serializable {
         this.parentTopic = parentTopic;
         this.active = true;
     }
+
 }
 
 

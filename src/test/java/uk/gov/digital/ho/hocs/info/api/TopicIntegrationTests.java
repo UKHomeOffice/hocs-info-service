@@ -221,7 +221,7 @@ public class TopicIntegrationTests {
                 , HttpMethod.DELETE, httpEntity, Void.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(parentTopicRepository.findByUuid(parentTopicWithNoChildrenUUID).getActive()).isFalse();
+        assertThat(parentTopicRepository.findByUuid(parentTopicWithNoChildrenUUID).isActive()).isFalse();
 
     }
 
@@ -238,9 +238,9 @@ public class TopicIntegrationTests {
                 , HttpMethod.DELETE, httpEntity, Void.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(parentTopicRepository.findByUuid(parentTopicUUID).getActive()).isFalse();
-        assertThat(topicRepository.findTopicByUUID(topicUUID1).getActive()).isFalse();
-        assertThat(topicRepository.findTopicByUUID(topicUUID2).getActive()).isFalse();
+        assertThat(parentTopicRepository.findByUuid(parentTopicUUID).isActive()).isFalse();
+        assertThat(topicRepository.findTopicByUUID(topicUUID1).isActive()).isFalse();
+        assertThat(topicRepository.findTopicByUUID(topicUUID2).isActive()).isFalse();
 
     }
 
@@ -254,8 +254,8 @@ public class TopicIntegrationTests {
                 , HttpMethod.DELETE, httpEntity, Void.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(parentTopicRepository.findByUuid(parentTopicUUID).getActive()).isTrue();
-        assertThat(topicRepository.findTopicByUUID(topicUUID).getActive()).isFalse();
+        assertThat(parentTopicRepository.findByUuid(parentTopicUUID).isActive()).isTrue();
+        assertThat(topicRepository.findTopicByUUID(topicUUID).isActive()).isFalse();
     }
 
     @Test
@@ -291,11 +291,11 @@ public class TopicIntegrationTests {
 
         ParentTopic parentTopic = parentTopicRepository.findByUuid(inactiveParentTopicUUID);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(parentTopic.getActive()).isEqualTo(true);
+        assertThat(parentTopic.isActive()).isEqualTo(true);
 
         Topic topic = topicRepository.findTopicByUUID(UUID.fromString(childTopicUUID));
-        assertThat(topic.getActive()).isEqualTo(false);
-        assertThat(parentTopic.getActive()).isEqualTo(true);
+        assertThat(topic.isActive()).isEqualTo(false);
+        assertThat(parentTopic.isActive()).isEqualTo(true);
 
     }
 
@@ -329,7 +329,7 @@ public class TopicIntegrationTests {
         ParentTopic parentTopicAfter = parentTopicRepository.findByUuid(parentTopicUUID);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(parentTopicBefore.getActive()).isEqualTo(parentTopicAfter.getActive());
+        assertThat(parentTopicBefore.isActive()).isEqualTo(parentTopicAfter.isActive());
         assertThat(parentTopicBefore.getDisplayName()).isEqualTo(parentTopicAfter.getDisplayName());
 
     }
@@ -345,7 +345,7 @@ public class TopicIntegrationTests {
                 , HttpMethod.PUT, httpEntity, Void.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(topicRepository.findTopicByUUID(inactiveTopicUUID).getActive()).isEqualTo(true);
+        assertThat(topicRepository.findTopicByUUID(inactiveTopicUUID).isActive()).isEqualTo(true);
 
     }
 
@@ -360,7 +360,7 @@ public class TopicIntegrationTests {
                 , HttpMethod.PUT, httpEntity, Void.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(topicRepository.findTopicByUUID(inactiveTopicWithInactiveParentUUID).getActive()).isEqualTo(false);
+        assertThat(topicRepository.findTopicByUUID(inactiveTopicWithInactiveParentUUID).isActive()).isEqualTo(false);
 
     }
 
@@ -377,7 +377,7 @@ public class TopicIntegrationTests {
         Topic topicAfter = topicRepository.findTopicByUUID(topicUUID);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(topicBefore.getActive()).isEqualTo(topicAfter.getActive());
+        assertThat(topicBefore.isActive()).isEqualTo(topicAfter.isActive());
 
     }
 
@@ -432,15 +432,6 @@ public class TopicIntegrationTests {
         assertThat(topic.getParentTopic()).isNotEqualTo(invalidParentTopicUUID);
 
     }
-
-
-
-
-
-
-
-
-
 
     private String getBasePath() {
         return "http://localhost:" + port;

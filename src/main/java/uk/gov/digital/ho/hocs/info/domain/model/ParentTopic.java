@@ -35,7 +35,7 @@ public class ParentTopic implements Serializable {
 
     @Setter
     @Column(name = "active")
-    private Boolean active;
+    private boolean active;
 
     public ParentTopic(String displayName) {
         this.displayName = displayName;
