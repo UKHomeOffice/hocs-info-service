@@ -83,7 +83,7 @@ public class TopicIntegrationTests {
 
         long numberOfTopicsBefore = parentTopicRepository.count();
 
-        CreateParentTopicDto request = new CreateParentTopicDto("test Parent topic 100");
+        CreateParentTopicDto request = new CreateParentTopicDto("test parent topic 100");
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
         ResponseEntity<Void> result = restTemplate.exchange(
@@ -433,22 +433,14 @@ public class TopicIntegrationTests {
 
     }
 
-    @Test
-    public void shouldUpdateDisplayNameOfGivenTopic(){
 
-        UpdateTopicNameDto request = new UpdateTopicNameDto("New name");
 
-        HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/topic/" + topicUUID + "/name"
-                , HttpMethod.PUT, httpEntity, Void.class);
 
-        Topic topic = topicRepository.findTopicByUUID(topicUUID);
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(topic.getDisplayName()).isEqualTo("New name");
 
-    }
+
+
+
 
     private String getBasePath() {
         return "http://localhost:" + port;

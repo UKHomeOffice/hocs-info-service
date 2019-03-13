@@ -163,18 +163,6 @@ public class TopicResourceTest {
 
 
     @Test
-    public void shouldRenameTopic() {
-
-        UpdateTopicNameDto request = new UpdateTopicNameDto("New name");
-
-        ResponseEntity response = topicResource.updateTopicName(UUID.randomUUID(), request);
-
-        verify(topicService, times(1)).updateTopicName(any(), any());
-        verifyNoMoreInteractions(topicService);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
     public void shouldUpdateParentOfTopic() {
 
         UpdateTopicParentDto request = new UpdateTopicParentDto(UUID.randomUUID().toString());

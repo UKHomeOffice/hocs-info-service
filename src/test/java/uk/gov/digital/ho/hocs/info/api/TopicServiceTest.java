@@ -278,37 +278,12 @@ public class TopicServiceTest {
     }
 
     @Test (expected = ApplicationExceptions.TopicUpdateException.class)
-    public void shouldNotUpdateTopicWithInactiveParent() {
+    public void shouldNotUpdateTopicWithGivenInactiveParent() {
 
         when(topicRepository.findTopicByUUID(any())).thenReturn(new Topic("topic", UUID.randomUUID()));
         when(parentTopicRepository.findByUuid(any())).thenReturn(new ParentTopic("parent topic", false));
 
         topicService.updateTopicParent(UUID.randomUUID(), UUID.randomUUID());
-
-    }
-
-    @Test
-    public void shouldUpdateTopicWithGivenDisplayName(){
-
-        when(topicRepository.findTopicByUUID(any())).thenReturn(new Topic("topic", UUID.randomUUID()));
-        when(topicRepository.findTopicByNameAndParentTopic(any(), any())).thenReturn(null);
-
-        topicService.updateTopicName("new name", UUID.randomUUID());
-
-        verify(topicRepository, times(1)).findTopicByUUID(any());
-        verify(topicRepository, times(1)).findTopicByNameAndParentTopic(any(), any());
-        verify(topicRepository, times(1)).save(any());
-        verifyNoMoreInteractions(topicRepository);
-
-    }
-
-    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
-    public void shouldNotUpdateTopicDisplayNameWhenParentAlreadyHasTopicWithGivenName() {
-
-        when(topicRepository.findTopicByUUID(any())).thenReturn(new Topic("topic", UUID.randomUUID()));
-        when(topicRepository.findTopicByNameAndParentTopic(any(), any())).thenReturn(new Topic());
-
-        topicService.updateTopicName("new name", UUID.randomUUID());
 
     }
 

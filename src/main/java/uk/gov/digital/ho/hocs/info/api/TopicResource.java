@@ -72,40 +72,34 @@ public class TopicResource {
         return ResponseEntity.ok(new CreateTopicResponse(topicUUID.toString()));
     }
 
-    @DeleteMapping(value = "/topic/parent/{parentTopicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(value = "/topic/parent/{parentTopicUUID}")
     public ResponseEntity deleteParentTopic(@PathVariable UUID parentTopicUUID) {
         topicService.deleteParentTopic(parentTopicUUID);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping(value = "/topic/{topicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(value = "/topic/{topicUUID}")
     public ResponseEntity deleteTopic(@PathVariable UUID topicUUID) {
         topicService.deleteTopic(topicUUID);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping(value = "/topic/parent/{parentTopicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(value = "/topic/parent/{parentTopicUUID}")
     public ResponseEntity reactivateParentTopic(@PathVariable UUID parentTopicUUID){
         topicService.reactivateParentTopic(parentTopicUUID);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping(value = "/topic/{topicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(value = "/topic/{topicUUID}")
     public ResponseEntity reactivateTopic(@PathVariable UUID topicUUID){
         topicService.reactivateTopic(topicUUID);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping(value = "/topic/{topicUUID}/name", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity updateTopicName(@PathVariable UUID topicUUID, @RequestBody UpdateTopicNameDto request){
-        topicService.updateTopicName(request.getDisplayName(), topicUUID);
-        return ResponseEntity.ok().build();
-    }
 
-    @PutMapping(value = "/topic/{topicUUID}/parent", produces = APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(value = "/topic/{topicUUID}/parent")
     public ResponseEntity updateTopicParent(@PathVariable UUID topicUUID, @RequestBody UpdateTopicParentDto request){
         topicService.updateTopicParent(UUID.fromString(request.getParentTopicUUID()), topicUUID);
         return ResponseEntity.ok().build();
-
     }
 }

@@ -243,22 +243,6 @@ public class AuditClient {
         }
     }
 
-    public void updateTopicDisplayNameAudit(Topic topic) {
-        String auditPayload = Json.createObjectBuilder()
-                .add("topicUUID", topic.getUuid().toString())
-                .add("newDisplayName", topic.getDisplayName())
-                .build()
-                .toString();
-        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.UPDATE_TOPIC_DISPLAY_NAME.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Update Topic display name, topic UUID: {}, correlationID: {}, UserID: {}", topic.getUuid(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create audit event for update display name for topic UUID {} for reason {}", topic.getUuid(), e, value(EVENT, AUDIT_FAILED));
-        }
-    }
-
     public void updateTopicParentAudit(Topic topic) {
         String auditPayload = Json.createObjectBuilder()
                 .add("topicUUID", topic.getUuid().toString())
