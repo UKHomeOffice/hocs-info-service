@@ -5,41 +5,21 @@ import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.representations.idm.GroupRepresentation;
-import org.keycloak.representations.idm.PartialImportRepresentation;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
-import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
-import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
-import uk.gov.digital.ho.hocs.info.api.dto.UpdateTeamNameRequest;
-import uk.gov.digital.ho.hocs.info.api.dto.UpdateTeamPermissionsRequest;
-import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.UnitRepository;
-import uk.gov.digital.ho.hocs.info.security.AccessLevel;
-import uk.gov.digital.ho.hocs.info.security.Base64UUID;
-import uk.gov.digital.ho.hocs.info.security.KeycloakService;
-
-import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
 
@@ -47,7 +27,6 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
 @Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
-@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 @ActiveProfiles("test")
 public class UnitIntegrationTests {
 
