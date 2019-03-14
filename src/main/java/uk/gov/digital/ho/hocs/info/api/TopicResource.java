@@ -3,13 +3,8 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
-import uk.gov.digital.ho.hocs.info.api.dto.GetAllTopicsResponse;
-import uk.gov.digital.ho.hocs.info.api.dto.GetParentTopicsResponse;
-import uk.gov.digital.ho.hocs.info.api.dto.GetTopicsResponse;
-import uk.gov.digital.ho.hocs.info.api.dto.TopicDto;
+import org.springframework.web.bind.annotation.*;
+import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 
@@ -31,9 +26,9 @@ public class TopicResource {
 
     @GetMapping(value = "/topics/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetAllTopicsResponse> getAllTopicsByCaseType(@PathVariable String caseType) {
-            log.info("requesting all Parent topics and topics for case type {}", caseType);
-            List<ParentTopic> parentTopics = topicService.getParentTopics(caseType);
-            return ResponseEntity.ok(GetAllTopicsResponse.from(parentTopics));
+        log.info("requesting all Parent topics and topics for case type {}", caseType);
+        List<ParentTopic> parentTopics = topicService.getParentTopics(caseType);
+        return ResponseEntity.ok(GetAllTopicsResponse.from(parentTopics));
     }
 
     @GetMapping(value = "/case/{caseUUID}/topiclist", produces = APPLICATION_JSON_UTF8_VALUE)
@@ -51,9 +46,9 @@ public class TopicResource {
 
     @GetMapping(value = "/topic/all/{parentTopicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetTopicsResponse> getTopicsByParentTopic(@PathVariable UUID parentTopicUUID) {
-            log.info("requesting all topics for parent topic uuid {}", parentTopicUUID);
-            List<Topic> topics = topicService.getAllTopicsForParentTopic(parentTopicUUID);
-            return ResponseEntity.ok(GetTopicsResponse.from(topics));
+        log.info("requesting all topics for parent topic uuid {}", parentTopicUUID);
+        List<Topic> topics = topicService.getAllTopicsForParentTopic(parentTopicUUID);
+        return ResponseEntity.ok(GetTopicsResponse.from(topics));
     }
 
     @GetMapping(value = "/topic/{topicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
@@ -61,5 +56,50 @@ public class TopicResource {
         log.info("requesting topic {}", topicUUID);
         Topic topics = topicService.getTopic(topicUUID);
         return ResponseEntity.ok(TopicDto.from(topics));
+    }
+
+    @PostMapping(value = "/topic/parent", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<CreateParentTopicResponse> createParentTopic(@RequestBody CreateParentTopicDto request) {
+        log.info("Creating new parent topic {}", request.getDisplayName());
+        UUID parentTopicUUID = topicService.createParentTopic(request);
+        return ResponseEntity.ok(new CreateParentTopicResponse(parentTopicUUID.toString()));
+    }
+
+    @PostMapping(value = "/topic/parent/{parentTopicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<CreateTopicResponse> createTopic(@RequestBody CreateTopicDto request, @PathVariable UUID parentTopicUUID) {
+        log.info("Creating new topic {}", request.getDisplayName());
+        UUID topicUUID = topicService.createTopic(request, parentTopicUUID);
+        return ResponseEntity.ok(new CreateTopicResponse(topicUUID.toString()));
+    }
+
+    @DeleteMapping(value = "/topic/parent/{parentTopicUUID}")
+    public ResponseEntity deleteParentTopic(@PathVariable UUID parentTopicUUID) {
+        topicService.deleteParentTopic(parentTopicUUID);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping(value = "/topic/{topicUUID}")
+    public ResponseEntity deleteTopic(@PathVariable UUID topicUUID) {
+        topicService.deleteTopic(topicUUID);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(value = "/topic/parent/{parentTopicUUID}")
+    public ResponseEntity reactivateParentTopic(@PathVariable UUID parentTopicUUID){
+        topicService.reactivateParentTopic(parentTopicUUID);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(value = "/topic/{topicUUID}")
+    public ResponseEntity reactivateTopic(@PathVariable UUID topicUUID){
+        topicService.reactivateTopic(topicUUID);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @PutMapping(value = "/topic/{topicUUID}/parent")
+    public ResponseEntity updateTopicParent(@PathVariable UUID topicUUID, @RequestBody UpdateTopicParentDto request){
+        topicService.updateTopicParent(UUID.fromString(request.getParentTopicUUID()), topicUUID);
+        return ResponseEntity.ok().build();
     }
 }

@@ -225,4 +225,41 @@ public interface ApplicationExceptions {
         }
     }
 
+    class TopicCreationException extends RuntimeException {
+        private final LogEvent event;
+
+        public TopicCreationException(String msg, LogEvent event, Object... args) {
+            super(String.format(msg, args));
+            this.event = event;
+        }
+
+        public TopicCreationException(String msg) {
+            super(msg);
+            this.event = LogEvent.UNCAUGHT_EXCEPTION;
+        }
+
+        public LogEvent getEvent() {
+            return event;
+        }
+    }
+
+
+    class TopicUpdateException extends RuntimeException {
+
+        private final LogEvent event;
+
+        public TopicUpdateException(String msg, LogEvent event, Object... args) {
+            super(String.format(msg, args));
+            this.event = event;
+        }
+
+        public TopicUpdateException(String msg) {
+            super(msg);
+            this.event = LogEvent.UNCAUGHT_EXCEPTION;
+        }
+        public LogEvent getEvent() {
+            return event;
+        }
+    }
+
 }

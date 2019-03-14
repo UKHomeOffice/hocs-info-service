@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS topic
   display_name      TEXT NOT NULL,
   uuid              UUID NOT NULL,
   parent_topic_uuid UUID NOT NULL,
+  active            boolean NOT NULL DEFAULT TRUE,
 
   CONSTRAINT topic_uuid_idempotent UNIQUE (uuid),
   CONSTRAINT topic_name_idempotent UNIQUE (display_name, parent_topic_uuid)

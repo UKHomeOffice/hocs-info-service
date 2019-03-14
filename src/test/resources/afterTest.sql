@@ -1,5 +1,4 @@
-DELETE FROM parent_topic WHERE UUID = '94a10f9f-a42e-44c0-8ebe-1227cb347f1d' OR UUID = '1abf7a0c-ea2d-478d-b6c8-d739fb60ef04';
-
+DELETE FROM parent_topic WHERE UUID = '94a10f9f-a42e-44c0-8ebe-1227cb347f1d' OR UUID = '1abf7a0c-ea2d-478d-b6c8-d739fb60ef04' OR UUID = '71caee7b-4632-4ac6-9c15-b91d4c0d27e5' OR UUID = '038cecb8-00a2-4417-b18b-88c8905ff52e' OR display_name = 'Test Parent Topic' OR display_name = 'test parent topic 100';
 DELETE FROM permission WHERE case_type = 'CT1' OR case_type = 'CT2' OR case_type = 'CT3';
 DELETE FROM topic_team WHERE true;
 DELETE FROM topic WHERE true;

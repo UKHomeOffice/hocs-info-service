@@ -14,12 +14,14 @@ public class GetTopicsResponseTest {
 
     UUID uuid1 = UUID.randomUUID();
     UUID uuid2 = UUID.randomUUID();
+    UUID uuid3 = UUID.randomUUID();
+
 
     @Test
     public void from() {
         List<Topic> topics = new ArrayList<>();
-        topics.add(new Topic(1l, "Topic 1", uuid1));
-        topics.add(new Topic(2l, "Topic 2", uuid2));
+        topics.add(new Topic(1l, "Topic 1", uuid1, uuid2, true));
+        topics.add(new Topic(2l, "Topic 2", uuid3, uuid2, true));
 
         GetTopicsResponse getTopicsResponse = GetTopicsResponse.from(topics);
 
@@ -30,7 +32,7 @@ public class GetTopicsResponseTest {
         assertThat(result1.getUuid()).isEqualTo(uuid1);
         TopicDto result2 = responseAsList.stream().filter(x -> "Topic 2".equals(x.getDisplayName())).findAny().orElse(null);
         assertThat(result2).isNotNull();
-        assertThat(result2.getUuid()).isEqualTo(uuid2);
+        assertThat(result2.getUuid()).isEqualTo(uuid3);
 
     }
 }

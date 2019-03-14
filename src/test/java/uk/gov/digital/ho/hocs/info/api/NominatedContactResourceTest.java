@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateNominatedContactDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateNominatedContactResponse;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateNominatedContactDto;
 import uk.gov.digital.ho.hocs.info.domain.model.NominatedContact;
 
@@ -63,7 +64,7 @@ public class NominatedContactResourceTest {
         NominatedContact contact = new NominatedContact(teamUUID, email);
         when(nominatedContactService.createNominatedContact(teamUUID, email)).thenReturn(contact);
 
-        ResponseEntity<UUID> response = nominatedContactResource.createNominatedContact(teamUUID, request);
+        ResponseEntity<CreateNominatedContactResponse> response = nominatedContactResource.createNominatedContact(teamUUID, request);
 
         verify(nominatedContactService, times(1)).createNominatedContact(teamUUID, email);
         verifyNoMoreInteractions(nominatedContactService);

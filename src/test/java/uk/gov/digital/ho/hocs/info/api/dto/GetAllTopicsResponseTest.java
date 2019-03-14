@@ -15,9 +15,9 @@ public class GetAllTopicsResponseTest {
     @Test
     public void from() {
         Set<Topic> topicSet = new HashSet<>();
-        topicSet.add(new Topic(1l,"Topic1",uuid));
+        topicSet.add(new Topic(1l,"Topic1",uuid, UUID.randomUUID(), true));
         List<ParentTopic> parentTopics = new ArrayList<>();
-        parentTopics.add(new ParentTopic(1l,uuid, "ParentTopic", topicSet));
+        parentTopics.add(new ParentTopic(1l,uuid, "ParentTopic", topicSet, true));
 
         GetAllTopicsResponse getAllTopicsResponse = GetAllTopicsResponse.from(parentTopics);
 

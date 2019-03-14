@@ -13,7 +13,7 @@ public class TopicDtoTest {
 
     @Test
     public void from() {
-        Topic topic = new Topic(1l,"DisplayName",  uuid);
+        Topic topic = new Topic(1l,"DisplayName",  uuid, UUID.randomUUID(), true);
 
         TopicDto topicDto = TopicDto.from(topic);
 

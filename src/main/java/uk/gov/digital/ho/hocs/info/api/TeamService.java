@@ -210,7 +210,7 @@ public class TeamService {
 
         if (caseworkClient.getCasesForUser(userUUID, teamUUID).isEmpty()) {
             keycloakService.removeUserFromTeam(userUUID, teamUUID);
-            auditClient.removeUserFromTeam(userUUID, teamUUID);
+            auditClient.removeUserFromTeamAudit(userUUID, teamUUID);
             log.info("Removed user with UUID {} from team with UUID {}", userUUID.toString(), teamUUID.toString(), value(EVENT, USER_REMOVED_FROM_TEAM));
         } else {
             throw new ApplicationExceptions.UserRemoveException("Unable to remove user {} from team {} as user has assigned cases", userUUID, teamUUID);
