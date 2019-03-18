@@ -13,6 +13,7 @@ import uk.gov.digital.ho.hocs.info.client.auditClient.dto.EventType;
 import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
+import uk.gov.digital.ho.hocs.info.domain.model.TopicTeam;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -256,6 +257,38 @@ public class AuditClient {
             log.info("Create audit for Reactivate Topic, topic UUID: {}, correlationID: {}, UserID: {}", topic.getUuid(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
         } catch (Exception e) {
             log.error("Failed to create audit event for reactivate topic UUID {} for reason {}", topic.getUuid(), e, value(EVENT, AUDIT_FAILED));
+        }
+    }
+
+    public void addTeamToTopicAudit(TopicTeam topicTeam) {
+        String auditPayload = Json.createObjectBuilder()
+                .add("topicUUID", topicTeam.getTopicUUID().toString())
+                .add("teamUUID", topicTeam.getResponsibleTeamUUID().toString())
+                .add("caseType", topicTeam.getCaseType())
+                .add("stageType", topicTeam.getStageType())
+                .build().toString();
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.ADD_TEAM_TO_TOPIC.toString());
+        try {
+            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
+            log.info("Create audit for Add Team To Topic, topic UUID: {}, correlationID: {}, UserID: {}", topicTeam.getTopicUUID(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
+        } catch (Exception e) {
+            log.error("Failed to create audit event for add team to topic UUID {} for reason {}", topicTeam.getTopicUUID(), e, value(EVENT, AUDIT_FAILED));
+        }
+    }
+
+    public void updateTeamForTopicAudit(TopicTeam topicTeam) {
+        String auditPayload = Json.createObjectBuilder()
+                .add("topicUUID", topicTeam.getTopicUUID().toString())
+                .add("teamUUID", topicTeam.getResponsibleTeamUUID().toString())
+                .add("caseType", topicTeam.getCaseType())
+                .add("stageType", topicTeam.getStageType())
+                .build().toString();
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.UPDATE_TEAM_FOR_TOPIC.toString());
+        try {
+            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
+            log.info("Create audit for Update Team To Topic, topic UUID: {}, correlationID: {}, UserID: {}", topicTeam.getTopicUUID(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
+        } catch (Exception e) {
+            log.error("Failed to create audit event for update team to topic UUID {} for reason {}", topicTeam.getTopicUUID(), e, value(EVENT, AUDIT_FAILED));
         }
     }
 

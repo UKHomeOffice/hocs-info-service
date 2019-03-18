@@ -49,8 +49,11 @@ VALUES ('11111111-ffff-1111-1111-111111111131', 'MIN', '08612f06-bae2-4d2f-90d2-
        ('11111111-ffff-1111-1111-111111111132', 'MIN', '5d584129-66ea-4e97-9277-7576ab1d32c0' ,'DCU_MIN_PRIVATE_OFFICE');
 
 
-INSERT INTO team_contact (id, uuid, team_uuid, email_address)
-VALUES (5, '37f76a1d-5366-4ab7-a7b1-a23b68c95b89', '08612f06-bae2-4d2f-90d2-2254a68414b8', 'one@email.com'),
-       (6, '4ad178d7-b33d-4c4d-b9c8-cca63362380c', '08612f06-bae2-4d2f-90d2-2254a68414b8', 'two@email.com'),
-       (7, '8bc0e84d-08e0-42f2-9d75-ff7b7c40d9fa', '911adabe-5ab7-4470-8395-6b584a61462d', 'three@email.com'),
-       (8, '10c88bbc-00a7-4226-9d7b-bae5186debcd', '434a4e33-437f-4e6d-8f04-14ea40fdbfa2', 'four@email.com');
+INSERT INTO team_contact (uuid, team_uuid, email_address)
+VALUES ('37f76a1d-5366-4ab7-a7b1-a23b68c95b89', '08612f06-bae2-4d2f-90d2-2254a68414b8', 'one@email.com'),
+       ('4ad178d7-b33d-4c4d-b9c8-cca63362380c', '08612f06-bae2-4d2f-90d2-2254a68414b8', 'two@email.com'),
+       ('8bc0e84d-08e0-42f2-9d75-ff7b7c40d9fa', '911adabe-5ab7-4470-8395-6b584a61462d', 'three@email.com'),
+       ('10c88bbc-00a7-4226-9d7b-bae5186debcd', '434a4e33-437f-4e6d-8f04-14ea40fdbfa2', 'four@email.com');
+
+INSERT INTO stage_type (uuid, display_name, short_code, type, case_type_uuid, acting_team_uuid, deadline, active)
+VALUES ('a4f3226a-4845-4f41-b1d5-8d4d5146935e', 'stage type 1', 'x1', 'ST1', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0', '8b3b4366-a37c-48b6-b274-4c50f8083843', 5, true);
