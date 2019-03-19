@@ -26,4 +26,11 @@ public class TopicTeamResource {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping(value = "/topic/{topicUUID}/team/{teamUUID}")
+    public ResponseEntity updateTeamForTopic(@PathVariable UUID topicUUID, @PathVariable UUID teamUUID, @RequestBody AddTeamToTopicDto request) {
+        log.info("Adding team () to topic {}", teamUUID, topicUUID);
+        topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+        return ResponseEntity.ok().build();
+    }
+
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.api.dto.AddTeamToTopicDto;
 import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
+import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.TopicTeam;
 import uk.gov.digital.ho.hocs.info.domain.repository.TopicTeamRepository;
 
@@ -42,8 +43,8 @@ public class TopicTeamService {
         String stageType = request.getStageType();
         String caseType = request.getCaseType();
         if (validateTeamTopicStageAndCase(teamUUID, topicUUID, stageType, caseType)){
-            if (doesTeamExistForTopicAtStageAndCase(topicUUID, stageType, caseType)){
-                throw new ApplicationExceptions.EntityAlreadyExistsException(
+            if (topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, caseType, stageType) != null) {
+                throw new ApplicationExceptions.TopicUpdateException(
                         "Unable to add team to topic, topic already has a team set for this stage and case type.");
             } else {
                 TopicTeam topicTeam = topicTeamRepository.save(new TopicTeam(topicUUID, teamUUID, caseType, stageType));
@@ -59,36 +60,36 @@ public class TopicTeamService {
         String caseType = request.getCaseType();
 
         if (validateTeamTopicStageAndCase(teamUUID, topicUUID, stageType, caseType)) {
-            if (doesTeamExistForTopicAtStageAndCase(topicUUID, stageType, caseType)) {
-                TopicTeam topicTeam = topicTeamRepository.save(new TopicTeam(topicUUID, teamUUID, caseType, stageType));
+            TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, caseType, stageType);
+            if (topicTeam != null) {
+                UUID oldTeamUUID = topicTeam.getResponsibleTeamUUID();
+                topicTeam.setResponsibleTeamUUID(teamUUID);
+                topicTeamRepository.save(topicTeam);
                 log.info("Updated topic: {} with team : {}", topicUUID, teamUUID);
-                auditClient.updateTeamForTopicAudit(topicTeam);
+                auditClient.updateTeamForTopicAudit(topicTeam, oldTeamUUID);
             } else {
-                throw new ApplicationExceptions.EntityNotFoundException("Unable update topic team, topic has no team to update for this stage and case type.", topicUUID);
+                throw new ApplicationExceptions.TopicUpdateException("Unable update topic team, topic has no team to update for this stage and case type.", topicUUID);
             }
-        }
-    }
-
-    private boolean doesTeamExistForTopicAtStageAndCase(UUID topicUUID, String stageType, String caseType){
-        if (topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, caseType, stageType) == null) {
-            return false;
-        } else {
-            return true;
         }
     }
 
     private boolean validateTeamTopicStageAndCase(UUID teamUUID, UUID topicUUID, String stageType, String caseType){
         if (topicService.getTopic(topicUUID) == null) {
-            throw new ApplicationExceptions.EntityNotFoundException("Unable to add team to topic, topic {} not found.", topicUUID);
+            throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, topic {} not found.", topicUUID);
         } else {
             if (stageTypeService.getStageType(stageType) == null){
-                throw new ApplicationExceptions.EntityNotFoundException("Unable to add team to topic, stage type{} not found.", stageType);
+                throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, stage type{} not found.", stageType);
             } else {
                 if (caseTypeService.getCaseType(caseType) == null) {
-                    throw new ApplicationExceptions.EntityNotFoundException("Unable to add team to topic, case type {} not found.", caseType);
+                    throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, case type {} not found.", caseType);
                 } else {
-                    if (teamService.getTeam(teamUUID) == null) {
-                        throw new ApplicationExceptions.EntityNotFoundException("Unable to add team to topic, team {} not found.", teamUUID);
+                    Team team = teamService.getTeam(teamUUID);
+                    if (team == null) {
+                        throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, team {} not found.", teamUUID);
+                    } else {
+                        if (!team.isActive()){
+                            throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, team {} is inactive.", teamUUID);
+                        }
                     }
                 }
             }

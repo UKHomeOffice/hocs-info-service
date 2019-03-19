@@ -276,12 +276,13 @@ public class AuditClient {
         }
     }
 
-    public void updateTeamForTopicAudit(TopicTeam topicTeam) {
+    public void updateTeamForTopicAudit(TopicTeam topicTeam, UUID oldTeamUUID) {
         String auditPayload = Json.createObjectBuilder()
                 .add("topicUUID", topicTeam.getTopicUUID().toString())
                 .add("teamUUID", topicTeam.getResponsibleTeamUUID().toString())
                 .add("caseType", topicTeam.getCaseType())
                 .add("stageType", topicTeam.getStageType())
+                .add("oldTeamUUID", oldTeamUUID.toString())
                 .build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.UPDATE_TEAM_FOR_TOPIC.toString());
         try {

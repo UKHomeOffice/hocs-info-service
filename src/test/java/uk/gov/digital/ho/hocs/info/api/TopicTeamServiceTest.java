@@ -6,14 +6,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.AddTeamToTopicDto;
-import uk.gov.digital.ho.hocs.info.api.dto.CreateParentTopicDto;
-import uk.gov.digital.ho.hocs.info.api.dto.CreateTopicDto;
 import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
-import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
-import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
-import uk.gov.digital.ho.hocs.info.domain.repository.TopicRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.TopicTeamRepository;
 
 import java.util.*;
@@ -68,12 +63,13 @@ public class TopicTeamServiceTest {
         verifyNoMoreInteractions(topicTeamRepository);
     }
 
-    @Test (expected = ApplicationExceptions.EntityNotFoundException.class)
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
     public void shouldThrowExceptionWhenAddingNonExistentTeamToTopic() {
 
         AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
+        when(teamService.getTeam(teamUUID)).thenReturn(null);
         when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
         when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
         when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
@@ -87,26 +83,59 @@ public class TopicTeamServiceTest {
         AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
+        when(teamService.getTeam(teamUUID)).thenReturn(null);
         when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
         when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
         when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
 
         try { topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
-        } catch (ApplicationExceptions.EntityNotFoundException e) {
+        } catch (ApplicationExceptions.TopicUpdateException e) {
             // Do nothing.
         }
 
         verifyZeroInteractions(topicTeamRepository);
     }
 
-    @Test (expected = ApplicationExceptions.EntityNotFoundException.class)
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
+    public void shouldThrowExceptionWhenAddingInactiveTeamToTopic() {
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+        when(teamService.getTeam(teamUUID)).thenReturn(new Team("name", false));
+        when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
+        when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
+        when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
+
+        topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
+    }
+
+    @Test
+    public void shouldNotAddTeamWhenAddingInactiveTeamToTopic() {
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+        when(teamService.getTeam(teamUUID)).thenReturn(new Team("name", false));
+        when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
+        when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
+        when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
+
+        try { topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
+        } catch (ApplicationExceptions.TopicUpdateException e) {
+            // Do nothing.
+        }
+
+        verifyZeroInteractions(topicTeamRepository);
+    }
+
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
     public void shouldThrowExceptionWhenAddingTeamToNonexistentTopic() {
 
         AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
-
-
+        
         topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
     }
 
@@ -119,14 +148,14 @@ public class TopicTeamServiceTest {
 
         try {
             topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
-        } catch (ApplicationExceptions.EntityNotFoundException e) {
+        } catch (ApplicationExceptions.TopicUpdateException e) {
             // Do nothing.
         }
 
         verifyZeroInteractions(topicTeamRepository);
     }
 
-    @Test (expected = ApplicationExceptions.EntityNotFoundException.class)
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
     public void shouldThrowExceptionWhenAddingTeamToTopicAndCaseTypeIsInvalid() {
 
         AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
@@ -148,14 +177,14 @@ public class TopicTeamServiceTest {
         when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
         when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
         try { topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
-        } catch (ApplicationExceptions.EntityNotFoundException e) {
+        } catch (ApplicationExceptions.TopicUpdateException e) {
             // Do nothing.
         }
 
         verifyZeroInteractions(topicTeamRepository);
     }
 
-    @Test (expected = ApplicationExceptions.EntityNotFoundException.class)
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
     public void shouldThrowExceptionWhenAddingTeamToTopicAndStageTypeIsInvalid() {
 
         AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
@@ -174,14 +203,14 @@ public class TopicTeamServiceTest {
         UUID teamUUID = UUID.randomUUID();
         when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
         try { topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
-        } catch (ApplicationExceptions.EntityNotFoundException e) {
+        } catch (ApplicationExceptions.TopicUpdateException e) {
             // Do nothing.
         }
 
         verifyZeroInteractions(topicTeamRepository);
     }
 
-    @Test (expected = ApplicationExceptions.EntityAlreadyExistsException.class)
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
     public void shouldThrowExceptionWhenAddingTeamToTopicAndTopicAlreadyHasATeam() {
 
         AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
@@ -213,7 +242,7 @@ public class TopicTeamServiceTest {
                 any(), any(), any())).thenReturn(new TopicTeam());
 
         try { topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
-        } catch (ApplicationExceptions.EntityAlreadyExistsException e) {
+        } catch (ApplicationExceptions.TopicUpdateException e) {
             // Do nothing.
         }
 
@@ -237,6 +266,225 @@ public class TopicTeamServiceTest {
         topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
 
         verify(auditClient, times(1)).addTeamToTopicAudit(any());
+        verifyNoMoreInteractions(auditClient);
+    }
+
+    @Test
+    public void shouldSuccessfullyUpdateTeamForTopic() {
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        when(teamService.getTeam(teamUUID)).thenReturn(new Team("name", true));
+        when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
+        when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
+        when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
+        when(topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(any(),any(),any())).thenReturn(new TopicTeam());
+
+        topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+
+        verify(topicTeamRepository, times(1)).save(any());
+        verify(topicTeamRepository, times(1)).findByTopicUUIDAndCaseTypeAndStageType(any(), any(), any());
+        verifyNoMoreInteractions(topicTeamRepository);
+    }
+
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
+    public void shouldThrowExceptionWhenUpdatingNonExistentTeamForTopic() {
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+        when(teamService.getTeam(teamUUID)).thenReturn(null);
+        when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
+        when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
+        when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
+
+        topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+    }
+
+    @Test
+    public void shouldNotAddTeamWhenUpdatingNonExistentTeamForTopic() {
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+        when(teamService.getTeam(teamUUID)).thenReturn(null);
+        when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
+        when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
+        when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
+
+        try { topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+        } catch (ApplicationExceptions.TopicUpdateException e) {
+            // Do nothing.
+        }
+
+        verifyZeroInteractions(topicTeamRepository);
+    }
+
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
+    public void shouldThrowExceptionWhenUpdatingInactiveTeamForTopic() {
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+        when(teamService.getTeam(teamUUID)).thenReturn(new Team("name", false));
+        when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
+        when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
+        when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
+
+        topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+    }
+
+    @Test
+    public void shouldNotAddTeamWhenUpdatingInactiveTeamForTopic() {
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+        when(teamService.getTeam(teamUUID)).thenReturn(new Team("name", false));
+        when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
+        when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
+        when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
+
+        try { topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+        } catch (ApplicationExceptions.TopicUpdateException e) {
+            // Do nothing.
+        }
+
+        verifyZeroInteractions(topicTeamRepository);
+    }
+
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
+    public void shouldThrowExceptionWhenUpdatingTeamToNonexistentTopic() {
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+    }
+
+    @Test
+    public void shouldNotAddTeamWhenUpdatingTeamToNonexistentTopic() {
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN", "DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        try {
+            topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+        } catch (ApplicationExceptions.TopicUpdateException e) {
+            // Do nothing.
+        }
+
+        verifyZeroInteractions(topicTeamRepository);
+    }
+
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
+    public void shouldThrowExceptionWhenUpdatingTeamToTopicAndCaseTypeIsInvalid() {
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
+        when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
+
+        topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+    }
+
+    @Test
+    public void shouldNotAddTeamWhenUpdatingTeamToTopicAndCaseTypeIsInvalid() {
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+        when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
+        when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
+        try { topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+        } catch (ApplicationExceptions.TopicUpdateException e) {
+            // Do nothing.
+        }
+
+        verifyZeroInteractions(topicTeamRepository);
+    }
+
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
+    public void shouldThrowExceptionWhenUpdatingTeamToTopicAndStageTypeIsInvalid() {
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+        when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
+
+        topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+    }
+
+    @Test
+    public void shouldNotAddTeamWhenUpdatingTeamToTopicAndStageTypeIsInvalid() {
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+        when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
+        try { topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+        } catch (ApplicationExceptions.TopicUpdateException e) {
+            // Do nothing.
+        }
+
+        verifyZeroInteractions(topicTeamRepository);
+    }
+
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
+    public void shouldThrowExceptionWhenUpdatingTeamToTopicAndTopicHAsNoTeam() {
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        when(teamService.getTeam(teamUUID)).thenReturn(null);
+        when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
+        when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
+        when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
+
+        topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+    }
+
+    @Test
+    public void shouldNotAddTeamWhenUpdatingTeamToTopicAndTopicHasNoTeam() {
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        when(teamService.getTeam(teamUUID)).thenReturn(null);
+        when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
+        when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
+        when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
+
+        try { topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+        } catch (ApplicationExceptions.TopicUpdateException e) {
+            // Do nothing.
+        }
+        verifyZeroInteractions(topicTeamRepository);
+    }
+
+    @Test
+    public void shouldAuditUpdateTeamForTopic(){
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
+        UUID topicUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+
+        when(teamService.getTeam(teamUUID)).thenReturn(new Team("name", true));
+        when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
+        when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
+        when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
+        when(topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(any(),any(),any())).thenReturn(new TopicTeam());
+
+        topicTeamService.updateTeamForTopic(topicUUID, teamUUID, request);
+
+        verify(auditClient, times(1)).updateTeamForTopicAudit(any(), any());
         verifyNoMoreInteractions(auditClient);
     }
 }

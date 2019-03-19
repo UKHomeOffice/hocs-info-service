@@ -14,6 +14,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
+import uk.gov.digital.ho.hocs.info.domain.model.TopicTeam;
 import uk.gov.digital.ho.hocs.info.domain.repository.TopicTeamRepository;
 
 import java.util.UUID;
@@ -82,13 +83,38 @@ public class TopicTeamIntegrationTests {
                 , HttpMethod.POST, httpEntity, Void.class);
 
         long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
+
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(topicTeam).isNull();
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
     }
 
     @Test
-    public void shouldErrorAndNotAddTeamWhenAddingNonTeamToNonexistentTopic(){
+    public void shouldErrorAndNotAddTeamWhenAddingInactiveTeamToTopic(){
+
+        UUID topicUUID = UUID.fromString("11111111-ffff-1111-1111-111111111133");
+        UUID inactiveTeamUUID = UUID.fromString("d09f1444-87ec-4197-8ec5-f28f548d11be");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_INITIAL_DRAFT");
+
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+
+        HttpEntity httpEntity = new HttpEntity(request, headers);
+        ResponseEntity result = restTemplate.exchange(
+                getBasePath() + "/topic/" + topicUUID + "/team/" + inactiveTeamUUID
+                , HttpMethod.POST, httpEntity, Void.class);
+
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(topicTeam).isNull();
+        assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
+    }
+
+    @Test
+    public void shouldErrorAndNotAddTeamWhenAddingTeamToNonexistentTopic(){
 
         UUID topicUUID = UUID.fromString("11111111-ffff-1111-1111-11111110000");
         UUID teamUUID = UUID.fromString("8b3b4366-a37c-48b6-b274-4c50f8083843");
@@ -102,8 +128,10 @@ public class TopicTeamIntegrationTests {
                 , HttpMethod.POST, httpEntity, Void.class);
 
         long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(topicTeam).isNull();
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
     }
 
@@ -122,8 +150,10 @@ public class TopicTeamIntegrationTests {
                 , HttpMethod.POST, httpEntity, Void.class);
 
         long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(topicTeam).isNull();
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
     }
 
@@ -142,8 +172,10 @@ public class TopicTeamIntegrationTests {
                 , HttpMethod.POST, httpEntity, Void.class);
 
         long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(topicTeam).isNull();
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
     }
 
@@ -169,6 +201,174 @@ public class TopicTeamIntegrationTests {
                 .findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT")
                 .getResponsibleTeamUUID())
                 .isEqualTo(UUID.fromString("08612f06-bae2-4d2f-90d2-2254a68414b8"));
+    }
+
+    @Test
+    public void shouldUpdateTeamForTopic(){
+
+        UUID topicUUID = UUID.fromString("11111111-ffff-1111-1111-111111111131");
+        UUID oldTeamUUID = UUID.fromString("08612f06-bae2-4d2f-90d2-2254a68414b8");
+        UUID newTeamUUID = UUID.fromString("8b3b4366-a37c-48b6-b274-4c50f8083843");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_INITIAL_DRAFT");
+
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam oldTopicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
+        assertThat(oldTopicTeam.getResponsibleTeamUUID()).isEqualTo(oldTeamUUID);
+
+        HttpEntity httpEntity = new HttpEntity(request, headers);
+        ResponseEntity result = restTemplate.exchange(
+                getBasePath() + "/topic/" + topicUUID + "/team/" + newTeamUUID
+                , HttpMethod.PUT, httpEntity, Void.class);
+
+        TopicTeam newTopicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
+        assertThat(newTopicTeam.getResponsibleTeamUUID()).isEqualTo(newTeamUUID);
+    }
+
+    @Test
+    public void shouldErrorAndNotAddTeamWhenUpdatingTopicWithNonExistentTeam(){
+
+        UUID topicUUID = UUID.fromString("11111111-ffff-1111-1111-111111111131");
+        UUID oldTeamUUID = UUID.fromString("08612f06-bae2-4d2f-90d2-2254a68414b8");
+        UUID nonexistentTeamUUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_INITIAL_DRAFT");
+
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+
+        HttpEntity httpEntity = new HttpEntity(request, headers);
+        ResponseEntity result = restTemplate.exchange(
+                getBasePath() + "/topic/" + topicUUID + "/team/" + nonexistentTeamUUID
+                , HttpMethod.PUT, httpEntity, Void.class);
+
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
+
+        assertThat(topicTeam.getResponsibleTeamUUID()).isEqualTo(oldTeamUUID);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
+    }
+
+    @Test
+    public void shouldErrorAndNotAddTeamWhenUpdatingTopicWithInactiveTeam(){
+
+        UUID topicUUID = UUID.fromString("11111111-ffff-1111-1111-111111111131");
+        UUID oldTeamUUID = UUID.fromString("08612f06-bae2-4d2f-90d2-2254a68414b8");
+        UUID inactiveTeamUUID = UUID.fromString("d09f1444-87ec-4197-8ec5-f28f548d11be");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_INITIAL_DRAFT");
+
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+
+        HttpEntity httpEntity = new HttpEntity(request, headers);
+        ResponseEntity result = restTemplate.exchange(
+                getBasePath() + "/topic/" + topicUUID + "/team/" + inactiveTeamUUID
+                , HttpMethod.PUT, httpEntity, Void.class);
+
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
+
+        assertThat(topicTeam.getResponsibleTeamUUID()).isEqualTo(oldTeamUUID);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
+    }
+
+    @Test
+    public void shouldErrorAndNotUpdateTeamWhenUpdatingTeamForNonexistentTopic(){
+
+        UUID topicUUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+        UUID newTeamUUID = UUID.fromString("8b3b4366-a37c-48b6-b274-4c50f8083843");
+
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_INITIAL_DRAFT");
+
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
+        assertThat(topicTeam).isNull();
+
+        HttpEntity httpEntity = new HttpEntity(request, headers);
+        ResponseEntity result = restTemplate.exchange(
+                getBasePath() + "/topic/" + topicUUID + "/team/" + newTeamUUID
+                , HttpMethod.PUT, httpEntity, Void.class);
+
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
+    }
+
+    @Test
+    public void shouldErrorAndNotUpdateTeamWhenUpdatingTeamForTopicWithInvalidCaseType(){
+
+        UUID topicUUID = UUID.fromString("11111111-ffff-1111-1111-111111111131");
+        UUID oldTeamUUID = UUID.fromString("08612f06-bae2-4d2f-90d2-2254a68414b8");
+        UUID newTeamUUID = UUID.fromString("8b3b4366-a37c-48b6-b274-4c50f8083843");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("XYZ","DCU_MIN_INITIAL_DRAFT");
+
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam oldTopicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
+        assertThat(oldTopicTeam.getResponsibleTeamUUID()).isEqualTo(oldTeamUUID);
+
+        HttpEntity httpEntity = new HttpEntity(request, headers);
+        ResponseEntity result = restTemplate.exchange(
+                getBasePath() + "/topic/" + topicUUID + "/team/" + newTeamUUID
+                , HttpMethod.PUT, httpEntity, Void.class);
+
+        TopicTeam newTopicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
+        assertThat(newTopicTeam.getResponsibleTeamUUID()).isEqualTo(oldTeamUUID);
+    }
+
+    @Test
+    public void shouldErrorAndNotUpdateTeamWhenUpdatingTeamForTopicWithInvalidStageType(){
+
+               UUID topicUUID = UUID.fromString("11111111-ffff-1111-1111-111111111131");
+        UUID oldTeamUUID = UUID.fromString("08612f06-bae2-4d2f-90d2-2254a68414b8");
+        UUID newTeamUUID = UUID.fromString("8b3b4366-a37c-48b6-b274-4c50f8083843");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("XYZ","INVALID_STAGE");
+
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam oldTopicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
+        assertThat(oldTopicTeam.getResponsibleTeamUUID()).isEqualTo(oldTeamUUID);
+
+        HttpEntity httpEntity = new HttpEntity(request, headers);
+        ResponseEntity result = restTemplate.exchange(
+                getBasePath() + "/topic/" + topicUUID + "/team/" + newTeamUUID
+                , HttpMethod.PUT, httpEntity, Void.class);
+
+        TopicTeam newTopicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
+        assertThat(newTopicTeam.getResponsibleTeamUUID()).isEqualTo(oldTeamUUID);
+    }
+
+    @Test
+    public void shouldErrorWhenUpdatingTeamForTopicWhichHasNoExistingTeam(){
+
+        UUID topicUUID = UUID.fromString("11111111-ffff-1111-1111-111111111133");
+        UUID newTeamUUID = UUID.fromString("8b3b4366-a37c-48b6-b274-4c50f8083843");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("XYZ","INVALID_STAGE");
+
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam oldTopicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
+        assertThat(oldTopicTeam).isNull();
+
+        HttpEntity httpEntity = new HttpEntity(request, headers);
+        ResponseEntity result = restTemplate.exchange(
+                getBasePath() + "/topic/" + topicUUID + "/team/" + newTeamUUID
+                , HttpMethod.PUT, httpEntity, Void.class);
+
+        TopicTeam newTopicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
+        assertThat(newTopicTeam).isNull();
     }
 
     private String getBasePath() {

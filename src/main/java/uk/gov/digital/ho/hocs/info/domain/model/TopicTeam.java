@@ -25,6 +25,7 @@ public class TopicTeam implements Serializable {
     @Column(name = "case_type")
     private String caseType;
 
+    @Setter
     @Column(name = "responsible_team_uuid")
     private UUID responsibleTeamUUID;
 
