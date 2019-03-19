@@ -42,15 +42,14 @@ public class TopicTeamService {
         log.debug("Adding team to Topic: {}", topicUUID);
         String stageType = request.getStageType();
         String caseType = request.getCaseType();
+
         validateTeamTopicStageAndCase(teamUUID, topicUUID, stageType, caseType);
-        if (topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, caseType, stageType) != null) {
-            throw new ApplicationExceptions.TopicUpdateException(
-                    "Unable to add team to topic, topic already has a team set for this stage and case type.");
-        } else {
-            TopicTeam topicTeam = topicTeamRepository.save(new TopicTeam(topicUUID, teamUUID, caseType, stageType));
-            log.info("Added team: {} to topic: {}", teamUUID, topicUUID);
-            auditClient.addTeamToTopicAudit(topicTeam);
-        }
+        validateTopicHasNoTeam(topicUUID, caseType, stageType);
+
+        TopicTeam topicTeam = topicTeamRepository.save(new TopicTeam(topicUUID, teamUUID, caseType, stageType));
+        log.info("Added team: {} to topic: {}", teamUUID, topicUUID);
+        auditClient.addTeamToTopicAudit(topicTeam);
+
     }
 
     public void updateTeamForTopic(UUID topicUUID, UUID teamUUID, AddTeamToTopicDto request) {
@@ -60,38 +59,61 @@ public class TopicTeamService {
 
         validateTeamTopicStageAndCase(teamUUID, topicUUID, stageType, caseType);
         TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, caseType, stageType);
-        if (topicTeam != null) {
-            UUID oldTeamUUID = topicTeam.getResponsibleTeamUUID();
-            topicTeam.setResponsibleTeamUUID(teamUUID);
-            topicTeamRepository.save(topicTeam);
-            log.info("Updated topic: {} with team : {}", topicUUID, teamUUID);
-            auditClient.updateTeamForTopicAudit(topicTeam, oldTeamUUID);
-        } else {
-            throw new ApplicationExceptions.TopicUpdateException("Unable update topic team, topic has no team to update for this stage and case type.", topicUUID);
+        validateTopicHasTeam(topicTeam);
+        UUID oldTeamUUID = topicTeam.getResponsibleTeamUUID();
+
+        topicTeam.setResponsibleTeamUUID(teamUUID);
+        topicTeamRepository.save(topicTeam);
+
+        log.info("Updated topic: {} with team : {}", topicUUID, teamUUID);
+        auditClient.updateTeamForTopicAudit(topicTeam, oldTeamUUID);
+    }
+
+    private void validateTeamTopicStageAndCase(UUID teamUUID, UUID topicUUID, String stageType, String caseType){
+        validateTopicUUID(topicUUID);
+        validateStageType(stageType);
+        validateCaseType(caseType);
+        validateTeamUUID(teamUUID);
+    }
+
+    private void validateTopicUUID(UUID topicUUID){
+        if (topicService.getTopic(topicUUID) == null) {
+            throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, topic {} not found.", topicUUID);
+        }
+    }
+    private void validateStageType(String stageType) {
+        if (stageTypeService.getStageType(stageType) == null) {
+            throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, stage type{} not found.", stageType);
         }
     }
 
-    private boolean validateTeamTopicStageAndCase(UUID teamUUID, UUID topicUUID, String stageType, String caseType){
-        if (topicService.getTopic(topicUUID) == null) {
-            throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, topic {} not found.", topicUUID);
+    private void validateCaseType(String caseType) {
+        if (caseTypeService.getCaseType(caseType) == null) {
+            throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, case type {} not found.", caseType);
+        }
+    }
+
+    private void validateTeamUUID(UUID teamUUID){
+        Team team = teamService.getTeam(teamUUID);
+        if (team == null) {
+            throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, team {} not found.", teamUUID);
         } else {
-            if (stageTypeService.getStageType(stageType) == null){
-                throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, stage type{} not found.", stageType);
-            } else {
-                if (caseTypeService.getCaseType(caseType) == null) {
-                    throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, case type {} not found.", caseType);
-                } else {
-                    Team team = teamService.getTeam(teamUUID);
-                    if (team == null) {
-                        throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, team {} not found.", teamUUID);
-                    } else {
-                        if (!team.isActive()){
-                            throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, team {} is inactive.", teamUUID);
-                        }
-                    }
-                }
+            if (!team.isActive()){
+                throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, team {} is inactive.", teamUUID);
             }
         }
-        return true;
+    }
+
+    private void validateTopicHasNoTeam(UUID topicUUID, String caseType, String stageType) {
+        if (topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, caseType, stageType) != null) {
+            throw new ApplicationExceptions.TopicUpdateException(
+                    "Unable to add team to topic, topic already has a team set for this stage and case type.");
+        }
+    }
+
+    private void validateTopicHasTeam(TopicTeam topicTeam) {
+        if (topicTeam == null) {
+            throw new ApplicationExceptions.TopicUpdateException("Unable update topic team, topic has no team to update for this stage and case type.", topicTeam.getTopicUUID());
+        }
     }
 }
