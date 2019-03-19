@@ -131,7 +131,7 @@ public class CaseTypeServiceTest {
     @Test
     public void shouldCreateNewCaseTypeInRepository() {
 
-        CreateCaseTypeDto caseType = new CreateCaseTypeDto("NEW Case Type", "NEW", "New Case Type", "c1", "NEW",true,true,"STAGE_ONE");
+        CreateCaseTypeDto caseType = new CreateCaseTypeDto("New Case Type", "c1", "NEW",true,true,"STAGE_ONE");
 
         CaseType response = mock(CaseType.class);
         when(caseTypeRepository.save(any(CaseType.class))).thenReturn(response);

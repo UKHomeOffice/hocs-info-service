@@ -7,6 +7,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.CorrespondentTypeResource;
 import uk.gov.digital.ho.hocs.info.api.CorrespondentTypeService;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateCorrespondentTypeDto;
+import uk.gov.digital.ho.hocs.info.domain.model.CorrespondentType;
 
 import java.util.HashSet;
 
@@ -37,4 +39,15 @@ public class CorrespondentTypeResourceTest {
         verifyNoMoreInteractions(correspondentTypeService);
     }
 
+    @Test
+    public void shouldCreateNewCorrespondentType() {
+        CreateCorrespondentTypeDto request = new CreateCorrespondentTypeDto("name","NAME");
+
+        when(correspondentTypeService.createCorrespondentType(any(), any())).thenReturn(new CorrespondentType());
+
+        correspondentTypeResource.createCorrespondentType(request);
+
+        verify(correspondentTypeService, times(1)).createCorrespondentType(any(), any());
+        verifyNoMoreInteractions(correspondentTypeService);
+    }
 }

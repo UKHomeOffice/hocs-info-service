@@ -33,5 +33,10 @@ public class CorrespondentType implements Serializable {
     @Column(name = "type")
     private String type;
 
+    public CorrespondentType(String displayName, String type){
+        this.uuid = UUID.randomUUID();
+        this.displayName = displayName;
+        this.type = type;
+    }
 
 }

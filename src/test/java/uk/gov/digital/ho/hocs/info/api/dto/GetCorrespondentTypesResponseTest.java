@@ -7,7 +7,7 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GetCorrespondentTypeResponseTest {
+public class GetCorrespondentTypesResponseTest {
 
     @Test
     public void shouldCreateGetCorrespondentTypeResponseDTOFromCorrespondentType() {
@@ -15,7 +15,7 @@ public class GetCorrespondentTypeResponseTest {
         correspondentTypeSet.add(new CorrespondentType(1L, UUID.randomUUID(),"Correspondent","CORRESPONDENT"));
         correspondentTypeSet.add(new CorrespondentType(2L, UUID.randomUUID(),"Constituent","CONSTITUENT"));
         correspondentTypeSet.add(new CorrespondentType(3L, UUID.randomUUID(),"Member","MEMBER"));
-        GetCorrespondentTypeResponse getCorrespondentTypeResponse = GetCorrespondentTypeResponse.from(correspondentTypeSet);
+        GetCorrespondentTypesResponse getCorrespondentTypeResponse = GetCorrespondentTypesResponse.from(correspondentTypeSet);
 
         List<CorrespondentTypeDto> responseAsList = new ArrayList<>(Objects.requireNonNull(getCorrespondentTypeResponse.getCorrespondentTypes()));
 
