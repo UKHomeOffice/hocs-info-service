@@ -39,18 +39,4 @@ public class TopicTeamResourceTest {
         verifyNoMoreInteractions(topicTeamService);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-
-    @Test
-    public void shouldUpdateTeamForTopic() {
-
-        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN", "DCU_MIN_MARKUP");
-        UUID teamUUID = UUID.randomUUID();
-        UUID topicUUID = UUID.randomUUID();
-
-        ResponseEntity response = topicTeamResource.updateTeamForTopic(topicUUID, teamUUID, request);
-        verify(topicTeamService, times(1)).updateTeamForTopic(topicUUID, teamUUID, request);
-        verifyNoMoreInteractions(topicTeamService);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
 }
