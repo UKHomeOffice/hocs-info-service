@@ -22,4 +22,5 @@ public interface CaseTypeRepository extends CrudRepository<CaseType, String> {
     CaseType findByShortCode(String shortCode);
 
     CaseType findByType(String type);
+    
 }

@@ -96,7 +96,6 @@ public class TopicResource {
         return ResponseEntity.ok().build();
     }
 
-
     @PutMapping(value = "/topic/{topicUUID}/parent")
     public ResponseEntity updateTopicParent(@PathVariable UUID topicUUID, @RequestBody UpdateTopicParentDto request){
         topicService.updateTopicParent(UUID.fromString(request.getParentTopicUUID()), topicUUID);

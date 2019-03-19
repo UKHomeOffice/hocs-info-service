@@ -8,8 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class UpdateTopicNameDto {
+public class AddTeamToTopicDto {
 
-    @JsonProperty("displayName")
-    private String displayName;
+    @JsonProperty("case_type")
+    private String caseType;
+
+    @JsonProperty("stage_type")
+    private String stageType;
 }

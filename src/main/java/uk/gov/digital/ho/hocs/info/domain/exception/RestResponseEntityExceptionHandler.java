@@ -89,14 +89,14 @@ public class RestResponseEntityExceptionHandler {
 
     @ExceptionHandler(ApplicationExceptions.TopicCreationException.class)
     public ResponseEntity handle(ApplicationExceptions.TopicCreationException e) {
-        log.error("TopicCreationException: {}", e.getMessage(),value(EVENT, BAD_REQUEST));
-        return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
+        log.error("TopicCreationException: {}", e.getMessage(),value(EVENT, INTERNAL_SERVER_ERROR));
+        return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(ApplicationExceptions.TopicUpdateException.class)
     public ResponseEntity handle(ApplicationExceptions.TopicUpdateException e) {
-        log.error("TopicCreationException: {}", e.getMessage(),value(EVENT, BAD_REQUEST));
-        return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
+        log.error("TopicCreationException: {}", e.getMessage(),value(EVENT, INTERNAL_SERVER_ERROR));
+        return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Exception.class)

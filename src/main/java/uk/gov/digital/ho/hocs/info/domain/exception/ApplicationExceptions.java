@@ -248,9 +248,9 @@ public interface ApplicationExceptions {
 
         private final LogEvent event;
 
-        public TopicUpdateException(String msg, LogEvent event, Object... args) {
+        public TopicUpdateException(String msg, Object... args) {
             super(String.format(msg, args));
-            this.event = event;
+            this.event = LogEvent.UNCAUGHT_EXCEPTION;
         }
 
         public TopicUpdateException(String msg) {

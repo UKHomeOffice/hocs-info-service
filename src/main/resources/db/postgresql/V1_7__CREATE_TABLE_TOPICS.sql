@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS parent_topic
   id           BIGSERIAL PRIMARY KEY,
   uuid         UUID NOT NULL,
   display_name TEXT NOT NULL,
-  active  boolean NOT NULL DEFAULT TRUE,
+  active       boolean NOT NULL DEFAULT TRUE,
 
   CONSTRAINT parent_topic_uuid_idempotent UNIQUE (uuid),
   CONSTRAINT parent_topic_name_idempotent UNIQUE (display_name)
@@ -41,10 +41,11 @@ DROP TABLE IF EXISTS topic_team;
 
 CREATE TABLE IF NOT EXISTS topic_team
 (
-  topic_uuid UUID NOT NULL,
-  case_type TEXT NOT NULL,
+  id                    BIGSERIAL PRIMARY KEY,
+  topic_uuid            UUID NOT NULL,
+  case_type             TEXT NOT NULL,
   responsible_team_uuid UUID NOT NULL,
-  stage_type TEXT NOT NULL,
+  stage_type            TEXT NOT NULL,
 
   CONSTRAINT fk_topic_team_case_id FOREIGN KEY (case_type) REFERENCES case_type (type),
   CONSTRAINT fk_topic_team_topic_id FOREIGN KEY (topic_uuid) REFERENCES topic (uuid),
