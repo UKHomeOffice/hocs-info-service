@@ -5,8 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.api.CorrespondentTypeResource;
-import uk.gov.digital.ho.hocs.info.api.CorrespondentTypeService;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCorrespondentTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.model.CorrespondentType;
 

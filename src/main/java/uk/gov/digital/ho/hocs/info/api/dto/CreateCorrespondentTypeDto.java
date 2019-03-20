@@ -2,8 +2,10 @@ package uk.gov.digital.ho.hocs.info.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Getter;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class CreateCorrespondentTypeDto {
@@ -14,4 +16,3 @@ public class CreateCorrespondentTypeDto {
     @JsonProperty("type")
     private String type;
 }
-

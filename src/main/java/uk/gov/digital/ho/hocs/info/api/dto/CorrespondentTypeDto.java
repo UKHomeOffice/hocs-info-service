@@ -3,21 +3,15 @@ package uk.gov.digital.ho.hocs.info.api.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import uk.gov.digital.ho.hocs.info.domain.model.CorrespondentType;
 
 import java.util.UUID;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class CorrespondentTypeDto {
-
-//    //TODO: remove - used in UI
-//    @JsonProperty("label")
-//    private String label;
-//
-//    //TODO: remove - used in UI
-//    @JsonProperty("value")
-//    private String value;
 
     @JsonProperty("uuid")
     private UUID uuid;
@@ -30,9 +24,6 @@ public class CorrespondentTypeDto {
 
     public static CorrespondentTypeDto from(CorrespondentType correspondentType) {
         return new CorrespondentTypeDto(
-//                correspondentType.getDisplayName(),
-//                correspondentType.getType(),
-
                 correspondentType.getUuid(),
                 correspondentType.getDisplayName(),
                 correspondentType.getType());
