@@ -11,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class CorrespondentTypeDto {
+public class CreateCorrespondentTypeResponse {
 
     @JsonProperty("uuid")
     private UUID uuid;
@@ -22,12 +22,8 @@ public class CorrespondentTypeDto {
     @JsonProperty("type")
     private String type;
 
-    public static CorrespondentTypeDto from(CorrespondentType correspondentType) {
-        return new CorrespondentTypeDto(
-                correspondentType.getUuid(),
-                correspondentType.getDisplayName(),
-                correspondentType.getType());
+    public static CreateCorrespondentTypeResponse from(CorrespondentType correspondentType) {
+        return new CreateCorrespondentTypeResponse(correspondentType.getUuid(), correspondentType.getDisplayName(), correspondentType.getType());
     }
-
 }
 

@@ -9,11 +9,11 @@ import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 @Getter
 public class CreateCaseTypeDto {
 
-    @JsonProperty("label")
-    private String label;
-
-    @JsonProperty("value")
-    private String value;
+//    @JsonProperty("label")
+//    private String label;
+//
+//    @JsonProperty("value")
+//    private String value;
 
     @JsonProperty("displayName")
     private String displayName;

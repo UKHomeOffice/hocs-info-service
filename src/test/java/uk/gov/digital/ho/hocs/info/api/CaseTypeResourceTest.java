@@ -99,7 +99,7 @@ public class CaseTypeResourceTest {
 
     @Test
     public void shouldAddNewCaseType() {
-        CreateCaseTypeDto caseType = new CreateCaseTypeDto("NEW Case Type", "NEW", "New Case Type", "c1", "NEW",true,true,"STAGE_ONE");
+        CreateCaseTypeDto caseType = new CreateCaseTypeDto("New Case Type", "c1", "NEW",true,true,"STAGE_ONE");
         doNothing().when(caseTypeService).createCaseType(caseType);
 
         ResponseEntity response =

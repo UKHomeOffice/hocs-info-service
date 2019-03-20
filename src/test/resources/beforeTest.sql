@@ -57,3 +57,7 @@ VALUES ('37f76a1d-5366-4ab7-a7b1-a23b68c95b89', '08612f06-bae2-4d2f-90d2-2254a68
 
 INSERT INTO stage_type (uuid, display_name, short_code, type, case_type_uuid, acting_team_uuid, deadline, active)
 VALUES ('a4f3226a-4845-4f41-b1d5-8d4d5146935e', 'stage type 1', 'x1', 'ST1', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0', '8b3b4366-a37c-48b6-b274-4c50f8083843', 5, true);
+
+INSERT INTO correspondent_type (uuid, display_name, type)
+VALUES ('fe1e8854-72ef-4141-a675-fb06760264fd', 'Test Correspondent Type 1', 'TEST1'),
+       ('c2155e6c-7ecd-450d-86e3-884e48c8c6c7', 'Test Correspondent Type 2', 'TEST2');

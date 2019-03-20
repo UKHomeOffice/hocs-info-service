@@ -10,10 +10,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.application.RequestData;
 import uk.gov.digital.ho.hocs.info.client.auditClient.dto.CreateAuditRequest;
 import uk.gov.digital.ho.hocs.info.client.auditClient.dto.EventType;
-import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
-import uk.gov.digital.ho.hocs.info.domain.model.Team;
-import uk.gov.digital.ho.hocs.info.domain.model.Topic;
-import uk.gov.digital.ho.hocs.info.domain.model.TopicTeam;
+import uk.gov.digital.ho.hocs.info.domain.model.*;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -290,6 +287,24 @@ public class AuditClient {
             log.info("Create audit for Update Team To Topic, topic UUID: {}, correlationID: {}, UserID: {}", topicTeam.getTopicUUID(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
         } catch (Exception e) {
             log.error("Failed to create audit event for update team to topic UUID {} for reason {}", topicTeam.getTopicUUID(), e, value(EVENT, AUDIT_FAILED));
+        }
+    }
+
+
+    public void createCorrespondentType(CorrespondentType correspondentType) {
+        String auditPayload = Json.createObjectBuilder()
+                .add("correspondentTypeUUID", correspondentType.getUuid().toString())
+                .add("displayName", correspondentType.getDisplayName())
+                .add("type", correspondentType.getType())
+                .build()
+                .toString();
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.CREATE_CORRESPONDENT_TYPE.toString());
+
+        try {
+            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
+            log.info("Create audit for Create Correspondent Type, UUID: {}, correlationID: {}, UserID: {}", correspondentType.getUuid(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
+        } catch (Exception e) {
+            log.error("Failed to create audit event for create correspondent type, UUID {} for reason {}", correspondentType.getUuid(), e, value(EVENT, AUDIT_FAILED));
         }
     }
 
