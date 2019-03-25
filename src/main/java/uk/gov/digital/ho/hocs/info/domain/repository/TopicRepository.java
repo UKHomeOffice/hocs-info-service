@@ -25,4 +25,6 @@ public interface TopicRepository extends CrudRepository<Topic, String> {
     Set<Topic> findAllActiveTopicsByParentTopic(UUID parent_topic_uuid);
 
     List<Topic> findAllByActiveIsTrue();
+
+    Set<Topic> findAllBy();
 }
