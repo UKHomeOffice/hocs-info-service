@@ -17,6 +17,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.TopicRepository;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -36,6 +37,11 @@ public class TopicService {
         this.topicRepository = topicRepository;
         this.caseworkClient = caseworkClient;
         this.auditClient = auditClient;
+    }
+
+    public Set<UUID> getAllTopicUUIDs() {
+        log.debug("Requesting all topics");
+        return topicRepository.findAllBy().stream().map(t -> t.getUuid()).collect(Collectors.toSet());
     }
 
     public List<ParentTopic> getParentTopics(String caseType) {
