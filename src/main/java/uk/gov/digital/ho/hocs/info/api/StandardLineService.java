@@ -21,8 +21,6 @@ public class StandardLineService {
     private final StandardLineRepository standardLineRepository;
     private final DocumentClient documentClient;
 
-    private final LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
-
     @Autowired
     public StandardLineService(
             StandardLineRepository standardLineRepository,
@@ -54,6 +52,7 @@ public class StandardLineService {
 
     StandardLine getStandardLineForTopic(UUID topicUUID) {
         log.debug("Getting Standard Line for Topic {} ", topicUUID);
+        LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
         StandardLine standardLine = standardLineRepository.findStandardLinesByTopicAndExpires(topicUUID, endOfDay);
         if (standardLine != null) {
             log.info("Got Standard Line {} for Topic {} ", standardLine.getDisplayName(), topicUUID);

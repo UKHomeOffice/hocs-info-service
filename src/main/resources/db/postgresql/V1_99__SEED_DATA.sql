@@ -454,7 +454,7 @@ VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 
 
        ('0f08cabb-a822-411c-8352-765dd20e252c', 'text-area', 'CaseNote_PrivateOfficeReject', 'What is your feedback about the response?','[ "required" ]', false, true, '{}'),
 
-       ('bd3ff7f7-8b27-45e8-8636-e0ec6f0b40dc', 'dropdown', 'PrivateOfficeOverridePOTeam', 'Override Private Office Team','[ "required" ]', false, true, '{ "choices" : "PRIVATE_OFFICE_TEAMS" }'),
+       ('bd3ff7f7-8b27-45e8-8636-e0ec6f0b40dc', 'dropdown', 'PrivateOfficeOverridePOTeamUUID', 'Override Private Office Team','[ "required" ]', false, true, '{ "choices" : "PRIVATE_OFFICE_TEAMS" }'),
        ('d0070438-7fb8-498b-bd5e-63fa07027256', 'text-area', 'CaseNote_PrivateOfficeOverride', 'Why should this be approved by this team instead?','[ "required" ]', false, true, '{}'),
 
        ('f2cd5c44-ba32-4b75-adfb-ea83f384373b', 'radio', 'MinisterSignOffDecision', 'Do you approve the response?','["required" ]', false, true, '{"choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" } ] }'),
