@@ -90,7 +90,7 @@ public class TopicIntegrationTests {
 
         long numberOfTopicsAfter = parentTopicRepository.count();
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
 
     }
@@ -109,7 +109,7 @@ public class TopicIntegrationTests {
 
         long numberOfTopicsAfter = parentTopicRepository.count();
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
 
     }
@@ -148,7 +148,7 @@ public class TopicIntegrationTests {
 
         long numberOfTopicsAfter = topicRepository.count();
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
     }
 
@@ -167,7 +167,7 @@ public class TopicIntegrationTests {
         long numberOfTopicsAfter = topicRepository.count();
 
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
     }
 
@@ -185,7 +185,7 @@ public class TopicIntegrationTests {
 
         long numberOfTopicsAfter = topicRepository.count();
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
     }
 
@@ -203,7 +203,7 @@ public class TopicIntegrationTests {
 
         long numberOfTopicsAfter = topicRepository.count();
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
 
     }
@@ -359,7 +359,7 @@ public class TopicIntegrationTests {
                 getBasePath() + "/topic/" + inactiveTopicWithInactiveParentUUID
                 , HttpMethod.PUT, httpEntity, Void.class);
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(topicRepository.findTopicByUUID(inactiveTopicWithInactiveParentUUID).isActive()).isEqualTo(false);
 
     }
@@ -411,7 +411,7 @@ public class TopicIntegrationTests {
 
         Topic topic = topicRepository.findTopicByUUID(topicUUID);
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(topic.getParentTopic()).isNotEqualTo(inactiveParentTopicUUID);
 
     }
@@ -428,7 +428,7 @@ public class TopicIntegrationTests {
 
         Topic topic = topicRepository.findTopicByUUID(topicUUID);
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(topic.getParentTopic()).isNotEqualTo(invalidParentTopicUUID);
 
     }
