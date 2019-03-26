@@ -108,7 +108,7 @@ public class TopicTeamIntegrationTests {
         long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
         TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(topicTeam).isNull();
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
     }
@@ -130,7 +130,7 @@ public class TopicTeamIntegrationTests {
         long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
         TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(topicTeam).isNull();
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
     }
