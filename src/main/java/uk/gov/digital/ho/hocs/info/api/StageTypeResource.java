@@ -42,10 +42,10 @@ public class StageTypeResource {
     }
 
     @GetMapping(value = "/stageType/{stageType}/deadline", params = {"received"}, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Deadline> getDeadlineByStage(@PathVariable String stageType, @RequestParam String received) {
+    public ResponseEntity<LocalDate> getDeadlineByStage(@PathVariable String stageType, @RequestParam String received) {
         try {
             LocalDate receivedDate = LocalDate.parse(received);
-            Deadline deadline = stageTypeService.getDeadlineForStageType(stageType, receivedDate);
+            LocalDate deadline = stageTypeService.getDeadlineForStageType(stageType, receivedDate);
             return ResponseEntity.ok(deadline);
         } catch (ApplicationExceptions.EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

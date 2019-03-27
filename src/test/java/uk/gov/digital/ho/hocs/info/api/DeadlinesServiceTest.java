@@ -42,12 +42,11 @@ public class DeadlinesServiceTest {
         when(holidayDateRepository.findAllByStageType(any())).thenReturn(getHolidays());
         when(stageTypeRepository.findByType("final")).thenReturn(get3DaySla());
 
-        Deadline deadline = service.getDeadlineForStageType("final", LocalDate.of(2018, 1, 2));
+        LocalDate deadline = service.getDeadlineForStageType("final", LocalDate.of(2018, 1, 2));
 
         verify(holidayDateRepository, times(1)).findAllByStageType(any());
 
-        assertThat(deadline.getDate()).isEqualTo(LocalDate.of(2018, 1, 5));
-        assertThat(deadline.getType()).isEqualTo("final");
+        assertThat(deadline).isEqualTo(LocalDate.of(2018, 1, 5));
     }
 
     @Test
@@ -55,12 +54,11 @@ public class DeadlinesServiceTest {
         when(holidayDateRepository.findAllByStageType(any())).thenReturn(getHolidays());
         when(stageTypeRepository.findByType("final")).thenReturn(get3DaySla());
 
-        Deadline deadline = service.getDeadlineForStageType("final", LocalDate.of(2018, 1, 5));
+        LocalDate deadline = service.getDeadlineForStageType("final", LocalDate.of(2018, 1, 5));
 
         verify(holidayDateRepository, times(1)).findAllByStageType(any());
 
-        assertThat(deadline.getDate()).isEqualTo(LocalDate.of(2018, 1, 10));
-        assertThat(deadline.getType()).isEqualTo("final");
+        assertThat(deadline).isEqualTo(LocalDate.of(2018, 1, 10));
     }
 
     @Test
@@ -69,12 +67,11 @@ public class DeadlinesServiceTest {
         when(holidayDateRepository.findAllByStageType(any())).thenReturn(getHolidays());
         when(stageTypeRepository.findByType("final")).thenReturn(get3DaySla());
 
-        Deadline deadline = service.getDeadlineForStageType("final", LocalDate.of(2018, 1, 12));
+        LocalDate deadline = service.getDeadlineForStageType("final", LocalDate.of(2018, 1, 12));
 
         verify(holidayDateRepository, times(1)).findAllByStageType(any());
 
-        assertThat(deadline.getDate()).isEqualTo(LocalDate.of(2018, 1, 18));
-        assertThat(deadline.getType()).isEqualTo("final");
+        assertThat(deadline).isEqualTo(LocalDate.of(2018, 1, 18));
     }
 
     @Test
@@ -82,12 +79,11 @@ public class DeadlinesServiceTest {
         when(holidayDateRepository.findAllByStageType(any())).thenReturn(getHolidays());
         when(stageTypeRepository.findByType("final")).thenReturn(get10DaySla());
 
-        Deadline deadline = service.getDeadlineForStageType("final", LocalDate.of(2018, 12, 13));
+        LocalDate deadline = service.getDeadlineForStageType("final", LocalDate.of(2018, 12, 13));
 
         verify(holidayDateRepository, times(1)).findAllByStageType(any());
 
-        assertThat(deadline.getDate()).isEqualTo(LocalDate.of(2018, 12, 31));
-        assertThat(deadline.getType()).isEqualTo("final");
+        assertThat(deadline).isEqualTo(LocalDate.of(2018, 12, 31));
     }
 
     @Test
@@ -96,12 +92,11 @@ public class DeadlinesServiceTest {
         when(holidayDateRepository.findAllByStageType(any())).thenReturn(getHolidays());
         when(stageTypeRepository.findByType("final")).thenReturn(get10DaySla());
 
-        Deadline deadline = service.getDeadlineForStageType("final", LocalDate.of(2018, 12, 20));
+        LocalDate deadline = service.getDeadlineForStageType("final", LocalDate.of(2018, 12, 20));
 
         verify(holidayDateRepository, times(1)).findAllByStageType(any());
 
-        assertThat(deadline.getDate()).isEqualTo(LocalDate.of(2019, 1, 8));
-        assertThat(deadline.getType()).isEqualTo("final");
+        assertThat(deadline).isEqualTo(LocalDate.of(2019, 1, 8));
     }
 
 
@@ -111,12 +106,11 @@ public class DeadlinesServiceTest {
         when(holidayDateRepository.findAllByStageType(any())).thenReturn(getHolidays());
         when(stageTypeRepository.findByType("final")).thenReturn(get10DaySla());
 
-        Deadline deadline = service.getDeadlineForStageType("final", LocalDate.of(2020, 2, 20));
+        LocalDate deadline = service.getDeadlineForStageType("final", LocalDate.of(2020, 2, 20));
 
         verify(holidayDateRepository, times(1)).findAllByStageType(any());
 
-        assertThat(deadline.getDate()).isEqualTo(LocalDate.of(2020, 3, 5));
-        assertThat(deadline.getType()).isEqualTo("final");
+        assertThat(deadline).isEqualTo(LocalDate.of(2020, 3, 5));
 }
 
     private static Set<ExemptionDate> getHolidays() {
