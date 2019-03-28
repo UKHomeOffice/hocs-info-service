@@ -12,11 +12,9 @@ import java.util.stream.Collectors;
 public class Deadline implements Serializable {
 
     private final LocalDate date;
-    private final String type;
 
-    public Deadline(LocalDate receivedDate, int sla, String type, Set<ExemptionDate> holidays) {
+    public Deadline(LocalDate receivedDate, int sla, Set<ExemptionDate> holidays) {
         this.date = calculateDeadline(receivedDate, sla, holidays);
-        this.type = type;
     }
 
     public static LocalDate calculateDeadline(LocalDate receivedDate, int sla, Set<ExemptionDate> holidays) {
