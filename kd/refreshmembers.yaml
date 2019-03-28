@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: hocs-info-service
+  name: hocs-refersh-members-job
 spec:
   schedule: "0 22 * * *"
   jobTemplate:
@@ -10,7 +10,7 @@ spec:
       template:
         spec:
           containers:
-            - name: hocs-info-service
+            - name: hocs-refersh-members-job
               securityContext:
                 runAsNonRoot: true
                 runAsUser: 1000
