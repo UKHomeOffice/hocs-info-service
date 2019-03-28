@@ -13,7 +13,7 @@ pipeline:
       curl -vX POST http://keycloak:8080/auth/admin/realms -d @keycloak/local-realm.json --header "Authorization: Bearer $TKN" --header "Content-Type: application/json"
 
   build-project:
-    image: quay.io/ukhomeofficedigital/openjdk8
+    image: quay.io/ukhomeofficedigital/openjdk11
     commands:
       - export SPRING_PROFILES_ACTIVE='development, local, test'
       - export DB_HOST='postgres'
