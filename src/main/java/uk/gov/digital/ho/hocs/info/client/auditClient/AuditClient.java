@@ -15,6 +15,8 @@ import uk.gov.digital.ho.hocs.info.domain.model.*;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,6 +37,8 @@ public class AuditClient {
     private final ObjectMapper objectMapper;
     private final RequestData requestData;
     private final JsonArrayBuilder permissionArray;
+    private final String EVENT_TYPE_HEADER ="event_type";
+
 
     @Autowired
     public AuditClient(ProducerTemplate producerTemplate,
@@ -55,62 +59,32 @@ public class AuditClient {
     public void createTeamAudit(Team team) {
         String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.CREATE_TEAM.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Create Team, team UUID: {}, correlationID: {}, UserID: {}", team.getUuid(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create audit event for team UUID {} for reason {}", team.getUuid(), e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void renameTeamAudit(Team team) {
         String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.RENAME_TEAM.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Rename Team, team UUID: {}, correlationID: {}, UserID: {}", team.getUuid(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create audit event for team UUID {} for reason {}", team.getUuid(), e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void deleteTeamAudit(Team team) {
         String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.DELETE_TEAM.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Delete Team, team UUID: {}, correlationID: {}, UserID: {}", team.getUuid(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create Delete Team audit event for team UUID {} for reason {}", team.getUuid(), e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void addUserToTeamAudit(UUID userUUID, Team team) {
         String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).add("userUUID", userUUID.toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.ADD_USER_TO_TEAM.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Add User to Team, team UUID: {}, added user UUID: {}, correlationID: {}, UserID: {}", team.getUuid(), userUUID, requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create Add User to Team audit event for team UUID {} for reason {}", team.getUuid(), e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
 
     public void moveToNewUnitAudit(String teamUUID, String oldUnitUUID, String newUnitUUID) {
         String auditPayload = Json.createObjectBuilder().add("teamUUID", teamUUID).add("oldUnit", oldUnitUUID).add("newUnit", newUnitUUID).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.MOVE_TEAM_TO_UNIT.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Move Team to New Unit, team UUID: {}, new unit UUID: {}, correlationID: {}, UserID: {}", teamUUID, newUnitUUID, requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create Move Team to New Unit audit event for team UUID {} for reason {}", teamUUID, e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void updateTeamPermissionsAudit(UUID teamUUID, Set<PermissionDto> permissions) {
@@ -119,13 +93,7 @@ public class AuditClient {
         }
         String auditPayload = Json.createObjectBuilder().add("permissions", permissionArray).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.UPDATE_TEAM_PERMISSIONS.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Update Team Permission, team UUID: {}, correlationID: {}, UserID: {}", teamUUID, requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create Update Team Permission audit event for team UUID {} for reason {}", teamUUID, e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void deleteTeamPermissionsAudit(UUID teamUUID, Set<PermissionDto> permissions) {
@@ -134,26 +102,13 @@ public class AuditClient {
         }
         String auditPayload = Json.createObjectBuilder().add("permissions", permissionArray).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REMOVE_PERMISSIONS_FROM_TEAM.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Delete Team Permission, team UUID: {}, correlationID: {}, UserID: {}", teamUUID, requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create Delete Team Permission audit event for team UUID {} for reason {}", teamUUID, e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void removeUserFromTeamAudit(UUID userUUID, UUID teamUUID) {
         String auditPayload = Json.createObjectBuilder().add("teamUUID", teamUUID.toString()).add("userUUID", userUUID.toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REMOVE_USER_FROM_TEAM.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Remove User from Team, user UUID: {}, team UUID: {}, correlationID: {}, UserID: {}",
-                    userUUID, teamUUID, requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create Move Team to New Unit audit event for team UUID {} for reason {}", teamUUID, e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void createTopicAudit(Topic topic) {
@@ -164,13 +119,7 @@ public class AuditClient {
                 .build()
                 .toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.CREATE_TOPIC.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Create Topic, topic UUID: {}, correlationID: {}, UserID: {}", topic.getUuid(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create audit event for create topic UUID {} for reason {}", topic.getUuid(), e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void createParentTopicAudit(ParentTopic parentTopic) {
@@ -180,65 +129,35 @@ public class AuditClient {
                 .build()
                 .toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.CREATE_PARENT_TOPIC.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Create Parent Topic, topic UUID: {}, correlationID: {}, UserID: {}", parentTopic.getUuid(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create audit event for create parent topic UUID {} for reason {}", parentTopic.getUuid(), e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void deleteTopicAudit(Topic topic) {
         String auditPayload = Json.createObjectBuilder()
                 .add("topicUUID", topic.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REMOVE_TOPIC.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Delete Topic, topic UUID: {}, correlationID: {}, UserID: {}", topic.getUuid(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create audit event for remove topic UUID {} for reason {}", topic.getUuid(), e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void deleteParentTopicAudit(ParentTopic parentTopic) {
         String auditPayload = Json.createObjectBuilder()
                 .add("topicUUID", parentTopic.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REMOVE_PARENT_TOPIC.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Delete Parent Topic, topic UUID: {}, correlationID: {}, UserID: {}", parentTopic.getUuid(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create audit event for create parent topic UUID {} for reason {}", parentTopic.getUuid(), e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void reactivateTopicAudit(Topic topic) {
         String auditPayload = Json.createObjectBuilder()
                 .add("topicUUID", topic.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REACTIVATE_TOPIC.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Reactivate Topic, topic UUID: {}, correlationID: {}, UserID: {}", topic.getUuid(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create audit event for reactivate topic UUID {} for reason {}", topic.getUuid(), e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void reactivateParentTopicAudit(ParentTopic parentTopic) {
         String auditPayload = Json.createObjectBuilder()
                 .add("topicUUID", parentTopic.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REACTIVATE_PARENT_TOPIC.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Reactivate Parent Topic, topic UUID: {}, correlationID: {}, UserID: {}", parentTopic.getUuid(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create audit event for reactivate parent topic UUID {} for reason {}", parentTopic.getUuid(), e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void updateTopicParentAudit(Topic topic) {
@@ -248,13 +167,7 @@ public class AuditClient {
                 .build()
                 .toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.UPDATE_TOPIC_PARENT.toString());
-
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Reactivate Topic, topic UUID: {}, correlationID: {}, UserID: {}", topic.getUuid(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create audit event for reactivate topic UUID {} for reason {}", topic.getUuid(), e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void addTeamToTopicAudit(TopicTeam topicTeam) {
@@ -265,12 +178,7 @@ public class AuditClient {
                 .add("stageType", topicTeam.getStageType())
                 .build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.ADD_TEAM_TO_TOPIC.toString());
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Add Team To Topic, topic UUID: {}, correlationID: {}, UserID: {}", topicTeam.getTopicUUID(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create audit event for add team to topic UUID {} for reason {}", topicTeam.getTopicUUID(), e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
     public void updateTeamForTopicAudit(TopicTeam topicTeam, UUID oldTeamUUID) {
@@ -282,12 +190,7 @@ public class AuditClient {
                 .add("oldTeamUUID", oldTeamUUID.toString())
                 .build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.UPDATE_TEAM_FOR_TOPIC.toString());
-        try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Update Team To Topic, topic UUID: {}, correlationID: {}, UserID: {}", topicTeam.getTopicUUID(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
-        } catch (Exception e) {
-            log.error("Failed to create audit event for update team to topic UUID {} for reason {}", topicTeam.getTopicUUID(), e, value(EVENT, AUDIT_FAILED));
-        }
+        sendAuditMessage(request);
     }
 
 
@@ -299,12 +202,17 @@ public class AuditClient {
                 .build()
                 .toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.CREATE_CORRESPONDENT_TYPE.toString());
+        sendAuditMessage(request);
+    }
+
+    private void sendAuditMessage(CreateAuditRequest request) {
 
         try {
-            producerTemplate.sendBody(auditQueue, objectMapper.writeValueAsString(request));
-            log.info("Create audit for Create Correspondent Type, UUID: {}, correlationID: {}, UserID: {}", correspondentType.getUuid(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
+            Map<String, Object> queueHeaders = getQueueHeaders(request.getType());
+            producerTemplate.sendBodyAndHeaders(auditQueue, objectMapper.writeValueAsString(request), queueHeaders);
+            log.info("Create audit for event {}, correlationID: {}, UserID: {}", request.getType(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
         } catch (Exception e) {
-            log.error("Failed to create audit event for create correspondent type, UUID {} for reason {}", correspondentType.getUuid(), e, value(EVENT, AUDIT_FAILED));
+            log.error("Failed to create audit event {} for reason {}", request.getType(), e, value(EVENT, AUDIT_FAILED));
         }
     }
 
@@ -319,5 +227,13 @@ public class AuditClient {
                 requestData.userId());
     }
 
-
+    private Map<String, Object> getQueueHeaders(String eventType) {
+        Map<String, Object> headers = new HashMap<>();
+        headers.put(EVENT_TYPE_HEADER, eventType);
+        headers.put(RequestData.CORRELATION_ID_HEADER, requestData.correlationId());
+        headers.put(RequestData.USER_ID_HEADER, requestData.userId());
+        headers.put(RequestData.USERNAME_HEADER, requestData.username());
+        headers.put(RequestData.GROUP_HEADER, requestData.groups());
+        return headers;
+    }
 }
