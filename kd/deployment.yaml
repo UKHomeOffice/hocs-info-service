@@ -259,6 +259,16 @@ spec:
               value: {{.KUBE_NAMESPACE}}-reporting-sqs
             - name: AUDIT_QUEUE_DLQ_NAME
               value: {{.KUBE_NAMESPACE}}-reporting-sqs-dlq
+            - name: AUDIT_AWS_SNS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{.KUBE_NAMESPACE}}-audit-sqs
+                  key: access_key_id
+            - name: AUDIT_AWS_SNS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{.KUBE_NAMESPACE}}-audit-sqs
+                  key: secret_access_key
           resources:
             limits:
               cpu: 850m
