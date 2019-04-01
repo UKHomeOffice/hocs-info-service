@@ -51,7 +51,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-json')
 	compile('org.springframework.boot:spring-boot-starter-undertow')
 
-	compile('net.logstash.logback:logstash-logback-encoder:5.2')
+	compile('net.logstash.logback:logstash-logback-encoder:5.3')
 
 	compile group: 'org.apache.camel', name: 'camel-spring-boot', version: camelVersion
 	compile group: 'org.apache.camel', name: 'camel-jackson', version: camelVersion
