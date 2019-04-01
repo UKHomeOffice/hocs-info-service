@@ -18,7 +18,6 @@ public class RequestData implements HandlerInterceptor {
     public static final String USER_ID_HEADER = "X-Auth-Userid";
     public static final String USERNAME_HEADER = "X-Auth-Username";
     public static final String GROUP_HEADER = "X-Auth-Groups";
-    private static final String ROLES_HEADER = "X-Auth-Roles";
 
     private static final String ANONYMOUS = "anonymous";
 
@@ -55,7 +54,6 @@ public class RequestData implements HandlerInterceptor {
         response.setHeader(USER_ID_HEADER, userId());
         response.setHeader(USERNAME_HEADER, userId());
         response.setHeader(CORRELATION_ID_HEADER, correlationId());
-        response.setHeader(ROLES_HEADER, rolesString());
         MDC.clear();
     }
 
@@ -76,19 +74,7 @@ public class RequestData implements HandlerInterceptor {
 
     private String initialiseGroups(HttpServletRequest request) {
         String groups = request.getHeader(GROUP_HEADER);
-        return !isNullOrEmpty(groups) ? groups : "/ANONYMOUS/ANONYMOUS";
-    }
-
-    public String rolesString() { return MDC.get(ROLES_HEADER); }
-
-    public String[] roles() {
-        String roles = MDC.get(ROLES_HEADER);
-        if(roles != null && !roles.equals("")) {
-            return roles.split(",");
-        }
-        else {
-            return new String[0];
-        }
+        return !isNullOrEmpty(groups) ? groups : "/QU5PTllNT1VTCg==";
     }
 
 
@@ -98,6 +84,10 @@ public class RequestData implements HandlerInterceptor {
 
     public String userId() {
         return MDC.get(USER_ID_HEADER);
+    }
+
+    public UUID userIdUUID() {
+        return UUID.fromString(MDC.get(USER_ID_HEADER));
     }
 
     public String username() {
@@ -113,5 +103,3 @@ public class RequestData implements HandlerInterceptor {
     }
 
 }
-
-
