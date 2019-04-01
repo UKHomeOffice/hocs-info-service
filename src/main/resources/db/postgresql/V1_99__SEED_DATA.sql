@@ -397,7 +397,8 @@ INSERT INTO field (uuid, component, name, label, validation, summary, active, pr
 VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 'When was the correspondence sent?', '[ "required" ]',  true, true,  '{}'),
        ('1cb5ee23-b82d-448d-8574-00421841acdc', 'date', 'DateReceived', 'When was the correspondence received?', '[ "required" ]', true, true, '{}'),
        ('ede4aa5d-80d5-4703-aeed-82167d927ad7', 'radio', 'OriginalChannel', 'How was the correspondence received?', '[ "required" ]', true, true,  '{ "choices" : [ {  "label" : "Email", "value" : "EMAIL" }, { "label" : "Post", "value" : "POST" }, { "label" : "Phone", "value" : "PHONE" }, { "label" : "No. 10", "value" : "NO10" } ]}'),
-       ('157a00e6-3b96-4a12-9b34-f73c328c332c', 'checkbox', 'CopyNumberTen', 'Should the response be copied to Number 10?','[]', true, true, '{ "choices" : [ {"label" : "Yes", "value" : "TRUE"} ]}'),
+       ('157a00e6-3b96-4a12-9b34-f73c328c332c', 'radio', 'CopyNumberTen', 'Should the response be copied to Number 10?','[]', true, true, '{ "choices" : [ {  "label" : "Yes", "value" : "TRUE" }, { "label" : "No", "value" : "FALSE" }]}'),
+
        ('dc502507-c333-43be-a562-f6d0e456502e', 'entity-list', 'Correspondents', 'Which is the primary correspondent?','[ "required" ]', false, true, '{ "hasRemoveLink" : true, "hasAddLink" : true, "action" : "CORRESPONDENT", "choices" : "CASE_CORRESPONDENTS", "entity" : "correspondent" }'),
        ('1d8ae1c0-8ebf-4185-8fda-b7dc2eefbc6a', 'radio', 'MarkupDecision', 'What sort of response is required?','[ "required" ]', false, true, '{"choices" : [ {  "label" : "Policy Response", "value" : "PR" }, { "label" : "FAQ Response", "value" : "FAQ" }, { "label" : "Refer To OGD", "value" : "OGD" }, { "label" : "No Response Needed", "value" : "NRN"} ] }'),
        ('20086634-e128-407c-a22d-fc845b9074dc', 'text', 'OGDDept', 'Where should this case be transferred to?','[ "required" ]', false, true, '{}'),
