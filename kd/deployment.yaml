@@ -40,18 +40,18 @@ spec:
             - --domain=localhost
             - --onetime=true
           env:
-          - name: KUBE_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
+            - name: KUBE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
           volumeMounts:
-          - name: certs
-            mountPath: /certs
-          - name: keystore
-            mountPath: /etc/keystore
-          - name: bundle
-            mountPath: /etc/ssl/certs
-            readOnly: true
+            - name: certs
+              mountPath: /certs
+            - name: keystore
+              mountPath: /etc/keystore
+            - name: bundle
+              mountPath: /etc/ssl/certs
+              readOnly: true
       containers:
         - name: certs
           image: quay.io/ukhomeofficedigital/cfssl-sidekick:v0.0.6
@@ -79,7 +79,7 @@ spec:
               readOnly: true
 
         - name: proxy
-          image: quay.io/ukhomeofficedigital/nginx-proxy:v3.4.2
+          image: quay.io/ukhomeofficedigital/nginx-proxy:v3.4.9
           imagePullPolicy: Always
           securityContext:
             runAsNonRoot: true
@@ -109,8 +109,6 @@ spec:
               value: /etc/nginx/authsecrets/htpasswd
             - name: SERVER_CERT
               value: /certs/tls.pem
-            - name: BASIC_AUTH
-              value: /etc/nginx/authsecrets/.htpasswd_1
             - name: SERVER_KEY
               value: /certs/tls-key.pem
             - name: ADD_NGINX_SERVER_CFG
@@ -150,7 +148,7 @@ spec:
             - name: ENDPOINTS_INFO_ENABLED
               value: 'false'
             - name: SPRING_PROFILES_ACTIVE
-              value: 'sqs'
+              value: 'sqs,sns'
             - name: HOCS_CASE_SERVICE
               value: 'https://hocs-casework.{{.KUBE_NAMESPACE}}.svc.cluster.local'
             - name: HOCS_DOCUMENT_SERVICE
@@ -177,7 +175,7 @@ spec:
                   key: db_name
             - name: DB_SCHEMA_NAME
               value:
-                'cs_info_servcie_010'
+                'cs_info_service'
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -188,28 +186,12 @@ spec:
                 secretKeyRef:
                   name: {{.KUBE_NAMESPACE}}-rds
                   key: password
-            - name: CASE_QUEUE_NAME
-              value:
-                '{{.KUBE_NAMESPACE}}-case-sqs'
-            - name: CASE_DLQ_NAME
-              value:
-                '{{.KUBE_NAMESPACE}}-case-sqs-dlq'
             - name: DOCS_QUEUE_NAME
               value:
                 '{{.KUBE_NAMESPACE}}-document-sqs'
             - name: DOCS_QUEUE_DLQ_NAME
               value:
                 '{{.KUBE_NAMESPACE}}-document-sqs-dlq'
-            - name: CASE_AWS_SQS_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: '{{.KUBE_NAMESPACE}}-case-sqs'
-                  key: access_key_id
-            - name: CASE_AWS_SQS_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: '{{.KUBE_NAMESPACE}}-case-sqs'
-                  key: secret_access_key
             - name: DOCS_AWS_SQS_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -245,20 +227,6 @@ spec:
                 secretKeyRef:
                   name: '{{.KUBE_NAMESPACE}}-keycloak'
                   key: keycloak_client_id
-            - name: AUDIT_AWS_SQS_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{.KUBE_NAMESPACE}}-reporting-sqs
-                  key: access_key_id
-            - name: AUDIT_AWS_SQS_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{.KUBE_NAMESPACE}}-reporting-sqs
-                  key: secret_access_key
-            - name: AUDIT_QUEUE_NAME
-              value: {{.KUBE_NAMESPACE}}-reporting-sqs
-            - name: AUDIT_QUEUE_DLQ_NAME
-              value: {{.KUBE_NAMESPACE}}-reporting-sqs-dlq
             - name: AUDIT_AWS_SNS_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -269,6 +237,14 @@ spec:
                 secretKeyRef:
                   name: {{.KUBE_NAMESPACE}}-audit-sqs
                   key: secret_access_key
+            - name: AUDITING_DEPLOYMENT_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: AUDITING_DEPLOYMENT_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
           resources:
             limits:
               cpu: 850m
@@ -286,7 +262,7 @@ spec:
               httpHeaders:
                 - name: X-probe
                   value: kubelet
-            initialDelaySeconds: 110
+            initialDelaySeconds: 45
             periodSeconds: 20
             timeoutSeconds: 10
           readinessProbe:
@@ -296,7 +272,7 @@ spec:
               httpHeaders:
                 - name: X-probe
                   value: kubelet
-            initialDelaySeconds: 130
+            initialDelaySeconds: 45
             periodSeconds: 20
             timeoutSeconds: 10
           volumeMounts:
