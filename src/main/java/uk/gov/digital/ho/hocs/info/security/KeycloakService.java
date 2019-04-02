@@ -85,7 +85,7 @@ public class KeycloakService {
     }
 
     public List<UserRepresentation> getAllUsers() {
-        log.info("Get users from Keyloack realm {}", hocsRealmName);
+        log.info("Get users from Keycloak realm {}", hocsRealmName);
         List<UserRepresentation> users = keycloakClient.realm(hocsRealmName).users().list();
         log.info("Found {} users in Keycloak", users.size());
         return users;
