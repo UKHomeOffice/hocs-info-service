@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.api;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 
 @Service
+@Slf4j
 public class UserService {
 
     private KeycloakService keycloakService;
@@ -22,17 +24,20 @@ public class UserService {
     @Autowired
     public UserService(KeycloakService keycloakService, CaseworkClient caseworkClient) {
         this.keycloakService = keycloakService;
-
         this.caseworkClient = caseworkClient;
     }
 
     @Cacheable("users")
     public List<UserDto> getAllUsers() {
-        return keycloakService.getAllUsers().stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
+        log.info("Retrieving all users from Keycloak");
+        List<UserDto> users = keycloakService.getAllUsers().stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
+        log.info("Found {} users", users.size());
+        return users;
     }
 
     @CachePut("users")
     public List<UserDto> refreshUserCache() {
+        log.info("Refreshing User cache");
         return keycloakService.getAllUsers().stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
     }
 
