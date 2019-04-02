@@ -107,6 +107,8 @@ spec:
               value: 'FALSE'
             - name: BASIC_AUTH
               value: /etc/nginx/authsecrets/htpasswd
+            - name: BASIC_AUTH	
+              value: /etc/nginx/authsecrets/.htpasswd_1
             - name: SERVER_CERT
               value: /certs/tls.pem
             - name: SERVER_KEY
