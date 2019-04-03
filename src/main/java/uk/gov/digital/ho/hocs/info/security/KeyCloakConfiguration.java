@@ -43,7 +43,7 @@ public class KeyCloakConfiguration {
                 .username(username)
                 .password(password)
                 .clientId(clientId)
-                .resteasyClient(new ResteasyClientBuilder().httpEngine(new ApacheHttpClient43Engine()).build())
+                .resteasyClient(new ResteasyClientBuilder().httpEngine(new URLConnectionEngine()).build())
                 .build();
         }
 }
