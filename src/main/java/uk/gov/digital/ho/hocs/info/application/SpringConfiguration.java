@@ -2,7 +2,6 @@ package uk.gov.digital.ho.hocs.info.application;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,9 +28,7 @@ public class SpringConfiguration implements WebMvcConfigurer {
 
     @Bean
     public RestTemplate createRestTemplate() {
-        HttpClient defaultHttpClient = HttpClientBuilder.create()
-                .useSystemProperties().build();
-        ClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(defaultHttpClient);
+        ClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(createHttpClient());
         return new RestTemplate(clientHttpRequestFactory);
     }
 
@@ -47,5 +44,11 @@ public class SpringConfiguration implements WebMvcConfigurer {
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build();
+    }
+
+    @Bean
+    public HttpClient createHttpClient() {
+        return HttpClientBuilder.create()
+                .useSystemProperties().build();
     }
 }

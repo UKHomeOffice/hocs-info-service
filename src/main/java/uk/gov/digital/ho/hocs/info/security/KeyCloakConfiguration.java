@@ -1,11 +1,13 @@
 package uk.gov.digital.ho.hocs.info.security;
 
+import org.apache.http.client.HttpClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient43Engine;
 import org.jboss.resteasy.client.jaxrs.engines.URLConnectionEngine;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,13 @@ import org.springframework.util.StringUtils;
 
 @Configuration
 public class KeyCloakConfiguration {
+
+    private HttpClient httpClient;
+
+    @Autowired
+    public KeyCloakConfiguration(HttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
 
     @Bean
     public Keycloak keycloakClient(@Value("${keycloak.server.url}") String serverUrl,
@@ -43,7 +52,9 @@ public class KeyCloakConfiguration {
                 .username(username)
                 .password(password)
                 .clientId(clientId)
-                .resteasyClient(new ResteasyClientBuilder().httpEngine(new URLConnectionEngine()).build())
+                .resteasyClient(new ResteasyClientBuilder().httpEngine(
+                        new ApacheHttpClient43Engine(httpClient))
+                        .build())
                 .build();
         }
 }
