@@ -40,6 +40,10 @@ public class Schema implements Serializable {
     private boolean active;
 
     @Getter
+    @Column(name = "stage_type", insertable = false, updatable = false)
+    private String stageType;
+
+    @Getter
     @OneToMany
     @JoinTable(
             name="field_screen",

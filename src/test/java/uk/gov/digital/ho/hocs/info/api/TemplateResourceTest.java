@@ -11,6 +11,8 @@ import uk.gov.digital.ho.hocs.info.api.dto.CreateTemplateDocumentDto;
 import uk.gov.digital.ho.hocs.info.api.dto.GetTemplateResponse;
 import uk.gov.digital.ho.hocs.info.domain.model.Template;
 
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -29,6 +31,20 @@ public class TemplateResourceTest {
     }
 
     @Test
+    public void shouldReturnTemplates() {
+
+        when(templateService.getActiveTemplates()).thenReturn(Set.of(new Template("display","MIN" )));
+
+        ResponseEntity<Set<GetTemplateResponse>> response =
+                templateResource.getTemplates();
+
+        verify(templateService, times(1)).getActiveTemplates();
+        verifyNoMoreInteractions(templateService);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
     public void shouldReturnTemplateForRequestedCaseType() {
 
         when(templateService.getTemplateForCaseType(MIN)).thenReturn(new Template("display","MIN" ));
@@ -41,7 +57,6 @@ public class TemplateResourceTest {
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-
 
     @Test
     public void shouldCreateTemplateForCaseType() {

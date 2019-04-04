@@ -7,7 +7,9 @@ import uk.gov.digital.ho.hocs.info.api.dto.CreateStandardLineDocumentDto;
 import uk.gov.digital.ho.hocs.info.api.dto.GetStandardLineResponse;
 import uk.gov.digital.ho.hocs.info.domain.model.StandardLine;
 
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
@@ -19,6 +21,12 @@ public class StandardLineResource {
     @Autowired
     public StandardLineResource(StandardLineService standardLineService) {
         this.standardLineService = standardLineService;
+    }
+
+    @GetMapping(value = "/standardLine", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Set<GetStandardLineResponse>> getStandardLines() {
+        Set<StandardLine> standardLines = standardLineService.getActiveStandardLines();
+        return ResponseEntity.ok(standardLines.stream().map(GetStandardLineResponse::from).collect(Collectors.toSet()));
     }
 
     @GetMapping(value = "/topic/{topicUUID}/standardLine", produces = APPLICATION_JSON_UTF8_VALUE)

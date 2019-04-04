@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uk.gov.digital.ho.hocs.info.domain.model.StandardLine;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -19,7 +20,13 @@ public class GetStandardLineResponse {
     @JsonProperty("uuid")
     private UUID uuid;
 
+    @JsonProperty("topicUUID")
+    private UUID topicUUID;
+
+    @JsonProperty("expires")
+    private LocalDateTime expires;
+
     public static GetStandardLineResponse from(StandardLine standardLine) {
-        return new GetStandardLineResponse(standardLine.getDisplayName(), standardLine.getUuid());
+        return new GetStandardLineResponse(standardLine.getDisplayName(), standardLine.getUuid(), standardLine.getTopicUUID(), standardLine.getExpires());
     }
 }

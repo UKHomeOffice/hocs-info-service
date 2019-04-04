@@ -12,6 +12,7 @@ import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Template;
 import uk.gov.digital.ho.hocs.info.domain.repository.TemplateRepository;
 
+import java.util.Set;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -37,11 +38,21 @@ public class TemplateServiceTest {
     }
 
     @Test
-    public void shouldReturnListOfTemplates() throws ApplicationExceptions.EntityPermissionException {
+    public void shouldReturnTemplateForCaseType() throws ApplicationExceptions.EntityPermissionException {
 
         when(templateRepository.findActiveTemplateByCaseType(CASE_TYPE)).thenReturn(new Template());
         templateService.getTemplateForCaseType(CASE_TYPE);
         verify(templateRepository, times(1)).findActiveTemplateByCaseType(CASE_TYPE);
+
+        verifyNoMoreInteractions(templateRepository);
+    }
+
+    @Test
+    public void shouldReturnTemplate() throws ApplicationExceptions.EntityPermissionException {
+
+        when(templateRepository.findActiveTemplates()).thenReturn(Set.of(new Template()));
+        templateService.getActiveTemplates();
+        verify(templateRepository, times(1)).findActiveTemplates();
 
         verifyNoMoreInteractions(templateRepository);
     }
