@@ -18,6 +18,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.StandardLineRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -34,7 +35,6 @@ public class StandardLineServiceTest {
 
     private StandardLineService standardLineService;
 
-    private static final UUID SL_EXT_REF = UUID.fromString("77777777-7777-7777-7777-777777777777");
     private static final UUID uuid = UUID.randomUUID();
     private static final UUID DOCUMENT_UUID = UUID.randomUUID();
     private static final UUID NEW_DOCUMENT_UUID = UUID.randomUUID();
@@ -44,6 +44,14 @@ public class StandardLineServiceTest {
     @Before
     public void setUp() {
         this.standardLineService = new StandardLineService(standardLineRepository, documentClient);
+    }
+
+    @Test
+    public void shouldReturnStandardLine(){
+        when(standardLineRepository.findStandardLinesByExpires(END_OF_DAY)).thenReturn(Set.of(new StandardLine()));
+        standardLineService.getActiveStandardLines();
+        verify(standardLineRepository, times(1)).findStandardLinesByExpires(END_OF_DAY);
+        verifyNoMoreInteractions(standardLineRepository);
     }
 
     @Test

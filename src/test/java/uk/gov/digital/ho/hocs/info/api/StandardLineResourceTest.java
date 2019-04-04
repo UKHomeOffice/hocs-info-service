@@ -13,6 +13,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.CreateStandardLineDocumentDto;
 import uk.gov.digital.ho.hocs.info.api.dto.GetStandardLineResponse;
 import uk.gov.digital.ho.hocs.info.domain.model.StandardLine;
 
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +32,19 @@ public class StandardLineResourceTest {
     @Before
     public void setUp() {
         standardLineResource = new StandardLineResource(standardLineService);
+    }
+
+    @Test
+    public void shouldReturnStandardLines() {
+
+        when(standardLineService.getActiveStandardLines()).thenReturn(Set.of(new StandardLine()));
+
+        ResponseEntity<Set<GetStandardLineResponse>> response = standardLineResource.getStandardLines();
+
+        verify(standardLineService, times(1)).getActiveStandardLines();
+        verifyNoMoreInteractions(standardLineService);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test

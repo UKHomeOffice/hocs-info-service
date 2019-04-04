@@ -10,6 +10,7 @@ import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Template;
 import uk.gov.digital.ho.hocs.info.domain.repository.TemplateRepository;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -44,6 +45,12 @@ public class TemplateService {
 
         documentClient.processDocument(ManagedDocumentType.TEMPLATE, templateDocumentUUID, request.getS3UntrustedUrl());
         log.info("Created Template {} for CaseType {} ", request.getDisplayName(), request.getCaseType());
+    }
+
+    Set<Template> getActiveTemplates() {
+        Set<Template> templates = templateRepository.findActiveTemplates();
+        log.info("Got {} Templates");
+        return templates;
     }
 
     Template getTemplateForCaseType(String caseType) {

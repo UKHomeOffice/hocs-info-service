@@ -18,6 +18,9 @@ public class SchemaDto {
     @JsonProperty("uuid")
     private UUID uuid;
 
+    @JsonProperty("stageType")
+    private String stageType;
+
     @JsonProperty("type")
     private String type;
 
@@ -36,6 +39,6 @@ public class SchemaDto {
     public static SchemaDto from(Schema schema) {
         List<FieldDto> fieldDtos = schema.getFields().stream().map(FieldDto::from).collect(Collectors.toList());
 
-        return new SchemaDto(schema.getUuid(), schema.getType(), schema.getTitle(), schema.getActionLabel(), schema.isActive(), fieldDtos);
+        return new SchemaDto(schema.getUuid(), schema.getStageType(), schema.getType(), schema.getTitle(), schema.getActionLabel(), schema.isActive(), fieldDtos);
     }
 }

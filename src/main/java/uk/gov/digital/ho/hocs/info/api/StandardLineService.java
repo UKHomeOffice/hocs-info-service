@@ -12,6 +12,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.StandardLineRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -48,6 +49,14 @@ public class StandardLineService {
 
         documentClient.processDocument(ManagedDocumentType.STANDARD_LINE, documentUUID, s3URL);
         log.info("Created Standard Line - {}", displayName);
+    }
+
+    Set<StandardLine> getActiveStandardLines() {
+        log.debug("Getting Active Standard Lines");
+        LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+        Set<StandardLine> standardLines = standardLineRepository.findStandardLinesByExpires(endOfDay);
+        log.info("Got {} Standard Lines", standardLines.size());
+        return standardLines;
     }
 
     StandardLine getStandardLineForTopic(UUID topicUUID) {
