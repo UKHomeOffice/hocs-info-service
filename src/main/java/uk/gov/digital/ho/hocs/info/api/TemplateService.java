@@ -49,7 +49,7 @@ public class TemplateService {
 
     Set<Template> getActiveTemplates() {
         Set<Template> templates = templateRepository.findActiveTemplates();
-        log.info("Got {} Templates");
+        log.info("Got {} Templates", templates.size());
         return templates;
     }
 

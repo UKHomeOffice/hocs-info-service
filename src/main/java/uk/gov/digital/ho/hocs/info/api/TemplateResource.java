@@ -24,13 +24,13 @@ public class TemplateResource {
         this.templateService = templateService;
     }
 
-    @GetMapping(value = "/caseType/{caseType}/template", produces = APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/template", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Set<GetTemplateResponse>> getTemplates() {
         Set<Template> templates = templateService.getActiveTemplates();
         return ResponseEntity.ok(templates.stream().map(GetTemplateResponse::from).collect(Collectors.toSet()));
     }
 
-    @GetMapping(value = "/template", produces = APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/caseType/{caseType}/template", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetTemplateResponse> getTemplatesForCaseType(@PathVariable String caseType) {
         Template template = templateService.getTemplateForCaseType(caseType);
         return ResponseEntity.ok(GetTemplateResponse.from(template));
