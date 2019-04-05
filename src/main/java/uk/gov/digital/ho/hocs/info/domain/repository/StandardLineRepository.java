@@ -15,6 +15,6 @@ public interface StandardLineRepository extends CrudRepository<StandardLine, Str
     @Query(value = "SELECT sl.* FROM standard_line sl WHERE sl.topic_uuid = ?1 AND sl.expires > ?2", nativeQuery = true)
     StandardLine findStandardLinesByTopicAndExpires(UUID topicUUID, LocalDateTime currentDate);
 
-    @Query(value = "SELECT sl.* FROM standard_line sl WHERE sl.expires > ?2", nativeQuery = true)
+    @Query(value = "SELECT sl.* FROM standard_line sl WHERE sl.expires > ?1", nativeQuery = true)
     Set<StandardLine> findStandardLinesByExpires(LocalDateTime currentDate);
 }
