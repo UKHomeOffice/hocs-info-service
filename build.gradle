@@ -1,18 +1,18 @@
 buildscript {
-	ext {
-		springBootVersion = '2.1.3.RELEASE'
-		camelVersion = '2.23.1'
-	}
-	repositories {
-		mavenCentral()
-		maven {
-			url "https://plugins.gradle.org/m2/"
-		}
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath "net.ltgt.gradle:gradle-apt-plugin:0.21"
-	}
+    ext {
+        springBootVersion = '2.1.3.RELEASE'
+        camelVersion = '2.23.1'
+    }
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.21"
+    }
 }
 
 apply plugin: 'java'
@@ -23,10 +23,20 @@ apply plugin: 'jacoco'
 apply plugin: "net.ltgt.apt"
 
 task copyLombok(type: Copy) {
-	outputs.upToDateWhen { false }
-	into "${buildDir}/libs"
-	include "lombok*.jar"
-	from configurations.compileOnly
+    outputs.upToDateWhen { false }
+    into "${buildDir}/libs"
+    include "lombok*.jar"
+    from configurations.compileOnly
+}
+
+tasks.withType(JavaCompile) {
+
+    options.fork = true  // Fork your compilation into a child process
+    options.forkOptions.setMemoryMaximumSize("256m")
+}
+
+test {
+    maxHeapSize = "256m"
 }
 
 build.dependsOn(copyLombok)
@@ -37,51 +47,58 @@ sourceCompatibility = '11'
 targetCompatibility = '11'
 
 repositories {
-	mavenCentral()
-	jcenter()
+    mavenCentral()
+    jcenter()
 }
 
 dependencies {
-	compile("org.springframework.boot:spring-boot-starter-web") {
-		exclude module: "spring-boot-starter-tomcat"
-	}
 
-	compile('org.springframework.boot:spring-boot-starter-actuator')
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-json')
-	compile('org.springframework.boot:spring-boot-starter-undertow')
+    implementation("org.springframework.boot:spring-boot-starter-web") {
+        exclude module: "spring-boot-starter-tomcat"
+    }
 
-	compile('net.logstash.logback:logstash-logback-encoder:5.3')
+    implementation('org.springframework.boot:spring-boot-starter-undertow')
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('org.springframework.boot:spring-boot-starter-json')
+    implementation('org.springframework.boot:spring-boot-starter-cache')
+    implementation('org.springframework.retry:spring-retry')
+    implementation("org.apache.camel:camel-spring-boot-starter:${camelVersion}")
+    implementation("org.apache.camel:camel-aws:${camelVersion}")
+    implementation("org.apache.camel:camel-jackson:${camelVersion}")
+    implementation("org.apache.camel:camel-http4:${camelVersion}")
 
-	compile group: 'org.apache.camel', name: 'camel-spring-boot', version: camelVersion
-	compile group: 'org.apache.camel', name: 'camel-jackson', version: camelVersion
-	compile group: 'org.apache.camel', name: 'camel-aws', version: camelVersion
-	compile group: 'org.apache.camel', name: 'camel-http4', version: camelVersion
-	compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.6'
-	compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.524'
-	compile 'javax.xml.bind:jaxb-api:2.3.0'
-	compile('org.flywaydb:flyway-core')
-	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.9.6'
-	compile group: 'org.keycloak', name: 'keycloak-admin-client', version: '4.5.0.Final'
-	compile group: 'org.keycloak', name: 'keycloak-services', version: '4.5.0.Final'
-	compile group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.1.4.Final'
-	compile group: 'org.jboss.resteasy', name: 'resteasy-client', version: '3.1.4.Final'
-	compile group: 'org.jboss.resteasy', name: 'resteasy-jackson2-provider', version: '3.1.4.Final'
+    implementation('com.github.ben-manes.caffeine:caffeine')
+    implementation('com.amazonaws:aws-java-sdk:1.11.470')
 
-	compile('org.apache.commons:commons-csv:1.5')
-	compile('io.springfox:springfox-swagger2:2.9.2')
-	compile('io.springfox:springfox-swagger-ui:2.9.2')
-	
-	runtime('org.postgresql:postgresql')
+    implementation('org.flywaydb:flyway-core')
+    implementation('net.logstash.logback:logstash-logback-encoder:5.3')
 
-	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.6'
-	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.6'
 
-	testCompile group: 'org.apache.camel', name: 'camel-test-spring', version: camelVersion
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-	testCompile('org.assertj:assertj-core')
-	testCompile('org.hsqldb:hsqldb')
-	
-	compile 'javax.json:javax.json-api:1.0'
+    compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.6'
+    compile 'javax.xml.bind:jaxb-api:2.3.0'
+    compile 'javax.json:javax.json-api:1.0'
+    compile('org.flywaydb:flyway-core')
+
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.9.6'
+
+    compile group: 'org.keycloak', name: 'keycloak-admin-client', version: '4.5.0.Final'
+    compile group: 'org.keycloak', name: 'keycloak-services', version: '4.5.0.Final'
+    compile group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.1.4.Final'
+    compile group: 'org.jboss.resteasy', name: 'resteasy-client', version: '3.1.4.Final'
+    compile group: 'org.jboss.resteasy', name: 'resteasy-jackson2-provider', version: '3.1.4.Final'
+
+    compile('org.apache.commons:commons-csv:1.5')
+    compile('io.springfox:springfox-swagger2:2.9.2')
+    compile('io.springfox:springfox-swagger-ui:2.9.2')
+
+    runtimeOnly('org.postgresql:postgresql')
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.6'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.6'
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation("org.apache.camel:camel-test-spring:${camelVersion}")
+    testImplementation('org.assertj:assertj-core')
+    testImplementation('org.hsqldb:hsqldb')
 
 }
