@@ -30,13 +30,8 @@ task copyLombok(type: Copy) {
 }
 
 tasks.withType(JavaCompile) {
-
     options.fork = true  // Fork your compilation into a child process
     options.forkOptions.setMemoryMaximumSize("256m")
-}
-
-test {
-    maxHeapSize = "512m"
 }
 
 build.dependsOn(copyLombok)
