@@ -36,7 +36,7 @@ tasks.withType(JavaCompile) {
 }
 
 test {
-    maxHeapSize = "256m"
+    maxHeapSize = "512m"
 }
 
 build.dependsOn(copyLombok)
