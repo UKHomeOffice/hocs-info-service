@@ -31,6 +31,7 @@ public class ListConsumerService {
     private final String API_WELSH_ASSEMBLY;
 
     private HouseAddressRepository houseAddressRepository;
+    private RestTemplate restTemplate;
 
     @Autowired
     public ListConsumerService(@Value("${api.uk.parliament}") String apiUkParliament,
@@ -38,13 +39,14 @@ public class ListConsumerService {
                                @Value("${api.ni.assembly}") String apiNorthernIrishAssembly,
                                @Value("${api.european.parliament}") String apiEuropeanParliament,
                                @Value("${api.welsh.assembly}") String apiWelshAssembly,
-                               HouseAddressRepository houseAddressRepository) {
+                               HouseAddressRepository houseAddressRepository, RestTemplate restTemplate) {
         this.API_UK_PARLIAMENT = apiUkParliament;
         this.API_SCOTTISH_PARLIAMENT = apiScottishParliament;
         this.API_NORTHERN_IRISH_ASSEMBLY = apiNorthernIrishAssembly;
         this.API_EUROPEAN_PARLIAMENT = apiEuropeanParliament;
         this.API_WELSH_ASSEMBLY = apiWelshAssembly;
         this.houseAddressRepository = houseAddressRepository;
+        this.restTemplate = restTemplate;
 
     }
 
@@ -103,7 +105,7 @@ public class ListConsumerService {
         headers.setAccept(Collections.singletonList(mediaType));
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 
-        ResponseEntity<T> response = new RestTemplate().exchange(apiEndpoint, HttpMethod.GET, entity, returnClass);
+        ResponseEntity<T> response = restTemplate.exchange(apiEndpoint, HttpMethod.GET, entity, returnClass);
 
         if (response == null || response.getStatusCodeValue() != 200) {
             throw new ApplicationExceptions.IngestException("members Not Found at " + apiEndpoint);
