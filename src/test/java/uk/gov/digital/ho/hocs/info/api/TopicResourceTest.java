@@ -161,17 +161,4 @@ public class TopicResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-
-    @Test
-    public void shouldUpdateParentOfTopic() {
-
-        UpdateTopicParentDto request = new UpdateTopicParentDto(UUID.randomUUID().toString());
-
-        ResponseEntity response = topicResource.updateTopicParent(UUID.randomUUID(), request);
-
-        verify(topicService, times(1)).updateTopicParent(any(), any());
-        verifyNoMoreInteractions(topicService);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
 }

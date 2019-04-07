@@ -160,7 +160,7 @@ public class TopicService {
             throw new ApplicationExceptions.EntityNotFoundException(
                     "Parent topic with UUID {} does not exist", parentTopicUUID.toString());
         }
-        if (!parentTopic.isActive()) {
+        if (parentTopic.isActive()) {
             log.debug("Parent topic is already active");
         } else {
             parentTopic.setActive(true);
