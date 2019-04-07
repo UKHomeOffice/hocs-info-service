@@ -5,11 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
-import uk.gov.digital.ho.hocs.info.api.dto.GetCaseTypesResponse;
 
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
@@ -26,15 +26,15 @@ public class CaseTypeResource {
     }
 
     @GetMapping(value = "/caseType", produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<GetCaseTypesResponse> getAllCaseTypes() {
+    ResponseEntity<Set<CaseTypeDto>> getAllCaseTypes() {
         Set<CaseType> caseTypes = caseTypeService.getAllCaseTypes();
-        return ResponseEntity.ok(GetCaseTypesResponse.from(caseTypes));
+        return ResponseEntity.ok(caseTypes.stream().map(CaseTypeDto::from).collect(Collectors.toSet()));
     }
 
     @GetMapping(value = "/caseType", params = {"bulkOnly"}, produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<GetCaseTypesResponse> getCaseTypes(@RequestParam("bulkOnly") boolean bulkOnly) {
+    ResponseEntity<Set<CaseTypeDto>> getCaseTypes(@RequestParam("bulkOnly") boolean bulkOnly) {
         Set<CaseType> caseTypes = caseTypeService.getAllCaseTypesForUser(bulkOnly);
-        return ResponseEntity.ok(GetCaseTypesResponse.from(caseTypes));
+        return ResponseEntity.ok(caseTypes.stream().map(CaseTypeDto::from).collect(Collectors.toSet()));
     }
 
     @GetMapping(value = "/caseType/type/{type}", produces = APPLICATION_JSON_UTF8_VALUE)

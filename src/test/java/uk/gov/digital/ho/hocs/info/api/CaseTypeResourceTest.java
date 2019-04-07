@@ -7,11 +7,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.api.CaseTypeResource;
-import uk.gov.digital.ho.hocs.info.api.CaseTypeService;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
-import uk.gov.digital.ho.hocs.info.api.dto.GetCaseTypesResponse;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
 import java.util.*;

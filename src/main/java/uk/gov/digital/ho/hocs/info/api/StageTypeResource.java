@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.digital.ho.hocs.info.api.dto.GetStageTypesResponse;
+import uk.gov.digital.ho.hocs.info.api.dto.StageTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
-import uk.gov.digital.ho.hocs.info.domain.model.Deadline;
 import uk.gov.digital.ho.hocs.info.domain.model.StageTypeEntity;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
@@ -30,9 +30,9 @@ public class StageTypeResource {
     }
 
     @GetMapping(value = "/stageType", produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<GetStageTypesResponse> getAllStageTypes() {
+    ResponseEntity<Set<StageTypeDto>> getAllStageTypes() {
         Set<StageTypeEntity> stageTypes = stageTypeService.getAllStageTypes();
-        return ResponseEntity.ok(GetStageTypesResponse.from(stageTypes));
+        return ResponseEntity.ok(stageTypes.stream().map(StageTypeDto::from).collect(Collectors.toSet()));
     }
 
     @GetMapping(value = "/stageType/{stageType}/team", produces = APPLICATION_JSON_UTF8_VALUE)
