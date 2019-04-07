@@ -37,6 +37,12 @@ public class CaseTypeResource {
         return ResponseEntity.ok(GetCaseTypesResponse.from(caseTypes));
     }
 
+    @GetMapping(value = "/caseType/type/{type}", produces = APPLICATION_JSON_UTF8_VALUE)
+    ResponseEntity<CaseTypeDto> getCaseType(@PathVariable String type) {
+        CaseType caseType = caseTypeService.getCaseType(type);
+        return ResponseEntity.ok(CaseTypeDto.from(caseType));
+    }
+
     @GetMapping(value = "/caseType/shortCode/{shortCode}", produces = APPLICATION_JSON_UTF8_VALUE)
     ResponseEntity<CaseTypeDto> getCaseTypeByShortCode(@PathVariable String shortCode) {
         CaseType caseType = caseTypeService.getCaseTypeByShortCode(shortCode);
