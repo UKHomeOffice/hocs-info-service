@@ -33,12 +33,12 @@ public class CaseTypeResourceTest {
     public void shouldReturnCaseTypesForSingleCase() {
         when(caseTypeService.getAllCaseTypesForUser(false)).thenReturn(getMockCaseTypes());
 
-        ResponseEntity<GetCaseTypesResponse> response =
+        ResponseEntity<Set<CaseTypeDto>> response =
                 caseTypeResource.getCaseTypes(false);
 
         verify(caseTypeService, times(1)).getAllCaseTypesForUser(false);
 
-        List<CaseTypeDto> responseEntityAsList = new ArrayList<>(response.getBody().getCaseTypes());
+        List<CaseTypeDto> responseEntityAsList = new ArrayList<>(response.getBody());
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -66,12 +66,12 @@ public class CaseTypeResourceTest {
     public void shouldReturnCaseTypesForBulkCaseExcludingDTENCaseType() {
         when(caseTypeService.getAllCaseTypesForUser(true)).thenReturn(getMockCaseTypesBulk());
 
-        ResponseEntity<GetCaseTypesResponse> response =
+        ResponseEntity<Set<CaseTypeDto>> response =
                 caseTypeResource.getCaseTypes(true);
 
         verify(caseTypeService, times(1)).getAllCaseTypesForUser(true);
 
-        List<CaseTypeDto> responseEntityAsList = new ArrayList<>(response.getBody().getCaseTypes());
+        List<CaseTypeDto> responseEntityAsList = new ArrayList<>(response.getBody());
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
