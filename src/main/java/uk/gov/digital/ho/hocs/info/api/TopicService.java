@@ -17,7 +17,6 @@ import uk.gov.digital.ho.hocs.info.domain.repository.TopicRepository;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -37,11 +36,6 @@ public class TopicService {
         this.topicRepository = topicRepository;
         this.caseworkClient = caseworkClient;
         this.auditClient = auditClient;
-    }
-
-    public Set<UUID> getAllTopicUUIDs() {
-        log.debug("Requesting all topics");
-        return topicRepository.findAllBy().stream().map(t -> t.getUuid()).collect(Collectors.toSet());
     }
 
     public List<ParentTopic> getParentTopics(String caseType) {
@@ -166,7 +160,7 @@ public class TopicService {
             throw new ApplicationExceptions.EntityNotFoundException(
                     "Parent topic with UUID {} does not exist", parentTopicUUID.toString());
         }
-        if (parentTopic.isActive() == true) {
+        if (parentTopic.isActive()) {
             log.debug("Parent topic is already active");
         } else {
             parentTopic.setActive(true);
@@ -184,7 +178,7 @@ public class TopicService {
             throw new ApplicationExceptions.EntityNotFoundException("Topic with UUID {} does not exist", topicUUID.toString());
         }
         ParentTopic parentTopic = parentTopicRepository.findByUuid(topic.getParentTopic());
-        if(parentTopic.isActive() == false){
+        if (!parentTopic.isActive()) {
             log.debug("Unable to activate topic: {}, parent topic is inactive", topicUUID);
             throw new ApplicationExceptions.TopicUpdateException("Unable to activate topic, parent topic is inactive");
         } else {
@@ -195,35 +189,13 @@ public class TopicService {
         }
     }
 
-
-    public void updateTopicParent(UUID parentTopicUUID, UUID topicUUID) {
-
-        log.debug("Updating parent topic for topic: {}", topicUUID);
-        Topic topic = topicRepository.findTopicByUUID(topicUUID);
-        if (topic == null) {
-            log.debug("Unable to update topic, the given topic does not exist");
-            throw new ApplicationExceptions.TopicUpdateException(
-                    "Unable to update topic, the given topic does not exist");
-        } else {
-            if (!isParentTopicValidAndActive(parentTopicUUID)) {
-                throw new ApplicationExceptions.TopicUpdateException(
-                        "Unable to update topic, the given parent topic is invalid");
-            } else {
-                topic.setParentTopic(parentTopicUUID);
-                topicRepository.save(topic);
-                log.info("Updated parent topic for topic: {}", topicUUID);
-                auditClient.updateTopicParentAudit(topic);
-            }
-        }
-    }
-
-    public boolean isParentTopicValidAndActive(UUID parentTopicUUID) {
+    private boolean isParentTopicValidAndActive(UUID parentTopicUUID) {
         ParentTopic parentTopic = parentTopicRepository.findByUuid(parentTopicUUID);
         if (parentTopic == null) {
             log.debug("The given parent topic does not exist");
             return false;
         } else {
-            if (parentTopic.isActive() == false) {
+            if (!parentTopic.isActive()) {
                 log.debug("The given parent topic is inactive");
                 return false;
             } else {

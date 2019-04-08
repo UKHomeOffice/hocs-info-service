@@ -267,26 +267,6 @@ public class TopicServiceTest {
 
     }
 
-    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
-    public void shouldNotUpdateTopicWithGivenNonexistentParent() {
-
-        when(topicRepository.findTopicByUUID(any())).thenReturn(new Topic("topic", UUID.randomUUID()));
-        when(parentTopicRepository.findByUuid(any())).thenReturn(null);
-
-        topicService.updateTopicParent(UUID.randomUUID(), UUID.randomUUID());
-
-    }
-
-    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
-    public void shouldNotUpdateTopicWithGivenInactiveParent() {
-
-        when(topicRepository.findTopicByUUID(any())).thenReturn(new Topic("topic", UUID.randomUUID()));
-        when(parentTopicRepository.findByUuid(any())).thenReturn(new ParentTopic("parent topic", false));
-
-        topicService.updateTopicParent(UUID.randomUUID(), UUID.randomUUID());
-
-    }
-
     private List<ParentTopic> getParentTopics() {
         return new ArrayList<ParentTopic>() {{
             add(new ParentTopic(1l, UUID.randomUUID(), "ParentTopic1", new HashSet<>(), true));

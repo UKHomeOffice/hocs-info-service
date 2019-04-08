@@ -381,58 +381,6 @@ public class TopicIntegrationTests {
 
     }
 
-    @Test
-    public void shouldUpdateParentTopicOfGivenActiveTopic(){
-
-        UUID newParentTopicUUID = UUID.fromString("1abf7a0c-ea2d-478d-b6c8-d739fb60ef04");
-        UpdateTopicParentDto request = new UpdateTopicParentDto(newParentTopicUUID.toString());
-
-        HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/topic/" + topicUUID + "/parent"
-                , HttpMethod.PUT, httpEntity, Void.class);
-
-        Topic topic = topicRepository.findTopicByUUID(topicUUID);
-
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(topic.getParentTopic()).isEqualTo(newParentTopicUUID);
-
-    }
-
-    @Test
-    public void shouldNotUpdateParentOfTopicWithGivenInactiveParentTopic(){
-
-        UpdateTopicParentDto request = new UpdateTopicParentDto(inactiveParentTopicUUID.toString());
-
-        HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/topic/" + topicUUID + "/parent"
-                , HttpMethod.PUT, httpEntity, Void.class);
-
-        Topic topic = topicRepository.findTopicByUUID(topicUUID);
-
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(topic.getParentTopic()).isNotEqualTo(inactiveParentTopicUUID);
-
-    }
-
-    @Test
-    public void shouldNotUpdateParentOfTopicWithGivenInvalidParentTopic(){
-
-        UpdateTopicParentDto request = new UpdateTopicParentDto(invalidParentTopicUUID.toString());
-
-        HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/topic/" + topicUUID + "/parent"
-                , HttpMethod.PUT, httpEntity, Void.class);
-
-        Topic topic = topicRepository.findTopicByUUID(topicUUID);
-
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(topic.getParentTopic()).isNotEqualTo(invalidParentTopicUUID);
-
-    }
-
     private String getBasePath() {
         return "http://localhost:" + port;
     }

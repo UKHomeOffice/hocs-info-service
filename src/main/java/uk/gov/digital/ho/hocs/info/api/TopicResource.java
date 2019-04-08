@@ -9,7 +9,6 @@ import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -23,12 +22,6 @@ public class TopicResource {
     @Autowired
     public TopicResource(TopicService topicService) {
         this.topicService = topicService;
-    }
-
-    @GetMapping(value = "/topics", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Set<UUID>> getAllTopics() {
-        log.info("requesting all Parent topics and topics");
-        return ResponseEntity.ok(topicService.getAllTopicUUIDs());
     }
 
     @GetMapping(value = "/topics/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
@@ -100,12 +93,6 @@ public class TopicResource {
     @PutMapping(value = "/topic/{topicUUID}")
     public ResponseEntity reactivateTopic(@PathVariable UUID topicUUID){
         topicService.reactivateTopic(topicUUID);
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping(value = "/topic/{topicUUID}/parent")
-    public ResponseEntity updateTopicParent(@PathVariable UUID topicUUID, @RequestBody UpdateTopicParentDto request){
-        topicService.updateTopicParent(UUID.fromString(request.getParentTopicUUID()), topicUUID);
         return ResponseEntity.ok().build();
     }
 }
