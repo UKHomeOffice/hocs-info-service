@@ -40,10 +40,10 @@ public class StageTypeResourceTest {
         }};
         when(stageTypeService.getAllStageTypes()).thenReturn(stages);
 
-        ResponseEntity<GetStageTypesResponse> result = service.getAllStageTypes();
+        ResponseEntity<Set<StageTypeDto>> result = service.getAllStageTypes();
 
-        assertThat(result.getBody().getStageTypes().size()).isEqualTo(1);
-        StageTypeDto stageTypeDto = (StageTypeDto) result.getBody().getStageTypes().toArray()[0];
+        assertThat(result.getBody().size()).isEqualTo(1);
+        StageTypeDto stageTypeDto = (StageTypeDto) result.getBody().toArray()[0];
         assertThat(stageTypeDto.getType()).isEqualTo("STAGE_TYPE");
         assertThat(stageTypeDto.getDisplayName()).isEqualTo("stage name");
         assertThat(stageTypeDto.getShortCode()).isEqualTo("111");

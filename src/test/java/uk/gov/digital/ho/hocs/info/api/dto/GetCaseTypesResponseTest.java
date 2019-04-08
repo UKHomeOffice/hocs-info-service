@@ -4,6 +4,7 @@ import org.junit.Test;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,9 +19,9 @@ public class GetCaseTypesResponseTest {
         caseTypeSet.add(new CaseType(2L, UUID.randomUUID(), "DCU Treat Official","a2","TRO",unitUUID, "DCU_TRO_DISPATCH", true, true));
         caseTypeSet.add(new CaseType(3L, UUID.randomUUID(), "DCU Number 10","a3","DTEN",unitUUID, "DCU_DTEN_DISPATCH", true, true));
 
-        GetCaseTypesResponse getCaseTypesResponse = GetCaseTypesResponse.from(caseTypeSet);
+        Set<CaseTypeDto> getCaseTypesResponse = caseTypeSet.stream().map(CaseTypeDto::from).collect(Collectors.toSet());
 
-        List<CaseTypeDto> responseAsList = new ArrayList<>(Objects.requireNonNull(getCaseTypesResponse.getCaseTypes()));
+        List<CaseTypeDto> responseAsList = new ArrayList<>(Objects.requireNonNull(getCaseTypesResponse));
 
         CaseTypeDto result1 = responseAsList.stream().filter(x -> "MIN".equals(x.getType())).findAny().orElse(null);
         assertThat(result1).isNotNull();
