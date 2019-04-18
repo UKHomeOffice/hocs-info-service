@@ -278,6 +278,7 @@ VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'DCU_CORRESPONDENCE_DETAILS', tr
        ('a47bb3a8-e9c2-4e84-b3e2-458dd95d8139', 'DCU_MARKUP_NRN_DETAILS', true, 'Markup', 'Finish'),
        ('03341d10-55c6-41c3-936d-519ebe9ee762', 'TOPICS', true, 'Markup', 'Continue'),
        ('07257739-4796-45a5-a462-1d3ecb516a32', 'DCU_ANSWERING', true, 'Markup', 'Finish'),
+       ('fa67669a-39ba-464a-ac0c-3ea2131b9ffe', 'DCU_FAQ_ANSWERING', true, 'Markup', 'Finish'),
 
        ('d1119106-b5ef-4db1-9f77-5fc8be01333d', 'TRANSFER_CONFIRMATION', true, 'Transfer To OGD', 'Finish'),
 
@@ -338,6 +339,9 @@ VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'MIN'),
        ('07257739-4796-45a5-a462-1d3ecb516a32', 'MIN'),
        ('07257739-4796-45a5-a462-1d3ecb516a32', 'TRO'),
        ('07257739-4796-45a5-a462-1d3ecb516a32', 'DTEN'),
+       ('fa67669a-39ba-464a-ac0c-3ea2131b9ffe', 'MIN'),
+       ('fa67669a-39ba-464a-ac0c-3ea2131b9ffe', 'TRO'),
+       ('fa67669a-39ba-464a-ac0c-3ea2131b9ffe', 'DTEN'),
        ('241780f4-0fcc-4297-8ad0-e60230ba84d1', 'MIN'),
        ('241780f4-0fcc-4297-8ad0-e60230ba84d1', 'TRO'),
        ('241780f4-0fcc-4297-8ad0-e60230ba84d1', 'DTEN'),
@@ -497,6 +501,10 @@ VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', '03548dc4-76bb-4ac8-8992-b555fd5
        ('07257739-4796-45a5-a462-1d3ecb516a32', 'cb170956-1fac-4b92-8572-d2db6c97e72a'),
        ('07257739-4796-45a5-a462-1d3ecb516a32', '760e7c6c-17ca-420b-badf-1833f59feeed'),
        ('07257739-4796-45a5-a462-1d3ecb516a32', 'c2837864-53a0-4373-9695-f1f5e23552a0'),
+
+       ('fa67669a-39ba-464a-ac0c-3ea2131b9ffe', 'c0a9fb65-ec01-40a1-9df7-a70779352715'),
+       ('fa67669a-39ba-464a-ac0c-3ea2131b9ffe', 'b8baa4c7-d6bc-4657-ab6f-ae237b73247b'),
+       ('fa67669a-39ba-464a-ac0c-3ea2131b9ffe', '760e7c6c-17ca-420b-badf-1833f59feeed'),
 
        ('241780f4-0fcc-4297-8ad0-e60230ba84d1', '16bcc0f3-1cbd-4570-9fdb-7d91e008ad94'),
        ('241780f4-0fcc-4297-8ad0-e60230ba84d1', 'd650ff40-9000-448b-ac99-04f762e8768d'),
