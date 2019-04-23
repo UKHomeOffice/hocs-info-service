@@ -398,8 +398,8 @@ VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'MIN'),
 ;
 
 INSERT INTO field (uuid, component, name, label, validation, summary, active, props)
-VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 'When was the correspondence sent?', '[ "required" ]',  true, true,  '{}'),
-       ('1cb5ee23-b82d-448d-8574-00421841acdc', 'date', 'DateReceived', 'When was the correspondence received?', '[ "required" ]', true, true, '{}'),
+VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 'When was the correspondence sent?', '[ "required", "isValidDate" ]',  true, true,  '{}'),
+       ('1cb5ee23-b82d-448d-8574-00421841acdc', 'date', 'DateReceived', 'When was the correspondence received?', '[ "required", "isValidDate" ]', true, true, '{}'),
        ('ede4aa5d-80d5-4703-aeed-82167d927ad7', 'radio', 'OriginalChannel', 'How was the correspondence received?', '[ "required" ]', true, true,  '{ "choices" : [ {  "label" : "Email", "value" : "EMAIL" }, { "label" : "Post", "value" : "POST" }, { "label" : "Phone", "value" : "PHONE" }, { "label" : "No. 10", "value" : "NO10" } ]}'),
        ('157a00e6-3b96-4a12-9b34-f73c328c332c', 'radio', 'CopyNumberTen', 'Should the response be copied to Number 10?','["required" ]', true, true, '{ "choices" : [ {  "label" : "Yes", "value" : "TRUE" }, { "label" : "No", "value" : "FALSE" }]}'),
 
