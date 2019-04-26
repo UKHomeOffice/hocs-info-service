@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS team
   id           BIGSERIAL PRIMARY KEY,
   uuid         UUID    NOT NULL,
   display_name TEXT    NOT NULL,
+  letter_name TEXT,
   unit_uuid    UUID    NOT NULL,
   active       boolean NOT NULL DEFAULT TRUE,
 

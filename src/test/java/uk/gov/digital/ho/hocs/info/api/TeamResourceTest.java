@@ -7,9 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
-import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
-import uk.gov.digital.ho.hocs.info.api.dto.UpdateTeamPermissionsRequest;
+import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
@@ -126,6 +124,28 @@ public class TeamResourceTest {
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         verify(teamService, times(1)).createTeam(teamDto, unitUUID);
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
+    public void shouldUpdateTeamName(){
+        UUID teamUUID = UUID.randomUUID();
+        UpdateTeamNameRequest request = new UpdateTeamNameRequest("The Team");
+        ResponseEntity result = teamResource.updateTeamName(teamUUID.toString(), request);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        verify(teamService, times(1)).updateTeamName(teamUUID, request.getDisplayName());
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
+    public void shouldUpdateTeamLetterName(){
+        UUID teamUUID = UUID.randomUUID();
+        UpdateTeamLetterNameRequest request = new UpdateTeamLetterNameRequest("Bob");
+        ResponseEntity result = teamResource.updateTeamLetterName(teamUUID.toString(), request);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        verify(teamService, times(1)).updateTeamLetterName(teamUUID, request.getLetterName());
         verifyNoMoreInteractions(teamService);
     }
 

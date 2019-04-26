@@ -5,14 +5,14 @@ VALUES ('UNIT 1', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', 'UNIT1', TRUE),
        ('DCU_TEST', 'c875dca8-8679-47e7-a589-7cea64b2e13c', 'DCUT', TRUE),
        ('UKVI_TEST', '09c30d4b-b427-4b49-bec7-545eafb4019a', 'UKVIT', TRUE);
 
-INSERT INTO team (display_name, uuid, unit_uuid, active)
-VALUES ('TEAM 1', '44444444-2222-2222-2222-222222222222', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),
-       ('TEAM 2', '11111111-1111-1111-1111-111111111111', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),
-       ('TEAM 3', '33333333-3333-3333-3333-333333333333', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),
-       ('TEAM 14', '33333333-4444-3333-3333-333333333333', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),
-       ('PO TEAM 2', 'ffffffff-1111-1111-1111-111111111111', 'e1111111-5555-4a5d-aa7b-597bb95a782c', true),
-       ('PO TEAM 3', 'ffffffff-3333-3333-3333-333333333333', 'e1111111-5555-4a5d-aa7b-597bb95a782c', true),
-       ('PO TEAM 14', 'ffffffff-4444-3333-3333-333333333333', 'e1111111-5555-4a5d-aa7b-597bb95a782c', true);
+INSERT INTO team (display_name, letter_name, uuid, unit_uuid, active)
+VALUES ('TEAM 1', null ,'44444444-2222-2222-2222-222222222222', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),
+       ('TEAM 2',null ,'11111111-1111-1111-1111-111111111111', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),
+       ('TEAM 3',null ,'33333333-3333-3333-3333-333333333333', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),
+       ('TEAM 14', null,'33333333-4444-3333-3333-333333333333', 'd9a93c21-a1a8-4a5d-aa7b-597bb95a782c', true),
+       ('PO TEAM 2',null ,'ffffffff-1111-1111-1111-111111111111', 'e1111111-5555-4a5d-aa7b-597bb95a782c', true),
+       ('PO TEAM 3', null,'ffffffff-3333-3333-3333-333333333333', 'e1111111-5555-4a5d-aa7b-597bb95a782c', true),
+       ('PO TEAM 14',null ,'ffffffff-4444-3333-3333-333333333333', 'e1111111-5555-4a5d-aa7b-597bb95a782c', true);
 
 Insert INTO case_type (uuid, display_name, short_code, type, owning_unit_uuid, deadline_stage, active, bulk)
 VALUES ('a3d491ff-3ee1-42be-bcad-840c4c4b9f0a','DCU Ministerial', 'a1', 'MIN', 'c875dca8-8679-47e7-a589-7cea64b2e13c', 'DCU_MIN_DISPATCH', true, true),
@@ -108,23 +108,6 @@ VALUES ('90eda1ba-86ba-4e55-b89b-8a5b14f72662','Data Input', '111', 'DCU_MIN_DAT
        ('2451e9a9-d79d-484a-bfe1-7b19dd85ea70','Private Office', '137', 'DCU_DTEN_PRIVATE_OFFICE', '33333333-3333-3333-3333-333333333333', true, 0,'814105e7-090a-4f1f-903a-62ad6b430bf1'),
        ('c00bc689-3626-47f9-a016-df7798c2fc46','Dispatch', '138', 'DCU_DTEN_DISPATCH', '33333333-3333-3333-3333-333333333333', true, 20,'814105e7-090a-4f1f-903a-62ad6b430bf1'),
        ('719c6230-1287-43db-a6a2-0d215d9253f0','Copy To Number 10', '139', 'DCU_DTEN_COPY_NUMBER_TEN', '33333333-3333-3333-3333-333333333333', true, 10,'814105e7-090a-4f1f-903a-62ad6b430bf1');
-
-
-Insert INTO minister (office_name, minister_name, uuid, responsible_team_uuid)
-VALUES ('Home Secretary', 'Home Secretary', 'cba9013b-6862-417a-ad40-ebdf145601b1', '44444444-2222-2222-2222-222222222222'),
-       ('Minister for State for Immigration', 'Minister for State for Immigration','2dada3ea-2530-4306-86cc-9cbade726048', '44444444-2222-2222-2222-222222222222'),
-       ('Minister of State for Security and Economic Crime', 'Minister of State for Security and Economic Crime','2dada3ea-2530-4306-86cc-9cbade726041', '44444444-2222-2222-2222-222222222222'),
-       ('Minister of State for Policing and Fire Service', 'Minister of State for Policing and Fire Service','2dada3ea-2530-4306-86cc-9cbade726042', '44444444-2222-2222-2222-222222222222'),
-       ('Under Secretary of State for Crime, Safeguarding and Vulnerability', 'Under Secretary of State for Crime, Safeguarding and Vulnerability', '2dada3ea-2530-4306-86cc-9cbade726043', '33333333-3333-3333-3333-333333333333'),
-       ('Permanent Secretary', 'Permanent Secretary', '2dada3ea-2530-4306-86cc-9cbade726044', '33333333-3333-3333-3333-333333333333'),
-       ('Director General UKVI', 'Director General UKVI', '2dada3ea-2530-4306-86cc-9cbade726045', '33333333-3333-3333-3333-333333333333'),
-       ('Director Compliance and Returns Immigration Enforcement','Director Compliance and Returns Immigration Enforcement', '2dada3ea-2530-4306-86cc-9cbade726046', '33333333-3333-3333-3333-333333333333'),
-       ('Director General Border Force', 'Director General Border Force', '2dada3ea-2530-4306-86cc-9cbade726047', '33333333-3333-3333-3333-333333333333'),
-       ('Director Resettlement Gold Command', 'Director Resettlement Gold Command', '2dada3ea-2530-4306-86cc-9cbade726056', '33333333-3333-3333-3333-333333333333'),
-       ('Director of UKVI International Operations', 'Director of UKVI International Operations','2dada3ea-2530-4306-86cc-9cbade726098', '33333333-3333-3333-3333-333333333333'),
-       ('Director of UKVI Asylum', 'Director of UKVI Asylum', '2dada3ea-2530-4306-86cc-9cbade726099', '33333333-3333-3333-3333-333333333333'),
-       ('Minister for Lords', 'Minister for Lords', '2dada3ea-2530-4306-86cc-9cbade726000', '33333333-3333-3333-3333-333333333333');
-
 
 INSERT INTO parent_topic (display_name, UUID)
 VALUES ('Parent topic 1', '11111111-1111-1111-1111-111111111121'),

@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
+import uk.gov.digital.ho.hocs.info.api.dto.UpdateTeamLetterNameRequest;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateTeamNameRequest;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateTeamPermissionsRequest;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
@@ -43,6 +44,12 @@ public class TeamResource {
     @PutMapping(value = "/team/{teamUUID}")
     public ResponseEntity updateTeamName(@PathVariable String teamUUID, @RequestBody UpdateTeamNameRequest team) {
         teamService.updateTeamName(UUID.fromString(teamUUID), team.getDisplayName());
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(value = "/team/{teamUUID}/lettername")
+    public ResponseEntity updateTeamLetterName(@PathVariable String teamUUID, @RequestBody UpdateTeamLetterNameRequest team) {
+        teamService.updateTeamLetterName(UUID.fromString(teamUUID), team.getLetterName());
         return ResponseEntity.ok().build();
     }
 
