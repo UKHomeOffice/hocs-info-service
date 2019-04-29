@@ -403,6 +403,7 @@ VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'MIN'),
 ;
 
 INSERT INTO field (uuid, component, name, label, validation, summary, active, props)
+
 VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 'When was the correspondence sent?', '[ "required", "isValidDate", "isBeforeToday" ]',  true, true,  '{}'),
        ('1cb5ee23-b82d-448d-8574-00421841acdc', 'date', 'DateReceived', 'When was the correspondence received?', '[ "required", "isValidDate", "isBeforeToday" ]', true, true, '{}'),
        ('ede4aa5d-80d5-4703-aeed-82167d927ad7', 'radio', 'OriginalChannel', 'How was the correspondence received?', '[ "required" ]', true, true,  '{ "choices" : [ {  "label" : "Email", "value" : "EMAIL" }, { "label" : "Post", "value" : "POST" }, { "label" : "Phone", "value" : "PHONE" }, { "label" : "No. 10", "value" : "NO10" } ]}'),
