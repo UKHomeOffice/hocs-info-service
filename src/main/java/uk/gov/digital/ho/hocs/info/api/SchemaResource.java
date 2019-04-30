@@ -45,4 +45,10 @@ public class SchemaResource {
         return ResponseEntity.ok(fields.map(FieldDto::from).collect(Collectors.toSet()));
     }
 
+    @GetMapping(value = "/schema/caseType/{caseType}/reporting", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Set<String>> getAllReportingFieldsForCaseType(@PathVariable String caseType) {
+        Stream<Field> fields = schemaService.getAllReportingFieldsForCaseType(caseType);
+        return ResponseEntity.ok(fields.map(f-> f.getName()).collect(Collectors.toSet()));
+    }
+
 }

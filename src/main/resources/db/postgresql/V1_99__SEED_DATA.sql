@@ -385,86 +385,81 @@ VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'MIN'),
        ('dedbf417-5604-4c5f-9731-9d4d23599c9b', 'TRO')
 ;
 
-INSERT INTO field (uuid, component, name, label, validation, summary, active, props)
+INSERT INTO field (uuid, component, name, label, validation, summary, report_extract, active, props)
+VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 'When was the correspondence sent?', '[ "required" ]', true, true, true, '{}'),
+       ('1cb5ee23-b82d-448d-8574-00421841acdc', 'date', 'DateReceived', 'When was the correspondence received?', '[ "required" ]', true, true, true, '{}'),
+       ('ede4aa5d-80d5-4703-aeed-82167d927ad7', 'radio', 'OriginalChannel', 'How was the correspondence received?', '[ "required" ]', true, true, true,  '{ "choices" : [ {  "label" : "Email", "value" : "EMAIL" }, { "label" : "Post", "value" : "POST" }, { "label" : "Phone", "value" : "PHONE" }, { "label" : "No. 10", "value" : "NO10" } ]}'),
+       ('157a00e6-3b96-4a12-9b34-f73c328c332c', 'checkbox', 'CopyNumberTen', 'Should the response be copied to Number 10?','[]', true, true, true, '{ "choices" : [ {"label" : "Yes", "value" : "TRUE"} ]}'),
+       ('dc502507-c333-43be-a562-f6d0e456502e', 'entity-list', 'Correspondents', 'Which is the primary correspondent?','[ "required" ]', false, true, true, '{ "hasRemoveLink" : true, "hasAddLink" : true, "action" : "CORRESPONDENT", "choices" : "CASE_CORRESPONDENTS", "entity" : "correspondent" }'),
+       ('1d8ae1c0-8ebf-4185-8fda-b7dc2eefbc6a', 'radio', 'MarkupDecision', 'What sort of response is required?','[ "required" ]', false, true, true, '{"choices" : [ {  "label" : "Policy Response", "value" : "PR" }, { "label" : "FAQ Response", "value" : "FAQ" }, { "label" : "Refer To OGD", "value" : "OGD" }, { "label" : "No Response Needed", "value" : "NRN"} ] }'),
+       ('20086634-e128-407c-a22d-fc845b9074dc', 'text', 'OGDDept', 'Where should this case be transferred to?','[ "required" ]', false, true, true, '{}'),
+       ('975c19f8-523b-4f28-b9cc-f60f49c359ef', 'text-area', 'CaseNote_OGD', 'Why should this case be transferred here?','[ "required" ]', false, false, true, '{}'),
+       ('453c088e-f75a-4d08-a85e-b18a092a9157', 'text', 'OGDDept', 'Where should this case be transferred to?','[]', false, true, true, '{ "disabled" : "disabled"}'),
+       ('f8a7f43d-7f0f-499a-871c-63c4143600f7', 'text-area', 'CaseNote_OGD', 'Why should this case be transferred here?','[ "required" ]', false, false, true, '{ "disabled" : "disabled"}'),
+       ('91542958-9e9d-432a-93d7-a60d594ce1a1', 'text-area', 'CaseNote_NRN', 'Why is no response needed?','[ "required" ]', false, false, true, '{}'),
 
-VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 'When was the correspondence sent?', '[ "required", "isValidDate", "isBeforeToday" ]',  true, true,  '{}'),
-       ('1cb5ee23-b82d-448d-8574-00421841acdc', 'date', 'DateReceived', 'When was the correspondence received?', '[ "required", "isValidDate", "isBeforeToday" ]', true, true, '{}'),
-       ('ede4aa5d-80d5-4703-aeed-82167d927ad7', 'radio', 'OriginalChannel', 'How was the correspondence received?', '[ "required" ]', true, true,  '{ "choices" : [ {  "label" : "Email", "value" : "EMAIL" }, { "label" : "Post", "value" : "POST" }, { "label" : "Phone", "value" : "PHONE" }, { "label" : "No. 10", "value" : "NO10" } ]}'),
-       ('157a00e6-3b96-4a12-9b34-f73c328c332c', 'radio', 'CopyNumberTen', 'Should the response be copied to Number 10?','["required" ]', true, true, '{ "choices" : [ {  "label" : "Yes", "value" : "TRUE" }, { "label" : "No", "value" : "FALSE" }]}'),
+       ('1cf94194-54d5-4f6a-aaff-2e84a511a2cc', 'radio', 'TransferConfirmation', 'Should this case be transferred to the OGD?', '[ "required" ]', false, true, true,  '{ "choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" }]}'),
 
-       ('cd67f841-909d-4c24-b119-a0dc9892693d', 'date', 'DCU_DTEN_INITIAL_DRAFT_DEADLINE', 'What is the drafting deadline?', '[ "required", "isValidDate" ]', true, true, '{}'),
-       ('4d369bc2-8648-4a36-ba61-1a6f32a495ea', 'date', 'DCU_DTEN_DISPATCH_DEADLINE', 'What is the dispatch deadline?', '[ "required", "isValidDate" ]', true, true, '{}'),
+       ('1e792dfd-7838-43d9-9ec3-80e4ffc44887', 'text-area', 'CaseNote_NRN', 'Why is no response needed?','[ ]', false, false, true, '{ "disabled" : "disabled"}'),
+       ('eade08a7-8697-4dca-acca-ecb58b4794bc', 'radio', 'NoReplyNeededConfirmation', 'Do you agree that no response is needed?', '[ "required" ]', false, true, true,  '{ "choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" }]}'),
+       ('f9ec3e4a-7332-493c-a26f-7e541b8fe032', 'inset', null, null,'[ ]', false, false, true, '{ "children" : "If you select ''No'' the case will be returned to Markup" }'),
 
-       ('dc502507-c333-43be-a562-f6d0e456502e', 'entity-list', 'Correspondents', 'Which is the primary correspondent?','[ "required" ]', false, true, '{ "hasRemoveLink" : true, "hasAddLink" : true, "action" : "CORRESPONDENT", "choices" : "CASE_CORRESPONDENTS", "entity" : "correspondent" }'),
-       ('1d8ae1c0-8ebf-4185-8fda-b7dc2eefbc6a', 'radio', 'MarkupDecision', 'What sort of response is required?','[ "required" ]', false, true, '{"choices" : [ {  "label" : "Policy Response", "value" : "PR" }, { "label" : "FAQ Response", "value" : "FAQ" }, { "label" : "Refer To OGD", "value" : "OGD" }, { "label" : "No Response Needed", "value" : "NRN"} ] }'),
-       ('20086634-e128-407c-a22d-fc845b9074dc', 'text', 'OGDDept', 'Where should this case be transferred to?','[ "required" ]', false, true, '{}'),
-       ('975c19f8-523b-4f28-b9cc-f60f49c359ef', 'text-area', 'CaseNote_OGD', 'Why should this case be transferred here?','[ "required" ]', false, true, '{}'),
-       ('453c088e-f75a-4d08-a85e-b18a092a9157', 'text', 'OGDDept', 'Where should this case be transferred to?','[]', false, true, '{ "disabled" : "disabled"}'),
-       ('f8a7f43d-7f0f-499a-871c-63c4143600f7', 'text-area', 'CaseNote_OGD', 'Why should this case be transferred here?','[ "required" ]', false, true, '{ "disabled" : "disabled"}'),
-       ('91542958-9e9d-432a-93d7-a60d594ce1a1', 'text-area', 'CaseNote_NRN', 'Why is no response needed?','[ "required" ]', false, true, '{}'),
+       ('ffcff056-36ee-483f-825d-9cf0f4a9ff75', 'entity-list', 'Topics', 'Which is the primary topic?','[ "required" ]', false, true, true, '{ "hasRemoveLink" : true, "hasAddLink" : true, "action" : "TOPIC", "choices" : "CASE_TOPICS", "entity" : "topic" }'),
 
-       ('1cf94194-54d5-4f6a-aaff-2e84a511a2cc', 'radio', 'TransferConfirmation', 'Should this case be transferred to the OGD?', '[ "required" ]', false, true,  '{ "choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" }]}'),
+       ('c0a9fb65-ec01-40a1-9df7-a70779352715', 'inset', null, null,'[ ]', false, false, true, '{ "children" : "These teams have been selected based on the correspondence topic. You are able to override the selection." }'),
+       ('c2837864-53a0-4373-9695-f1f5e23552a0', 'text', 'DraftingTeamName', 'Initial Draft Team','[ ]', false, true, true, '{ "disabled" : "disabled"}'),
 
-       ('1e792dfd-7838-43d9-9ec3-80e4ffc44887', 'text-area', 'CaseNote_NRN', 'Why is no response needed?','[ ]', false, true, '{ "disabled" : "disabled"}'),
-       ('eade08a7-8697-4dca-acca-ecb58b4794bc', 'radio', 'NoReplyNeededConfirmation', 'Do you agree that no response is needed?', '[ "required" ]', false, true,  '{ "choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" }]}'),
-       ('f9ec3e4a-7332-493c-a26f-7e541b8fe032', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''No'' the case will be returned to Markup" }'),
+       ('cb170956-1fac-4b92-8572-d2db6c97e72a', 'dropdown', 'OverrideDraftingTeamUUID', 'Override Initial Draft Team','[ ]', false, true, true, '{ "choices" : "DRAFT_TEAMS" }'),
+       ('760e7c6c-17ca-420b-badf-1833f59feeed', 'text', 'POTeamName', 'Private Office Team','[ ]', false, true, true, '{ "disabled" : "disabled"}'),
+       ('b8baa4c7-d6bc-4657-ab6f-ae237b73247b', 'dropdown', 'OverridePOTeamUUID', 'Override Private Office Team','[ ]', false, true, true, '{ "choices" : "PRIVATE_OFFICE_TEAMS" }'),
 
-       ('ffcff056-36ee-483f-825d-9cf0f4a9ff75', 'entity-list', 'Topics', 'Which is the primary topic?','[ "required" ]', false, true, '{ "hasRemoveLink" : true, "hasAddLink" : true, "action" : "TOPIC", "choices" : "CASE_TOPICS", "entity" : "topic" }'),
+       ('16bcc0f3-1cbd-4570-9fdb-7d91e008ad94', 'radio', 'InitialDraftDecision', 'Can this correspondence be answered by your team?','[ "required" ]', false, true, true, '{ "choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" } ] }'),
+       ('d650ff40-9000-448b-ac99-04f762e8768d', 'inset', null, null,'[ ]', false, false, true, '{ "children" : "If you select ''No'' you will be asked to explain why and the case will be returned to Markup." }'),
+       ('57864e64-c4b3-43b0-a0ab-65e7dc24ea93', 'radio', 'ResponseChannel', 'How do you intend to respond?','["required" ]', false, true, true, '{"choices" : [ {  "label" : "Letter", "value" : "LETTER" }, { "label" : "Phone", "value" : "PHONE" } ] }'),
+       ('3f9f8ce7-7caa-4a9f-982d-27f2aa8e2126', 'inset', null, null,'[ ]', false, false, true, '{ "children" : "If you select ''Phone'' you will be asked to summarise the call and then the case will close." }'),
+       ('256d086a-c4fd-48d6-8dd6-0bf760cf66ea', 'text-area', 'CaseNote_RejectionNote', 'Why should this should not be answered by your team?','[ "required" ]', false, false, true, '{}'),
+       ('fe7befd2-7873-44c6-824c-43e529e1b805', 'inset', null, null,'[ ]', false, false, true, '{ "children" : "The case will be returned to DCU Markup along with your comments." }'),
 
-       ('c0a9fb65-ec01-40a1-9df7-a70779352715', 'inset', null, null,'[ ]', false, true, '{ "children" : "These teams have been selected based on the correspondence topic. You are able to override the selection." }'),
-       ('c2837864-53a0-4373-9695-f1f5e23552a0', 'text', 'DraftingTeamName', 'Initial Draft Team','[ ]', false, true, '{ "disabled" : "disabled"}'),
+       ('b3ea7f48-a7f5-417e-81b5-46ee2f6a2cf9', 'inset', null, null,'[ ]', false, false, true, '{ "children" : "Completing this screen will complete the case." }'),
+       ('7edd64b1-6790-41d4-842e-fa9921979278', 'text-area', 'CaseNote_PhonecallNote', 'Please summarise your call.','[ "required" ]', false, false, true, '{}'),
+       ('d33dfc8e-8c8a-4fcc-be30-f98184299661', 'entity-manager', 'Documents_standard_line', 'Available Standard line','[ ]', false, false, true, '{ "hasDownloadLink" : true, "choices" : "CASE_STANDARD_LINES", "entity" : "standard_line" }'),
+       ('f55e66c5-180b-411c-b908-5397e8fade19', 'entity-manager', 'Documents_topic', 'Available Template','[ ]', false, false, true, '{ "hasDownloadLink" : true, "choices" : "CASE_TEMPLATES", "entity" : "template" }'),
+       ('7f525f9e-36d2-4ff2-b888-e3a18c2c6bfa', 'entity-list', 'DraftDocuments', 'Which is the primary draft document?','[ "required" ]', false, false, true, '{ "hasRemoveLink" : true, "hasAddLink" : true, "choices" : "CASE_DOCUMENT_LIST_DRAFT", "entity" : "document" }'),
 
-       ('cb170956-1fac-4b92-8572-d2db6c97e72a', 'dropdown', 'OverrideDraftingTeamUUID', 'Override Initial Draft Team','[ ]', false, true, '{ "choices" : "DRAFT_TEAMS" }'),
-       ('760e7c6c-17ca-420b-badf-1833f59feeed', 'text', 'POTeamName', 'Private Office Team','[ ]', false, true, '{ "disabled" : "disabled"}'),
-       ('b8baa4c7-d6bc-4657-ab6f-ae237b73247b', 'dropdown', 'OverridePOTeamUUID', 'Override Private Office Team','[ ]', false, true, '{ "choices" : "PRIVATE_OFFICE_TEAMS" }'),
+       ('d91196a8-1a7a-4451-be05-09f0a3b95a23', 'radio', 'OfflineQA', 'Do you want to QA this offline?','["required" ]', false, true, true, '{"choices" : [ { "label" : "Yes", "value" : "TRUE" }, {  "label" : "No", "value" : "FALSE" } ] }'),
+       ('07559a09-505b-42c4-984c-112f60b42c37', 'inset', null, null,'[ ]', false, false, true, '{ "children" : "If you select ''Yes'' you will be asked to name the person who has done the QA stage." }'),
+       ('9ab22c05-58ec-4bc6-8e7e-e70bfc34b028', 'inset', null, null,'[ ]', false, false, true, '{ "children" : "If you select ''No'' the case will be returned to your team queue for the QA stage." }'),
 
-       ('16bcc0f3-1cbd-4570-9fdb-7d91e008ad94', 'radio', 'InitialDraftDecision', 'Can this correspondence be answered by your team?','[ "required" ]', false, true, '{ "choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" } ] }'),
-       ('d650ff40-9000-448b-ac99-04f762e8768d', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''No'' you will be asked to explain why and the case will be returned to Markup." }'),
-       ('57864e64-c4b3-43b0-a0ab-65e7dc24ea93', 'radio', 'ResponseChannel', 'How do you intend to respond?','["required" ]', false, true, '{"choices" : [ {  "label" : "Letter", "value" : "LETTER" }, { "label" : "Phone", "value" : "PHONE" } ] }'),
-       ('3f9f8ce7-7caa-4a9f-982d-27f2aa8e2126', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''Phone'' you will be asked to summarise the call and then the case will close." }'),
-       ('256d086a-c4fd-48d6-8dd6-0bf760cf66ea', 'text-area', 'CaseNote_RejectionNote', 'Why should this should not be answered by your team?','[ "required" ]', false, true, '{}'),
-       ('fe7befd2-7873-44c6-824c-43e529e1b805', 'inset', null, null,'[ ]', false, true, '{ "children" : "The case will be returned to DCU Markup along with your comments." }'),
+       ('3d4ac394-ed36-48ed-aea8-7aa2dd546414', 'dropdown', 'OfflineQaUser', 'Who has done the Offline QA for this case?' ,'[ "required" ]', false, true, true, '{ "choices" : "USERS_FOR_CASE" }'),
 
-       ('b3ea7f48-a7f5-417e-81b5-46ee2f6a2cf9', 'inset', null, null,'[ ]', false, true, '{ "children" : "Completing this screen will complete the case." }'),
-       ('7edd64b1-6790-41d4-842e-fa9921979278', 'text-area', 'CaseNote_PhonecallNote', 'Please summarise your call.','[ "required" ]', false, true, '{}'),
-       ('d33dfc8e-8c8a-4fcc-be30-f98184299661', 'entity-manager', 'Documents_standard_line', 'Available Standard line','[ ]', false, true, '{ "hasDownloadLink" : true, "choices" : "CASE_STANDARD_LINES", "entity" : "standard_line" }'),
-       ('f55e66c5-180b-411c-b908-5397e8fade19', 'entity-manager', 'Documents_topic', 'Available Template','[ ]', false, true, '{ "hasDownloadLink" : true, "choices" : "CASE_TEMPLATES", "entity" : "template" }'),
-       ('7f525f9e-36d2-4ff2-b888-e3a18c2c6bfa', 'entity-list', 'DraftDocuments', 'Which is the primary draft document?','[ "required" ]', false, true, '{ "hasRemoveLink" : true, "hasAddLink" : true, "choices" : "CASE_DOCUMENT_LIST_DRAFT", "entity" : "document" }'),
+       ('8494130c-1373-4422-8656-b30ae443d5d3', 'radio', 'QAResponseDecision', 'Do you approve the response?','["required" ]', false, true, true, '{"choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" } ] }'),
 
-       ('d91196a8-1a7a-4451-be05-09f0a3b95a23', 'radio', 'OfflineQA', 'Do you want to QA this offline?','["required" ]', false, true, '{"choices" : [ { "label" : "Yes", "value" : "TRUE" }, {  "label" : "No", "value" : "FALSE" } ] }'),
-       ('07559a09-505b-42c4-984c-112f60b42c37', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''Yes'' you will be asked to name the person who has done the QA stage." }'),
-       ('9ab22c05-58ec-4bc6-8e7e-e70bfc34b028', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''No'' the case will be returned to your team queue for the QA stage." }'),
+       ('6a388279-4950-42cd-8a2a-e92d5c932964', 'inset', null, null,'[ ]', false, false, true, '{ "children" : "If you select ''No'' you will be asked to explain why and the case will be returned to the Draft stage." }'),
 
-       ('3d4ac394-ed36-48ed-aea8-7aa2dd546414', 'dropdown', 'OfflineQaUser', 'Who has done the Offline QA for this case?' ,'[ "required" ]', false, true, '{ "choices" : "USERS_FOR_CASE" }'),
+       ('13e1ab9b-8e92-4309-b0f7-7e2668d8dd3b', 'text-area', 'CaseNote_QA', 'What is your feedback about the response?','[ "required" ]', false, false, true, '{}'),
 
-       ('8494130c-1373-4422-8656-b30ae443d5d3', 'radio', 'QAResponseDecision', 'Do you approve the response?','["required" ]', false, true, '{"choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" } ] }'),
+       ('6370740e-8ec5-4907-9179-86d5b31e4ec4', 'radio', 'PrivateOfficeDecision', 'Do you approve the response?','["required" ]', false, true, true, '{"choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" }, { "label" : "Change Minister", "value" : "CHANGE"} ] }'),
+       ('f0152ce3-96db-4790-9f78-2c6a21c96c67', 'radio', 'PrivateOfficeDecision', 'Do you approve the response?','["required" ]', false, true, true, '{"choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" } ] }'),
 
-       ('6a388279-4950-42cd-8a2a-e92d5c932964', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''No'' you will be asked to explain why and the case will be returned to the Draft stage." }'),
+       ('0ffde77e-ff96-40c1-aab3-08102063d63d', 'inset', null, null,'[ ]', false, false, true, '{ "children" : "If you select ''No'' you will be asked to explain why and the case will be returned to the Draft stage." }'),
+       ('4a9aa75d-719b-4c60-8608-af84c6d06048', 'inset', null, null,'[ ]', false, false, true, '{ "children" : "If you select ''Change Minister'' you will be asked to explain why and the case will be assigned to that Private Office team." }'),
 
-       ('13e1ab9b-8e92-4309-b0f7-7e2668d8dd3b', 'text-area', 'CaseNote_QA', 'What is your feedback about the response?','[ "required" ]', false, true, '{}'),
+       ('0f08cabb-a822-411c-8352-765dd20e252c', 'text-area', 'CaseNote_PrivateOfficeReject', 'What is your feedback about the response?','[ "required" ]', false, false, true, '{}'),
 
-       ('6370740e-8ec5-4907-9179-86d5b31e4ec4', 'radio', 'PrivateOfficeDecision', 'Do you approve the response?','["required" ]', false, true, '{"choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" }, { "label" : "Change Minister", "value" : "CHANGE"} ] }'),
-       ('f0152ce3-96db-4790-9f78-2c6a21c96c67', 'radio', 'PrivateOfficeDecision', 'Do you approve the response?','["required" ]', false, true, '{"choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" } ] }'),
+       ('bd3ff7f7-8b27-45e8-8636-e0ec6f0b40dc', 'dropdown', 'PrivateOfficeOverridePOTeamUUID', 'Override Private Office Team','[ "required" ]', false, true, true, '{ "choices" : "PRIVATE_OFFICE_TEAMS" }'),
+       ('d0070438-7fb8-498b-bd5e-63fa07027256', 'text-area', 'CaseNote_PrivateOfficeOverride', 'Why should this be approved by this team instead?','[ "required" ]', false, false, true, '{}'),
 
-       ('0ffde77e-ff96-40c1-aab3-08102063d63d', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''No'' you will be asked to explain why and the case will be returned to the Draft stage." }'),
-       ('4a9aa75d-719b-4c60-8608-af84c6d06048', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''Change Minister'' you will be asked to explain why and the case will be assigned to that Private Office team." }'),
+       ('f2cd5c44-ba32-4b75-adfb-ea83f384373b', 'radio', 'MinisterSignOffDecision', 'Do you approve the response?','["required" ]', false, true, true, '{"choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" } ] }'),
+       ('0660e228-a914-4ab2-91fa-15c9a417810c', 'inset', null, null,'[ ]', false, false, true, '{ "children" : "If you select ''No'' you will be asked to explain why and the case will be returned to the Draft stage." }'),
 
-       ('0f08cabb-a822-411c-8352-765dd20e252c', 'text-area', 'CaseNote_PrivateOfficeReject', 'What is your feedback about the response?','[ "required" ]', false, true, '{}'),
+       ('ee4b9198-5194-4ba9-bf6a-e9a63c970e10', 'text-area', 'CaseNote_MinisterReject', 'What is your feedback about the response?','[ "required" ]', false, false, true, '{}'),
 
-       ('bd3ff7f7-8b27-45e8-8636-e0ec6f0b40dc', 'dropdown', 'PrivateOfficeOverridePOTeamUUID', 'Override Private Office Team','[ "required" ]', false, true, '{ "choices" : "PRIVATE_OFFICE_TEAMS" }'),
-       ('d0070438-7fb8-498b-bd5e-63fa07027256', 'text-area', 'CaseNote_PrivateOfficeOverride', 'Why should this be approved by this team instead?','[ "required" ]', false, true, '{}'),
+       ('f098de70-7ea0-44b7-86a4-e2fb5715fee5', 'text', 'ResponseChannel', 'How do you intend to respond?','[ ]', false, true, true, '{ "disabled" : "disabled" }'),
 
-       ('f2cd5c44-ba32-4b75-adfb-ea83f384373b', 'radio', 'MinisterSignOffDecision', 'Do you approve the response?','["required" ]', false, true, '{"choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" } ] }'),
-       ('0660e228-a914-4ab2-91fa-15c9a417810c', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''No'' you will be asked to explain why and the case will be returned to the Draft stage." }'),
+       ('a572f7cd-7b1b-4020-a0ca-b83178f86cd8', 'radio', 'DispatchDecision', 'Are you able to dispatch this?','["required" ]', false, true, true, '{"choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" } ] }'),
+       ('3f84ba5c-167f-4963-be71-556a66f20296', 'inset', null, null,'[ ]', false, false, true, '{ "children" : "If you select ''No'' you will be asked to explain why and the case will be returned." }'),
 
-       ('ee4b9198-5194-4ba9-bf6a-e9a63c970e10', 'text-area', 'CaseNote_MinisterReject', 'What is your feedback about the response?','[ "required" ]', false, true, '{}'),
-
-       ('f098de70-7ea0-44b7-86a4-e2fb5715fee5', 'text', 'ResponseChannel', 'How do you intend to respond?','[ ]', false, true, '{ "disabled" : "disabled" }'),
-
-       ('a572f7cd-7b1b-4020-a0ca-b83178f86cd8', 'radio', 'DispatchDecision', 'Are you able to dispatch this?','["required" ]', false, true, '{"choices" : [ {  "label" : "Yes", "value" : "ACCEPT" }, { "label" : "No", "value" : "REJECT" } ] }'),
-       ('3f84ba5c-167f-4963-be71-556a66f20296', 'inset', null, null,'[ ]', false, true, '{ "children" : "If you select ''No'' you will be asked to explain why and the case will be returned." }'),
-
-       ('967ba403-1c6a-4620-9ac5-d61f00c433c5', 'text-area', 'CaseNote_DispatchDecisionReject', 'Why are you unable to dispatch this?','[ "required" ]', false, true, '{}');
+       ('967ba403-1c6a-4620-9ac5-d61f00c433c5', 'text-area', 'CaseNote_DispatchDecisionReject', 'Why are you unable to dispatch this?','[ "required" ]', false, false, true, '{}');
 
 
 INSERT INTO field_screen(schema_uuid, field_uuid)

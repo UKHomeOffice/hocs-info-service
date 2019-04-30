@@ -8,7 +8,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import uk.gov.digital.ho.hocs.info.security.KeycloakException;
-import uk.gov.digital.ho.hocs.info.api.bulkupdate.BulkImportException;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDeleteActiveParentTopicsDto;
 
 import static net.logstash.logback.argument.StructuredArguments.value;
@@ -70,12 +69,6 @@ public class RestResponseEntityExceptionHandler {
     @ExceptionHandler(KeycloakException.class)
     public ResponseEntity handle(KeycloakException e) {
         log.error("Keycloak exception: {}", e.getMessage(),e.getMessage(),value(EVENT, KEYCLOAK_FAILURE));
-        return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(BulkImportException.class)
-    public ResponseEntity handle(BulkImportException e) {
-        log.error("BulkImportException: {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }
 

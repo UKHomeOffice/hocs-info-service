@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS field
   validation JSONB NOT NULL DEFAULT '{}',
   props JSONB DEFAULT '{}',
   summary BOOLEAN NOT NULL DEFAULT FALSE,
+  report_extract BOOLEAN NOT NULL DEFAULT FALSE,
   active BOOLEAN NOT NULL DEFAULT TRUE,
 
   CONSTRAINT field_uuid_idempotent UNIQUE (uuid)
