@@ -17,7 +17,7 @@ VALUES ('TEAM 1', '44444444-2222-2222-2222-222222222222', 'd9a93c21-a1a8-4a5d-aa
 Insert INTO case_type (uuid, display_name, short_code, type, owning_unit_uuid, deadline_stage, active, bulk)
 VALUES ('a3d491ff-3ee1-42be-bcad-840c4c4b9f0a','DCU Ministerial', 'a1', 'MIN', 'c875dca8-8679-47e7-a589-7cea64b2e13c', 'DCU_MIN_DISPATCH', true, true),
        ('63c7215f-aefc-4492-aa08-7fe30959f95f','DCU Treat Official', 'a2', 'TRO', 'c875dca8-8679-47e7-a589-7cea64b2e13c', 'DCU_TRO_DISPATCH', true, true),
-       ('814105e7-090a-4f1f-903a-62ad6b430bf1','DCU Number 10', 'a3', 'DTEN', 'c875dca8-8679-47e7-a589-7cea64b2e13c', 'DCU_DTEN_DISPATCH', true, false),
+       ('814105e7-090a-4f1f-903a-62ad6b430bf1','DCU Number 10', 'a3', 'DTEN', 'c875dca8-8679-47e7-a589-7cea64b2e13c', 'DCU_DTEN_DISPATCH', true, true),
        ('4a1e6573-3084-4171-95df-e28fe90e940a','UKVI B REF', 'b1', 'IMCB', '09c30d4b-b427-4b49-bec7-545eafb4019a', 'UKVI_IMCB_DISPATCH', true, true),
        ('70899fb7-8a06-4954-bf38-98e4baec88c4','UKVI Ministerial REF', 'b2', 'IMCM' , '09c30d4b-b427-4b49-bec7-545eafb4019a', 'UKVI_IMCM_DISPATCH', true, true),
        ('ceed6981-6c37-4f7a-ba43-24314fc6d8f3','UKVI Number 10', 'b3', 'UTEN', '09c30d4b-b427-4b49-bec7-545eafb4019a', 'UKVI_UTEN_DISPATCH', true, true);
@@ -81,9 +81,9 @@ VALUES ('44444444-2222-2222-2222-222222222222', 'MIN', 'OWNER'),
        ('ffffffff-4444-3333-3333-333333333333', 'TRO', 'READ');
 
 Insert INTO stage_type (uuid, display_name, short_code, type, acting_team_uuid, active, deadline, case_type_uuid)
-VALUES ('90eda1ba-86ba-4e55-b89b-8a5b14f72662','Data Input', '111', 'DCU_MIN_DATA_INPUT', '44444444-2222-2222-2222-222222222222', true, 10, 'a3d491ff-3ee1-42be-bcad-840c4c4b9f0a'),
-       ('b80d0656-422a-404b-abdf-7a35932bca03','Markup', '112', 'DCU_MIN_MARKUP', '33333333-3333-3333-3333-333333333333', true, 1, 'a3d491ff-3ee1-42be-bcad-840c4c4b9f0a'),
-       ('5c044c06-5c7a-489e-ae2d-2051196f9445','Transfer Confirmation', '113', 'DCU_MIN_TRANSFER_CONFIRMATION', '44444444-2222-2222-2222-222222222222', true, 3, 'a3d491ff-3ee1-42be-bcad-840c4c4b9f0a'),
+VALUES ('90eda1ba-86ba-4e55-b89b-8a5b14f72662','Data Input', '111', 'DCU_MIN_DATA_INPUT', '44444444-2222-2222-2222-222222222222', true, 1, 'a3d491ff-3ee1-42be-bcad-840c4c4b9f0a'),
+       ('b80d0656-422a-404b-abdf-7a35932bca03','Markup', '112', 'DCU_MIN_MARKUP', '33333333-3333-3333-3333-333333333333', true, 2, 'a3d491ff-3ee1-42be-bcad-840c4c4b9f0a'),
+       ('5c044c06-5c7a-489e-ae2d-2051196f9445','Transfer Confirmation', '113', 'DCU_MIN_TRANSFER_CONFIRMATION', '44444444-2222-2222-2222-222222222222', true, 0, 'a3d491ff-3ee1-42be-bcad-840c4c4b9f0a'),
        ('6ff95b19-8f46-4f72-909f-eee160d60a64','No Response Needed Confirmation', '114', 'DCU_MIN_NO_REPLY_NEEDED_CONFIRMATION', '33333333-3333-3333-3333-333333333333', true, 0, 'a3d491ff-3ee1-42be-bcad-840c4c4b9f0a'),
        ('906c1a90-8a85-42ed-b250-a5e69feb8dfd','Initial Draft', '115', 'DCU_MIN_INITIAL_DRAFT', '44444444-2222-2222-2222-222222222222', true, 10, 'a3d491ff-3ee1-42be-bcad-840c4c4b9f0a'),
        ('f98d142d-827b-4c8a-876e-3ffcccc464a2','QA Response', '116', 'DCU_MIN_QA_RESPONSE', '33333333-3333-3333-3333-333333333333', true, 0, 'a3d491ff-3ee1-42be-bcad-840c4c4b9f0a'),
@@ -91,6 +91,7 @@ VALUES ('90eda1ba-86ba-4e55-b89b-8a5b14f72662','Data Input', '111', 'DCU_MIN_DAT
        ('e5414378-5199-4326-ba37-99e86157c4ab','Ministerial Sign off', '118', 'DCU_MIN_MINISTER_SIGN_OFF', '44444444-2222-2222-2222-222222222222', true, 0, 'a3d491ff-3ee1-42be-bcad-840c4c4b9f0a'),
        ('3dfbf5ec-429b-4ede-8924-bb3270732914','Dispatch', '119', 'DCU_MIN_DISPATCH', '44444444-2222-2222-2222-222222222222', true, 20, 'a3d491ff-3ee1-42be-bcad-840c4c4b9f0a'),
        ('5528f481-0e30-4117-9429-acb95eada40a','Copy To Number 10', '11a', 'DCU_MIN_COPY_NUMBER_TEN', '44444444-2222-2222-2222-222222222222', true, 0, '63c7215f-aefc-4492-aa08-7fe30959f95f'),
+
        ('12b06e0c-ff86-45a8-b27d-59e40904c08c','Data Input', '121', 'DCU_TRO_DATA_INPUT', '44444444-2222-2222-2222-222222222222', true, 5,'63c7215f-aefc-4492-aa08-7fe30959f95f'),
        ('55415bea-8bb4-4d32-8bfc-bf5950397119','Markup', '122', 'DCU_TRO_MARKUP', '44444444-2222-2222-2222-222222222222', true, 10,'63c7215f-aefc-4492-aa08-7fe30959f95f'),
        ('0c2f1a5a-d288-4f96-a061-e24752fde73f','Transfer Confirmation', '123', 'DCU_TRO_TRANSFER_CONFIRMATION', '44444444-2222-2222-2222-222222222222', true, 8 ,'63c7215f-aefc-4492-aa08-7fe30959f95f'),
@@ -99,15 +100,16 @@ VALUES ('90eda1ba-86ba-4e55-b89b-8a5b14f72662','Data Input', '111', 'DCU_MIN_DAT
        ('72c0ff10-0647-486c-8a7f-4abf70a26edc','QA Response', '126', 'DCU_TRO_QA_RESPONSE', '33333333-3333-3333-3333-333333333333', true, 3,'63c7215f-aefc-4492-aa08-7fe30959f95f'),
        ('140862b9-f4d0-4222-8e02-df2d78ba1d00','Dispatch', '127', 'DCU_TRO_DISPATCH', '44444444-2222-2222-2222-222222222222', true, 10 ,'63c7215f-aefc-4492-aa08-7fe30959f95f'),
        ('6f5a0dce-f25d-415a-8bd6-e5bd7e96d6ba','Copy to Number 10', '128', 'DCU_TRO_COPY_NUMBER_TEN', '44444444-2222-2222-2222-222222222222', true, 0,'63c7215f-aefc-4492-aa08-7fe30959f95f'),
+
        ('025fea5c-f8b9-4eb7-8ed8-c7aaa8eb72b0','Data Input', '131', 'DCU_DTEN_DATA_INPUT', '33333333-3333-3333-3333-333333333333', true, 0,'814105e7-090a-4f1f-903a-62ad6b430bf1'),
        ('d9985ff1-7508-4e32-bf00-17c0cf86fc1a','Markup', '132', 'DCU_DTEN_MARKUP', '33333333-3333-3333-3333-333333333333', true, 0,'814105e7-090a-4f1f-903a-62ad6b430bf1'),
        ('58d2706f-994b-4dfd-8f3c-1e7197ceb939','Transfer Confirmation', '133', 'DCU_DTEN_TRANSFER_CONFIRMATION', '33333333-3333-3333-3333-333333333333', true, 0,'814105e7-090a-4f1f-903a-62ad6b430bf1'),
-       ('12db835f-4f0f-4bcd-9000-2b61b2f3c6eb','No Response Needed Confirmation', '134', 'DCU_DTEN_NO_REPLY_NEEDED_CONFIRMATION', '44444444-2222-2222-2222-222222222222', true, 10,'814105e7-090a-4f1f-903a-62ad6b430bf1'),
-       ('21071956-6ea8-48e1-8933-56a5cbf99ffa','Initial Draft', '135', 'DCU_DTEN_INITIAL_DRAFT', '33333333-3333-3333-3333-333333333333', true, 10,'814105e7-090a-4f1f-903a-62ad6b430bf1'),
-       ('c44bba20-9ed6-41ef-ba5f-cb454594c6b8','QA Response', '136', 'DCU_DTEN_QA_RESPONSE', '33333333-3333-3333-3333-333333333333', true, 10,'814105e7-090a-4f1f-903a-62ad6b430bf1'),
+       ('12db835f-4f0f-4bcd-9000-2b61b2f3c6eb','No Response Needed Confirmation', '134', 'DCU_DTEN_NO_REPLY_NEEDED_CONFIRMATION', '44444444-2222-2222-2222-222222222222', true, 0,'814105e7-090a-4f1f-903a-62ad6b430bf1'),
+       ('21071956-6ea8-48e1-8933-56a5cbf99ffa','Initial Draft', '135', 'DCU_DTEN_INITIAL_DRAFT', '33333333-3333-3333-3333-333333333333', true, 1,'814105e7-090a-4f1f-903a-62ad6b430bf1'),
+       ('c44bba20-9ed6-41ef-ba5f-cb454594c6b8','QA Response', '136', 'DCU_DTEN_QA_RESPONSE', '33333333-3333-3333-3333-333333333333', true, 0,'814105e7-090a-4f1f-903a-62ad6b430bf1'),
        ('2451e9a9-d79d-484a-bfe1-7b19dd85ea70','Private Office', '137', 'DCU_DTEN_PRIVATE_OFFICE', '33333333-3333-3333-3333-333333333333', true, 0,'814105e7-090a-4f1f-903a-62ad6b430bf1'),
-       ('c00bc689-3626-47f9-a016-df7798c2fc46','Dispatch', '138', 'DCU_DTEN_DISPATCH', '33333333-3333-3333-3333-333333333333', true, 20,'814105e7-090a-4f1f-903a-62ad6b430bf1'),
-       ('719c6230-1287-43db-a6a2-0d215d9253f0','Copy To Number 10', '139', 'DCU_DTEN_COPY_NUMBER_TEN', '33333333-3333-3333-3333-333333333333', true, 10,'814105e7-090a-4f1f-903a-62ad6b430bf1');
+       ('c00bc689-3626-47f9-a016-df7798c2fc46','Dispatch', '138', 'DCU_DTEN_DISPATCH', '33333333-3333-3333-3333-333333333333', true, 1,'814105e7-090a-4f1f-903a-62ad6b430bf1'),
+       ('719c6230-1287-43db-a6a2-0d215d9253f0','Copy To Number 10', '139', 'DCU_DTEN_COPY_NUMBER_TEN', '33333333-3333-3333-3333-333333333333', true, 0,'814105e7-090a-4f1f-903a-62ad6b430bf1');
 
 
 Insert INTO minister (office_name, minister_name, uuid, responsible_team_uuid)
@@ -273,6 +275,8 @@ VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'DCU_CORRESPONDENCE_DETAILS', tr
        ('4b9aa734-8048-4f77-9034-e0d9efaa2f77', 'DCU_CORRESPONDENCE_DETAILS_DTEN', true, 'Data Input', 'Continue'),
        ('acbec747-a86c-4812-877f-633e049aedc2', 'DCU_SET_PRIMARY_CORRESPONDENT', true, 'Data Input', 'Finish'),
 
+       ('60f4469c-fad6-41cc-9b89-6b29a0b41210', 'DCU_DEADLINES_DTEN', TRUE, 'Data Input', 'Continue'),
+
        ('38740712-9873-4ece-ac60-e8f4f9f3ec53', 'DCU_MARKUP_DECISION', true, 'Markup', 'Continue'),
        ('56c6ee9f-216d-42da-910e-df68fe56276c', 'DCU_MARKUP_OGD_DETAILS', true, 'Markup', 'Finish'),
        ('a47bb3a8-e9c2-4e84-b3e2-458dd95d8139', 'DCU_MARKUP_NRN_DETAILS', true, 'Markup', 'Finish'),
@@ -324,6 +328,7 @@ VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'MIN'),
        ('acbec747-a86c-4812-877f-633e049aedc2', 'MIN'),
        ('acbec747-a86c-4812-877f-633e049aedc2', 'TRO'),
        ('acbec747-a86c-4812-877f-633e049aedc2', 'DTEN'),
+       ('60f4469c-fad6-41cc-9b89-6b29a0b41210', 'DTEN'),
        ('38740712-9873-4ece-ac60-e8f4f9f3ec53', 'MIN'),
        ('38740712-9873-4ece-ac60-e8f4f9f3ec53', 'TRO'),
        ('38740712-9873-4ece-ac60-e8f4f9f3ec53', 'DTEN'),
@@ -398,10 +403,14 @@ VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'MIN'),
 ;
 
 INSERT INTO field (uuid, component, name, label, validation, summary, active, props)
-VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 'When was the correspondence sent?', '[ "required", "isValidDate" ]',  true, true,  '{}'),
-       ('1cb5ee23-b82d-448d-8574-00421841acdc', 'date', 'DateReceived', 'When was the correspondence received?', '[ "required", "isValidDate" ]', true, true, '{}'),
+
+VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 'When was the correspondence sent?', '[ "required", "isValidDate", "isBeforeToday" ]',  true, true,  '{}'),
+       ('1cb5ee23-b82d-448d-8574-00421841acdc', 'date', 'DateReceived', 'When was the correspondence received?', '[ "required", "isValidDate", "isBeforeToday" ]', true, true, '{}'),
        ('ede4aa5d-80d5-4703-aeed-82167d927ad7', 'radio', 'OriginalChannel', 'How was the correspondence received?', '[ "required" ]', true, true,  '{ "choices" : [ {  "label" : "Email", "value" : "EMAIL" }, { "label" : "Post", "value" : "POST" }, { "label" : "Phone", "value" : "PHONE" }, { "label" : "No. 10", "value" : "NO10" } ]}'),
        ('157a00e6-3b96-4a12-9b34-f73c328c332c', 'radio', 'CopyNumberTen', 'Should the response be copied to Number 10?','["required" ]', true, true, '{ "choices" : [ {  "label" : "Yes", "value" : "TRUE" }, { "label" : "No", "value" : "FALSE" }]}'),
+
+       ('cd67f841-909d-4c24-b119-a0dc9892693d', 'date', 'DCU_DTEN_INITIAL_DRAFT_DEADLINE', 'What is the drafting deadline?', '[ "required", "isValidDate" ]', true, true, '{}'),
+       ('4d369bc2-8648-4a36-ba61-1a6f32a495ea', 'date', 'DCU_DTEN_DISPATCH_DEADLINE', 'What is the dispatch deadline?', '[ "required", "isValidDate" ]', true, true, '{}'),
 
        ('dc502507-c333-43be-a562-f6d0e456502e', 'entity-list', 'Correspondents', 'Which is the primary correspondent?','[ "required" ]', false, true, '{ "hasRemoveLink" : true, "hasAddLink" : true, "action" : "CORRESPONDENT", "choices" : "CASE_CORRESPONDENTS", "entity" : "correspondent" }'),
        ('1d8ae1c0-8ebf-4185-8fda-b7dc2eefbc6a', 'radio', 'MarkupDecision', 'What sort of response is required?','[ "required" ]', false, true, '{"choices" : [ {  "label" : "Policy Response", "value" : "PR" }, { "label" : "FAQ Response", "value" : "FAQ" }, { "label" : "Refer To OGD", "value" : "OGD" }, { "label" : "No Response Needed", "value" : "NRN"} ] }'),
@@ -480,6 +489,9 @@ VALUES ('afa670fa-8048-4207-a0f6-35e856ffb70d', '03548dc4-76bb-4ac8-8992-b555fd5
        ('afa670fa-8048-4207-a0f6-35e856ffb70d', '1cb5ee23-b82d-448d-8574-00421841acdc'),
        ('afa670fa-8048-4207-a0f6-35e856ffb70d', 'ede4aa5d-80d5-4703-aeed-82167d927ad7'),
        ('afa670fa-8048-4207-a0f6-35e856ffb70d', '157a00e6-3b96-4a12-9b34-f73c328c332c'),
+
+       ('60f4469c-fad6-41cc-9b89-6b29a0b41210', 'cd67f841-909d-4c24-b119-a0dc9892693d'),
+       ('60f4469c-fad6-41cc-9b89-6b29a0b41210', '4d369bc2-8648-4a36-ba61-1a6f32a495ea'),
 
        ('4b9aa734-8048-4f77-9034-e0d9efaa2f77', '03548dc4-76bb-4ac8-8992-b555fd59fa0a'),
        ('4b9aa734-8048-4f77-9034-e0d9efaa2f77', '1cb5ee23-b82d-448d-8574-00421841acdc'),
