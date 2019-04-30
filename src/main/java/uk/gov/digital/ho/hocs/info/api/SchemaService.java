@@ -44,4 +44,10 @@ public class SchemaService {
         log.debug("Filtering to summary only.");
         return caseTypeSchemas.stream().flatMap(f -> f.getFields().stream()).filter(Field::isSummary);
     }
+
+    public Stream<Field> getAllReportingFieldsForCaseType(String caseType) {
+        Set<Schema> caseTypeSchemas = getAllSchemasForCaseType(caseType);
+        log.debug("Filtering to reporting only.");
+        return caseTypeSchemas.stream().flatMap(f -> f.getFields().stream()).filter(Field::isReporting);
+    }
 }
