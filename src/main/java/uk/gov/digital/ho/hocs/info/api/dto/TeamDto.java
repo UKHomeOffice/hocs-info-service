@@ -21,6 +21,10 @@ public class TeamDto {
     @JsonProperty("displayName")
     private String displayName;
 
+
+    @JsonProperty("letterName")
+    private String letterName;
+
     @JsonProperty("type")
     private UUID uuid;
 
@@ -36,19 +40,20 @@ public class TeamDto {
         this.permissions = Optional.ofNullable(permissions).orElse(new HashSet<>());
     }
 
-    public TeamDto(String displayName, UUID uuid, boolean active) {
+    public TeamDto(String displayName, String letterName, UUID uuid, boolean active) {
         this.displayName = displayName;
+        this.letterName = letterName;
         this.uuid = uuid;
         this.active = active;
     }
 
     public static TeamDto from (Team team) {
-        return new TeamDto(team.getDisplayName(), team.getUuid(), team.isActive(),
+        return new TeamDto(team.getDisplayName(), team.getLetterName(), team.getUuid(), team.isActive(),
                 team.getPermissions().stream().map(permission ->
                         PermissionDto.from(permission)).collect(Collectors.toSet())); }
 
     //TODO: consider if this can be replaced with a JSONView
     public static TeamDto fromWithoutPermissions(Team team) {
-        return new TeamDto(team.getDisplayName(), team.getUuid(), team.isActive());
+        return new TeamDto(team.getDisplayName(), team.getLetterName(), team.getUuid(), team.isActive());
     }
 }

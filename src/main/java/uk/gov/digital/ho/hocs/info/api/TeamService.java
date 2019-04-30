@@ -129,6 +129,15 @@ public class TeamService {
         log.info("Team with UUID {} name updated to {}", team.getUuid().toString(), newName, value(EVENT, TEAM_RENAMED));
     }
 
+    @Transactional
+    public void updateTeamLetterName(UUID teamUUID, String newLetterName) {
+        log.debug("Updating Team {} letter name", teamUUID);
+        Team team = getTeam(teamUUID);
+        team.setLetterName(newLetterName);
+        auditClient.renameTeamAudit(team);
+        log.info("Team with UUID {} letter name updated to {}", team.getUuid().toString(), newLetterName, value(EVENT, TEAM_RENAMED));
+    }
+
     @CacheEvict(value = "teamMembers", key = "#teamUUID")
     public void addUserToTeam(UUID userUUID, UUID teamUUID) {
         log.debug("Adding User {} to Team {}", userUUID, teamUUID);

@@ -46,6 +46,11 @@ public class Team implements Serializable {
 
     @Setter
     @Getter
+    @Column(name = "letter_name")
+    private String letterName;
+
+    @Setter
+    @Getter
     @Column(name = "active")
     private boolean active;
 

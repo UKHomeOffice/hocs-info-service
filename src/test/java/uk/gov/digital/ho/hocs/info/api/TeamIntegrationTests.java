@@ -272,6 +272,21 @@ public class TeamIntegrationTests {
     }
 
     @Test
+    public void shouldChangeTeamLetterName() {
+        String teamId = "08612f06-bae2-4d2f-90d2-2254a68414b8";
+
+        UpdateTeamLetterNameRequest request = new UpdateTeamLetterNameRequest("New Name");
+        HttpEntity<UpdateTeamNameRequest> httpEntity = new HttpEntity(request);
+
+        ResponseEntity<String> result = testRestTemplate.exchange(
+                getBasePath() + "/team/" + teamId +"/lettername"
+                , HttpMethod.PUT, httpEntity, String.class);
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).getLetterName()).isEqualTo("New Name");
+    }
+
+    @Test
     public void shouldDeleteTeam() {
         String teamId = "8b3b4366-a37c-48b6-b274-4c50f8083843";
 
