@@ -76,23 +76,6 @@ pipeline:
     when:
       event: [push, tag, deployment]
 
-  deploy-to-qa:
-    image: quay.io/ukhomeofficedigital/kd:v1.12.1
-    environment:
-      - KUBE_NAMESPACE=cs-qa
-      - ENVIRONMENT=qa
-      - KUBE_SERVER=https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-    secrets:
-      - hocs_info_service_qa
-    commands:
-      - source version.txt
-      - echo $VERSION
-      - cd kube-hocs-info-service
-      - ./deploy.sh
-    when:
-      event: deployment
-      environment: qa
-
   deploy-to-dev-from-build-number:
     image: quay.io/ukhomeofficedigital/kd:v1.12.1
     environment:
@@ -117,8 +100,7 @@ pipeline:
       - KUBE_SERVER=https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
     secrets:
       - hocs_info_service_dev
-      - hocs_info_service_qa
-      - hocs_info_service_demo      
+      - hocs_info_service_demo
     commands:
       - cd kube-hocs-info-service
       - ./deploy.sh
@@ -126,12 +108,28 @@ pipeline:
       event: deployment
       environment: [dev, demo]
 
+  deploy-to-qa:
+    image: quay.io/ukhomeofficedigital/kd:v1.12.1
+    environment:
+      - KUBE_NAMESPACE=cs-qa
+      - ENVIRONMENT=qa
+      - KUBE_SERVER=https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+    secrets:
+      - hocs_info_service_qa
+    commands:
+      - source version.txt
+      - echo $VERSION
+      - cd kube-hocs-info-service
+      - ./deploy.sh
+    when:
+      event: deployment
+      environment: qa
+
   deploy-to-prod:
     image: quay.io/ukhomeofficedigital/kd:v1.12.1
     environment:
       - KUBE_NAMESPACE=cs-prod
       - ENVIRONMENT=prod
-      - VERSION=${IMAGE_VERSION}
       - KUBE_SERVER=https://kube-api-prod.prod.acp.homeoffice.gov.uk
     secrets:
       - hocs_info_service_prod
