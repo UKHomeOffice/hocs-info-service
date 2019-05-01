@@ -140,7 +140,6 @@ pipeline:
       event: deployment
       environment: prod
 
-
 services:
   keycloak:
     image: jboss/keycloak
@@ -153,6 +152,3 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: dev
-
-
-
