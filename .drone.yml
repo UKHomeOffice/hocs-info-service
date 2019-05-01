@@ -142,6 +142,13 @@ pipeline:
 
 services:
 
+  keycloak:
+    image: jboss/keycloak
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: password1
+      DB_VENDOR: h2
+
   postgres:
     image: quay.io/ukhomeofficedigital/postgres-alpine
     environment:
