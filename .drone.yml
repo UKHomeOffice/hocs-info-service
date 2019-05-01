@@ -19,12 +19,12 @@ pipeline:
       - export DB_HOST='postgres'
       - export KEYCLOAK_SERVER_ROOT=http://keycloak:8080
       - export AWS_LOCAL_HOST='localstack'
-      - ./gradlew build
+      - ./gradlew cleanTest build --no-daemon --max-workers 2
     when:
       event: [push, pull_request, tag]
 
   sonar-scanner:
-    image: quay.io/ukhomeofficedigital/sonar-scanner:v3.0.1
+    image: quay.io/ukhomeofficedigital/sonar-scanner:v3.0.2
     when:
       event: [push, pull_request, tag]
 
@@ -77,7 +77,7 @@ pipeline:
       event: [push, tag, deployment]
 
   deploy-to-dev-from-build-number:
-    image: quay.io/ukhomeofficedigital/kd:v1.12.1
+    image: quay.io/ukhomeofficedigital/kd:v1.12.2
     environment:
       - KUBE_NAMESPACE=cs-dev
       - ENVIRONMENT=dev
@@ -93,7 +93,7 @@ pipeline:
       event: [push, tag]
 
   deployment:
-    image: quay.io/ukhomeofficedigital/kd:v1.12.1
+    image: quay.io/ukhomeofficedigital/kd:v1.12.2
     environment:
       - KUBE_NAMESPACE=cs-${DRONE_DEPLOY_TO}
       - ENVIRONMENT=${DRONE_DEPLOY_TO}
@@ -109,7 +109,7 @@ pipeline:
       environment: [dev, demo]
 
   deploy-to-qa:
-    image: quay.io/ukhomeofficedigital/kd:v1.12.1
+    image: quay.io/ukhomeofficedigital/kd:v1.12.2
     environment:
       - KUBE_NAMESPACE=cs-qa
       - ENVIRONMENT=qa
@@ -126,7 +126,7 @@ pipeline:
       environment: qa
 
   deploy-to-prod:
-    image: quay.io/ukhomeofficedigital/kd:v1.12.1
+    image: quay.io/ukhomeofficedigital/kd:v1.12.2
     environment:
       - KUBE_NAMESPACE=cs-prod
       - ENVIRONMENT=prod
@@ -149,35 +149,10 @@ services:
       KEYCLOAK_PASSWORD: password1
       DB_VENDOR: h2
   postgres:
-    image: quay.io/ukhomeofficedigital/postgres
+    image: quay.io/ukhomeofficedigital/postgres-alpine
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: dev
-  localstack:
-    image: localstack/localstack:latest
-    environment:
-      HOSTNAME_EXTERNAL: localstack
-      DEFAULT_REGION: eu-west-2
-      SERVICES: sqs,s3
-  aws_cli:
-    image: quay.io/ukhomeofficedigital/hocs-docker-tools
-    command:
-    - /bin/sh
-    - -c
-    - |
-      aws --endpoint-url=http://localstack:4572 s3 mb s3://untrusted-bucket
-      aws --endpoint-url=http://localstack:4572 s3 mb s3://trusted-bucket
-      aws --endpoint-url=http://localstack:4576 sqs create-queue --queue-name case-queue
-      aws --endpoint-url=http://localstack:4576 sqs create-queue --queue-name case-queue-dlq
-      aws --endpoint-url=http://localstack:4576 sqs create-queue --queue-name document-queue
-      aws --endpoint-url=http://localstack:4576 sqs create-queue --queue-name document-queue-dlq
-      aws --endpoint-url=http://localstack:4576 sqs create-queue --queue-name reporting-queue
-      aws --endpoint-url=http://localstack:4576 sqs create-queue --queue-name reporting-queue-dlq
-
-    environment:
-      AWS_ACCESS_KEY_ID: UNSET
-      AWS_SECRET_ACCESS_KEY: UNSET
-      AWS_DEFAULT_REGION: 'eu-west-2'
 
 
 
