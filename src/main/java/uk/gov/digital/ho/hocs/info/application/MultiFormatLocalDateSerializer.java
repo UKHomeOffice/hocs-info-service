@@ -8,6 +8,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class MultiFormatLocalDateSerializer extends JsonDeserializer<LocalDate> {
@@ -16,7 +17,6 @@ public class MultiFormatLocalDateSerializer extends JsonDeserializer<LocalDate> 
                 .toArray(DateTimeFormatter[]::new);
     @Override
     public LocalDate deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        System.out.println("DATE: " + p.getText());
         for (DateTimeFormatter formatter : parseFormatters) {
             try {
                 return LocalDate.parse(p.getText(), formatter);
@@ -24,6 +24,6 @@ public class MultiFormatLocalDateSerializer extends JsonDeserializer<LocalDate> 
                 //ignore error and try next formatter
             }
         }
-        throw new DateTimeException("Unable to parse Date Time of " + p.getText());
+        throw new DateTimeException("Unable to parse Date Time of " + Objects.toString(p.getText(), ""));
     }
 }
