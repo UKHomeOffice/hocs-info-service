@@ -19,7 +19,7 @@ pipeline:
       - export DB_HOST='postgres'
       - export KEYCLOAK_SERVER_ROOT=http://keycloak:8080
       - export AWS_LOCAL_HOST='localstack'
-      - ./gradlew cleanTest build --no-daemon --max-workers 2
+      - ./gradlew build --no-daemon
     when:
       event: [push, pull_request, tag]
 
