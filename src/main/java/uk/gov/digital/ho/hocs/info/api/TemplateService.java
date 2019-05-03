@@ -34,14 +34,14 @@ public class TemplateService {
         if (template != null) {
             template.delete();
             templateRepository.save(template);
-            documentClient.deleteDocument(template.getUuid());
+            documentClient.deleteDocument(template.getDocumentUUID());
             log.info("Set Deleted to True for Template - {}, id {}", template.getDisplayName(), template.getUuid());
         }
 
         Template newTemplate = new Template(request.getDisplayName(), request.getCaseType());
-        templateRepository.save(newTemplate);
-
         UUID templateDocumentUUID = documentClient.createDocument(newTemplate.getUuid(), request.getDisplayName(), ManagedDocumentType.TEMPLATE);
+        newTemplate.setDocumentUUID(templateDocumentUUID);
+        templateRepository.save(newTemplate);
 
         documentClient.processDocument(ManagedDocumentType.TEMPLATE, templateDocumentUUID, request.getS3UntrustedUrl());
         log.info("Created Template {} for CaseType {} ", request.getDisplayName(), request.getCaseType());

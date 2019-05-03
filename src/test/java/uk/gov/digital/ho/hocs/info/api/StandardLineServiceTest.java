@@ -83,15 +83,18 @@ public class StandardLineServiceTest {
     public void shouldCreateStandardLineExpiringPrevious(){
         CreateStandardLineDocumentDto request = new CreateStandardLineDocumentDto(DISPLAY_NAME,"url",uuid,LocalDate.now().plusDays(1));
 
+        StandardLine standardLine = new StandardLine(DISPLAY_NAME, uuid, END_OF_DAY);
+        standardLine.setDocumentUUID(UUID.randomUUID());
+
         when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq(ManagedDocumentType.STANDARD_LINE))).thenReturn(NEW_DOCUMENT_UUID);
-        when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid , END_OF_DAY)).thenReturn(new StandardLine(DISPLAY_NAME, uuid, END_OF_DAY));
+        when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid , END_OF_DAY)).thenReturn(standardLine);
 
         standardLineService.createStandardLine(request.getDisplayName(), request.getTopicUUID(), request.getExpires(), request.getS3UntrustedUrl());
 
         verify(documentClient,times(1)).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq(ManagedDocumentType.STANDARD_LINE));
         verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
         verify(standardLineRepository, times(2)).save(any());
-        verify(documentClient).deleteDocument(any(UUID.class));
+        verify(documentClient).deleteDocument(standardLine.getDocumentUUID());
         verify(documentClient).processDocument(ManagedDocumentType.STANDARD_LINE, NEW_DOCUMENT_UUID, "url");
         verifyNoMoreInteractions(standardLineRepository);
         verifyNoMoreInteractions(documentClient);

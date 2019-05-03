@@ -20,6 +20,9 @@ public class GetStandardLineResponse {
     @JsonProperty("uuid")
     private UUID uuid;
 
+    @JsonProperty("documentUUID")
+    private UUID documentUUID;
+
     @JsonProperty("topicUUID")
     private UUID topicUUID;
 
@@ -27,6 +30,8 @@ public class GetStandardLineResponse {
     private LocalDateTime expires;
 
     public static GetStandardLineResponse from(StandardLine standardLine) {
-        return new GetStandardLineResponse(standardLine.getDisplayName(), standardLine.getUuid(), standardLine.getTopicUUID(), standardLine.getExpires());
+        return new GetStandardLineResponse(standardLine.getDisplayName(),
+                standardLine.getUuid(), standardLine.getDocumentUUID(),
+                standardLine.getTopicUUID(), standardLine.getExpires());
     }
 }
