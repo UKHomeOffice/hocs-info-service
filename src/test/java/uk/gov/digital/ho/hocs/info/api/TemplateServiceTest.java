@@ -78,15 +78,17 @@ public class TemplateServiceTest {
     public void shouldCreateStandardLineExpiringPrevious(){
         CreateTemplateDocumentDto request = new CreateTemplateDocumentDto(DISPLAY_NAME, CASE_TYPE,"URL");
 
+        Template template = new Template(DISPLAY_NAME, CASE_TYPE);
+        template.setDocumentUUID(UUID.randomUUID());
         when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq(ManagedDocumentType.TEMPLATE))).thenReturn(NEW_DOCUMENT_UUID);
-        when(templateRepository.findActiveTemplateByCaseType( request.getCaseType())).thenReturn(new Template(DISPLAY_NAME, CASE_TYPE));
+        when(templateRepository.findActiveTemplateByCaseType( request.getCaseType())).thenReturn(template);
 
         templateService.createTemplate(request);
 
         verify(documentClient,times(1)).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq(ManagedDocumentType.TEMPLATE));
         verify(templateRepository, times(1)).findActiveTemplateByCaseType(request.getCaseType());
         verify(templateRepository, times(2)).save(any());
-        verify(documentClient).deleteDocument(any(UUID.class));
+        verify(documentClient).deleteDocument(template.getDocumentUUID());
         verify(documentClient).processDocument(ManagedDocumentType.TEMPLATE, NEW_DOCUMENT_UUID, "URL");
         verifyNoMoreInteractions(templateRepository);
         verifyNoMoreInteractions(documentClient);

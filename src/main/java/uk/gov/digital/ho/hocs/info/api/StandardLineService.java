@@ -9,6 +9,7 @@ import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.StandardLine;
 import uk.gov.digital.ho.hocs.info.domain.repository.StandardLineRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -30,6 +31,7 @@ public class StandardLineService {
         this.documentClient = documentClient;
     }
 
+    @Transactional
     void createStandardLine(String displayName, UUID topicUUID, LocalDate expires, String s3URL) {
         log.debug("Creating Standard Lines - {}", displayName);
         StandardLine standardLine = standardLineRepository.findStandardLinesByTopicAndExpires(topicUUID, LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
@@ -38,15 +40,14 @@ public class StandardLineService {
             log.debug("Standard Line {} Found for Topic {}, expiring", standardLine.getDisplayName(), topicUUID);
             standardLine.expire();
             standardLineRepository.save(standardLine);
-            documentClient.deleteDocument(standardLine.getUuid());
+            documentClient.deleteDocument(standardLine.getDocumentUUID());
             log.info("Set Expiry to now for existing Standard Line - {}, id {}", standardLine.getDisplayName(), standardLine.getUuid());
         }
 
         StandardLine newStandardLine = new StandardLine(displayName, topicUUID, LocalDateTime.of(expires, LocalTime.MAX));
-        standardLineRepository.save(newStandardLine);
-
         UUID documentUUID = documentClient.createDocument(newStandardLine.getUuid(), displayName, ManagedDocumentType.STANDARD_LINE);
-
+        newStandardLine.setDocumentUUID(documentUUID);
+        standardLineRepository.save(newStandardLine);
         documentClient.processDocument(ManagedDocumentType.STANDARD_LINE, documentUUID, s3URL);
         log.info("Created Standard Line - {}", displayName);
     }
