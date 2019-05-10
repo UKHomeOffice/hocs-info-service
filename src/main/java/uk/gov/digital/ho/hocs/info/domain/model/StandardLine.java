@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,6 +22,11 @@ public class StandardLine implements Serializable {
     @Getter
     @Column(name = "uuid")
     private UUID uuid;
+
+    @Getter
+    @Setter
+    @Column(name = "document_uuid")
+    private UUID documentUUID;
 
     @Getter
     @Column(name = "display_name")

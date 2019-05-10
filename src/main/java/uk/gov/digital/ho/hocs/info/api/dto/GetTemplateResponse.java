@@ -22,7 +22,10 @@ public class GetTemplateResponse {
     @JsonProperty("caseType")
     private String caseType;
 
+    @JsonProperty("documentUUID")
+    private UUID documentUUID;
+
     public static GetTemplateResponse from(Template template) {
-        return new GetTemplateResponse(template.getDisplayName(), template.getUuid(), template.getCaseType());
+        return new GetTemplateResponse(template.getDisplayName(), template.getUuid(), template.getCaseType(), template.getDocumentUUID());
     }
 }
