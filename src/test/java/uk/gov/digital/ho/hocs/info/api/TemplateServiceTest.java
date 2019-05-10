@@ -28,7 +28,6 @@ public class TemplateServiceTest {
     private DocumentClient documentClient;
 
     private TemplateService templateService;
-    private static final UUID NEW_DOCUMENT_UUID = UUID.randomUUID();
     private static final String DISPLAY_NAME = "dn";
     private static final String CASE_TYPE = "MIN";
 
@@ -61,15 +60,14 @@ public class TemplateServiceTest {
     public void shouldCreateNewTemplate(){
         CreateTemplateDocumentDto request = new CreateTemplateDocumentDto(DISPLAY_NAME, CASE_TYPE,"URL");
 
-        when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq(ManagedDocumentType.TEMPLATE))).thenReturn(NEW_DOCUMENT_UUID);
+        doNothing().when(documentClient).createDocument(any(UUID.class), eq(request.getDisplayName()),  eq("URL"), eq(ManagedDocumentType.TEMPLATE));
         when(templateRepository.findActiveTemplateByCaseType( request.getCaseType())).thenReturn(null);
 
         templateService.createTemplate(request);
 
-        verify(documentClient,times(1)).createDocument(any(UUID.class),eq(DISPLAY_NAME), eq(ManagedDocumentType.TEMPLATE));
+        verify(documentClient,times(1)).createDocument(any(UUID.class),eq(DISPLAY_NAME), eq("URL"), eq(ManagedDocumentType.TEMPLATE));
         verify(templateRepository, times(1)).findActiveTemplateByCaseType(request.getCaseType());
         verify(templateRepository, times(1)).save(any());
-        verify(documentClient).processDocument(ManagedDocumentType.TEMPLATE, NEW_DOCUMENT_UUID, "URL");
         verifyNoMoreInteractions(templateRepository);
         verifyNoMoreInteractions(documentClient);
     }
@@ -78,16 +76,15 @@ public class TemplateServiceTest {
     public void shouldCreateStandardLineExpiringPrevious(){
         CreateTemplateDocumentDto request = new CreateTemplateDocumentDto(DISPLAY_NAME, CASE_TYPE,"URL");
 
-        when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq(ManagedDocumentType.TEMPLATE))).thenReturn(NEW_DOCUMENT_UUID);
+        doNothing().when(documentClient).createDocument(any(UUID.class), eq(request.getDisplayName()), eq("URL"), eq(ManagedDocumentType.TEMPLATE));
         when(templateRepository.findActiveTemplateByCaseType( request.getCaseType())).thenReturn(new Template(DISPLAY_NAME, CASE_TYPE));
 
         templateService.createTemplate(request);
 
-        verify(documentClient,times(1)).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq(ManagedDocumentType.TEMPLATE));
+        verify(documentClient,times(1)).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq("URL"), eq(ManagedDocumentType.TEMPLATE));
         verify(templateRepository, times(1)).findActiveTemplateByCaseType(request.getCaseType());
         verify(templateRepository, times(2)).save(any());
         verify(documentClient).deleteDocument(any(UUID.class));
-        verify(documentClient).processDocument(ManagedDocumentType.TEMPLATE, NEW_DOCUMENT_UUID, "URL");
         verifyNoMoreInteractions(templateRepository);
         verifyNoMoreInteractions(documentClient);
     }

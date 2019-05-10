@@ -45,9 +45,8 @@ public class StandardLineService {
         StandardLine newStandardLine = new StandardLine(displayName, topicUUID, LocalDateTime.of(expires, LocalTime.MAX));
         standardLineRepository.save(newStandardLine);
 
-        UUID documentUUID = documentClient.createDocument(newStandardLine.getUuid(), displayName, ManagedDocumentType.STANDARD_LINE);
+        documentClient.createDocument(newStandardLine.getUuid(), displayName, s3URL, ManagedDocumentType.STANDARD_LINE);
 
-        documentClient.processDocument(ManagedDocumentType.STANDARD_LINE, documentUUID, s3URL);
         log.info("Created Standard Line - {}", displayName);
     }
 
