@@ -26,11 +26,12 @@ public class DocumentClient {
         this.serviceBaseURL = documentService;
     }
 
-    public void createDocument(UUID referenceUUID, String displayName, String fileLocation, ManagedDocumentType type) {
+    public UUID createDocument(UUID referenceUUID, String displayName, String fileLocation, ManagedDocumentType type) {
         CreateManagedDocumentRequest request = new CreateManagedDocumentRequest(displayName, type, fileLocation, referenceUUID);
         ResponseEntity<UUID> response = restHelper.post(serviceBaseURL, "/document", request, UUID.class);
         if (response.getStatusCodeValue() == 200) {
             log.info("Created Managed Document {}, Reference {}", response, referenceUUID);
+            return response.getBody();
         } else {
             throw new ApplicationExceptions.EntityCreationException("Could not create Managed Document; response: %s", response.getStatusCodeValue());
         }

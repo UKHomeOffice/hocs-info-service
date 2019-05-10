@@ -30,6 +30,7 @@ public class TemplateServiceTest {
     private TemplateService templateService;
     private static final String DISPLAY_NAME = "dn";
     private static final String CASE_TYPE = "MIN";
+    private static final UUID NEW_DOCUMENT_UUID = UUID.randomUUID();
 
     @Before
     public void setUp() {
@@ -60,7 +61,7 @@ public class TemplateServiceTest {
     public void shouldCreateNewTemplate(){
         CreateTemplateDocumentDto request = new CreateTemplateDocumentDto(DISPLAY_NAME, CASE_TYPE,"URL");
 
-        doNothing().when(documentClient).createDocument(any(UUID.class), eq(request.getDisplayName()),  eq("URL"), eq(ManagedDocumentType.TEMPLATE));
+        when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()),  eq("URL"), eq(ManagedDocumentType.TEMPLATE))).thenReturn(NEW_DOCUMENT_UUID);
         when(templateRepository.findActiveTemplateByCaseType( request.getCaseType())).thenReturn(null);
 
         templateService.createTemplate(request);
@@ -78,7 +79,7 @@ public class TemplateServiceTest {
 
         Template template = new Template(DISPLAY_NAME, CASE_TYPE);
         template.setDocumentUUID(UUID.randomUUID());
-        when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq(ManagedDocumentType.TEMPLATE))).thenReturn(NEW_DOCUMENT_UUID);
+        when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq("URL"), eq(ManagedDocumentType.TEMPLATE))).thenReturn(NEW_DOCUMENT_UUID);
         when(templateRepository.findActiveTemplateByCaseType( request.getCaseType())).thenReturn(template);
 
         templateService.createTemplate(request);
@@ -88,7 +89,6 @@ public class TemplateServiceTest {
         verify(templateRepository, times(2)).save(any());
 
         verify(documentClient).deleteDocument(template.getDocumentUUID());
-        verify(documentClient).processDocument(ManagedDocumentType.TEMPLATE, NEW_DOCUMENT_UUID, "URL");
         verifyNoMoreInteractions(templateRepository);
         verifyNoMoreInteractions(documentClient);
     }

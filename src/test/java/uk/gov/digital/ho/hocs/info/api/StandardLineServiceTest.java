@@ -34,6 +34,7 @@ public class StandardLineServiceTest {
     private static final UUID uuid = UUID.randomUUID();
     private static final LocalDateTime END_OF_DAY = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
     private static final String DISPLAY_NAME = "dn";
+    private static final UUID NEW_DOCUMENT_UUID = UUID.randomUUID();
 
     @Before
     public void setUp() {
@@ -60,7 +61,7 @@ public class StandardLineServiceTest {
     public void shouldCreateNewStandardLine(){
         CreateStandardLineDocumentDto request = new CreateStandardLineDocumentDto(DISPLAY_NAME,"URL",uuid,LocalDate.now().plusDays(1));
 
-        doNothing().when(documentClient).createDocument(any(UUID.class), eq(request.getDisplayName()), eq("URL"), eq(ManagedDocumentType.STANDARD_LINE));
+        when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq("URL"), eq(ManagedDocumentType.STANDARD_LINE))).thenReturn(NEW_DOCUMENT_UUID);
         when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid, END_OF_DAY)).thenReturn(null);
 
         standardLineService.createStandardLine(request.getDisplayName(), request.getTopicUUID(), request.getExpires(), request.getS3UntrustedUrl());
@@ -79,7 +80,7 @@ public class StandardLineServiceTest {
         StandardLine standardLine = new StandardLine(DISPLAY_NAME, uuid, END_OF_DAY);
         standardLine.setDocumentUUID(UUID.randomUUID());
 
-        when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq(ManagedDocumentType.STANDARD_LINE))).thenReturn(NEW_DOCUMENT_UUID);
+        when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq("URL"), eq(ManagedDocumentType.STANDARD_LINE))).thenReturn(NEW_DOCUMENT_UUID);
         when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid , END_OF_DAY)).thenReturn(standardLine);
       
         standardLineService.createStandardLine(request.getDisplayName(), request.getTopicUUID(), request.getExpires(), request.getS3UntrustedUrl());
@@ -88,7 +89,6 @@ public class StandardLineServiceTest {
         verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
         verify(standardLineRepository, times(2)).save(any());
         verify(documentClient).deleteDocument(standardLine.getDocumentUUID());
-        verify(documentClient).processDocument(ManagedDocumentType.STANDARD_LINE, NEW_DOCUMENT_UUID, "url");
         verifyNoMoreInteractions(standardLineRepository);
         verifyNoMoreInteractions(documentClient);
     }
