@@ -39,11 +39,10 @@ public class TemplateService {
         }
 
         Template newTemplate = new Template(request.getDisplayName(), request.getCaseType());
-        UUID templateDocumentUUID = documentClient.createDocument(newTemplate.getUuid(), request.getDisplayName(), ManagedDocumentType.TEMPLATE);
+        UUID templateDocumentUUID = documentClient.createDocument(newTemplate.getUuid(), request.getDisplayName(), request.getS3UntrustedUrl(), ManagedDocumentType.TEMPLATE);
         newTemplate.setDocumentUUID(templateDocumentUUID);
         templateRepository.save(newTemplate);
 
-        documentClient.processDocument(ManagedDocumentType.TEMPLATE, templateDocumentUUID, request.getS3UntrustedUrl());
         log.info("Created Template {} for CaseType {} ", request.getDisplayName(), request.getCaseType());
     }
 
