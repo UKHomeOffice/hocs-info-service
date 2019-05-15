@@ -26,5 +26,5 @@ public interface TopicRepository extends CrudRepository<Topic, String> {
 
     List<Topic> findAllByActiveIsTrue();
 
-    Set<Topic> findAllBy();
+    List<Topic> findAllBy();
 }

@@ -204,4 +204,8 @@ public class TopicService {
         }
     }
 
+    public List<Topic> getTopics() {
+        log.debug("Requesting all topics");
+        return topicRepository.findAllBy();
+    }
 }

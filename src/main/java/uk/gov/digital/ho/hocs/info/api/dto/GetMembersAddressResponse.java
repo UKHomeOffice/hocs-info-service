@@ -40,6 +40,9 @@ public class GetMembersAddressResponse {
     @JsonProperty("reference")
     String reference;
 
+    @JsonProperty("externalKey")
+    String externalKey;
+
     public static GetMembersAddressResponse from(Member member) {
         return new GetMembersAddressResponse(
                 "MEMBER",
@@ -51,7 +54,8 @@ public class GetMembersAddressResponse {
                 member.getHouseAddress().getCountry(),
                 "",
                 "",
-                ""
+                "",
+                member.getExternalReference()
         );
     }
 }

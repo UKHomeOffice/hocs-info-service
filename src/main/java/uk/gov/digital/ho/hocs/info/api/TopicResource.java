@@ -9,7 +9,9 @@ import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
@@ -56,6 +58,13 @@ public class TopicResource {
         log.info("requesting topic {}", topicUUID);
         Topic topics = topicService.getTopic(topicUUID);
         return ResponseEntity.ok(TopicDto.from(topics));
+    }
+
+    @GetMapping(value = "/topics", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Set<TopicDto>> getTopics () {
+        log.info("requesting all topics");
+        List<Topic> topics = topicService.getTopics();
+        return ResponseEntity.ok(topics.stream().map(t->TopicDto.from(t)).collect(Collectors.toSet()));
     }
 
     @PostMapping(value = "/topic/parent", produces = APPLICATION_JSON_UTF8_VALUE)

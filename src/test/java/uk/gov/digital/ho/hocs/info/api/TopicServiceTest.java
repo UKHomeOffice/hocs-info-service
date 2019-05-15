@@ -49,6 +49,16 @@ public class TopicServiceTest {
     }
 
     @Test
+    public void shouldReturnAllTopics() {
+        when(topicRepository.findAllBy()).thenReturn(getTopics());
+
+        topicService.getTopics();
+
+        verify(topicRepository, times(1)).findAllBy();
+        verifyNoMoreInteractions(topicRepository);
+    }
+
+    @Test
     public void shouldReturnParentTopicsForCaseType() {
         when(parentTopicRepository.findAllParentTopicByCaseType(any())).thenReturn(getParentTopics());
 
@@ -157,7 +167,6 @@ public class TopicServiceTest {
         topicService.createTopic(request, UUID.randomUUID());
 
     }
-
 
     @Test
     public void shouldDeleteTopic() {

@@ -13,10 +13,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,6 +30,17 @@ public class TopicResourceTest {
     @Before
     public void setUp() {
         topicResource = new TopicResource(topicService);
+    }
+
+    @Test
+    public void shouldGetAllTopics() {
+        when(topicService.getTopics()).thenReturn(getTopics());
+
+        ResponseEntity<Set<TopicDto>> response = topicResource.getTopics();
+
+        verify(topicService, times(1)).getTopics();
+        verifyNoMoreInteractions(topicService);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
