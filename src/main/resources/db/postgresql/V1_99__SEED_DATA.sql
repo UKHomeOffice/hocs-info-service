@@ -427,7 +427,7 @@ VALUES ('03548dc4-76bb-4ac8-8992-b555fd59fa0a', 'date', 'DateOfCorrespondence', 
        ('b3ea7f48-a7f5-417e-81b5-46ee2f6a2cf9', 'inset', null, null,'[ ]', false, false, true, '{ "children" : "Completing this screen will complete the case." }'),
        ('7edd64b1-6790-41d4-842e-fa9921979278', 'text-area', 'CaseNote_PhonecallNote', 'Please summarise your call.','[ "required" ]', false, false, true, '{}'),
        ('d33dfc8e-8c8a-4fcc-be30-f98184299661', 'entity-manager', 'Documents_standard_line', 'Available Standard line','[ ]', false, false, true, '{ "hasDownloadLink" : true, "choices" : "CASE_STANDARD_LINES", "entity" : "standard_line" }'),
-       ('f55e66c5-180b-411c-b908-5397e8fade19', 'entity-manager', 'Documents_topic', 'Available Template','[ ]', false, false, true, '{ "hasDownloadLink" : true, "choices" : "CASE_TEMPLATES", "entity" : "template" }'),
+       ('f55e66c5-180b-411c-b908-5397e8fade19', 'entity-manager', 'Documents_topic', 'Available Template','[ ]', false, false, true, '{ "hasTemplateLink" : true, "choices" : "CASE_TEMPLATES", "entity" : "template" }'),
        ('7f525f9e-36d2-4ff2-b888-e3a18c2c6bfa', 'entity-list', 'DraftDocuments', 'Which is the primary draft document?','[ "required" ]', false, false, true, '{ "hasRemoveLink" : true, "hasAddLink" : true, "choices" : "CASE_DOCUMENT_LIST_DRAFT", "entity" : "document" }'),
 
        ('d91196a8-1a7a-4451-be05-09f0a3b95a23', 'radio', 'OfflineQA', 'Do you want to QA this offline?','["required" ]', false, true, true, '{"choices" : [ { "label" : "Yes", "value" : "TRUE" }, {  "label" : "No", "value" : "FALSE" } ] }'),
