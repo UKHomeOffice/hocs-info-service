@@ -41,16 +41,3 @@ CREATE TABLE IF NOT EXISTS member
 
 CREATE INDEX idx_member_active
   ON member (deleted);
-
-
-DROP TABLE IF EXISTS member_case_type;
-
-CREATE TABLE IF NOT EXISTS member_case_type
-(
-  id          BIGSERIAL PRIMARY KEY,
-  member_uuid UUID NOT NULL,
-  case_type   TEXT NOT NULL,
-
-  CONSTRAINT fk_member_case_type_uuid FOREIGN KEY (member_uuid) REFERENCES member (uuid),
-  CONSTRAINT fk_member_case_type_type FOREIGN KEY (case_type) REFERENCES case_type (type)
-);
