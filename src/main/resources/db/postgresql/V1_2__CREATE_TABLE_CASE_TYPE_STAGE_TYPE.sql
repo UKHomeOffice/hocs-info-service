@@ -30,26 +30,6 @@ CREATE INDEX idx_case_type_bulk_active
   ON case_type (bulk, active);
 
 
-DROP TABLE IF EXISTS unit_case_type;
-
-CREATE TABLE IF NOT EXISTS unit_case_type
-(
-  id          BIGSERIAL PRIMARY KEY,
-  unit_uuid   UUID    NOT NULL,
-  case_type TEXT NOT NULL,
-
-  CONSTRAINT fk_unit_case_type_case_type FOREIGN KEY (case_type) REFERENCES case_type (type),
-  CONSTRAINT fk_unit_case_type_uuid FOREIGN KEY (unit_uuid) REFERENCES unit (uuid)
-
-);
-
-CREATE INDEX idx_unit_case_type_unit_uuid
-  ON unit_case_type(unit_uuid);
-
-CREATE INDEX idx_unit_case_type_team_case_type
-  ON unit_case_type(case_type);
-
-
 DROP TABLE IF EXISTS stage_type;
 
 CREATE TABLE IF NOT EXISTS stage_type

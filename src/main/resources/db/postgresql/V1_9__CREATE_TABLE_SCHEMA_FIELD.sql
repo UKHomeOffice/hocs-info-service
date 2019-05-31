@@ -30,12 +30,14 @@ DROP TABLE IF EXISTS case_type_schema;
 
 CREATE TABLE IF NOT EXISTS case_type_schema
 (
-  id          BIGSERIAL PRIMARY KEY,
-  case_type   TEXT NOT NULL,
-  schema_uuid   UUID    NOT NULL,
+    id          BIGSERIAL PRIMARY KEY,
+    case_type   TEXT NOT NULL,
+    stage_type  TEXT NOT NULL,
+    schema_uuid   UUID    NOT NULL,
 
-  CONSTRAINT fk_case_type_schema_case_type FOREIGN KEY (case_type) REFERENCES case_type (type),
-  CONSTRAINT fk_case_type_schema_uuid FOREIGN KEY (schema_uuid) REFERENCES screen_schema (uuid)
+    CONSTRAINT fk_case_type_schema_case_type FOREIGN KEY (case_type) REFERENCES case_type (type),
+    CONSTRAINT fk_case_type_schema_stage_type FOREIGN KEY (stage_type) REFERENCES stage_type (type),
+    CONSTRAINT fk_case_type_schema_uuid FOREIGN KEY (schema_uuid) REFERENCES screen_schema (uuid)
 
 );
 

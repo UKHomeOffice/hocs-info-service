@@ -22,12 +22,6 @@ public class UnitResource {
         this.unitService = unitService;
     }
 
-    @GetMapping(value = "/unit/casetype/{casetype}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Set<UnitDto>> getAllUnitsForCaseType(@PathVariable String caseType) {
-            Set<UnitDto> units = unitService.getAllUnitsForCaseType(caseType);
-            return ResponseEntity.ok(units);
-    }
-
     @GetMapping(value = "/unit", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Set<UnitDto>> getAllUnits() {
         Set<UnitDto> units = unitService.getAllUnits();

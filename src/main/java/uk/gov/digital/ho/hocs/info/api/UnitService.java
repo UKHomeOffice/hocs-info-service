@@ -45,11 +45,6 @@ public class UnitService {
                 .map(UnitDto::fromWithoutTeams).collect(Collectors.toSet());
     }
 
-    public Set<UnitDto> getAllUnitsForCaseType(String caseType) {
-        return unitRepository.findAllActiveUnitsByCaseType(caseType).stream()
-                .map(UnitDto::fromWithoutTeams).collect(Collectors.toSet());
-    }
-
     Unit getUnit(UUID unitUUID){
         log.debug("Getting Unit: {}", unitUUID);
         Unit unit = unitRepository.findByUuid(unitUUID);
