@@ -108,11 +108,28 @@ public class TeamResource {
     }
 
     @GetMapping(value = "/team/case/{caseUUID}/topic/{topicUUID}/stage/{stageType}")
-    public ResponseEntity<TeamDto> getActiveTeams(@PathVariable UUID caseUUID, @PathVariable UUID topicUUID, @PathVariable String stageType) {
+    public ResponseEntity<TeamDto> getTeamForTopicAndStage(@PathVariable UUID caseUUID, @PathVariable UUID topicUUID, @PathVariable String stageType) {
         Team team = teamService.getTeamByTopicAndStage(caseUUID, topicUUID, stageType);
         return ResponseEntity.ok(TeamDto.from(team));
     }
 
+    @GetMapping(value = "/team/case/{caseUUID}/unit/{unitUUID}/stage/{stageType}")
+    public ResponseEntity<TeamDto> getTeamForUnitAndStage(@PathVariable UUID caseUUID, @PathVariable UUID unitUUID, @PathVariable String stageType) {
+        //Team team = teamService.getTeamByUnitAndStage(caseUUID, unitUUID, stageType);
+        //return ResponseEntity.ok(TeamDto.from(team));
+
+        //TODO Update when MP - constituency and linking table changes have been made.
+        return getTeam(UUID.fromString("21dbe3f1-c914-4ed2-8baa-831d3aa16aa4"));
+    }
+
+    @GetMapping(value = "/team/case/{caseUUID}/constituency/{constituencyUUID}/stage/{stageType}")
+    public ResponseEntity<TeamDto> getTeamForConstituencyAndStage(@PathVariable UUID caseUUID, @PathVariable UUID constituencyUUID, @PathVariable String stageType) {
+        //Team team = teamService.getTeamByConstituencyAndStage(caseUUID, unitUUID, stageType);
+        //return ResponseEntity.ok(TeamDto.from(team));
+
+        //TODO Update when MP - constituency and linking table changes have been made.
+        return getTeam(UUID.fromString("40e6db75-239f-48ed-a998-d9097e6be8cf"));
+    }
     @DeleteMapping(value = "/users/{userUUID}/team/{teamUUID}")
     public ResponseEntity removeUserFromTeam(@PathVariable String userUUID, @PathVariable String teamUUID) {
         teamService.removeUserFromTeam(UUID.fromString(userUUID), UUID.fromString(teamUUID));
