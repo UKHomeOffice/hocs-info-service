@@ -10,11 +10,11 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
-@Table(name = "team_link")
+@Table(name = "topic_team")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class TeamLink implements Serializable {
+public class TopicTeam implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -26,22 +26,18 @@ public class TeamLink implements Serializable {
     private String caseType;
 
     @Setter
-    @Column(name = "stage_type")
-    private String stageType;
-
-    @Column(name = "link_uuid")
-    private UUID linkUUID;
-
-    @Column(name = "link_type")
-    private String linkType;
-
-    @Setter
     @Column(name = "responsible_team_uuid")
     private UUID responsibleTeamUUID;
 
-    public TeamLink(UUID linkUUID, String linkType, UUID responsibleTeamUUID, String caseType, String stageType) {
-        this.linkUUID = linkUUID;
-        this.linkType = linkType;
+    @Column(name = "topic_uuid")
+    private UUID topicUUID;
+
+    @Setter
+    @Column(name = "stage_type")
+    private String stageType;
+
+    public TopicTeam(UUID topicUUID, UUID responsibleTeamUUID, String caseType, String stageType) {
+        this.topicUUID = topicUUID;
         this.responsibleTeamUUID = responsibleTeamUUID;
         this.caseType = caseType;
         this.stageType = stageType;

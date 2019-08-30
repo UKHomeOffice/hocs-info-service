@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TeamLinkResourceTest {
+public class TopicTeamResourceTest {
 
     @Mock
     private TopicTeamService topicTeamService;

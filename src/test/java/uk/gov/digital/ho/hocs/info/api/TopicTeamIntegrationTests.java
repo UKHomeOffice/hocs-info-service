@@ -14,8 +14,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
-import uk.gov.digital.ho.hocs.info.domain.model.TeamLink;
-import uk.gov.digital.ho.hocs.info.domain.repository.TeamLinkRepository;
+import uk.gov.digital.ho.hocs.info.domain.model.TopicTeam;
+import uk.gov.digital.ho.hocs.info.domain.repository.TopicTeamRepository;
 
 import java.util.UUID;
 
@@ -28,12 +28,12 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 @Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
 @Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
 @ActiveProfiles("test")
-public class TeamLinkIntegrationTests {
+public class TopicTeamIntegrationTests {
 
     TestRestTemplate restTemplate = new TestRestTemplate();
 
     @Autowired
-    TeamLinkRepository teamLinkRepository;
+    TopicTeamRepository topicTeamRepository;
 
 
     private HttpHeaders headers;
@@ -54,18 +54,18 @@ public class TeamLinkIntegrationTests {
         UUID teamUUID = UUID.fromString("8b3b4366-a37c-48b6-b274-4c50f8083843");
         AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","ST2");
 
-        long numberOfTopicsBefore = teamLinkRepository.findAllByLinkUUIDAndLinkType(topicUUID, "TOPIC").size();
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
         ResponseEntity result = restTemplate.exchange(
                 getBasePath() + "/topic/" + topicUUID + "/team/" + teamUUID
                 , HttpMethod.POST, httpEntity, Void.class);
 
-        long numberOfTopicsAfter = teamLinkRepository.findAllByLinkUUIDAndLinkType(topicUUID, "TOPIC").size();
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore + 1l);
-        assertThat(teamLinkRepository.findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(topicUUID, "TOPIC", "MIN", "ST2")).isNotNull();
+        assertThat(topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "ST2")).isNotNull();
     }
 
     @Test
@@ -75,19 +75,19 @@ public class TeamLinkIntegrationTests {
         UUID teamUUID = UUID.fromString("8b3b4366-a37c-48b6-b274-4c50f808111A");
         AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","ST1");
 
-        long numberOfTopicsBefore = teamLinkRepository.findAllByLinkUUIDAndLinkType(topicUUID, "TOPIC").size();
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
         ResponseEntity result = restTemplate.exchange(
                 getBasePath() + "/topic/" + topicUUID + "/team/" + teamUUID
                 , HttpMethod.POST, httpEntity, Void.class);
 
-        long numberOfTopicsAfter = teamLinkRepository.findAllByLinkUUIDAndLinkType(topicUUID, "TOPIC").size();
-        TeamLink teamLink = teamLinkRepository.findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(topicUUID, "TOPIC", "MIN", "ST1");
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "ST1");
 
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(teamLink).isNull();
+        assertThat(topicTeam).isNull();
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
     }
 
@@ -98,18 +98,18 @@ public class TeamLinkIntegrationTests {
         UUID inactiveTeamUUID = UUID.fromString("d09f1444-87ec-4197-8ec5-f28f548d11be");
         AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","ST2");
 
-        long numberOfTopicsBefore = teamLinkRepository.findAllByLinkUUIDAndLinkType(topicUUID, "TOPIC").size();
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
         ResponseEntity result = restTemplate.exchange(
                 getBasePath() + "/topic/" + topicUUID + "/team/" + inactiveTeamUUID
                 , HttpMethod.POST, httpEntity, Void.class);
 
-        long numberOfTopicsAfter = teamLinkRepository.findAllByLinkUUIDAndLinkType(topicUUID, "TOPIC").size();
-        TeamLink teamLink = teamLinkRepository.findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(topicUUID, "TOPIC", "MIN", "ST2");
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "ST2");
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        //assertThat(teamLink).isNull();
+        //assertThat(topicTeam).isNull();
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
     }
 
@@ -120,18 +120,18 @@ public class TeamLinkIntegrationTests {
         UUID teamUUID = UUID.fromString("8b3b4366-a37c-48b6-b274-4c50f8083843");
         AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","ST1");
 
-        long numberOfTopicsBefore = teamLinkRepository.findAllByLinkUUIDAndLinkType(topicUUID, "TOPIC").size();
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
         ResponseEntity result = restTemplate.exchange(
                 getBasePath() + "/topic/" + topicUUID + "/team/" + teamUUID
                 , HttpMethod.POST, httpEntity, Void.class);
 
-        long numberOfTopicsAfter = teamLinkRepository.findAllByLinkUUIDAndLinkType(topicUUID, "TOPIC").size();
-        TeamLink teamLink = teamLinkRepository.findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(topicUUID, "TOPIC", "MIN", "ST1");
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "ST1");
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(teamLink).isNull();
+        assertThat(topicTeam).isNull();
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
     }
 
@@ -142,18 +142,18 @@ public class TeamLinkIntegrationTests {
         UUID teamUUID = UUID.fromString("8b3b4366-a37c-48b6-b274-4c50f8083843");
         AddTeamToTopicDto request = new AddTeamToTopicDto("XYZ","DCU_MIN_INITIAL_DRAFT");
 
-        long numberOfTopicsBefore = teamLinkRepository.findAllByLinkUUIDAndLinkType(topicUUID, "TOPIC").size();
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
         ResponseEntity result = restTemplate.exchange(
                 getBasePath() + "/topic/" + topicUUID + "/team/" + teamUUID
                 , HttpMethod.POST, httpEntity, Void.class);
 
-        long numberOfTopicsAfter = teamLinkRepository.findAllByLinkUUIDAndLinkType(topicUUID, "TOPIC").size();
-        TeamLink teamLink = teamLinkRepository.findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(topicUUID, "TOPIC", "MIN", "DCU_MIN_INITIAL_DRAFT");
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(teamLink).isNull();
+        assertThat(topicTeam).isNull();
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
     }
 
@@ -164,18 +164,18 @@ public class TeamLinkIntegrationTests {
         UUID teamUUID = UUID.fromString("8b3b4366-a37c-48b6-b274-4c50f8083843");
         AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","INVALID_STAGE");
 
-        long numberOfTopicsBefore = teamLinkRepository.findAllByLinkUUIDAndLinkType(topicUUID, "TOPIC").size();
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
         ResponseEntity result = restTemplate.exchange(
                 getBasePath() + "/topic/" + topicUUID + "/team/" + teamUUID
                 , HttpMethod.POST, httpEntity, Void.class);
 
-        long numberOfTopicsAfter = teamLinkRepository.findAllByLinkUUIDAndLinkType(topicUUID, "TOPIC").size();
-        TeamLink teamLink = teamLinkRepository.findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(topicUUID, "TOPIC", "MIN", "DCU_MIN_INITIAL_DRAFT");
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
+        TopicTeam topicTeam = topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "DCU_MIN_INITIAL_DRAFT");
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(teamLink).isNull();
+        assertThat(topicTeam).isNull();
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
     }
 
@@ -186,19 +186,19 @@ public class TeamLinkIntegrationTests {
         UUID newTeamUUID = UUID.fromString("8b3b4366-a37c-48b6-b274-4c50f8083843");
         AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","ST1");
 
-        long numberOfTopicsBefore = teamLinkRepository.findAllByLinkUUIDAndLinkType(topicUUID, "TOPIC").size();
+        long numberOfTopicsBefore = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
         ResponseEntity result = restTemplate.exchange(
                 getBasePath() + "/topic/" + topicUUID + "/team/" + newTeamUUID
                 , HttpMethod.POST, httpEntity, Void.class);
 
-        long numberOfTopicsAfter = teamLinkRepository.findAllByLinkUUIDAndLinkType(topicUUID, "TOPIC").size();
+        long numberOfTopicsAfter = topicTeamRepository.findAllByTopicUUID(topicUUID).size();
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
-        assertThat(teamLinkRepository
-                .findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(topicUUID, "TOPIC", "MIN", "ST1")
+        assertThat(topicTeamRepository
+                .findByTopicUUIDAndCaseTypeAndStageType(topicUUID, "MIN", "ST1")
                 .getResponsibleTeamUUID())
                 .isEqualTo(newTeamUUID);
     }

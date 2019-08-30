@@ -9,7 +9,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.AddTeamToTopicDto;
 import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
-import uk.gov.digital.ho.hocs.info.domain.repository.TeamLinkRepository;
+import uk.gov.digital.ho.hocs.info.domain.repository.TopicTeamRepository;
 
 import java.util.*;
 
@@ -17,12 +17,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TeamLinkServiceTest {
+public class TopicTeamServiceTest {
 
     private TopicTeamService topicTeamService;
 
     @Mock
-    private TeamLinkRepository teamLinkRepository;
+    private TopicTeamRepository topicTeamRepository;
     @Mock
     private TopicService topicService;
     @Mock
@@ -36,7 +36,7 @@ public class TeamLinkServiceTest {
 
     @Before
     public void setUp() {
-        this.topicTeamService = new TopicTeamService (teamLinkRepository,
+        this.topicTeamService = new TopicTeamService (topicTeamRepository,
                      topicService,
                      teamService,
                      caseTypeService,
@@ -58,9 +58,9 @@ public class TeamLinkServiceTest {
         topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
 
 
-        verify(teamLinkRepository, times(1)).save(any());
-        verify(teamLinkRepository, times(1)).findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(any(), eq("TOPIC"), any(), any());
-        verifyNoMoreInteractions(teamLinkRepository);
+        verify(topicTeamRepository, times(1)).save(any());
+        verify(topicTeamRepository, times(1)).findByTopicUUIDAndCaseTypeAndStageType(any(), any(), any());
+        verifyNoMoreInteractions(topicTeamRepository);
     }
 
     @Test (expected = ApplicationExceptions.TopicUpdateException.class)
@@ -93,7 +93,7 @@ public class TeamLinkServiceTest {
             // Do nothing.
         }
 
-        verifyZeroInteractions(teamLinkRepository);
+        verifyZeroInteractions(topicTeamRepository);
     }
 
     @Test (expected = ApplicationExceptions.TopicUpdateException.class)
@@ -126,7 +126,7 @@ public class TeamLinkServiceTest {
             // Do nothing.
         }
 
-        verifyZeroInteractions(teamLinkRepository);
+        verifyZeroInteractions(topicTeamRepository);
     }
 
     @Test (expected = ApplicationExceptions.TopicUpdateException.class)
@@ -152,7 +152,7 @@ public class TeamLinkServiceTest {
             // Do nothing.
         }
 
-        verifyZeroInteractions(teamLinkRepository);
+        verifyZeroInteractions(topicTeamRepository);
     }
 
     @Test (expected = ApplicationExceptions.TopicUpdateException.class)
@@ -181,7 +181,7 @@ public class TeamLinkServiceTest {
             // Do nothing.
         }
 
-        verifyZeroInteractions(teamLinkRepository);
+        verifyZeroInteractions(topicTeamRepository);
     }
 
     @Test (expected = ApplicationExceptions.TopicUpdateException.class)
@@ -207,7 +207,7 @@ public class TeamLinkServiceTest {
             // Do nothing.
         }
 
-        verifyZeroInteractions(teamLinkRepository);
+        verifyZeroInteractions(topicTeamRepository);
     }
 
     @Test
@@ -221,14 +221,14 @@ public class TeamLinkServiceTest {
         when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
         when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
         when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
-        when(teamLinkRepository.findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(
-                any(), eq("TOPIC"), any(), any())).thenReturn(new TeamLink());
+        when(topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(
+                any(), any(), any())).thenReturn(new TopicTeam());
 
         topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
 
-        verify(teamLinkRepository, times(1)).findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(any(), eq("TOPIC"), any(), any());
-        verify(teamLinkRepository, times(1)).save(any());
-        verifyNoMoreInteractions(teamLinkRepository);
+        verify(topicTeamRepository, times(1)).findByTopicUUIDAndCaseTypeAndStageType(any(), any(), any());
+        verify(topicTeamRepository, times(1)).save(any());
+        verifyNoMoreInteractions(topicTeamRepository);
     }
 
 

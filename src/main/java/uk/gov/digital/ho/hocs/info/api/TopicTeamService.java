@@ -7,8 +7,8 @@ import uk.gov.digital.ho.hocs.info.api.dto.AddTeamToTopicDto;
 import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
-import uk.gov.digital.ho.hocs.info.domain.model.TeamLink;
-import uk.gov.digital.ho.hocs.info.domain.repository.TeamLinkRepository;
+import uk.gov.digital.ho.hocs.info.domain.model.TopicTeam;
+import uk.gov.digital.ho.hocs.info.domain.repository.TopicTeamRepository;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @Service
 public class TopicTeamService {
 
-    private final TeamLinkRepository teamLinkRepository;
+    private final TopicTeamRepository topicTeamRepository;
     private final TopicService topicService;
     private final TeamService teamService;
     private final CaseTypeService caseTypeService;
@@ -25,14 +25,14 @@ public class TopicTeamService {
     private final AuditClient auditClient;
 
     @Autowired
-    public TopicTeamService(TeamLinkRepository teamLinkRepository,
+    public TopicTeamService(TopicTeamRepository topicTeamRepository,
                             TopicService topicService,
                             TeamService teamService,
                             CaseTypeService caseTypeService,
                             StageTypeService stageTypeService,
                             AuditClient auditClient) {
         this.topicService = topicService;
-        this.teamLinkRepository = teamLinkRepository;
+        this.topicTeamRepository = topicTeamRepository;
         this.teamService = teamService;
         this.caseTypeService = caseTypeService;
         this.stageTypeService = stageTypeService;
@@ -45,12 +45,12 @@ public class TopicTeamService {
         String caseType = request.getCaseType();
 
         validateTeamTopicStageAndCase(teamUUID, topicUUID, stageType, caseType);
-        TeamLink teamLink = Optional.ofNullable(teamLinkRepository.findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(topicUUID, "TOPIC", caseType, stageType))
-                 .orElse(new TeamLink(topicUUID, "TOPIC", teamUUID, caseType, stageType));
-        teamLink.setResponsibleTeamUUID(teamUUID);
-        teamLinkRepository.save(teamLink);
+        TopicTeam topicTeam = Optional.ofNullable(topicTeamRepository.findByTopicUUIDAndCaseTypeAndStageType(topicUUID, caseType, stageType))
+                 .orElse(new TopicTeam(topicUUID, teamUUID, caseType, stageType));
+        topicTeam.setResponsibleTeamUUID(teamUUID);
+        topicTeamRepository.save(topicTeam);
         log.info("Added team: {} to topic: {}", teamUUID, topicUUID);
-        auditClient.addTeamToTopicAudit(teamLink);
+        auditClient.addTeamToTopicAudit(topicTeam);
 
     }
 
