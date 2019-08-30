@@ -170,23 +170,23 @@ public class AuditClient {
         sendAuditMessage(request);
     }
 
-    public void addTeamToTopicAudit(TopicTeam topicTeam) {
+    public void addTeamToTopicAudit(TeamLink teamLink) {
         String auditPayload = Json.createObjectBuilder()
-                .add("topicUUID", topicTeam.getTopicUUID().toString())
-                .add("teamUUID", topicTeam.getResponsibleTeamUUID().toString())
-                .add("caseType", topicTeam.getCaseType())
-                .add("stageType", topicTeam.getStageType())
+                .add("topicUUID", teamLink.getLinkUUID().toString())
+                .add("teamUUID", teamLink.getResponsibleTeamUUID().toString())
+                .add("caseType", teamLink.getCaseType())
+                .add("stageType", teamLink.getStageType())
                 .build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.ADD_TEAM_TO_TOPIC.toString());
         sendAuditMessage(request);
     }
 
-    public void updateTeamForTopicAudit(TopicTeam topicTeam, UUID oldTeamUUID) {
+    public void updateTeamForTopicAudit(TeamLink teamLink, UUID oldTeamUUID) {
         String auditPayload = Json.createObjectBuilder()
-                .add("topicUUID", topicTeam.getTopicUUID().toString())
-                .add("teamUUID", topicTeam.getResponsibleTeamUUID().toString())
-                .add("caseType", topicTeam.getCaseType())
-                .add("stageType", topicTeam.getStageType())
+                .add("topicUUID", teamLink.getLinkUUID().toString())
+                .add("teamUUID", teamLink.getResponsibleTeamUUID().toString())
+                .add("caseType", teamLink.getCaseType())
+                .add("stageType", teamLink.getStageType())
                 .add("oldTeamUUID", oldTeamUUID.toString())
                 .build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.UPDATE_TEAM_FOR_TOPIC.toString());
