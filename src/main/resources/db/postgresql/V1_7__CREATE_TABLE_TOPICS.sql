@@ -37,18 +37,22 @@ CREATE INDEX idx_topic_uuid
 CREATE INDEX idx_topic_all
   ON topic (display_name, uuid, parent_topic_uuid);
 
-DROP TABLE IF EXISTS topic_team;
+DROP TABLE IF EXISTS team_link;
 
-CREATE TABLE IF NOT EXISTS topic_team
+CREATE TABLE IF NOT EXISTS team_link
 (
   id                    BIGSERIAL PRIMARY KEY,
-  topic_uuid            UUID NOT NULL,
-  case_type             TEXT NOT NULL,
-  responsible_team_uuid UUID NOT NULL,
-  stage_type            TEXT NOT NULL,
+  case_type             TEXT      NOT NULL,
+  stage_type            TEXT      NOT NULL,
+  link_uuid             UUID      NOT NULL,
+  link_type             TEXT      NOT NULL, -- e.g. 'TOPIC', 'UNIT', 'CONSTITUENCY'
+  responsible_team_uuid UUID      NOT NULL,
 
-  CONSTRAINT fk_topic_team_case_id FOREIGN KEY (case_type) REFERENCES case_type (type),
-  CONSTRAINT fk_topic_team_topic_id FOREIGN KEY (topic_uuid) REFERENCES topic (uuid),
-  CONSTRAINT fk_topic_team_team_id FOREIGN KEY (responsible_team_uuid) REFERENCES team (uuid),
-  CONSTRAINT fk_topic_team_stage_id FOREIGN KEY (stage_type) REFERENCES stage_type (type)
+  CONSTRAINT fk_team_link_case_type FOREIGN KEY (case_type) REFERENCES case_type (type),
+  CONSTRAINT fk_team_link_stage_type FOREIGN KEY (stage_type) REFERENCES stage_type (type),
+  CONSTRAINT fk_team_link_team_uuid FOREIGN KEY (responsible_team_uuid) REFERENCES team (uuid)
 );
+
+CREATE INDEX idx_team_link_case_stage_link
+  ON team_link (case_type, stage_type, link_uuid);
+
