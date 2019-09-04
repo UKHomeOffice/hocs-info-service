@@ -56,6 +56,30 @@ public class AuditClient {
         permissionArray = Json.createArrayBuilder();
     }
 
+    public void createConstituencyAudit(Constituency constituency) {
+        String auditPayload = Json.createObjectBuilder()
+                .add("constituencyUUID", constituency.getUuid().toString())
+                .add("constituencyName", constituency.getConstituencyName())
+                .build()
+                .toString();
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.CREATE_CONSTITUENCY.toString());
+        sendAuditMessage(request);
+    }
+
+    public void deleteConstituencyAudit(Constituency constituency) {
+        String auditPayload = Json.createObjectBuilder()
+                .add("constituencyUUID", constituency.getUuid().toString()).build().toString();
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REMOVE_CONSTITUENCY.toString());
+        sendAuditMessage(request);
+    }
+
+    public void reactivateConstituencyAudit(Constituency constituency) {
+        String auditPayload = Json.createObjectBuilder()
+                .add("constituencyUUID", constituency.getUuid().toString()).build().toString();
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REACTIVATE_CONSTITUENCY.toString());
+        sendAuditMessage(request);
+    }
+
     public void createTeamAudit(Team team) {
         String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.CREATE_TEAM.toString());

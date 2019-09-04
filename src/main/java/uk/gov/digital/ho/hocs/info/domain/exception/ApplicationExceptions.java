@@ -40,6 +40,24 @@ public interface ApplicationExceptions {
         }
     }
 
+    class ConstituencyCreationException extends RuntimeException {
+        private final LogEvent event;
+
+        public ConstituencyCreationException(String msg, LogEvent event, Object... args) {
+            super(String.format(msg, args));
+            this.event = event;
+        }
+
+        public ConstituencyCreationException(String msg) {
+            super(msg);
+            this.event = LogEvent.UNCAUGHT_EXCEPTION;
+        }
+
+        public LogEvent getEvent() {
+            return event;
+        }
+    }
+
     class CorrespondentCreationException extends RuntimeException {
         private final LogEvent event;
 

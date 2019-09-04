@@ -1,6 +1,9 @@
 package uk.gov.digital.ho.hocs.info.client.auditClient.dto;
 
 public enum EventType {
+    CREATE_CONSTITUENCY,
+    REMOVE_CONSTITUENCY,
+    REACTIVATE_CONSTITUENCY,
     CREATE_TEAM,
     RENAME_TEAM,
     DELETE_TEAM,

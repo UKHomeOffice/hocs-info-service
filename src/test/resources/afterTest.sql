@@ -8,3 +8,4 @@ delete from stage_type where true;
 delete from team where true;
 delete from case_type where true;
 delete from unit where true;
+delete from constituency;

@@ -8,6 +8,13 @@ delete from stage_type where true;
 delete from team where true;
 delete from case_type where true;
 delete from unit where true;
+delete from constituency;
+
+INSERT INTO constituency (UUID, constituency_name, active)
+VALUES ('11111111-eeee-1111-1111-111111111111', 'test constituency 1', TRUE),
+       ('11111111-eeee-1111-1111-111111111112', 'test constituency 2', TRUE),
+       ('11111111-eeee-1111-1111-111111111113', 'test constituency 3', TRUE),
+       ('11111111-eeee-1111-1111-111111111114', 'test inactive constituency 4', FALSE);
 
 INSERT INTO unit (display_name, uuid, short_code, active)
 VALUES ('UNIT 2', '09221c48-b916-47df-9aa0-a0194f86f6dd', 'UNIT2', TRUE),

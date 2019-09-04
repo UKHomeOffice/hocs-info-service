@@ -72,6 +72,12 @@ public class RestResponseEntityExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(ApplicationExceptions.ConstituencyCreationException.class)
+    public ResponseEntity handle(ApplicationExceptions.ConstituencyCreationException e) {
+        log.error("ConstituencyCreationException: {}", e.getMessage(), value(EVENT, BAD_REQUEST));
+        return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
+    }
+
     @ExceptionHandler(ApplicationExceptions.TeamDeleteException.class)
     public ResponseEntity<TeamDeleteActiveParentTopicsDto> handle(ApplicationExceptions.TeamDeleteException e) {
         log.error("Exception: {}", e.getMessage(), value(EVENT, TEAM_DELETED_FAILURE));
