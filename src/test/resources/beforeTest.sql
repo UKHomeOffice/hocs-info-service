@@ -1,9 +1,12 @@
 delete from parent_topic where true;
-delete from topic_team where true;
+delete from team_link where true;
 delete from topic where true;
 delete from team_contact where true;
 delete from correspondent_type where true;
 delete from permission where true;
+delete from exemption_date where true;
+delete from case_type_schema where true;
+delete from stage_type_schema where true;
 delete from stage_type where true;
 delete from team where true;
 delete from case_type where true;
@@ -60,11 +63,11 @@ VALUES ('test topic 1', '11111111-ffff-1111-1111-111111111131', '94a10f9f-a42e-4
        ('test inactive topic 5 with inactive parent', '11111111-ffff-1111-1111-111111111135', '71caee7b-4632-4ac6-9c15-b91d4c0d27e5', FALSE);
 
 
-INSERT INTO topic_team (topic_uuid, case_type, responsible_team_uuid, stage_type)
-VALUES ('11111111-ffff-1111-1111-111111111131', 'MIN', '08612f06-bae2-4d2f-90d2-2254a68414b8' ,'ST1'),
-       ('11111111-ffff-1111-1111-111111111132', 'MIN', '5d584129-66ea-4e97-9277-7576ab1d32c0' ,'ST1'),
-       ('11111111-ffff-1111-1111-111111111131', 'MIN', '7c33c878-9404-4f67-9bbc-ca52dff285ca' ,'ST2'),
-       ('11111111-ffff-1111-1111-111111111132', 'MIN', '5d584129-66ea-4e97-9277-7576ab1d32c0' ,'ST2');
+INSERT INTO team_link (link_uuid, link_type, case_type, responsible_team_uuid, stage_type)
+VALUES ('11111111-ffff-1111-1111-111111111131', 'TOPIC', 'MIN', '08612f06-bae2-4d2f-90d2-2254a68414b8' ,'ST1'),
+       ('11111111-ffff-1111-1111-111111111132', 'TOPIC', 'MIN', '5d584129-66ea-4e97-9277-7576ab1d32c0' ,'ST1'),
+       ('11111111-ffff-1111-1111-111111111131', 'TOPIC', 'MIN', '7c33c878-9404-4f67-9bbc-ca52dff285ca' ,'ST2'),
+       ('11111111-ffff-1111-1111-111111111132', 'TOPIC', 'MIN', '5d584129-66ea-4e97-9277-7576ab1d32c0' ,'ST2');
 
 
 INSERT INTO team_contact (uuid, team_uuid, email_address)
