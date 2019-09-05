@@ -11,6 +11,7 @@ import uk.gov.digital.ho.hocs.info.api.MemberResource;
 import uk.gov.digital.ho.hocs.info.api.MemberService;
 import uk.gov.digital.ho.hocs.info.api.dto.GetMembersAddressResponse;
 import uk.gov.digital.ho.hocs.info.api.dto.GetMembersResponse;
+import uk.gov.digital.ho.hocs.info.domain.model.Constituency;
 import uk.gov.digital.ho.hocs.info.domain.model.HouseAddress;
 import uk.gov.digital.ho.hocs.info.domain.model.Member;
 
@@ -51,7 +52,7 @@ public class MemberResourceTest {
 
     @Test
     public void shouldReturnMemberDetailsAndAddress() {
-        when(memberService.getMember(any())).thenReturn(new Member(1l,"commons","member1 title","ext1" ,UUID.randomUUID(),LocalDateTime.now(),false,UUID.randomUUID(),new HouseAddress()));
+        when(memberService.getMember(any())).thenReturn(new Member(1l,"commons","member1 title","ext1" ,UUID.randomUUID(),LocalDateTime.now(),false,UUID.randomUUID(),new HouseAddress(), UUID.randomUUID(), "constituency", new Constituency()));
 
         ResponseEntity<GetMembersAddressResponse> response = memberResource.getMember(any());
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -63,8 +64,8 @@ public class MemberResourceTest {
 
     private Set<Member> memberList() {
         return new HashSet<Member>(){{
-            add(new Member(1l,"commons","member1 title","ext1" ,UUID.randomUUID(),LocalDateTime.now(),false,UUID.randomUUID(),new HouseAddress()));
-            add(new Member(2l,"commons","member2 title","ext2" ,UUID.randomUUID(),LocalDateTime.now(),false,UUID.randomUUID(),new HouseAddress()));
+            add(new Member(1l,"commons","member1 title","ext1" ,UUID.randomUUID(),LocalDateTime.now(),false,UUID.randomUUID(),new HouseAddress(), UUID.randomUUID(), "constituency", new Constituency()));
+            add(new Member(2l,"commons","member2 title","ext2" ,UUID.randomUUID(),LocalDateTime.now(),false,UUID.randomUUID(),new HouseAddress(), UUID.randomUUID(), "constituency", new Constituency()));
         }};
     }
 }

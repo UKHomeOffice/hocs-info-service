@@ -62,7 +62,7 @@ public class MemberService {
     private void updateConstituency(Set<Constituency> constituencySet) {
         constituencySet.forEach(constituency -> {
             log.debug("Looking for constituency by name: {}", constituency.getConstituencyName());
-            Constituency constituencyFromDB = constituencyRepository.findConstituencyByName(constituency.getConstituencyName());
+            Constituency constituencyFromDB = constituencyRepository.findActiveConstituencyByName(constituency.getConstituencyName());
             if (constituencyFromDB != null) {
                 log.info("Constituency {} found, updating", constituency.getConstituencyName());
                 constituencyFromDB.setConstituencyName(constituency.getConstituencyName());
@@ -80,7 +80,7 @@ public class MemberService {
             Member memberFromDB = memberRepository.findByExternalReference(member.getExternalReference());
             if (memberFromDB != null) {
                 log.info("Member {} found, updating", member.getFullTitle());
-                memberFromDB.update(member.getFullTitle());
+                memberFromDB.update(member.getFullTitle(), member.getConstituencyUUID(), member.getConstituencyName());
                 memberRepository.save(memberFromDB);
             } else {
                 log.info("Member {} not found, creating", member.getFullTitle());

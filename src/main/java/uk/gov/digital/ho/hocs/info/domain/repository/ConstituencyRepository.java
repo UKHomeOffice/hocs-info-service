@@ -20,6 +20,9 @@ public interface ConstituencyRepository extends CrudRepository<Constituency, Str
     @Query(value = "select * from constituency c where c.uuid = ?1", nativeQuery = true)
     Constituency findConstituencyByUUID(UUID constituencyUUID);
 
+    @Query(value = "SELECT * FROM constituency c WHERE c.constituency_name = ?1 and c.active = true", nativeQuery = true)
+    Constituency findActiveConstituencyByName(String constituencyName);
+
     @Query(value = "SELECT * FROM constituency c WHERE c.constituency_name = ?1", nativeQuery = true)
     Constituency findConstituencyByName(String constituencyName);
 

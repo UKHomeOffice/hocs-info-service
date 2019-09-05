@@ -1,6 +1,9 @@
 ALTER TABLE member
 ADD COLUMN IF NOT EXISTS constituency_uuid UUID;
 
+ALTER TABLE member
+ADD COLUMN IF NOT EXISTS constituency_name TEXT;
+
 DROP TABLE IF EXISTS constituency;
 
 CREATE TABLE IF NOT EXISTS constituency
@@ -15,4 +18,7 @@ CREATE TABLE IF NOT EXISTS constituency
 );
 
 CREATE INDEX idx_constituency_uuid
-  ON constituency (uuid, active);
+  ON constituency (uuid);
+
+CREATE INDEX idx_constituency_name_active
+  ON constituency (constituency_name, active);

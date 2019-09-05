@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.info.api.dto;
 
 import org.junit.Test;
+import uk.gov.digital.ho.hocs.info.domain.model.Constituency;
 import uk.gov.digital.ho.hocs.info.domain.model.HouseAddress;
 import uk.gov.digital.ho.hocs.info.domain.model.Member;
 
@@ -18,7 +19,7 @@ public class MemberDtoTest {
     @Test
     public void from() {
         HouseAddress houseAddress = new HouseAddress(1l, uuid, "house", "housecode", "address1", "address2", "address3", "postcode", "counter", LocalDate.now(), LocalDate.now());
-        Member member = new Member(1l, "House", "Full Title", "Ext Ref", uuid, LocalDateTime.now(), Boolean.FALSE, houseUUID, houseAddress);
+        Member member = new Member(1l, "House", "Full Title", "Ext Ref", uuid, LocalDateTime.now(), Boolean.FALSE, houseUUID, houseAddress, UUID.randomUUID(), "constituency", new Constituency());
 
         MemberDto memberDto = MemberDto.from(member);
 

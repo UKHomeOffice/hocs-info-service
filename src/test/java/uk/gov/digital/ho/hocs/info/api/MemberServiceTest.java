@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
+import uk.gov.digital.ho.hocs.info.domain.model.Constituency;
 import uk.gov.digital.ho.hocs.info.domain.model.HouseAddress;
 import uk.gov.digital.ho.hocs.info.domain.model.Member;
 import uk.gov.digital.ho.hocs.info.client.ingest.ListConsumerService;
@@ -67,7 +68,7 @@ public class MemberServiceTest {
 
     @Test
     public void shouldReturnMemberWithAddress() {
-        when(memberRepository.findByUuid(any())).thenReturn(new Member(1L, "commons", "member1 title", "ext1", UUID.randomUUID(), LocalDateTime.now(), false, UUID.randomUUID(), new HouseAddress()));
+        when(memberRepository.findByUuid(any())).thenReturn(new Member(1L, "commons", "member1 title", "ext1", UUID.randomUUID(), LocalDateTime.now(), false, UUID.randomUUID(), new HouseAddress(), UUID.randomUUID(), "constituency", new Constituency()));
 
         memberService.getMember(any());
         verify(memberRepository, times(1)).findByUuid(any());

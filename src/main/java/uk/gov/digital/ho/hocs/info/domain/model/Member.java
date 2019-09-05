@@ -48,11 +48,32 @@ public class Member implements Serializable {
     @JoinColumn(name = "house_address_uuid", referencedColumnName = "uuid", insertable = false, updatable = false)
     private HouseAddress houseAddress;
 
+    @Column(name = "constituency_uuid")
+    private UUID constituencyUUID;
+
+    @Column(name = "constituency_name")
+    private String constituencyName;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "constituency_uuid", referencedColumnName = "uuid", insertable = false, updatable = false)
+    private Constituency constituency;
+
     public Member(String house, String fullTitle, UUID houseAddressUUID,String externalReference ) {
         this.house = house;
         this.fullTitle = toListText(fullTitle);
         this.houseAddressUUID = houseAddressUUID;
         this.externalReference = toListValue(externalReference);
+        this.uuid = UUID.randomUUID();
+        this.updated = LocalDateTime.now();
+    }
+
+    public Member(String house, String fullTitle, UUID houseAddressUUID, String externalReference, UUID constituencyUUID, String constituencyName) {
+        this.house = house;
+        this.fullTitle = toListText(fullTitle);
+        this.houseAddressUUID = houseAddressUUID;
+        this.externalReference = toListValue(externalReference);
+        this.constituencyUUID = constituencyUUID;
+        this.constituencyName = constituencyName;
         this.uuid = UUID.randomUUID();
         this.updated = LocalDateTime.now();
     }
@@ -70,8 +91,10 @@ public class Member implements Serializable {
                 .toUpperCase();
     }
 
-    public void update(String fullTitle){
+    public void update(String fullTitle, UUID constituencyUUID, String constituencyName){
         this.fullTitle = fullTitle;
+        this.constituencyUUID = constituencyUUID;
+        this.constituencyName = constituencyName;
         this.updated = LocalDateTime.now();
     }
 }

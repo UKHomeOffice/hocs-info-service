@@ -16,4 +16,7 @@ class UKMember {
     @JacksonXmlProperty(localName = "FullTitle")
     private String fullTitle;
 
+    @JacksonXmlProperty(localName = "MemberFrom")
+    private String memberFrom;
+
 }
