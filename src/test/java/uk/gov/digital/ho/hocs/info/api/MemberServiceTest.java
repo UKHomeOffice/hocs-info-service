@@ -9,6 +9,7 @@ import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.HouseAddress;
 import uk.gov.digital.ho.hocs.info.domain.model.Member;
 import uk.gov.digital.ho.hocs.info.client.ingest.ListConsumerService;
+import uk.gov.digital.ho.hocs.info.domain.repository.ConstituencyRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.MemberRepository;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,9 @@ import static org.mockito.Mockito.*;
 public class MemberServiceTest {
 
     @Mock
+    private ConstituencyRepository constituencyRepository;
+
+    @Mock
     private MemberRepository memberRepository;
 
     @Mock
@@ -31,7 +35,7 @@ public class MemberServiceTest {
 
     @Before
     public void setUp() {
-        this.memberService = new MemberService(memberRepository, listConsumerService);
+        this.memberService = new MemberService(constituencyRepository, memberRepository, listConsumerService);
     }
 
     @Test

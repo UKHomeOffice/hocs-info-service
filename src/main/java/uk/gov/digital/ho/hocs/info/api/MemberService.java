@@ -4,8 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
+import uk.gov.digital.ho.hocs.info.domain.model.Constituency;
 import uk.gov.digital.ho.hocs.info.domain.model.Member;
 import uk.gov.digital.ho.hocs.info.client.ingest.ListConsumerService;
+import uk.gov.digital.ho.hocs.info.domain.repository.ConstituencyRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.MemberRepository;
 
 import java.util.Set;
@@ -15,11 +17,13 @@ import java.util.UUID;
 @Slf4j
 public class MemberService {
 
+    private final ConstituencyRepository constituencyRepository;
     private final MemberRepository memberRepository;
     private final ListConsumerService listConsumerService;
 
     @Autowired
-    public MemberService(MemberRepository memberRepository, ListConsumerService listConsumerService) {
+    public MemberService(ConstituencyRepository constituencyRepository, MemberRepository memberRepository, ListConsumerService listConsumerService) {
+        this.constituencyRepository = constituencyRepository;
         this.memberRepository = memberRepository;
         this.listConsumerService = listConsumerService;
     }
@@ -43,6 +47,8 @@ public class MemberService {
     }
 
     void updateWebMemberLists() {
+        log.info("Started Updating Constituencies List");
+        updateConstituency(listConsumerService.createUKConstituencyFromUKParliamentAPI());
         log.info("Started Updating Members Lists");
         updateMember(listConsumerService.createFromWelshAssemblyAPI());
         updateMember(listConsumerService.createFromScottishParliamentAPI());
@@ -51,6 +57,21 @@ public class MemberService {
         updateMember(listConsumerService.createFromIrishAssemblyAPI());
         updateMember(listConsumerService.createFromEuropeanParliamentAPI());
         log.info("Finished Updating Members Lists");
+    }
+
+    private void updateConstituency(Set<Constituency> constituencySet) {
+        constituencySet.forEach(constituency -> {
+            log.debug("Looking for constituency by name: {}", constituency.getConstituencyName());
+            Constituency constituencyFromDB = constituencyRepository.findConstituencyByName(constituency.getConstituencyName());
+            if (constituencyFromDB != null) {
+                log.info("Constituency {} found, updating", constituency.getConstituencyName());
+                constituencyFromDB.setConstituencyName(constituency.getConstituencyName());
+                constituencyRepository.save(constituencyFromDB);
+            } else {
+                log.info("Constituency {} not found, creating", constituency.getConstituencyName());
+                constituencyRepository.save(constituency);
+            }
+        });
     }
 
     private void updateMember(Set<Member> members) {

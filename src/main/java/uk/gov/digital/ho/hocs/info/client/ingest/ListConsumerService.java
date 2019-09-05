@@ -7,6 +7,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
+import uk.gov.digital.ho.hocs.info.domain.model.Constituency;
 import uk.gov.digital.ho.hocs.info.domain.model.House;
 import uk.gov.digital.ho.hocs.info.domain.model.HouseAddress;
 import uk.gov.digital.ho.hocs.info.domain.model.Member;
@@ -29,6 +30,7 @@ public class ListConsumerService {
     private final String API_NORTHERN_IRISH_ASSEMBLY;
     private final String API_EUROPEAN_PARLIAMENT;
     private final String API_WELSH_ASSEMBLY;
+    private final String API_UK_CONSTITUENCIES;
 
     private HouseAddressRepository houseAddressRepository;
     private RestTemplate restTemplate;
@@ -45,9 +47,16 @@ public class ListConsumerService {
         this.API_NORTHERN_IRISH_ASSEMBLY = apiNorthernIrishAssembly;
         this.API_EUROPEAN_PARLIAMENT = apiEuropeanParliament;
         this.API_WELSH_ASSEMBLY = apiWelshAssembly;
+        this.API_UK_CONSTITUENCIES = getFormattedUkEndpoint(HOUSE_COMMONS);
         this.houseAddressRepository = houseAddressRepository;
         this.restTemplate = restTemplate;
+    }
 
+    public Set<Constituency> createUKConstituencyFromUKParliamentAPI() {
+        log.info("Updating constituencies");
+        UKConstituencys ukConstituencys = getMembersFromAPI(API_UK_CONSTITUENCIES, MediaType.APPLICATION_XML, UKConstituencys.class);
+        Set<Constituency> constituencys = ukConstituencys.getConstituencys().stream().map(c -> new Constituency(c.getConstituency())).collect(Collectors.toSet());
+        return constituencys;
     }
 
     public  Set<Member> createFromEuropeanParliamentAPI() {
