@@ -28,11 +28,14 @@ public class ConstituencyRepositoryTest {
     private ConstituencyRepository repository;
 
     UUID constituencyUUID;
+    UUID regionUUID;
 
     @Before
     public void setup() {
+        regionUUID = UUID.randomUUID();
+        Region region = new Region(1L, regionUUID, "region", true);
         constituencyUUID = UUID.randomUUID();
-        Constituency constituency = new Constituency(1L, constituencyUUID, "constituency",true);
+        Constituency constituency = new Constituency(1L, constituencyUUID, "constituency", region.getUuid(), region, true);
         entityManager.merge(constituency);
     }
 
@@ -40,6 +43,7 @@ public class ConstituencyRepositoryTest {
     public void shouldFindAll() {
         List<Constituency> constituencys = new ArrayList<Constituency>((Collection<? extends Constituency>) repository.findAll());
         assertThat(constituencys.get(0).getUuid()).isEqualTo(constituencyUUID);
+        assertThat(constituencys.get(0).getRegionUUID()).isEqualTo(regionUUID);
         assertThat(constituencys.size()).isEqualTo(1);
     }
 

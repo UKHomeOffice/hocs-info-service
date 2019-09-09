@@ -113,7 +113,7 @@ public class ConstituencyServiceTest {
 
     @Test
     public void shouldDeactivateConstituency(){
-        Constituency activeConstituency = new Constituency(1L, uuid, "constituency", true);
+        Constituency activeConstituency = new Constituency(1L, uuid, "constituency", null, null, true);
 
         constituencyService.setConstituencyToInactive(activeConstituency);
 
@@ -125,7 +125,7 @@ public class ConstituencyServiceTest {
 
     @Test
     public void shouldReactivateConstituency(){
-        Constituency inactive_constituency = new Constituency(1L, uuid, "constituency", false);
+        Constituency inactive_constituency = new Constituency(1L, uuid, "constituency", null, null, false);
 
         when(constituencyRepository.findConstituencyByUUID(any())).thenReturn(inactive_constituency);
 

@@ -28,6 +28,13 @@ public class Constituency implements Serializable {
     @Column(name = "constituency_name")
     private String constituencyName;
 
+    @Column(name = "region_uuid")
+    private UUID regionUUID;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_uuid", referencedColumnName = "uuid", insertable = false, updatable = false)
+    private Region region;
+
     @Setter
     @Column(name = "active")
     private boolean active;

@@ -13,7 +13,7 @@ public class ConstituencyDtoTest {
 
     @Test
     public void from() {
-        Constituency constituency = new Constituency(1l,uuid,"ConstituencyName",true);
+        Constituency constituency = new Constituency(1l,uuid,"ConstituencyName",null,null,true);
 
         ConstituencyDto constituencyDto = ConstituencyDto.from(constituency);
 

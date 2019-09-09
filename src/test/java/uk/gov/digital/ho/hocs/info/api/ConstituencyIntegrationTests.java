@@ -51,6 +51,18 @@ public class ConstituencyIntegrationTests {
     }
 
     @Test
+    public void shouldReturnRegionWhenSet() {
+        Constituency constituencyWithRegion = constituencyRepository.findConstituencyByName("test constituency 1");
+        assertThat(constituencyWithRegion).isNotNull();
+        assertThat(constituencyWithRegion.getRegion()).isNotNull();
+        assertThat(constituencyWithRegion.getRegion().getRegionName()).isEqualTo("region");
+
+        Constituency constituencyWithoutRegion = constituencyRepository.findConstituencyByName("test constituency 2");
+        assertThat(constituencyWithoutRegion).isNotNull();
+        assertThat(constituencyWithoutRegion.getRegion()).isNull();
+    }
+
+    @Test
     public void shouldCreateConstituency() {
 
         long numberOfConstituencysBefore = constituencyRepository.count();

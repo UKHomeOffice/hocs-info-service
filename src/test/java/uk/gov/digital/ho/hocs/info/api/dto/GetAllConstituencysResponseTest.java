@@ -14,7 +14,7 @@ public class GetAllConstituencysResponseTest {
     @Test
     public void from() {
         List<Constituency> constituencyList = new ArrayList<>();
-        constituencyList.add(new Constituency(1l, uuid, "Constituency", true));
+        constituencyList.add(new Constituency(1l, uuid, "Constituency", null, null, true));
 
         GetAllConstituencysResponse getAllConstituencysResponse = GetAllConstituencysResponse.from(constituencyList);
 
