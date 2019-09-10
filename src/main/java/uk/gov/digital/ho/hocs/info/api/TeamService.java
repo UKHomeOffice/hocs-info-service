@@ -214,6 +214,7 @@ public class TeamService {
     }
 
     @Transactional
+    @CacheEvict(value = "teamMembers", allEntries = true)
     public void removeUserFromTeam(UUID userUUID, UUID teamUUID) {
         log.debug("Removing User {} from Team {}", userUUID, teamUUID);
 
