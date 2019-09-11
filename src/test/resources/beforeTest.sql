@@ -78,7 +78,8 @@ INSERT INTO team_link (link_uuid, link_type, case_type, responsible_team_uuid, s
 VALUES ('11111111-ffff-1111-1111-111111111131', 'TOPIC', 'MIN', '08612f06-bae2-4d2f-90d2-2254a68414b8' ,'ST1'),
        ('11111111-ffff-1111-1111-111111111132', 'TOPIC', 'MIN', '5d584129-66ea-4e97-9277-7576ab1d32c0' ,'ST1'),
        ('11111111-ffff-1111-1111-111111111131', 'TOPIC', 'MIN', '7c33c878-9404-4f67-9bbc-ca52dff285ca' ,'ST2'),
-       ('11111111-ffff-1111-1111-111111111132', 'TOPIC', 'MIN', '5d584129-66ea-4e97-9277-7576ab1d32c0' ,'ST2');
+       ('11111111-ffff-1111-1111-111111111132', 'TOPIC', 'MIN', '5d584129-66ea-4e97-9277-7576ab1d32c0' ,'ST2'),
+       ('54321111-eeee-8436-3692-16782938a620', 'REGION', 'MIN', '5d584129-66ea-4e97-9277-7576ab1d32c0' ,'ST1');
 
 
 INSERT INTO team_contact (uuid, team_uuid, email_address)

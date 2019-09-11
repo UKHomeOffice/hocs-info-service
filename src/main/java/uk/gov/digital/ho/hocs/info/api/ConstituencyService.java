@@ -36,6 +36,11 @@ public class ConstituencyService {
         return constituencyRepository.findConstituencyByUUID(constituencyUUID);
     }
 
+    public Constituency getConstituencyByMemberExternalReference(String externalReference) {
+        log.debug("Requesting constituency by member externalReference {}", externalReference);
+        return constituencyRepository.findConstituencyByMemberExternalReference(externalReference);
+    }
+
     public List<Constituency> getConstituencyList(String caseType) {
         log.debug("Requesting all constituencies for {}", caseType);
         return constituencyRepository.findAllActiveConstituencyByCaseType(caseType);

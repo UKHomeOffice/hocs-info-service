@@ -49,6 +49,16 @@ public class ConstituencyServiceTest {
     }
 
     @Test
+    public void shouldReturnConstituencyByMemberExternalReference() {
+        when(constituencyRepository.findConstituencyByMemberExternalReference("extRef")).thenReturn(new Constituency("Constituency1"));
+
+        constituencyService.getConstituencyByMemberExternalReference("extRef");
+
+        verify(constituencyRepository, times(1)).findConstituencyByMemberExternalReference("extRef");
+        verifyNoMoreInteractions(constituencyRepository);
+    }
+
+    @Test
     public void shouldReturnAllConstituencys() {
         when(constituencyRepository.findAllBy()).thenReturn(getConstituencys());
 

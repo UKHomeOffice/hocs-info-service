@@ -63,6 +63,17 @@ public class ConstituencyResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
+    @Test
+    public void getConstituencyByMemberExternalReference() {
+        when(constituencyService.getConstituencyByMemberExternalReference("extRef")).thenReturn(new Constituency("Constituency1"));
+
+        ResponseEntity<ConstituencyDto> response = constituencyResource.getConstituencyByMemberExternalReference("extRef");
+
+        verify(constituencyService, times(1)).getConstituencyByMemberExternalReference("extRef");
+        verifyNoMoreInteractions(constituencyService);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
     private List<Constituency> getConstituencys() {
         return new ArrayList<Constituency>() {{
             add(new Constituency("Constituency1"));

@@ -113,6 +113,12 @@ public class TeamResource {
         return ResponseEntity.ok(TeamDto.from(team));
     }
 
+    @GetMapping(value = "/team/case/{caseUUID}/region/{regionUUID}/stage/{stageType}")
+    public ResponseEntity<TeamDto> getTeamForRegionAndStage(@PathVariable UUID caseUUID, @PathVariable UUID regionUUID, @PathVariable String stageType) {
+        Team team = teamService.getTeamByRegionAndStage(caseUUID, regionUUID, stageType);
+        return ResponseEntity.ok(TeamDto.from(team));
+    }
+
     @GetMapping(value = "/team/case/{caseUUID}/unit/{unitUUID}/stage/{stageType}")
     public ResponseEntity<TeamDto> getTeamForUnitAndStage(@PathVariable UUID caseUUID, @PathVariable UUID unitUUID, @PathVariable String stageType) {
         //Team team = teamService.getTeamByUnitAndStage(caseUUID, unitUUID, stageType);

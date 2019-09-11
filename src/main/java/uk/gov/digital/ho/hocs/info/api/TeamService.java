@@ -101,6 +101,17 @@ public class TeamService {
         }
     }
 
+    public Team getTeamByRegionAndStage(UUID caseUUID, UUID regionUUID, String stageType) {
+        log.debug("Getting Team for Case {} by Region {} and Stage {}", caseUUID, regionUUID, stageType);
+        Team team = teamRepository.findByRegionAndStage(regionUUID, stageType);
+        if (team != null) {
+            log.info("Got Team for Region {} and Stage {}", regionUUID, stageType);
+            return team;
+        } else {
+            throw new ApplicationExceptions.EntityNotFoundException("Team not found for Topic %s and Stage %s", regionUUID, stageType);
+        }
+    }
+
     @Transactional
     public Team createTeam(TeamDto newTeam, UUID unitUUID) {
         log.debug("Creating Team {}", newTeam.getDisplayName());

@@ -310,6 +310,22 @@ public class TeamIntegrationTests {
         assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).isActive()).isTrue();
     }
 
+    @Test
+    public void shouldReturnTeamForCaseByRegionAndStage(){
+        String caseUUID = "08d72d00-f081-4156-96b1-c36e511012ba";
+        String regionUUID = "54321111-eeee-8436-3692-16782938a620";
+        String stageType = "ST1";
+        HttpEntity httpEntity = new HttpEntity(headers);
+
+        ResponseEntity<TeamDto> result = testRestTemplate.exchange(
+                getBasePath() + "/team/case/" + caseUUID + "/region/" + regionUUID + "/stage/" + stageType
+                , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<TeamDto>() {
+                });
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody().getUuid().toString()).isEqualTo("5d584129-66ea-4e97-9277-7576ab1d32c0");
+    }
+
 
     private String getBasePath() {
         return "http://localhost:" + port;

@@ -11,6 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,31 +29,34 @@ public class ConstituencyRepositoryTest {
     @Autowired
     private ConstituencyRepository repository;
 
-    UUID constituencyUUID;
-    UUID regionUUID;
+    UUID constituencyUUID = UUID.randomUUID();
+    UUID regionUUID = UUID.randomUUID();
 
     @Before
     public void setup() {
-        regionUUID = UUID.randomUUID();
-        Region region = new Region(1L, regionUUID, "region", true);
-        constituencyUUID = UUID.randomUUID();
-        Constituency constituency = new Constituency(1L, constituencyUUID, "constituency", region.getUuid(), region, true);
-        entityManager.merge(constituency);
+        Region region = new Region(null, regionUUID, "region", true);
+        entityManager.persistAndFlush(region);
+        Constituency constituency = new Constituency(null, constituencyUUID, "constituency", regionUUID, region, true);
+        entityManager.persistAndFlush(constituency);
+        HouseAddress houseAddress = new HouseAddress(null, UUID.randomUUID(), "house", "code", "", "", "", "", "", LocalDate.now(), LocalDate.now());
+        entityManager.persistAndFlush(houseAddress);
+        Member member = new Member(null, "house", "fullTitle", "extRef", UUID.randomUUID(), LocalDateTime.now(), false, houseAddress.getUuid(), houseAddress, constituencyUUID, constituency.getConstituencyName(), constituency);
+        entityManager.persistAndFlush(member);
     }
 
     @Test()
     public void shouldFindAll() {
         List<Constituency> constituencys = new ArrayList<Constituency>((Collection<? extends Constituency>) repository.findAll());
-        assertThat(constituencys.get(0).getUuid()).isEqualTo(constituencyUUID);
-        assertThat(constituencys.get(0).getRegionUUID()).isEqualTo(regionUUID);
-        assertThat(constituencys.size()).isEqualTo(1);
+        assertThat(constituencys.get(constituencys.size()-1).getUuid()).isEqualTo(constituencyUUID);
+        assertThat(constituencys.get(constituencys.size()-1).getRegionUUID()).isEqualTo(regionUUID);
+        assertThat(constituencys.size()).isGreaterThanOrEqualTo(1);
     }
 
     @Test()
     public void shouldFindAllActiveIsTrue() {
         List<Constituency> constituencys = new ArrayList<Constituency>((Collection<? extends Constituency>) repository.findAllByActiveIsTrue());
-        assertThat(constituencys.get(0).getUuid()).isEqualTo(constituencyUUID);
-        assertThat(constituencys.size()).isEqualTo(1);
+        assertThat(constituencys.get(constituencys.size()-1).getUuid()).isEqualTo(constituencyUUID);
+        assertThat(constituencys.size()).isGreaterThanOrEqualTo(1);
     }
 
     @Test()
@@ -75,6 +80,18 @@ public class ConstituencyRepositoryTest {
     @Test()
     public void shouldNotFindConstituencyByUuidWhenDoesNotExist() {
         Constituency constituency = repository.findConstituencyByUUID(UUID.randomUUID());
+        assertThat(constituency).isNull();
+    }
+
+    @Test()
+    public void shouldFindConstituencyByMemberExternalReferenceWhenExists() {
+        Constituency constituency = repository.findConstituencyByMemberExternalReference("extRef");
+        assertThat(constituency.getUuid()).isEqualTo(constituencyUUID);
+    }
+
+    @Test()
+    public void shouldNotFindConstituencyByMemberExternalReferenceWhenDoesNotExist() {
+        Constituency constituency = repository.findConstituencyByMemberExternalReference("invalid");
         assertThat(constituency).isNull();
     }
 }

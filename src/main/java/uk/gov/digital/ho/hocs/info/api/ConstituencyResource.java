@@ -41,8 +41,15 @@ public class ConstituencyResource {
     @GetMapping(value = "/constituency/{constituencyUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<ConstituencyDto> getConstituencyByUUID(@PathVariable UUID constituencyUUID) {
         log.info("requesting constituency {}", constituencyUUID);
-        Constituency constituencys = constituencyService.getConstituency(constituencyUUID);
-        return ResponseEntity.ok(ConstituencyDto.from(constituencys));
+        Constituency constituency = constituencyService.getConstituency(constituencyUUID);
+        return ResponseEntity.ok(ConstituencyDto.from(constituency));
+    }
+
+    @GetMapping(value = "/constituency/member/{externalReference}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<ConstituencyDto> getConstituencyByMemberExternalReference(@PathVariable String externalReference) {
+        log.info("requesting constituency by member externalReference {}", externalReference);
+        Constituency constituency = constituencyService.getConstituencyByMemberExternalReference(externalReference);
+        return ResponseEntity.ok(ConstituencyDto.from(constituency));
     }
 
     @GetMapping(value = "/constituencys", produces = APPLICATION_JSON_UTF8_VALUE)

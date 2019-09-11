@@ -19,7 +19,7 @@ public class Constituency implements Serializable {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "uuid")
     private UUID uuid;
