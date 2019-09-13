@@ -12,13 +12,19 @@ import java.util.UUID;
 @Getter
 public class ConstituencyDto {
 
-    @JsonProperty("label")
-    private String constituencyName;
-
-    @JsonProperty("value")
+    @JsonProperty("uuid")
     private UUID uuid;
 
+    @JsonProperty("constituencyName")
+    private String constituencyName;
+
+    @JsonProperty("regionUUID")
+    private UUID regionUUID;
+
+    @JsonProperty("active")
+    private boolean active;
+
     public static ConstituencyDto from (Constituency constituency) {
-        return new ConstituencyDto(constituency.getConstituencyName(), constituency.getUuid());
+        return new ConstituencyDto(constituency.getUuid(), constituency.getConstituencyName(), constituency.getRegionUUID(), constituency.isActive());
     }
 }
