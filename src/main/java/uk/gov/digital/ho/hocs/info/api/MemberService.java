@@ -64,9 +64,7 @@ public class MemberService {
             log.debug("Looking for constituency by name: {}", constituency.getConstituencyName());
             Constituency constituencyFromDB = constituencyRepository.findActiveConstituencyByName(constituency.getConstituencyName());
             if (constituencyFromDB != null) {
-                log.info("Constituency {} found, updating", constituency.getConstituencyName());
-                constituencyFromDB.setConstituencyName(constituency.getConstituencyName());
-                constituencyRepository.save(constituencyFromDB);
+                log.info("Constituency {} found", constituency.getConstituencyName());
             } else {
                 log.info("Constituency {} not found, creating", constituency.getConstituencyName());
                 constituencyRepository.save(constituency);
