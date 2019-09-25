@@ -20,8 +20,14 @@ public class RestResponseEntityExceptionHandler {
 
     @ExceptionHandler(ApplicationExceptions.EntityCreationException.class)
     public ResponseEntity handle(ApplicationExceptions.EntityCreationException e) {
-        log.error("ApplicationExceptions.EntityCreationException: {}", e.getMessage(),value(EVENT, e.getEvent()));
+        log.error("ApplicationExceptions.EntityCreationException: {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ApplicationExceptions.EntityAlreadyExistsException.class)
+    public ResponseEntity handle(ApplicationExceptions.EntityAlreadyExistsException e) {
+        log.error("ApplicationExceptions.EntityAlreadyExistsException: {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), CONFLICT);
     }
 
     @ExceptionHandler(ApplicationExceptions.EntityNotFoundException.class)
