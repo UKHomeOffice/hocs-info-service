@@ -1,7 +1,7 @@
 package uk.gov.digital.ho.hocs.info;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.https://github.com/UKHomeOffice/hocs-info-service/network/alertsautoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class HocsInfoServiceApplication {
