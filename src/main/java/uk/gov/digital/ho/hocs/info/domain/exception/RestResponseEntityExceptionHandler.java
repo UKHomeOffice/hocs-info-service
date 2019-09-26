@@ -20,7 +20,7 @@ public class RestResponseEntityExceptionHandler {
 
     @ExceptionHandler(ApplicationExceptions.EntityCreationException.class)
     public ResponseEntity handle(ApplicationExceptions.EntityCreationException e) {
-        log.error("ApplicationExceptions.EntityCreationException: {}", e.getMessage());
+        log.error("ApplicationExceptions.EntityCreationException: {}, Event: {}", e.getMessage(),value(EVENT, e.getEvent()));
         return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }
 
