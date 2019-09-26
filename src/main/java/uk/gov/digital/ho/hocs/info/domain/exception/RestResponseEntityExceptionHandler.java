@@ -26,7 +26,7 @@ public class RestResponseEntityExceptionHandler {
 
     @ExceptionHandler(ApplicationExceptions.EntityAlreadyExistsException.class)
     public ResponseEntity handle(ApplicationExceptions.EntityAlreadyExistsException e) {
-        log.error("ApplicationExceptions.EntityAlreadyExistsException: {}, Event: {}", e.getMessage(), value(EVENT, e.getEvent());
+        log.error("ApplicationExceptions.EntityAlreadyExistsException: {}, Event: {}", e.getMessage(), value(EVENT, e.getEvent()));
         return new ResponseEntity<>(e.getMessage(), CONFLICT);
     }
 
@@ -44,61 +44,61 @@ public class RestResponseEntityExceptionHandler {
 
     @ExceptionHandler(ApplicationExceptions.ResourceNotFoundException.class)
     public ResponseEntity handle(ApplicationExceptions.ResourceNotFoundException e) {
-        log.error("ApplicationExceptions.ResourceNotFoundException: {}", e.getMessage(),value(EVENT, e.getEvent()));
+        log.error("ApplicationExceptions.ResourceNotFoundException: {}, Event: {}", e.getMessage(),value(EVENT, e.getEvent()));
         return new ResponseEntity<>(e.getMessage(), NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity handle(MethodArgumentNotValidException e) {
-        log.error("MethodArgumentNotValidException: {}", e.getMessage(),value(EVENT, BAD_REQUEST));
+        log.error("MethodArgumentNotValidException: {}, Event: {}", e.getMessage(),value(EVENT, BAD_REQUEST));
         return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpMessageConversionException.class)
     public ResponseEntity handle(HttpMessageConversionException e) {
-        log.error("HttpMessageConversionException: {}", e.getMessage(),value(EVENT, BAD_REQUEST), value(EXCEPTION, e));
+        log.error("HttpMessageConversionException: {}, Event: {}, Exception: {}", e.getMessage(),value(EVENT, BAD_REQUEST), value(EXCEPTION, e));
         return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity handle(HttpMessageNotReadableException e) {
-        log.error("HttpMessageNotReadableException: {}", e.getMessage(),value(EVENT, BAD_REQUEST), value(EXCEPTION, e));
+        log.error("HttpMessageNotReadableException: {}, Event: {}, Exception: {}", e.getMessage(),value(EVENT, BAD_REQUEST), value(EXCEPTION, e));
         return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
     }
 
     @ExceptionHandler(ApplicationExceptions.CorrespondentCreationException.class)
     public ResponseEntity handle(ApplicationExceptions.CorrespondentCreationException e) {
-        log.error("DataIntegrityViolationException: {}", e.getMessage(),value(EVENT, BAD_REQUEST), value(EXCEPTION, e));
+        log.error("DataIntegrityViolationException: {}, Event: {}, Exception: {}", e.getMessage(),value(EVENT, BAD_REQUEST), value(EXCEPTION, e));
         return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
     }
 
     @ExceptionHandler(KeycloakException.class)
     public ResponseEntity handle(KeycloakException e) {
-        log.error("Keycloak exception: {}", e.getMessage(),e.getMessage(),value(EVENT, KEYCLOAK_FAILURE));
+        log.error("Keycloak exception: {}, Event: {}", e.getMessage(),value(EVENT, KEYCLOAK_FAILURE));
         return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(ApplicationExceptions.TeamDeleteException.class)
     public ResponseEntity<TeamDeleteActiveParentTopicsDto> handle(ApplicationExceptions.TeamDeleteException e) {
-        log.error("Exception: {}", e.getMessage(), value(EVENT, TEAM_DELETED_FAILURE));
+        log.error("Exception: {}, Event: {}", e.getMessage(), value(EVENT, TEAM_DELETED_FAILURE));
         return new ResponseEntity<>(e.getTeamDeleteActiveParentTopicsDto() ,PRECONDITION_FAILED);
     }
 
     @ExceptionHandler(ApplicationExceptions.TopicCreationException.class)
     public ResponseEntity handle(ApplicationExceptions.TopicCreationException e) {
-        log.error("TopicCreationException: {}", e.getMessage(),value(EVENT, BAD_REQUEST));
+        log.error("TopicCreationException: {}, Event: {}", e.getMessage(),value(EVENT, BAD_REQUEST));
         return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
     }
 
     @ExceptionHandler(ApplicationExceptions.TopicUpdateException.class)
     public ResponseEntity handle(ApplicationExceptions.TopicUpdateException e) {
-        log.error("TopicCreationException: {}", e.getMessage(),value(EVENT, BAD_REQUEST));
+        log.error("TopicCreationException: {}, Event: {}", e.getMessage(),value(EVENT, BAD_REQUEST));
         return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity handle(Exception e) {
-        log.error("Exception: {}", e.getMessage(), value(EVENT, UNCAUGHT_EXCEPTION));
+        log.error("Exception: {}, Event: {}", e.getMessage(), value(EVENT, UNCAUGHT_EXCEPTION));
         return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }
 
