@@ -26,19 +26,19 @@ public class RestResponseEntityExceptionHandler {
 
     @ExceptionHandler(ApplicationExceptions.EntityAlreadyExistsException.class)
     public ResponseEntity handle(ApplicationExceptions.EntityAlreadyExistsException e) {
-        log.error("ApplicationExceptions.EntityAlreadyExistsException: {}", e.getMessage());
+        log.error("ApplicationExceptions.EntityAlreadyExistsException: {}, Event: {}", e.getMessage(), value(EVENT, e.getEvent());
         return new ResponseEntity<>(e.getMessage(), CONFLICT);
     }
 
     @ExceptionHandler(ApplicationExceptions.EntityNotFoundException.class)
     public ResponseEntity handle(ApplicationExceptions.EntityNotFoundException e) {
-        log.error("ApplicationExceptions.EntityNotFoundException: {}", e.getMessage(),value(EVENT, e.getEvent()));
+        log.error("ApplicationExceptions.EntityNotFoundException: {}, Event: {}", e.getMessage(),value(EVENT, e.getEvent()));
         return new ResponseEntity<>(e.getMessage(), NOT_FOUND);
     }
 
     @ExceptionHandler(ApplicationExceptions.ResourceServerException.class)
     public ResponseEntity handle(ApplicationExceptions.ResourceServerException e) {
-        log.error("ApplicationExceptions.ResourceServerException: {}", e.getMessage(),value(EVENT, e.getEvent()));
+        log.error("ApplicationExceptions.ResourceServerException: {}, Event: {}", e.getMessage(),value(EVENT, e.getEvent()));
         return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }
 
