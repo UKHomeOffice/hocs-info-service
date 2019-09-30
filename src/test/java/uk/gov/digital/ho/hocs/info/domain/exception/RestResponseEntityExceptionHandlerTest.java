@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.domain.model;
+package uk.gov.digital.ho.hocs.info.domain.exception;
 
 import org.junit.Before;
 import org.junit.Test;
