@@ -59,6 +59,16 @@ public class TopicServiceTest {
     }
 
     @Test
+    public void shouldReturnAllParentTopics() {
+        when(parentTopicRepository.findAll()).thenReturn(getParentTopics());
+
+        topicService.getAllParentTopics();
+
+        verify(parentTopicRepository, times(1)).findAll();
+        verifyNoMoreInteractions(parentTopicRepository);
+    }
+
+    @Test
     public void shouldReturnParentTopicsForCaseType() {
         when(parentTopicRepository.findAllParentTopicByCaseType(any())).thenReturn(getParentTopics());
 

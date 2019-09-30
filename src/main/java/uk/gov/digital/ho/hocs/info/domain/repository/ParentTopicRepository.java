@@ -24,5 +24,5 @@ public interface ParentTopicRepository extends CrudRepository<ParentTopic, Strin
 
     Set<ParentTopic> findAllByActiveIsTrue();
 
-
+    List<ParentTopic> findAll();
 }

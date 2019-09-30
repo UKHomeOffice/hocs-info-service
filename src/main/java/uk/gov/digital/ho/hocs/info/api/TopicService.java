@@ -43,6 +43,11 @@ public class TopicService {
         return parentTopicRepository.findAllParentTopicByCaseType(caseType);
     }
 
+    public List<ParentTopic> getAllParentTopics() {
+        log.debug("Requesting all parent topics");
+        return parentTopicRepository.findAll();
+    }
+
     public List<Topic> getAllTopicsForParentTopic(UUID parentTopicUUID) {
         log.debug("Requesting all topics for parent topic UUID{}", parentTopicUUID);
         return topicRepository.findTopicByParentTopic(parentTopicUUID);
