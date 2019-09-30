@@ -50,6 +50,7 @@ public class Schema implements Serializable {
             joinColumns = @JoinColumn(name="schema_uuid", referencedColumnName="uuid"),
             inverseJoinColumns = @JoinColumn( name="field_uuid", referencedColumnName="uuid")
     )
+    @OrderBy("id")
     private List<Field> fields;
 
     public Schema(String type, String title, String actionLabel) {
