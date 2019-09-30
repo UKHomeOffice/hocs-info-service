@@ -14,6 +14,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
+
 public class RestResponseEntityExceptionHandlerTest {
 
     private RestResponseEntityExceptionHandler restResponseEntityExceptionHandler;
@@ -22,7 +23,6 @@ public class RestResponseEntityExceptionHandlerTest {
     public void beforeTest(){
         restResponseEntityExceptionHandler = new RestResponseEntityExceptionHandler();
     }
-
 
     @Test
     public void handleEntityCreationException(){
@@ -202,5 +202,4 @@ public class RestResponseEntityExceptionHandlerTest {
         assertEquals("Error msg incorrect", msg, result.getBody());
 
     }
-
 }

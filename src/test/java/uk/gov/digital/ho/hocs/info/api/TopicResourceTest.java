@@ -44,6 +44,17 @@ public class TopicResourceTest {
     }
 
     @Test
+    public void shouldGetAllParentTopics() {
+        when(topicService.getAllParentTopics()).thenReturn(getParentTopics());
+
+        ResponseEntity<Set<ParentTopicDto>> response = topicResource.getParentTopics();
+
+        verify(topicService, times(1)).getAllParentTopics();
+        verifyNoMoreInteractions(topicService);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
     public void shouldGetParentTopicsAndChildTopicsByCaseType() {
         when(topicService.getParentTopics(any())).thenReturn(getParentTopics());
 
