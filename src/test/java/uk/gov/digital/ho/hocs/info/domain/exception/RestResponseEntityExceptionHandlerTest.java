@@ -7,8 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
-import uk.gov.digital.ho.hocs.info.domain.exception.RestResponseEntityExceptionHandler;
 import uk.gov.digital.ho.hocs.info.security.KeycloakException;
 
 import static junit.framework.TestCase.assertEquals;
