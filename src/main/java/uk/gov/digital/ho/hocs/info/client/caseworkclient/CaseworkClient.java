@@ -67,7 +67,7 @@ public class CaseworkClient {
     }
 
     public Set getCasesForUser(UUID userUUID, UUID teamUUID){
-        ResponseEntity<Set> response = restHelper.get(serviceBaseURL, String.format("stage/team/%s/user/%s", teamUUID, userUUID), Set.class);
+        ResponseEntity<Set> response = restHelper.get(serviceBaseURL, String.format("/stage/team/%s/user/%s", teamUUID, userUUID), Set.class);
         if (response.getStatusCodeValue() == 200) {
             log.info("Got cases for User: {}", userUUID);
             return response.getBody();
