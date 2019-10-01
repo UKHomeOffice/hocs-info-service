@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import uk.gov.digital.ho.hocs.info.security.KeycloakException;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDeleteActiveParentTopicsDto;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+
 import static net.logstash.logback.argument.StructuredArguments.value;
 import static org.springframework.http.HttpStatus.*;
 import static uk.gov.digital.ho.hocs.info.application.LogEvent.*;
@@ -98,7 +102,10 @@ public class RestResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity handle(Exception e) {
-        log.error("Exception: {}, Event: {}", e.getMessage(), value(EVENT, UNCAUGHT_EXCEPTION));
+        Writer stackTraceWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stackTraceWriter);
+        e.printStackTrace(printWriter);
+        log.error("Exception: {}, Event: {}, Stack: {}", e.getMessage(), value(EVENT, UNCAUGHT_EXCEPTION), stackTraceWriter.toString());
         return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }
 
