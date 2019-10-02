@@ -6,9 +6,15 @@ import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.api.TeamService;
+import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
+import uk.gov.digital.ho.hocs.info.domain.model.Team;
+import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,12 +27,15 @@ import static uk.gov.digital.ho.hocs.info.application.LogEvent.KEYCLOAK_FAILURE;
 @Slf4j
 public class KeycloakService {
 
+    private TeamRepository teamRepository;
     private Keycloak keycloakClient;
     private String hocsRealmName;
 
     public KeycloakService(
+            TeamRepository teamRepository,
             Keycloak keycloakClient,
             @Value("${keycloak.realm}") String hocsRealmName) {
+        this.teamRepository = teamRepository;
         this.keycloakClient = keycloakClient;
         this.hocsRealmName = hocsRealmName;
     }
@@ -97,8 +106,16 @@ public class KeycloakService {
 
     public Set<UserRepresentation> getUsersForTeam(UUID teamUUID) {
         String encodedTeamPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
-        GroupRepresentation group = keycloakClient.realm(hocsRealmName).getGroupByPath(encodedTeamPath);
-        return keycloakClient.realm(hocsRealmName).groups().group((group).getId()).members().stream().collect(Collectors.toSet());
+        try {
+            if (teamRepository.findByUuid(teamUUID) != null){
+                GroupRepresentation group = keycloakClient.realm(hocsRealmName).getGroupByPath(encodedTeamPath);
+                return new HashSet<>(keycloakClient.realm(hocsRealmName).groups().group((group).getId()).members());
+            } else {
+                throw new ApplicationExceptions.EntityNotFoundException("Team not found for UUID %s", teamUUID);
+            }
+        } catch (javax.ws.rs.NotFoundException e){
+            log.error("Keycloak has not found users assigned to this team, Not found exception thrown by keycloak: " + e.getMessage());
+            return Collections.emptySet();
+        }
     }
-
 }
