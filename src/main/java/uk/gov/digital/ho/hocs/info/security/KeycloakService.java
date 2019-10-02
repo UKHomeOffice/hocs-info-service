@@ -48,7 +48,7 @@ public class KeycloakService {
             GroupRepresentation group = hocsRealm.getGroupByPath(teamPath);
             user.joinGroup(group.getId());
         } catch (Exception e) {
-            log.error("Failed to add user {} to team {} for reason: {}", userUUID, teamUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            log.error("Failed to add user {} to team {} for reason: {}, Event: {}", userUUID, teamUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }
@@ -61,7 +61,7 @@ public class KeycloakService {
             GroupRepresentation group = hocsRealm.getGroupByPath(teamPath);
             user.leaveGroup(group.getId());
         } catch (Exception e) {
-            log.error("Failed to remove user {} from team {} for reason: {}", userUUID, teamUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            log.error("Failed to remove user {} from team {} for reason: {}, Event: {}", userUUID, teamUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }
@@ -75,7 +75,7 @@ public class KeycloakService {
             Response response = hocsRealm.groups().add(teamGroup);
             response.close();
         } catch (Exception e) {
-            log.error("Failed to create group for team {} for reason: {}", teamUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            log.error("Failed to create group for team {} for reason: {}, Event: {}", teamUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }
@@ -88,7 +88,7 @@ public class KeycloakService {
             keycloakClient.realm(hocsRealmName).groups().group(id).remove();
 
         } catch (Exception e) {
-            log.error("Failed to delete permission group for with path {} for reason: {}", path, e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            log.error("Failed to delete permission group for with path {} for reason: {}, Event: {}", path, e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }
