@@ -100,6 +100,12 @@ public class RestResponseEntityExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
     }
 
+    @ExceptionHandler(ApplicationExceptions.UserRemoveException.class)
+    public ResponseEntity handle(ApplicationExceptions.UserRemoveException e) {
+        log.error("UserRemoveException: {}, Event: {}", e.getMessage(), value(EVENT, CONFLICT));
+        return new ResponseEntity<>(e.getMessage(), CONFLICT);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity handle(Exception e) {
         Writer stackTraceWriter = new StringWriter();

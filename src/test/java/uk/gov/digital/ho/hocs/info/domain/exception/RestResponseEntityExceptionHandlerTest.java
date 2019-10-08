@@ -190,6 +190,17 @@ public class RestResponseEntityExceptionHandlerTest {
 
     }
 
+    @Test
+    public void handleUserRemoveException(){
+        String msg = "Test Error msg";
+        ApplicationExceptions.UserRemoveException exception = new ApplicationExceptions.UserRemoveException(msg);
+
+        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+
+        assertEquals("Http code should be 409", 409, result.getStatusCode().value());
+        assertEquals("Error msg incorrect", msg, result.getBody());
+
+    }
 
     @Test
     public void handleException(){
