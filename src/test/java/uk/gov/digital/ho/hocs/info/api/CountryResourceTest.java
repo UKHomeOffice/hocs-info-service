@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.api.dto.GetCountrysResponse;
 import uk.gov.digital.ho.hocs.info.api.dto.GetMembersResponse;
 import uk.gov.digital.ho.hocs.info.domain.model.Country;
 
@@ -37,10 +36,10 @@ public class CountryResourceTest {
         countrys.add(new Country("testCountry"));
         when(countryService.getAllActiveCountrys()).thenReturn(countrys);
 
-        ResponseEntity<GetCountrysResponse> response = countryResource.getAllActiveCountrys();
+        ResponseEntity<Set<String>> response = countryResource.getAllActiveCountrys();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getCountrys().size()).isEqualTo(1);
+        assertThat(response.getBody().size()).isEqualTo(1);
         verify(countryService, times(1)).getAllActiveCountrys();
         verifyNoMoreInteractions(countryService);
     }
