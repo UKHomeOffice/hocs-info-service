@@ -33,6 +33,15 @@ public class CountryServiceTest {
     }
 
     @Test
+    public void shouldReturnAllActiveMembers() {
+
+        countryService.getAllActiveCountrys();
+
+        verify(countryRepository, times(1)).findAllActiveCountrys();
+        verifyNoMoreInteractions(countryRepository);
+    }
+
+    @Test
     public void shouldUpdateWebCountryList() {
 
         Set<Country> countrys = new HashSet<Country>();
