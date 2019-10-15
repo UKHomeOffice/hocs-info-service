@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.client.ingest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,15 +8,14 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
+import uk.gov.digital.ho.hocs.info.domain.model.Country;
 import uk.gov.digital.ho.hocs.info.domain.model.House;
 import uk.gov.digital.ho.hocs.info.domain.model.HouseAddress;
 import uk.gov.digital.ho.hocs.info.domain.model.Member;
 import uk.gov.digital.ho.hocs.info.domain.repository.HouseAddressRepository;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +29,7 @@ public class ListConsumerService {
     private final String API_NORTHERN_IRISH_ASSEMBLY;
     private final String API_EUROPEAN_PARLIAMENT;
     private final String API_WELSH_ASSEMBLY;
+    private final String API_COUNTRY_REGISTER;
 
     private HouseAddressRepository houseAddressRepository;
     private RestTemplate restTemplate;
@@ -39,12 +40,14 @@ public class ListConsumerService {
                                @Value("${api.ni.assembly}") String apiNorthernIrishAssembly,
                                @Value("${api.european.parliament}") String apiEuropeanParliament,
                                @Value("${api.welsh.assembly}") String apiWelshAssembly,
+                               @Value("${api.country.register}") String apiCountryRegister,
                                HouseAddressRepository houseAddressRepository, RestTemplate restTemplate) {
         this.API_UK_PARLIAMENT = apiUkParliament;
         this.API_SCOTTISH_PARLIAMENT = apiScottishParliament;
         this.API_NORTHERN_IRISH_ASSEMBLY = apiNorthernIrishAssembly;
         this.API_EUROPEAN_PARLIAMENT = apiEuropeanParliament;
         this.API_WELSH_ASSEMBLY = apiWelshAssembly;
+        this.API_COUNTRY_REGISTER = apiCountryRegister;
         this.houseAddressRepository = houseAddressRepository;
         this.restTemplate = restTemplate;
 
@@ -98,6 +101,13 @@ public class ListConsumerService {
         Set<WelshMember> welshMemberSet = welshMembers.stream().map(WelshMembers::getMembers).flatMap(Collection::stream).collect(Collectors.toSet());
         Set<Member> members = welshMemberSet.stream().map(m -> new Member(House.HOUSE_WELSH_ASSEMBLY.getDisplayValue(), m.getName(), houseAddress.getUuid(),"WE"+m.getId())).collect(Collectors.toSet());
         return members;
+    }
+
+    public Set<Country> createFromCountryRegisterAPI() {
+        log.info("Updating Countries");
+        HashMap<String, HashMap<String, ArrayList<HashMap<String, String>>>> hashMap = getMembersFromAPI(API_COUNTRY_REGISTER, MediaType.APPLICATION_JSON, HashMap.class);
+        Set<Country> countrys = hashMap.values().stream().map(c -> new Country(c.get("item").get(0).get("name"))).collect(Collectors.toSet());
+        return countrys;
     }
 
     private <T> T getMembersFromAPI(String apiEndpoint, MediaType mediaType, Class<T> returnClass) {
