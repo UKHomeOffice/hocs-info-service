@@ -33,7 +33,7 @@ public class CountryResourceTest {
     @Test
     public void shouldGetAllActiveCountrys(){
         Set<Country> countrys = new HashSet<Country>();
-        countrys.add(new Country("testCountry"));
+        countrys.add(new Country("testCountry", false));
         when(countryService.getAllActiveCountrys()).thenReturn(countrys);
 
         ResponseEntity<Set<String>> response = countryResource.getAllActiveCountrys();

@@ -28,7 +28,7 @@ public class CountryRepositoryTest {
 
     @Test()
     public void shouldFindByName() {
-        Country country1 = new Country("TestCountryName1");
+        Country country1 = new Country("TestCountryName1", false);
         this.entityManager.persist(country1);
 
         Country country = repository.findByName("TestCountryName1");
@@ -42,12 +42,23 @@ public class CountryRepositoryTest {
 
         int initialCount = countrys.size();
 
-        Country country1 = new Country("TestCountryName1");
+        Country country1 = new Country("TestCountryName1", false);
         this.entityManager.persist(country1);
-        Country country2 = new Country("TestCountryName2");
+        Country country2 = new Country("TestCountryName2", false);
         country2.setDeleted(true);
         this.entityManager.persist(country2);
 
         assertThat(repository.findAllActiveCountrys().size()).isEqualTo(initialCount + 1);
+    }
+
+    @Test()
+    public void shouldDeleteAll() {
+
+        Country country = new Country("TestCountryName", false);
+        this.entityManager.persist(country);
+
+        repository.deleteAll();
+
+        assertThat(repository.findAllActiveCountrys().size()).isEqualTo(0);
     }
 }

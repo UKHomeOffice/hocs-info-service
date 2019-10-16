@@ -23,11 +23,16 @@ public class Country implements Serializable {
     @Setter
     private String name;
 
+    @Column(name = "is_territory")
+    @Setter
+    private Boolean isTerritory = false;
+
     @Column(name = "deleted")
     @Setter
     private Boolean deleted = false;
 
-    public Country(String name) {
+    public Country(String name, Boolean isTerritory) {
         this.name = name;
+        this.isTerritory = isTerritory;
     }
 }
