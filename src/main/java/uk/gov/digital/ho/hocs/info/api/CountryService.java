@@ -21,10 +21,19 @@ public class CountryService {
         this.listConsumerService = listConsumerService;
     }
 
+    Set<Country> getAllActiveCountrys() {
+        log.debug("Getting all active countries");
+        Set<Country> countrys = countryRepository.findAllActiveCountrys();
+        log.info("Got {} countries", countrys.size());
+        return countrys;
+    }
+
     public void updateWebCountryList() {
-        log.info("Started Updating Countries List");
+        log.info("Started Updating Countries/Territories List");
+        countryRepository.deleteAll();
         updateCountry(listConsumerService.createFromCountryRegisterAPI());
-        log.info("Finished Updating Countries List");
+        updateCountry(listConsumerService.createFromTerritoryRegisterAPI());
+        log.info("Finished Updating Countries/Territories List");
     }
 
     private void updateCountry(Set<Country> countrys) {
@@ -32,13 +41,12 @@ public class CountryService {
             log.debug("Looking for Country: {}", country.getName());
             Country countryFromDB = countryRepository.findByName(country.getName());
             if (countryFromDB != null) {
-                log.info("Member {} found", country.getName());
-                if (countryFromDB.getDeleted()) {
-                    countryFromDB.setDeleted(false);
-                    countryRepository.save(countryFromDB);
-                }
+                log.info("Country {} found, updating", country.getName());
+                countryFromDB.setIsTerritory(country.getIsTerritory());
+                countryFromDB.setDeleted(false);
+                countryRepository.save(countryFromDB);
             } else {
-                log.info("Member {} not found, creating", country.getName());
+                log.info("Country {} not found, creating", country.getName());
                 countryRepository.save(country);
             }
         });
