@@ -77,7 +77,7 @@ pipeline:
       event: [push, tag, deployment]
 
   deploy-to-dev-from-build-number:
-    image: quay.io/ukhomeofficedigital/kd:v1.12.2
+    image: quay.io/ukhomeofficedigital/kd:v1.14.1
     environment:
       - KUBE_NAMESPACE=wcs-dev
       - ENVIRONMENT=dev
@@ -93,7 +93,7 @@ pipeline:
       event: [push, tag]
 
   deployment:
-    image: quay.io/ukhomeofficedigital/kd:v1.12.2
+    image: quay.io/ukhomeofficedigital/kd:v1.14.1
     environment:
       - KUBE_NAMESPACE=wcs-${DRONE_DEPLOY_TO}
       - ENVIRONMENT=${DRONE_DEPLOY_TO}
@@ -109,7 +109,7 @@ pipeline:
       environment: [dev, demo]
 
   deploy-to-qa:
-    image: quay.io/ukhomeofficedigital/kd:v1.12.2
+    image: quay.io/ukhomeofficedigital/kd:v1.14.1
     environment:
       - KUBE_NAMESPACE=wcs-qa
       - ENVIRONMENT=qa
@@ -126,7 +126,7 @@ pipeline:
       environment: qa
 
   deploy-to-prod:
-    image: quay.io/ukhomeofficedigital/kd:v1.12.2
+    image: quay.io/ukhomeofficedigital/kd:v1.14.1
     environment:
       - KUBE_NAMESPACE=wcs-prod
       - ENVIRONMENT=prod
