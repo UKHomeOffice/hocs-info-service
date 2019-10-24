@@ -63,6 +63,11 @@ public class TopicService {
         return getParentTopics(caseTypeResponse.getType());
     }
 
+    public List<Topic> getFilteredChildTopicList(UUID caseUUID) {
+        GetCaseworkCaseDataResponse caseTypeResponse = caseworkClient.getCase(caseUUID);
+        return findAllActiveAssignedTopicsByCaseType(caseTypeResponse.getType());
+    }
+
     public UUID createParentTopic(CreateParentTopicDto request) {
         String displayName = request.getDisplayName();
         log.debug("Creating parent topic: {}", displayName);
@@ -212,5 +217,10 @@ public class TopicService {
     public List<Topic> getTopics() {
         log.debug("Requesting all topics");
         return topicRepository.findAllBy();
+    }
+
+    private List<Topic> findAllActiveAssignedTopicsByCaseType(String caseType) {
+        log.debug("Requesting all active topics for {}", caseType);
+        return topicRepository.findAllActiveAssignedTopicsByCaseType(caseType);
     }
 }
