@@ -113,10 +113,6 @@ public class TopicResourceTest {
         }};
     }
 
-    private List<ParentTopicAndTopicDto> getParentTopicDtos() {
-        return getParentTopics().stream().map(pt -> ParentTopicAndTopicDto.from(pt)).collect(Collectors.toList());
-    }
-
     @Test
     public void shouldCreateParentTopic() {
 
