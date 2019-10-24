@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,13 +42,14 @@ public class TopicRepositoryTest {
         Topic childTopic5 = new Topic("ChildTopic5", parentTopic2.getUuid());
         childTopic5.setActive(false);
         Unit unit = new Unit("__UNIT1__", "__U1__", true);
-        CaseType caseType = new CaseType("__CASETYPE__", "CT", "__CASETYPE__", unit.getUuid(), "STAGE1", false, true);
+        CaseType caseType = new CaseType("__CASETYPE__", "CT", "__CASETYPE__", unit.getUuid(), "__STAGETYPE__", false, true);
         Team team = new Team("__Team1__", true);
         team.setUnit(unit);
-        TeamLink teamLink1 = new TeamLink(childTopic1.getUuid(), "TOPIC", team.getUuid(), "__CASETYPE__", "DCU_MIN_MARKUP");
-        TeamLink teamLink2 = new TeamLink(childTopic2.getUuid(), "TOPIC", team.getUuid(), "__CASETYPE__", "DCU_MIN_MARKUP");
-        TeamLink teamLink3 = new TeamLink(childTopic3.getUuid(), "TOPIC", team.getUuid(), "__CASETYPE__", "DCU_MIN_MARKUP");
-        TeamLink teamLink4 = new TeamLink(childTopic5.getUuid(), "TOPIC", team.getUuid(), "__CASETYPE__", "DCU_MIN_MARKUP");
+        StageTypeEntity stageTypeEntity = new StageTypeEntity(UUID.randomUUID(), "__STAGETYPE__", "__STAGETYPE__", "__STAGETYPE__", caseType.getUuid(), 1, true, team);
+        TeamLink teamLink1 = new TeamLink(childTopic1.getUuid(), "TOPIC", team.getUuid(), "__CASETYPE__", "__STAGETYPE__");
+        TeamLink teamLink2 = new TeamLink(childTopic2.getUuid(), "TOPIC", team.getUuid(), "__CASETYPE__", "__STAGETYPE__");
+        TeamLink teamLink3 = new TeamLink(childTopic3.getUuid(), "TOPIC", team.getUuid(), "__CASETYPE__", "__STAGETYPE__");
+        TeamLink teamLink4 = new TeamLink(childTopic5.getUuid(), "TOPIC", team.getUuid(), "__CASETYPE__", "__STAGETYPE__");
 
         this.entityManager.persist(childTopic1);
         this.entityManager.persist(childTopic2);
@@ -59,6 +61,7 @@ public class TopicRepositoryTest {
         this.entityManager.persist(unit);
         this.entityManager.persist(caseType);
         this.entityManager.persist(team);
+        this.entityManager.persist(stageTypeEntity);
         this.entityManager.persist(teamLink1);
         this.entityManager.persist(teamLink2);
         this.entityManager.persist(teamLink3);

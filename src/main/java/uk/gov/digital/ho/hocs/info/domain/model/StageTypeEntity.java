@@ -46,4 +46,15 @@ public class StageTypeEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "acting_team_uuid", referencedColumnName = "uuid")
     private Team team;
+
+    public StageTypeEntity(UUID uuid, String displayName, String shortCode, String type, UUID caseTypeUUID, int deadline, boolean active, Team team) {
+        this.uuid = uuid;
+        this.displayName = displayName;
+        this.shortCode = shortCode;
+        this.type = type;
+        this.caseTypeUUID = caseTypeUUID;
+        this.deadline = deadline;
+        this.active = active;
+        this.team = team;
+    }
 }

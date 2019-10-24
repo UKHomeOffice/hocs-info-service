@@ -53,11 +53,12 @@ public class ParentTopicRepositoryTest {
         Topic childTopic4 = new Topic("ChildTopic4" , parentTopic2.getUuid());
         Topic childTopic5 = new Topic("ChildTopic5" , parentTopic3.getUuid());
         Unit unit = new Unit("__UNIT1__", "__U1__", true);
-        CaseType caseType = new CaseType("__CASETYPE__", "CT", "__CASETYPE__", unit.getUuid(), "STAGE1", false, true);
+        CaseType caseType = new CaseType("__CASETYPE__", "CT", "__CASETYPE__", unit.getUuid(), "__STAGETYPE__", false, true);
         Team team = new Team("__Team1__", true);
         team.setUnit(unit);
-        TeamLink teamLink1 = new TeamLink(childTopic1.getUuid(), "TOPIC", team.getUuid(), "__CASETYPE__", "DCU_MIN_MARKUP");
-        TeamLink teamLink2 = new TeamLink(childTopic5.getUuid(), "TOPIC", team.getUuid(), "__CASETYPE__", "DCU_MIN_MARKUP");
+        StageTypeEntity stageTypeEntity = new StageTypeEntity(UUID.randomUUID(), "__STAGETYPE__", "__STAGETYPE__", "__STAGETYPE__", caseType.getUuid(), 1, true, team);
+        TeamLink teamLink1 = new TeamLink(childTopic1.getUuid(), "TOPIC", team.getUuid(), "__CASETYPE__", "__STAGETYPE__");
+        TeamLink teamLink2 = new TeamLink(childTopic5.getUuid(), "TOPIC", team.getUuid(), "__CASETYPE__", "__STAGETYPE__");
 
         this.entityManager.persist(childTopic1);
         this.entityManager.persist(childTopic2);
@@ -69,6 +70,7 @@ public class ParentTopicRepositoryTest {
         this.entityManager.persist(unit);
         this.entityManager.persist(caseType);
         this.entityManager.persist(team);
+        this.entityManager.persist(stageTypeEntity);
         this.entityManager.persist(teamLink1);
         this.entityManager.persist(teamLink2);
 
