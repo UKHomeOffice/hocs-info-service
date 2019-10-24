@@ -21,7 +21,7 @@ public class GetAllTopicsResponseTest {
     @Test
     public void from() {
         Set<Topic> topicSet = new HashSet<>();
-        topicSet.add(new Topic(1l,"Topic1",topic1Uuid, UUID.randomUUID(), true));
+        topicSet.add(new Topic(1l,"Topic1", topic1Uuid, parentTopic1Uuid, true));
         List<ParentTopic> parentTopics = new ArrayList<>();
         parentTopics.add(new ParentTopic(1l, parentTopic1Uuid, "ParentTopic", topicSet, true));
 
@@ -29,7 +29,7 @@ public class GetAllTopicsResponseTest {
 
         assertThat(getAllTopicsResponse.getParentTopicAndTopicDtos()).isNotEmpty();
         assertThat(getAllTopicsResponse.getParentTopicAndTopicDtos().get(0).getDisplayName()).isEqualTo("ParentTopic");
-        assertThat(getAllTopicsResponse.getParentTopicAndTopicDtos().get(0).getUuid()).isEqualTo(topic1Uuid);
+        assertThat(getAllTopicsResponse.getParentTopicAndTopicDtos().get(0).getUuid()).isEqualTo(parentTopic1Uuid);
         assertThat(getAllTopicsResponse.getParentTopicAndTopicDtos().get(0).getTopics().get(0).getDisplayName()).isEqualTo("Topic1");
         assertThat(getAllTopicsResponse.getParentTopicAndTopicDtos().get(0).getTopics().get(0).getUuid()).isEqualTo(topic1Uuid);
     }
