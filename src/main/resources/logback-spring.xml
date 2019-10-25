@@ -53,7 +53,7 @@
         <appender-ref ref="consoleAppender"/>
     </logger>
 
-    <logger name="org.springframework" additivity="false" level="WARN">
+    <logger name="org.springframework" additivity="false" level="TRACE">
         <appender-ref ref="consoleAppender"/>
     </logger>
 
