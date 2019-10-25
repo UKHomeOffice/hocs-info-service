@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration TRACE="false">
+<configuration debug="false">
 
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
@@ -33,43 +33,43 @@
         </appender>
     </springProfile>
 
-    <logger name="uk.gov" additivity="false" level="TRACE">
+    <logger name="uk.gov" additivity="false" level="INFO">
         <appender-ref ref="consoleAppender"/>
     </logger>
 
-    <logger name="org.apache.camel" additivity="false" level="TRACE">
+    <logger name="org.apache.camel" additivity="false" level="WARN">
         <appender-ref ref="consoleAppender"/>
     </logger>
 
-    <logger name="com.amazonaws" additivity="false" level="TRACE">
+    <logger name="com.amazonaws" additivity="false" level="WARN">
         <appender-ref ref="consoleAppender"/>
     </logger>
 
-    <logger name="org.camunda" additivity="false" level="TRACE">
+    <logger name="org.camunda" additivity="false" level="WARN">
         <appender-ref ref="consoleAppender"/>
     </logger>
 
-    <logger name="io.undertow" additivity="false" level="TRACE">
+    <logger name="io.undertow" additivity="false" level="WARN">
         <appender-ref ref="consoleAppender"/>
     </logger>
 
-    <logger name="org.springframework" additivity="false" level="TRACE">
+    <logger name="org.springframework" additivity="false" level="WARN">
         <appender-ref ref="consoleAppender"/>
     </logger>
 
-    <logger name="org.flywaydb" additivity="false" level="TRACE">
+    <logger name="org.flywaydb" additivity="false" level="WARN">
         <appender-ref ref="consoleAppender"/>
     </logger>
 
-    <logger name="org.hibernate" additivity="false" level="TRACE">
+    <logger name="org.hibernate" additivity="false" level="WARN">
         <appender-ref ref="consoleAppender"/>
     </logger>
 
-    <logger name="com.zaxxer" additivity="false" level="TRACE">
+    <logger name="com.zaxxer" additivity="false" level="WARN">
         <appender-ref ref="consoleAppender"/>
     </logger>
 
-    <root level="TRACE">
+    <root level="INFO">
         <appender-ref ref="consoleAppender"/>
     </root>
 
