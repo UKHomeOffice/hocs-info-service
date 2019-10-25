@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @AllArgsConstructor()
 @NoArgsConstructor()
@@ -26,5 +27,9 @@ public class Configuration implements Serializable {
 
     @Column(name = "workstack_columns")
     private String workstackColumns;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_system_name", referencedColumnName = "system_name")
+    private List<SearchField> searchFields;
 
 }
