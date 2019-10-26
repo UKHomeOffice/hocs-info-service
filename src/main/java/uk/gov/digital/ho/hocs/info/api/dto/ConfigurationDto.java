@@ -9,6 +9,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.Configuration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -23,6 +24,9 @@ public class ConfigurationDto {
     @JsonProperty("workstackColumns")
     private List<String> workstackColumns;
 
+    @JsonProperty("searchFields")
+    private List<SearchFieldDto> searchFields;
+
 
     public static ConfigurationDto from(Configuration configuration) {
         String documentLabelsString = configuration.getDocumentLabels();
@@ -31,10 +35,13 @@ public class ConfigurationDto {
         String workstackColumnsString = configuration.getWorkstackColumns();
         List<String> workstackColumns = StringUtils.isBlank(workstackColumnsString) ? null : new ArrayList<>(Arrays.asList(workstackColumnsString.split(",")));
 
+        List<SearchFieldDto> searchFieldDtos = configuration.getSearchFields().stream().map(SearchFieldDto::from).collect(Collectors.toList());
+
         return new ConfigurationDto(
                 configuration.getDisplayName(),
                 documentLabels,
-                workstackColumns);
+                workstackColumns,
+                searchFieldDtos);
     }
 
 }
