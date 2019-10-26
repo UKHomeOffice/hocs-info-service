@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="true">
+<configuration debug="false">
 
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
@@ -53,11 +53,11 @@
         <appender-ref ref="consoleAppender"/>
     </logger>
 
-    <logger name="org.springframework" additivity="false" level="TRACE">
+    <logger name="org.springframework" additivity="false" level="WARN">
         <appender-ref ref="consoleAppender"/>
     </logger>
 
-    <logger name="org.flywaydb" additivity="true" level="TRACE">
+    <logger name="org.flywaydb" additivity="false" level="WARN">
         <appender-ref ref="consoleAppender"/>
     </logger>
 
