@@ -8,9 +8,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.api.dto.ConfigurationDto;
-import uk.gov.digital.ho.hocs.info.api.dto.SearchFieldDto;
 import uk.gov.digital.ho.hocs.info.domain.model.Configuration;
 import uk.gov.digital.ho.hocs.info.domain.model.SearchField;
+import uk.gov.digital.ho.hocs.info.domain.model.WorkstackColumn;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,11 +37,12 @@ public class ConfigurationResourceTest {
         String systemName = "system";
         String systemDisplayName = "Test System Name";
         String docLabelString = "label1,label2";
-        String workstackColumnString = "column1,column2";
+
+        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, "system", "columnName1", "adapter", "renderer", "valueKey", true, "cssClass"));
 
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, "system", "name", "component", "validationRules", "properties"));
 
-        when(configurationService.getConfiguration("system")).thenReturn(new Configuration(systemName, systemDisplayName, docLabelString, workstackColumnString, searchFields));
+        when(configurationService.getConfiguration("system")).thenReturn(new Configuration(systemName, systemDisplayName, docLabelString, workstackColumns, searchFields));
 
         ResponseEntity<ConfigurationDto> result = configurationResource.getConfiguration();
 
@@ -49,7 +50,13 @@ public class ConfigurationResourceTest {
         Assert.assertEquals("Status code incorrect", 200, result.getStatusCode().value());
         Assert.assertEquals("Display name do not match", systemDisplayName, result.getBody().getDisplayName());
         Assert.assertEquals("Document labels do not match", new ArrayList<>(Arrays.asList(docLabelString.split(","))), result.getBody().getDocumentLabels());
-        Assert.assertEquals("Workstack columns do not match", new ArrayList<>(Arrays.asList(workstackColumnString.split(","))), result.getBody().getWorkstackColumns());
+        Assert.assertEquals("There should be 1 workstack column", 1, result.getBody().getWorkstackColumns().size());
+        Assert.assertEquals("Workstack column display name do not match", "columnName1", result.getBody().getWorkstackColumns().get(0).getDisplayName());
+        Assert.assertEquals("Workstack column data adapter do not match", "adapter", result.getBody().getWorkstackColumns().get(0).getDataAdapter());
+        Assert.assertEquals("Workstack column renderer do not match", "renderer", result.getBody().getWorkstackColumns().get(0).getRenderer());
+        Assert.assertEquals("Workstack column data value key do not match", "valueKey", result.getBody().getWorkstackColumns().get(0).getDataValueKey());
+        Assert.assertEquals("Workstack column isFilterable do not match", true, result.getBody().getWorkstackColumns().get(0).isFilterable());
+        Assert.assertEquals("Workstack column header class name do not match", "cssClass", result.getBody().getWorkstackColumns().get(0).getHeaderClassName());
         Assert.assertEquals("There should be 1 search field", 1, result.getBody().getSearchFields().size());
         Assert.assertEquals("Search field name do not match", "name", result.getBody().getSearchFields().get(0).getName());
         Assert.assertEquals("Search field component do not match", "component", result.getBody().getSearchFields().get(0).getComponent());

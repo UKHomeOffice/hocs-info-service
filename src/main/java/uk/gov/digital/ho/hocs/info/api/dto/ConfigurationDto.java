@@ -22,7 +22,7 @@ public class ConfigurationDto {
     private List<String> documentLabels;
 
     @JsonProperty("workstackColumns")
-    private List<String> workstackColumns;
+    private List<WorkstackColumnDto> workstackColumns;
 
     @JsonProperty("searchFields")
     private List<SearchFieldDto> searchFields;
@@ -32,9 +32,8 @@ public class ConfigurationDto {
         String documentLabelsString = configuration.getDocumentLabels();
         List<String> documentLabels = StringUtils.isBlank(documentLabelsString) ? null : new ArrayList<>(Arrays.asList(documentLabelsString.split(",")));
 
-        String workstackColumnsString = configuration.getWorkstackColumns();
-        List<String> workstackColumns = StringUtils.isBlank(workstackColumnsString) ? null : new ArrayList<>(Arrays.asList(workstackColumnsString.split(",")));
 
+        List<WorkstackColumnDto> workstackColumns = configuration.getWorkstackColumns().stream().map(WorkstackColumnDto::from).collect(Collectors.toList());
         List<SearchFieldDto> searchFieldDtos = configuration.getSearchFields().stream().map(SearchFieldDto::from).collect(Collectors.toList());
 
         return new ConfigurationDto(

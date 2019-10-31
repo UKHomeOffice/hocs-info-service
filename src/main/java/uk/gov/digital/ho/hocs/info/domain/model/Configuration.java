@@ -25,8 +25,9 @@ public class Configuration implements Serializable {
     @Column(name = "document_labels")
     private String documentLabels;
 
-    @Column(name = "workstack_columns")
-    private String workstackColumns;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_system_name", referencedColumnName = "system_name")
+    private List<WorkstackColumn> workstackColumns;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_system_name", referencedColumnName = "system_name")
