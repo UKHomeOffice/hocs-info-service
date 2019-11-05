@@ -208,7 +208,7 @@ public class TeamIntegrationTests {
                 getBasePath() + "/users/" + userId + "/team/" + teamId
                 , HttpMethod.DELETE, httpEntity, String.class);
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
 
         assertThat(keycloakClient.realm(HOCS_REALM)
                 .users().get(userId).groups().stream()

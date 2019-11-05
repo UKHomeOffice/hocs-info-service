@@ -11,13 +11,16 @@ import uk.gov.digital.ho.hocs.info.api.dto.CreateTopicDto;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateTopicParentDto;
 import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCaseworkCaseDataResponse;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.TopicRepository;
 
+import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -284,6 +287,23 @@ public class TopicServiceTest {
         verify(parentTopicRepository, times(1)).findByUuid(any());
         verifyNoMoreInteractions(parentTopicRepository);
 
+    }
+
+    @Test
+    public void shouldReturnTopicsForCaseType() {
+        UUID caseUUID = UUID.randomUUID();
+        var topics = getTopics();
+        GetCaseworkCaseDataResponse getCaseworkCaseDataResponse = new GetCaseworkCaseDataResponse(caseUUID, ZonedDateTime.now(), "", "", new HashMap<String, String>(), UUID.randomUUID(), UUID.randomUUID());
+        when(caseworkClient.getCase(any())).thenReturn(getCaseworkCaseDataResponse);
+
+        when(topicRepository.findAllActiveAssignedTopicsByCaseType(any())).thenReturn(topics);
+
+        var returnedTopics = topicService.getFilteredChildTopicList(caseUUID);
+
+        verify(topicRepository).findAllActiveAssignedTopicsByCaseType(any());
+        verifyNoMoreInteractions(topicRepository);
+
+        assertThat(returnedTopics).containsAll(topics);
     }
 
     private List<ParentTopic> getParentTopics() {

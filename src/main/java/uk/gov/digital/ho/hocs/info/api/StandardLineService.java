@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.client.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
@@ -22,13 +23,16 @@ public class StandardLineService {
 
     private final StandardLineRepository standardLineRepository;
     private final DocumentClient documentClient;
+    private final CaseworkClient caseworkClient;
 
     @Autowired
     public StandardLineService(
             StandardLineRepository standardLineRepository,
-            DocumentClient documentClient) {
+            DocumentClient documentClient,
+            CaseworkClient caseworkClient) {
         this.standardLineRepository = standardLineRepository;
         this.documentClient = documentClient;
+        this.caseworkClient = caseworkClient;
     }
 
     @Transactional
@@ -42,6 +46,7 @@ public class StandardLineService {
             standardLineRepository.save(standardLine);
             documentClient.deleteDocument(standardLine.getDocumentUUID());
             log.info("Set Expiry to now for existing Standard Line - {}, id {}", standardLine.getDisplayName(), standardLine.getUuid());
+            caseworkClient.clearCachedStandardLineForTopic(topicUUID);
         }
 
         StandardLine newStandardLine = new StandardLine(displayName, topicUUID, LocalDateTime.of(expires, LocalTime.MAX));

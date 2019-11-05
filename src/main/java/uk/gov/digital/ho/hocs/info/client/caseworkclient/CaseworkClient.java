@@ -67,12 +67,19 @@ public class CaseworkClient {
     }
 
     public Set getCasesForUser(UUID userUUID, UUID teamUUID){
-        ResponseEntity<Set> response = restHelper.get(serviceBaseURL, String.format("stage/team/%s/user/%s", teamUUID, userUUID), Set.class);
+        ResponseEntity<Set> response = restHelper.get(serviceBaseURL, String.format("/stage/team/%s/user/%s", teamUUID, userUUID), Set.class);
         if (response.getStatusCodeValue() == 200) {
             log.info("Got cases for User: {}", userUUID);
             return response.getBody();
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("Could not get cases for User %s", userUUID, response.getStatusCodeValue());
+        }
+    }
+
+    public void clearCachedStandardLineForTopic(UUID topicUUID){
+        ResponseEntity<String> response = restHelper.post(serviceBaseURL, String.format("/topic/%s/clearCachedStandardLine", topicUUID), null, String.class);
+        if (response.getStatusCodeValue() == 200) {
+            log.info("Cleared cached standard line for Topic: {}", topicUUID);
         }
     }
 }

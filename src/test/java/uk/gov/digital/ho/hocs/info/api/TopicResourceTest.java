@@ -14,6 +14,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -177,6 +178,20 @@ public class TopicResourceTest {
 
         verify(topicService, times(1)).reactivateTopic(any());
         verifyNoMoreInteractions(topicService);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void shouldGetParentTopicsWithTopics() {
+        when(topicService.getTopicList(any())).thenReturn(Arrays.asList());
+        when(topicService.getFilteredChildTopicList(any())).thenReturn(Arrays.asList());
+
+        ResponseEntity<GetAllTopicsResponse> response = topicResource.getParentTopicsAndTopics(UUID.randomUUID());
+
+        verify(topicService).getTopicList(any());
+        verify(topicService).getFilteredChildTopicList(any());
+        verifyNoMoreInteractions(topicService);
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 

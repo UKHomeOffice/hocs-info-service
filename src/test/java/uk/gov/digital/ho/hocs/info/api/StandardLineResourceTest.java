@@ -73,6 +73,4 @@ public class StandardLineResourceTest {
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-
-
 }

@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.client.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateStandardLineDocumentDto;
@@ -29,6 +30,9 @@ public class StandardLineServiceTest {
     @Mock
     private DocumentClient documentClient;
 
+    @Mock
+    private CaseworkClient caseworkClient;
+
     private StandardLineService standardLineService;
 
     private static final UUID uuid = UUID.randomUUID();
@@ -38,7 +42,7 @@ public class StandardLineServiceTest {
 
     @Before
     public void setUp() {
-        this.standardLineService = new StandardLineService(standardLineRepository, documentClient);
+        this.standardLineService = new StandardLineService(standardLineRepository, documentClient, caseworkClient);
     }
 
     @Test
@@ -91,5 +95,7 @@ public class StandardLineServiceTest {
         verify(documentClient).deleteDocument(standardLine.getDocumentUUID());
         verifyNoMoreInteractions(standardLineRepository);
         verifyNoMoreInteractions(documentClient);
+        verify(caseworkClient, times(1)).clearCachedStandardLineForTopic(uuid);
+        verifyNoMoreInteractions(caseworkClient);
     }
 }

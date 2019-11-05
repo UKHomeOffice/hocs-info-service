@@ -27,4 +27,7 @@ public interface TopicRepository extends CrudRepository<Topic, String> {
     List<Topic> findAllByActiveIsTrue();
 
     List<Topic> findAllBy();
+
+    @Query(value = "SELECT DISTINCT t.* from info.topic t join info.team_link tl on t.uuid = tl.link_uuid join info.parent_topic pt on t.parent_topic_uuid = pt.uuid where tl.case_type = ?1 and pt.active = true and t.active = true order by t.display_name", nativeQuery = true)
+    List<Topic>  findAllActiveAssignedTopicsByCaseType(String caseType);
 }
