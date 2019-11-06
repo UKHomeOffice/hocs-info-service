@@ -82,4 +82,11 @@ public class CaseworkClient {
             log.info("Cleared cached standard line for Topic: {}", topicUUID);
         }
     }
+
+    public void clearCachedTemplateForCaseType(String caseType){
+        ResponseEntity<String> response = restHelper.post(serviceBaseURL, String.format("/caseType/%s/clearCachedTemplate", caseType), null, String.class);
+        if (response.getStatusCodeValue() == 200) {
+            log.info("Cleared cached template for caseType: {}", caseType);
+        }
+    }
 }

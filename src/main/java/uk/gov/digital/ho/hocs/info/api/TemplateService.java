@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.client.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateTemplateDocumentDto;
@@ -19,12 +20,15 @@ public class TemplateService {
 
     private final TemplateRepository templateRepository;
     private final DocumentClient documentClient;
+    private final CaseworkClient caseworkClient;
 
     @Autowired
     public TemplateService(TemplateRepository templateRepository,
-                           DocumentClient documentClient) {
+                           DocumentClient documentClient,
+                           CaseworkClient caseworkClient) {
         this.templateRepository = templateRepository;
         this.documentClient = documentClient;
+        this.caseworkClient = caseworkClient;
     }
 
     void createTemplate(CreateTemplateDocumentDto request) {
@@ -36,6 +40,7 @@ public class TemplateService {
             templateRepository.save(template);
             documentClient.deleteDocument(template.getDocumentUUID());
             log.info("Set Deleted to True for Template - {}, id {}", template.getDisplayName(), template.getUuid());
+            caseworkClient.clearCachedTemplateForCaseType(request.getCaseType());
         }
 
         Template newTemplate = new Template(request.getDisplayName(), request.getCaseType());
