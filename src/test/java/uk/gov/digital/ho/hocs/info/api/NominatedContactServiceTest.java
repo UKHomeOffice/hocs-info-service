@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.DataIntegrityViolationException;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.NominatedContact;
 import uk.gov.digital.ho.hocs.info.domain.repository.NominatedContactRepository;
@@ -56,6 +57,18 @@ public class NominatedContactServiceTest {
         assertThat(contact.getUuid()).isNotNull();
         verify(nominatedContactRepository, times(1)).save(any(NominatedContact.class));
         verifyNoMoreInteractions(nominatedContactRepository);
+    }
+
+    @Test (expected = ApplicationExceptions.EntityAlreadyExistsException.class)
+    public void shouldNotCreateNominatedContactWithDuplicateEmailAddress() {
+
+        NominatedContact contact = new NominatedContact(teamUUID, emailAddress);
+        Set<NominatedContact> contacts = new HashSet<>();
+        contacts.add(contact);
+
+        when(nominatedContactRepository.save(any())).thenThrow(new DataIntegrityViolationException("test"));
+
+        nominatedContactService.createNominatedContact(teamUUID, emailAddress);
     }
 
     @Test
