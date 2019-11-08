@@ -53,20 +53,14 @@ public class Schema implements Serializable {
     @OrderBy("id")
     private List<Field> fields;
 
-    public Schema(String type, String title, String actionLabel) {
-        this.uuid = UUID.randomUUID();
-        this.type = type;
-        this.title = title;
-        this.actionLabel = actionLabel;
-        this.fields = new ArrayList<>(0);
-    }
-
-    public void addField(Field field) {
-        fields.add(field);
-    }
-    public void removeField(UUID fieldUUID) {
-        fields.removeIf(field -> field.getUuid() == fieldUUID);
-
-    }
+    @Getter
+    @OneToMany
+    @JoinTable(
+            name="secondary_action_screen",
+            joinColumns = @JoinColumn(name="schema_uuid", referencedColumnName="uuid"),
+            inverseJoinColumns = @JoinColumn( name="secondary_action_uuid", referencedColumnName="uuid")
+    )
+    @OrderBy("id")
+    private List<SecondaryAction> secondaryActions;
 
 }
