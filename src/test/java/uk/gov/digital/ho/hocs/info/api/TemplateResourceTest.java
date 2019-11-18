@@ -8,10 +8,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateTemplateDocumentDto;
-import uk.gov.digital.ho.hocs.info.api.dto.GetTemplateResponse;
+import uk.gov.digital.ho.hocs.info.api.dto.TemplateDto;
 import uk.gov.digital.ho.hocs.info.domain.model.Template;
 
-import java.util.Set;
+import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -19,7 +20,9 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class TemplateResourceTest {
 
-    public static final String MIN = "MIN";
+    private static final String DISPLAY_NAME = "display";
+    private static final String CASE_TYPE = "MIN";
+
     @Mock
     private TemplateService templateService;
 
@@ -33,26 +36,42 @@ public class TemplateResourceTest {
     @Test
     public void shouldReturnTemplates() {
 
-        when(templateService.getActiveTemplates()).thenReturn(Set.of(new Template("display","MIN" )));
+        when(templateService.getActiveTemplates()).thenReturn(List.of(new Template(DISPLAY_NAME, CASE_TYPE)));
 
-        ResponseEntity<Set<GetTemplateResponse>> response =
+        ResponseEntity<List<TemplateDto>> response =
                 templateResource.getTemplates();
 
-        verify(templateService, times(1)).getActiveTemplates();
+        verify(templateService).getActiveTemplates();
         verifyNoMoreInteractions(templateService);
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    public void shouldReturnTemplateForRequestedCaseType() {
+    public void shouldReturnTemplate() {
+        UUID templateUUID = UUID.randomUUID();
+        when(templateService.getTemplate(templateUUID)).thenReturn(new Template(DISPLAY_NAME, CASE_TYPE));
 
-        when(templateService.getTemplateForCaseType(MIN)).thenReturn(new Template("display","MIN" ));
+        ResponseEntity<TemplateDto> response =
+                templateResource.getTemplate(templateUUID);
 
-        ResponseEntity<GetTemplateResponse> response =
-                templateResource.getTemplatesForCaseType(MIN);
+        verify(templateService).getTemplate(templateUUID);
+        verifyNoMoreInteractions(templateService);
+        assertThat(response).isNotNull();
+        assertThat(response.getBody().getDisplayName()).isEqualTo(DISPLAY_NAME);
+        assertThat(response.getBody().getCaseType()).isEqualTo(CASE_TYPE);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 
-        verify(templateService, times(1)).getTemplateForCaseType(MIN);
+    @Test
+    public void shouldReturnTemplatesForRequestedCaseType() {
+
+        when(templateService.getTemplatesForCaseType(CASE_TYPE)).thenReturn(List.of(new Template(DISPLAY_NAME, CASE_TYPE)));
+
+        ResponseEntity<List<TemplateDto>> response =
+                templateResource.getTemplatesForCaseType(CASE_TYPE);
+
+        verify(templateService).getTemplatesForCaseType(CASE_TYPE);
         verifyNoMoreInteractions(templateService);
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -65,7 +84,19 @@ public class TemplateResourceTest {
         ResponseEntity response =
                 templateResource.createTemplate(createTemplateDocumentDto);
 
-        verify(templateService, times(1)).createTemplate(createTemplateDocumentDto);
+        verify(templateService).createTemplate(createTemplateDocumentDto);
+        verifyNoMoreInteractions(templateService);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void shouldDeleteTemplate() {
+        UUID uuid = UUID.randomUUID();
+        ResponseEntity response =
+                templateResource.deleteTemplate(uuid);
+
+        verify(templateService).deleteTemplate(uuid);
         verifyNoMoreInteractions(templateService);
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

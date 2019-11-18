@@ -18,9 +18,12 @@ public class TemplateDto {
     @JsonProperty("value")
     private UUID uuid;
 
+    @JsonProperty("caseType")
+    private String caseType;
+
     @JsonProperty("documentUUID")
     private UUID documentUUID;
 
     public static TemplateDto from (Template template) {
-        return new TemplateDto(template.getDisplayName(), template.getUuid(), template.getDocumentUUID()); }
+        return new TemplateDto(template.getDisplayName(), template.getUuid(), template.getCaseType(), template.getDocumentUUID()); }
 }
