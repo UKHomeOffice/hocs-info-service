@@ -12,10 +12,10 @@ import java.util.UUID;
 @Getter
 public class TemplateDto {
 
-    @JsonProperty("label")
+    @JsonProperty("displayName")
     private String displayName;
-
-    @JsonProperty("value")
+    
+    @JsonProperty("uuid")
     private UUID uuid;
 
     @JsonProperty("caseType")
