@@ -11,7 +11,15 @@ import java.util.List;
 public class DataService {
 
     public List<String> getCohorts() {
-        List<String> cohorts = Arrays.asList(new String[]{"C pre 73","NC pre 73","C 01-01-73 to 31-07-88","NC 01-01-73 to 31-07-88","C children of","NC children of"});
+        List<String> cohorts = Arrays.asList(new String[]
+                {
+                        "Commonwealth pre 1973",
+                        "Non-Commonwealth pre 1973",
+                        "Commonwealth 1973 to July 1988",
+                        "Non-Commonwealth 1973 to July 1988",
+                        "Children of Commonwealth",
+                        "Children of Non-Commonwealth"
+                });
         return cohorts;
     }
 }
