@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.info.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.NominatedContact;
@@ -31,7 +32,12 @@ public class NominatedContactService {
     public NominatedContact createNominatedContact(UUID teamUUID, String emailAddress){
         log.debug("Creating new nominated contact for Team: {} with Email: {}", teamUUID, emailAddress);
         NominatedContact nominatedContact = new NominatedContact(teamUUID, emailAddress);
-        nominatedContactRepository.save(nominatedContact);
+        try {
+            nominatedContactRepository.save(nominatedContact);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new ApplicationExceptions.EntityAlreadyExistsException("Nominated contact already exists");
+        }
         log.info("Created nominated contact for team UUID: {} with email: {}", teamUUID, emailAddress);
         return nominatedContact;
     }

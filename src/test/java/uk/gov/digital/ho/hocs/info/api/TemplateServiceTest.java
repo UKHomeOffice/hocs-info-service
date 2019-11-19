@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.client.documentClient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateTemplateDocumentDto;
@@ -27,6 +28,9 @@ public class TemplateServiceTest {
     @Mock
     private DocumentClient documentClient;
 
+    @Mock
+    private CaseworkClient caseworkClient;
+
     private TemplateService templateService;
     private static final String DISPLAY_NAME = "dn";
     private static final String CASE_TYPE = "MIN";
@@ -34,7 +38,7 @@ public class TemplateServiceTest {
 
     @Before
     public void setUp() {
-        this.templateService = new TemplateService(templateRepository,documentClient);
+        this.templateService = new TemplateService(templateRepository,documentClient, caseworkClient);
     }
 
     @Test
@@ -91,6 +95,8 @@ public class TemplateServiceTest {
         verify(documentClient).deleteDocument(template.getDocumentUUID());
         verifyNoMoreInteractions(templateRepository);
         verifyNoMoreInteractions(documentClient);
+        verify(caseworkClient, times(1)).clearCachedTemplateForCaseType(CASE_TYPE);
+        verifyNoMoreInteractions(caseworkClient);
     }
 
     @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
