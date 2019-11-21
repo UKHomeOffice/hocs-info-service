@@ -3,15 +3,15 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateTemplateDocumentDto;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.documentClient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.client.documentClient.model.ManagedDocumentType;
-import uk.gov.digital.ho.hocs.info.api.dto.CreateTemplateDocumentDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Template;
 import uk.gov.digital.ho.hocs.info.domain.repository.TemplateRepository;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -31,39 +31,51 @@ public class TemplateService {
         this.caseworkClient = caseworkClient;
     }
 
-    void createTemplate(CreateTemplateDocumentDto request) {
+    public void createTemplate(CreateTemplateDocumentDto request) {
         log.debug("Creating Template {} for CaseType {} ", request.getDisplayName(), request.getCaseType());
-        Template template = templateRepository.findActiveTemplateByCaseType(request.getCaseType());
-
-        if (template != null) {
-            template.delete();
-            templateRepository.save(template);
-            documentClient.deleteDocument(template.getDocumentUUID());
-            log.info("Set Deleted to True for Template - {}, id {}", template.getDisplayName(), template.getUuid());
-            caseworkClient.clearCachedTemplateForCaseType(request.getCaseType());
-        }
 
         Template newTemplate = new Template(request.getDisplayName(), request.getCaseType());
         UUID templateDocumentUUID = documentClient.createDocument(newTemplate.getUuid(), request.getDisplayName(), request.getS3UntrustedUrl(), ManagedDocumentType.TEMPLATE);
         newTemplate.setDocumentUUID(templateDocumentUUID);
         templateRepository.save(newTemplate);
 
-        log.info("Created Template {} for CaseType {} ", request.getDisplayName(), request.getCaseType());
+        caseworkClient.clearCachedTemplateForCaseType(request.getCaseType());
+
+        log.info("Created Template {} for CaseType {} with uuid {} ", request.getDisplayName(), request.getCaseType(), newTemplate.getUuid());
     }
 
-    Set<Template> getActiveTemplates() {
-        Set<Template> templates = templateRepository.findActiveTemplates();
+    public void deleteTemplate(UUID uuid) {
+
+        Template template = templateRepository.findActiveTemplateByUuid(uuid);
+
+        if (template != null) {
+            template.delete();
+            templateRepository.save(template);
+            documentClient.deleteDocument(template.getDocumentUUID());
+            log.info("Set Deleted to True for Template - {}, id {}", template.getDisplayName(), template.getUuid());
+            caseworkClient.clearCachedTemplateForCaseType(template.getCaseType());
+        }
+    }
+
+    public List<Template> getActiveTemplates() {
+        List<Template> templates = templateRepository.findActiveTemplates();
         log.info("Got {} Templates", templates.size());
         return templates;
     }
 
-    Template getTemplateForCaseType(String caseType) {
-        Template template = templateRepository.findActiveTemplateByCaseType(caseType);
+    public List<Template> getTemplatesForCaseType(String caseType) {
+        List<Template> templates = templateRepository.findActiveTemplatesByCaseType(caseType);
+        log.info("Got {} Templates for CaseType {} ", templates.size(), caseType);
+        return templates;
+    }
+
+    public Template getTemplate(UUID uuid) {
+        Template template = templateRepository.findActiveTemplateByUuid(uuid);
         if (template != null) {
-            log.info("Got Template for CaseType {} ", caseType);
+            log.info("Got Template for uuid {} ", uuid);
             return template;
         } else {
-            throw new ApplicationExceptions.EntityNotFoundException("Template for CaseType: %s, not found!", caseType);
+            throw new ApplicationExceptions.EntityNotFoundException("Template for uuid: %s, not found!", uuid);
         }
     }
 
