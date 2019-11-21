@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.Answers;
@@ -94,17 +95,66 @@ public class KeycloakServiceTest {
     @Test
     public void shouldGetAllUsers() {
 
-        List<UserRepresentation> userRepresentations = new ArrayList<UserRepresentation>();
+        List<UserRepresentation> userRepresentations = new ArrayList<>();
         UserRepresentation user = new UserRepresentation();
         user.setId(userUUID.toString());
         user.setFirstName("FirstName");
         user.setLastName("LastName");
         userRepresentations.add(user);
 
-        when(keycloakClient.realm(HOCS_REALM).users().list()).thenReturn(userRepresentations);
+        when(keycloakClient.realm(HOCS_REALM).users().count()).thenReturn(1);
+        when(keycloakClient.realm(HOCS_REALM).users().list(0, 100)).thenReturn(userRepresentations);
         service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
         List<UserRepresentation> result = service.getAllUsers();
         assertThat(result.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void shouldGetAllUsersBatchTest() {
+        int expectedBatchFetchSize = 100;
+
+        int batch1users = 100;
+        int batch2users = 100;
+        int batch3users = 100;
+        int batch4users = 64;
+
+        int totalNumberOfUsers = batch1users + batch2users + batch3users + batch4users;
+
+        List<UserRepresentation> userRepresentations1 = createUserBatch(1, batch1users);
+        List<UserRepresentation> userRepresentations2 = createUserBatch(2, batch2users);
+        List<UserRepresentation> userRepresentations3 = createUserBatch(3, batch3users);
+        List<UserRepresentation> userRepresentations4 = createUserBatch(4, batch4users);
+        UsersResource usersResource = mock(UsersResource.class);
+        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
+        when(hocsRealm.users()).thenReturn(usersResource);
+        when(usersResource.count()).thenReturn(totalNumberOfUsers);
+        when(usersResource.list(0, expectedBatchFetchSize)).thenReturn(userRepresentations1);
+        when(usersResource.list(batch1users, expectedBatchFetchSize)).thenReturn(userRepresentations2);
+        when(usersResource.list(batch1users + batch2users, expectedBatchFetchSize)).thenReturn(userRepresentations3);
+        when(usersResource.list(batch1users + batch2users + batch3users, expectedBatchFetchSize)).thenReturn(userRepresentations4);
+
+        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
+        List<UserRepresentation> result = service.getAllUsers();
+
+        assertThat(result.size()).isEqualTo(totalNumberOfUsers);
+        assertThat(result.get(0).getFirstName()).isEqualTo("FirstNameBatch1-1");
+        assertThat(result.get(55).getFirstName()).isEqualTo("FirstNameBatch1-56");
+        assertThat(result.get(100).getFirstName()).isEqualTo("FirstNameBatch2-1");
+        assertThat(result.get(127).getFirstName()).isEqualTo("FirstNameBatch2-28");
+        assertThat(result.get(200).getFirstName()).isEqualTo("FirstNameBatch3-1");
+        assertThat(result.get(299).getFirstName()).isEqualTo("FirstNameBatch3-100");
+        assertThat(result.get(300).getFirstName()).isEqualTo("FirstNameBatch4-1");
+        assertThat(result.get(363).getFirstName()).isEqualTo("FirstNameBatch4-64");
+
+        verify(keycloakClient).realm(HOCS_REALM);
+        verify(hocsRealm).users();
+        verify(usersResource).count();
+        verify(usersResource).list(0, expectedBatchFetchSize);
+        verify(usersResource).list(batch1users, expectedBatchFetchSize);
+        verify(usersResource).list(batch1users + batch2users, expectedBatchFetchSize);
+        verify(usersResource).list(batch1users + batch2users + batch3users, expectedBatchFetchSize);
+
+        verifyNoMoreInteractions(teamRepository, keycloakClient, hocsRealm, usersResource);
     }
 
 
@@ -176,5 +226,18 @@ public class KeycloakServiceTest {
         assertThatThrownBy(() -> service.getUsersForTeam(teamUUID))
                 .isInstanceOf(ApplicationExceptions.EntityNotFoundException.class)
                 .hasMessage("Team not found for UUID %s", teamUUID);
+    }
+
+    private List<UserRepresentation> createUserBatch(int batchNum, int usersToCreate){
+        List<UserRepresentation> userRepresentations = new ArrayList<>();
+        for(int i = 0 ; i < usersToCreate ;  i++){
+            UserRepresentation user = new UserRepresentation();
+            user.setId(UUID.randomUUID().toString());
+            user.setFirstName("FirstNameBatch" + batchNum + "-" + (i + 1));
+            user.setLastName("LastNameBatch"+ batchNum + "-" + (i + 1));
+            userRepresentations.add(user);
+        }
+
+        return userRepresentations;
     }
 }
