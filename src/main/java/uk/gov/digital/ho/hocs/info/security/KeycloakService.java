@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,8 @@ public class KeycloakService {
     private TeamRepository teamRepository;
     private Keycloak keycloakClient;
     private String hocsRealmName;
+
+    private static final int USER_BATCH_FETCH_SIZE = 100;
 
     public KeycloakService(
             TeamRepository teamRepository,
@@ -90,7 +93,15 @@ public class KeycloakService {
 
     public List<UserRepresentation> getAllUsers() {
         log.info("Get users from Keycloak realm {}", hocsRealmName);
-        List<UserRepresentation> users = keycloakClient.realm(hocsRealmName).users().list();
+        UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
+        int totalUserCount = usersResource.count();
+        List<UserRepresentation> users = new ArrayList<>();
+
+        for(int i = 0; i < totalUserCount; i += USER_BATCH_FETCH_SIZE){
+            log.debug("Batch fetching users, total user count: {}, fetched so far: {}", totalUserCount, i);
+            users.addAll(usersResource.list(i, USER_BATCH_FETCH_SIZE));
+        }
+
         log.info("Found {} users in Keycloak", users.size());
         return users;
     }
