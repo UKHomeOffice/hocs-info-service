@@ -26,10 +26,12 @@ public class Configuration implements Serializable {
     private String documentLabels;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OrderBy("id")
     @JoinColumn(name = "parent_system_name", referencedColumnName = "system_name")
     private List<WorkstackColumn> workstackColumns;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OrderBy("id")
     @JoinColumn(name = "parent_system_name", referencedColumnName = "system_name")
     private List<SearchField> searchFields;
 
