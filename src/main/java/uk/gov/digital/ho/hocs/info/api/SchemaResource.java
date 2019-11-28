@@ -11,6 +11,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.Field;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,9 +41,9 @@ public class SchemaResource {
     }
 
     @GetMapping(value = "/schema/caseType/{caseType}/summary", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Set<FieldDto>> getAllSummaryFieldsForCaseType(@PathVariable String caseType) {
-        Stream<Field> fields = schemaService.getAllSummaryFieldsForCaseType(caseType);
-        return ResponseEntity.ok(fields.map(FieldDto::from).collect(Collectors.toSet()));
+    public ResponseEntity<List<FieldDto>> getAllSummaryFieldsForCaseType(@PathVariable String caseType) {
+        List<Field> fields = schemaService.getAllSummaryFieldsForCaseType(caseType);
+        return ResponseEntity.ok(fields.stream().map(FieldDto::from).collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/schema/caseType/{caseType}/reporting", produces = APPLICATION_JSON_UTF8_VALUE)
