@@ -42,13 +42,15 @@ public class ConfigurationResourceTest {
 
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, "system", "name", "component", "validationRules", "properties"));
 
-        when(configurationService.getConfiguration("system")).thenReturn(new Configuration(systemName, systemDisplayName, docLabelString, workstackColumns, searchFields));
+        when(configurationService.getConfiguration("system")).thenReturn(new Configuration(systemName, systemDisplayName, docLabelString, false, true, workstackColumns, searchFields));
 
         ResponseEntity<ConfigurationDto> result = configurationResource.getConfiguration();
 
 
         Assert.assertEquals("Status code incorrect", 200, result.getStatusCode().value());
         Assert.assertEquals("Display name do not match", systemDisplayName, result.getBody().getDisplayName());
+        Assert.assertEquals("Bulk Create setting is incorrect", false, result.getBody().isBulkCreateEnabled());
+        Assert.assertEquals("Deadlines Enabled setting is incorrect", true, result.getBody().isDeadlinesEnabled());
         Assert.assertEquals("Document labels do not match", new ArrayList<>(Arrays.asList(docLabelString.split(","))), result.getBody().getDocumentLabels());
         Assert.assertEquals("There should be 1 workstack column", 1, result.getBody().getWorkstackColumns().size());
         Assert.assertEquals("Workstack column display name do not match", "columnName1", result.getBody().getWorkstackColumns().get(0).getDisplayName());

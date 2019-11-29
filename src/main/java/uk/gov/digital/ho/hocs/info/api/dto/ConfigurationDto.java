@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.domain.model.Configuration;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +21,12 @@ public class ConfigurationDto {
 
     @JsonProperty("documentLabels")
     private List<String> documentLabels;
+
+    @JsonProperty("bulkCreateEnabled")
+    private boolean bulkCreateEnabled;
+
+    @JsonProperty("deadlinesEnabled")
+    private boolean deadlinesEnabled;
 
     @JsonProperty("workstackColumns")
     private List<WorkstackColumnDto> workstackColumns;
@@ -39,6 +46,8 @@ public class ConfigurationDto {
         return new ConfigurationDto(
                 configuration.getDisplayName(),
                 documentLabels,
+                configuration.isBulkCreateEnabled(),
+                configuration.isDeadlinesEnabled(),
                 workstackColumns,
                 searchFieldDtos);
     }

@@ -1,6 +1,9 @@
 package uk.gov.digital.ho.hocs.info.domain.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,6 +27,12 @@ public class Configuration implements Serializable {
 
     @Column(name = "document_labels")
     private String documentLabels;
+
+    @Column(name = "bulk_create_enabled")
+    private boolean bulkCreateEnabled;
+
+    @Column(name = "deadlines_enabled")
+    private boolean deadlinesEnabled;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("id")
