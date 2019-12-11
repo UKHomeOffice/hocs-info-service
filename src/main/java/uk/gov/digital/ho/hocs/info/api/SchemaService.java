@@ -9,8 +9,10 @@ import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 import uk.gov.digital.ho.hocs.info.domain.repository.FieldRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.SchemaRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -57,5 +59,16 @@ public class SchemaService {
         Set<Schema> caseTypeSchemas = getAllSchemasForCaseType(caseType);
         log.debug("Filtering to reporting only.");
         return caseTypeSchemas.stream().flatMap(f -> f.getFields().stream()).filter(Field::isReporting);
+    }
+
+    public List<Field> getExtractOnlyFields() {
+        Schema extractOnlySchema = schemaRepository.findExtractOnlySchema();
+
+        if(extractOnlySchema != null){
+            log.debug("Getting extract only fields.");
+            return extractOnlySchema.getFields().stream().filter(Field::isReporting).collect(Collectors.toList());
+        }
+
+        return new ArrayList<>();
     }
 }

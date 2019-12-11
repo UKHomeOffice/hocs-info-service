@@ -11,6 +11,8 @@ import uk.gov.digital.ho.hocs.info.domain.model.Field;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,13 +31,13 @@ public class SchemaResource {
     }
 
     @GetMapping(value = "/schema/{type}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<SchemaDto> getSchema(@PathVariable String type) throws IOException {
+    public ResponseEntity<SchemaDto> getSchema(@PathVariable String type) {
         Schema schema = schemaService.getSchemaByType(type);
         return ResponseEntity.ok(SchemaDto.from(schema));
     }
 
     @GetMapping(value = "/schema/caseType/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Set<SchemaDto>> getAllSchemasForCaseType(@PathVariable String caseType) throws IOException {
+    public ResponseEntity<Set<SchemaDto>> getAllSchemasForCaseType(@PathVariable String caseType) {
         Set<Schema> schemas = schemaService.getAllSchemasForCaseType(caseType);
         return ResponseEntity.ok(schemas.stream().map(SchemaDto::from).collect(Collectors.toSet()));
     }
@@ -48,8 +50,9 @@ public class SchemaResource {
 
     @GetMapping(value = "/schema/caseType/{caseType}/reporting", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Set<String>> getAllReportingFieldsForCaseType(@PathVariable String caseType) {
-        Stream<Field> fields = schemaService.getAllReportingFieldsForCaseType(caseType);
-        return ResponseEntity.ok(fields.map(f-> f.getName()).collect(Collectors.toSet()));
+        Stream<Field> fields = Stream.concat(schemaService.getExtractOnlyFields().stream(), schemaService.getAllReportingFieldsForCaseType(caseType).sorted(Comparator.comparingLong(Field::getId)));
+
+        return ResponseEntity.ok(fields.map(Field::getName).collect(Collectors.toCollection(LinkedHashSet::new)));
     }
 
 }

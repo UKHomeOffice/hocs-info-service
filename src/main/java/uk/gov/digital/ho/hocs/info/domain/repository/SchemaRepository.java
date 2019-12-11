@@ -17,4 +17,7 @@ public interface SchemaRepository extends CrudRepository<Schema, String> {
 
     @Query(value = "SELECT ss.*, '' as stage_type FROM screen_schema ss WHERE ss.type = ?1 AND ss.active = TRUE", nativeQuery = true)
     Schema findByType(String type);
+
+    @Query(value = "SELECT ss.*, '' as stage_type FROM screen_schema ss WHERE ss.type = 'EXTRACT_ONLY'", nativeQuery = true)
+    Schema findExtractOnlySchema();
 }
