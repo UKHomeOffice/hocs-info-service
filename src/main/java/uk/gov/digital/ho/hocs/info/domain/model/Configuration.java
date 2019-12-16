@@ -44,4 +44,7 @@ public class Configuration implements Serializable {
     @JoinColumn(name = "parent_system_name", referencedColumnName = "system_name")
     private List<SearchField> searchFields;
 
+    @Column(name = "auto_create_and_allocate_enabled")
+    private boolean autoCreateAndAllocateEnabled;
+
 }
