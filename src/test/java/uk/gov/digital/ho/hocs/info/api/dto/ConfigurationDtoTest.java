@@ -37,7 +37,7 @@ public class ConfigurationDtoTest {
 
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, systemName, searchFieldDisplayName, searchFieldComponent, searchFieldValidation, searchFieldProps));
 
-        Configuration configuration = new Configuration(systemName, systemDisplayName, docLabelString, true, true, workstackColumns, searchFields);
+        Configuration configuration = new Configuration(systemName, systemDisplayName, docLabelString, true, true, workstackColumns, searchFields, true);
 
 
         ConfigurationDto dto = ConfigurationDto.from(configuration);
@@ -46,6 +46,8 @@ public class ConfigurationDtoTest {
         Assert.assertEquals("Document labels do not match", new ArrayList<>(Arrays.asList(docLabelString.split(","))), dto.getDocumentLabels());
         Assert.assertEquals("Bulk Create setting is incorrect", true, dto.isBulkCreateEnabled());
         Assert.assertEquals("Deadline Enabled setting is incorrect", true, dto.isDeadlinesEnabled());
+        Assert.assertEquals("AutoCreateAndAllocateEnabled setting is incorrect", true, dto.isAutoCreateAndAllocateEnabled());
+
 
         Assert.assertEquals("There should be 1 workstack column", 1, dto.getWorkstackColumns().size());
         Assert.assertEquals("Workstack column display name do not match", columnDisplayName, dto.getWorkstackColumns().get(0).getDisplayName());

@@ -34,6 +34,8 @@ public class ConfigurationDto {
     @JsonProperty("searchFields")
     private List<SearchFieldDto> searchFields;
 
+    @JsonProperty("autoCreateAndAllocateEnabled")
+    private boolean autoCreateAndAllocateEnabled;
 
     public static ConfigurationDto from(Configuration configuration) {
         String documentLabelsString = configuration.getDocumentLabels();
@@ -49,7 +51,8 @@ public class ConfigurationDto {
                 configuration.isBulkCreateEnabled(),
                 configuration.isDeadlinesEnabled(),
                 workstackColumns,
-                searchFieldDtos);
+                searchFieldDtos,
+                configuration.isAutoCreateAndAllocateEnabled());
     }
 
 }
