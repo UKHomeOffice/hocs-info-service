@@ -47,4 +47,7 @@ public class Configuration implements Serializable {
     @Column(name = "auto_create_and_allocate_enabled")
     private boolean autoCreateAndAllocateEnabled;
 
+    @Column(name = "read_only_case_view_adapter")
+    private String readOnlyCaseViewAdapter;
+
 }

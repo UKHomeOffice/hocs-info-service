@@ -36,8 +36,8 @@ public class ConfigurationDtoTest {
         List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, systemName, columnDisplayName, columnDataAdapter, columnRenderer, columnDataValueKey, columnFilterable, columnHeaderClassName));
 
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, systemName, searchFieldDisplayName, searchFieldComponent, searchFieldValidation, searchFieldProps));
-
-        Configuration configuration = new Configuration(systemName, systemDisplayName, docLabelString, true, true, workstackColumns, searchFields, true);
+        String readOnlyCaseViewAdapter = "Adapter";
+        Configuration configuration = new Configuration(systemName, systemDisplayName, docLabelString, true, true, workstackColumns, searchFields, true, readOnlyCaseViewAdapter);
 
 
         ConfigurationDto dto = ConfigurationDto.from(configuration);
@@ -47,7 +47,7 @@ public class ConfigurationDtoTest {
         Assert.assertEquals("Bulk Create setting is incorrect", true, dto.isBulkCreateEnabled());
         Assert.assertEquals("Deadline Enabled setting is incorrect", true, dto.isDeadlinesEnabled());
         Assert.assertEquals("AutoCreateAndAllocateEnabled setting is incorrect", true, dto.isAutoCreateAndAllocateEnabled());
-
+        Assert.assertEquals("ReadOnlyCaseViewAdapter setting is incorrect", readOnlyCaseViewAdapter, dto.getReadOnlyCaseViewAdapter());
 
         Assert.assertEquals("There should be 1 workstack column", 1, dto.getWorkstackColumns().size());
         Assert.assertEquals("Workstack column display name do not match", columnDisplayName, dto.getWorkstackColumns().get(0).getDisplayName());
