@@ -39,8 +39,8 @@ public class ConfigurationServiceTest {
         String docLabelString = "label1,label2";
         List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, "system", "columnName1", "adapter", "renderer", "valueKey", true, "cssClass"));
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, "system", "name", "component", "validationRules", "properties"));
-
-        when(configurationRepository.findBySystemName(systemName)).thenReturn(new Configuration(systemName, systemDisplayName, docLabelString, false, false, workstackColumns, searchFields, true));
+        String readOnlyCaseViewAdapter = "Adapter";
+        when(configurationRepository.findBySystemName(systemName)).thenReturn(new Configuration(systemName, systemDisplayName, docLabelString, false, false, workstackColumns, searchFields, true, readOnlyCaseViewAdapter));
 
         Configuration result = configurationService.getConfiguration(systemName);
 
@@ -50,6 +50,7 @@ public class ConfigurationServiceTest {
         Assert.assertEquals("Deadlines Enabled Setting is incorrect", false, result.isDeadlinesEnabled());
         Assert.assertEquals("Document labels do not match", docLabelString, result.getDocumentLabels());
         Assert.assertEquals("AutoCreateAndAllocateEnabled do not match", true, result.isAutoCreateAndAllocateEnabled());
+        Assert.assertEquals("ReadOnlyCaseViewAdapter do not match", readOnlyCaseViewAdapter, result.getReadOnlyCaseViewAdapter());
         Assert.assertEquals("There should be 1 workstack column", 1, result.getWorkstackColumns().size());
         Assert.assertEquals("Workstack column display name do not match", "columnName1", result.getWorkstackColumns().get(0).getDisplayName());
         Assert.assertEquals("Workstack column data adapter do not match", "adapter", result.getWorkstackColumns().get(0).getDataAdapter());

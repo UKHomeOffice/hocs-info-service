@@ -37,10 +37,12 @@ public class ConfigurationDto {
     @JsonProperty("autoCreateAndAllocateEnabled")
     private boolean autoCreateAndAllocateEnabled;
 
+    @JsonProperty("readOnlyCaseViewAdapter")
+    private String readOnlyCaseViewAdapter;
+
     public static ConfigurationDto from(Configuration configuration) {
         String documentLabelsString = configuration.getDocumentLabels();
         List<String> documentLabels = StringUtils.isBlank(documentLabelsString) ? null : new ArrayList<>(Arrays.asList(documentLabelsString.split(",")));
-
 
         List<WorkstackColumnDto> workstackColumns = configuration.getWorkstackColumns().stream().map(WorkstackColumnDto::from).collect(Collectors.toList());
         List<SearchFieldDto> searchFieldDtos = configuration.getSearchFields().stream().map(SearchFieldDto::from).collect(Collectors.toList());
@@ -52,7 +54,8 @@ public class ConfigurationDto {
                 configuration.isDeadlinesEnabled(),
                 workstackColumns,
                 searchFieldDtos,
-                configuration.isAutoCreateAndAllocateEnabled());
+                configuration.isAutoCreateAndAllocateEnabled(),
+                configuration.getReadOnlyCaseViewAdapter());
     }
 
 }
