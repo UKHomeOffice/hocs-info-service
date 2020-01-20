@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -19,4 +20,12 @@ public interface EntityRepository extends CrudRepository<Entity, Long> {
             "                  join entity e3 on e3.uuid = er2.entity_uuid\n" +
             "where el.simple_name = ?1 and e.simple_name = ?2 and el2.simple_name = ?3", nativeQuery = true)
     Set<Entity> findBySimpleName(String owner, String ownerType, String list);
+
+    @Query(value = "select e.* from entity e\n" +
+            "                  join entity_list el on el.uuid = e.entity_list_uuid\n" +
+            " where el.simple_name = ?1" +
+            " and e.active = TRUE" +
+            " order by e.id", nativeQuery = true)
+    List<Entity> findByEntityListSimpleName(String listSimpleName);
+
 }

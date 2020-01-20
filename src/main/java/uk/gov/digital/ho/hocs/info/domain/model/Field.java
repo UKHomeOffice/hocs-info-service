@@ -16,6 +16,7 @@ import java.util.UUID;
 public class Field implements Serializable {
 
     @Id
+    @Getter
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

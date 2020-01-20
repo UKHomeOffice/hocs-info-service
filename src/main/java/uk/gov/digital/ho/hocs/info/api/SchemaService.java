@@ -4,20 +4,29 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
-import uk.gov.digital.ho.hocs.info.domain.model.*;
+import uk.gov.digital.ho.hocs.info.domain.model.Field;
+import uk.gov.digital.ho.hocs.info.domain.model.Schema;
+import uk.gov.digital.ho.hocs.info.domain.repository.FieldRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.SchemaRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
 @Slf4j
 public class SchemaService {
 
+    private final FieldRepository fieldRepository;
     private final SchemaRepository schemaRepository;
 
     @Autowired
-    public SchemaService(SchemaRepository schemaRepository) {
+    public SchemaService(
+            FieldRepository fieldRepository,
+            SchemaRepository schemaRepository) {
+        this.fieldRepository = fieldRepository;
         this.schemaRepository = schemaRepository;
     }
 
@@ -39,15 +48,27 @@ public class SchemaService {
         return caseTypeSchemas;
     }
 
-    Stream<Field> getAllSummaryFieldsForCaseType(String caseType) {
-        Set<Schema> caseTypeSchemas = getAllSchemasForCaseType(caseType);
-        log.debug("Filtering to summary only.");
-        return caseTypeSchemas.stream().flatMap(f -> f.getFields().stream()).filter(Field::isSummary);
+    List<Field> getAllSummaryFieldsForCaseType(String caseType) {
+        log.debug("Getting all summary fields CaseType {}", caseType);
+        List<Field> summaryFields = fieldRepository.findAllSummaryFields(caseType);
+        log.info("Got {} summary fields for CaseType {}", summaryFields.size(), caseType);
+        return summaryFields;
     }
 
     public Stream<Field> getAllReportingFieldsForCaseType(String caseType) {
         Set<Schema> caseTypeSchemas = getAllSchemasForCaseType(caseType);
         log.debug("Filtering to reporting only.");
         return caseTypeSchemas.stream().flatMap(f -> f.getFields().stream()).filter(Field::isReporting);
+    }
+
+    public List<Field> getExtractOnlyFields() {
+        Schema extractOnlySchema = schemaRepository.findExtractOnlySchema();
+
+        if(extractOnlySchema != null){
+            log.debug("Getting extract only fields.");
+            return extractOnlySchema.getFields().stream().filter(Field::isReporting).collect(Collectors.toList());
+        }
+
+        return new ArrayList<>();
     }
 }
