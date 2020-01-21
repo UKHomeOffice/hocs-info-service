@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface CaseDetailsFieldRepository extends CrudRepository<CaseDetailsField, Long> {
 
-    List<CaseDetailsField> findByCaseType(String caseType);
+    List<CaseDetailsField> findByCaseTypeOrderById(String caseType);
 }

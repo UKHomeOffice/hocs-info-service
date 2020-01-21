@@ -22,7 +22,7 @@ public class CaseDetailsFieldService {
 
 
     public List<CaseDetailsFieldDto> getCaseDetailsFieldsByCaseType(String caseType) {
-        return caseDetailsFieldRepository.findByCaseType(caseType).stream().map(CaseDetailsFieldDto::from).collect(Collectors.toList());
+        return caseDetailsFieldRepository.findByCaseTypeOrderById(caseType).stream().map(CaseDetailsFieldDto::from).collect(Collectors.toList());
     }
 
 
