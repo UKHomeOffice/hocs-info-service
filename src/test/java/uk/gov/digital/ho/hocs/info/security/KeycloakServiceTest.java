@@ -175,6 +175,53 @@ public class KeycloakServiceTest {
     }
 
     @Test
+    public void shouldGetGroupsOfUser () {
+
+        UserRepresentation user = new UserRepresentation();
+        user.setId(userUUID.toString());
+        user.setFirstName("FirstName");
+        user.setLastName("LastName");
+        List<GroupRepresentation> groups = new ArrayList<>();
+        for (int i = 4; i > 0; i--) {
+            GroupRepresentation groupRepresentation = new GroupRepresentation();
+            UUID randomUUID = UUID.randomUUID();
+            groupRepresentation.setId(Base64UUID.UUIDToBase64String(randomUUID));
+            groupRepresentation.setName(Base64UUID.UUIDToBase64String(randomUUID));
+            groups.add(groupRepresentation);
+        }
+
+        String userUUIDString = userUUID.toString();
+        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
+        when(hocsRealm.users().get(userUUIDString).groups()).thenReturn(groups);
+        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
+        Set<UUID> result = service.getGroupsForUser(userUUID);
+
+        assertThat(result).contains(Base64UUID.Base64StringToUUID(groups.get(0).getId()));
+        assertThat(result).contains(Base64UUID.Base64StringToUUID(groups.get(1).getId()));
+        assertThat(result).hasSize(4);
+        verify(keycloakClient).realm(HOCS_REALM);
+        verifyNoMoreInteractions(keycloakClient);
+    }
+
+    @Test
+    public void GetGroupsOfUserShouldReturnAException() {
+        UserRepresentation user = new UserRepresentation();
+        user.setId(userUUID.toString());
+        user.setFirstName("FirstName");
+        user.setLastName("LastName");
+        NotFoundException mockException = mock(NotFoundException.class);
+        String userUUIDString = userUUID.toString();
+        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
+        when(hocsRealm.users().get(userUUIDString).groups()).thenThrow(mockException);
+        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
+
+        assertThatThrownBy(() -> service.getGroupsForUser(userUUID))
+                .isInstanceOf(KeycloakException.class);
+        verify(keycloakClient).realm(HOCS_REALM);
+        verifyNoMoreInteractions(keycloakClient);
+    }
+
+    @Test
     public void shouldGetUsersForTeam() {
         UUID teamUUID = UUID.randomUUID();
         List<UserRepresentation> userRepresentations = new ArrayList<>();

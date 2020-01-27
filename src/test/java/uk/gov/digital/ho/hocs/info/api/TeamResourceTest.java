@@ -77,6 +77,18 @@ public class TeamResourceTest {
     }
 
     @Test
+    public void shouldGetAllTeamsForAUser() {
+        UUID userUUID = UUID.randomUUID();
+        when(teamService.getTeamsForUser(userUUID)).thenReturn(getTeams());
+
+        ResponseEntity<Set<TeamDto>> result = teamResource.getTeamsForUser(userUUID.toString());
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody().size()).isEqualTo(2);
+        verify(teamService, times(1)).getTeamsForUser(userUUID);
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
     public void shouldGetAllActiveTeams() {
 
         when(teamService.getAllActiveTeams()).thenReturn(getTeams());
