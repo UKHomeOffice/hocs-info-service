@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.domain.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import java.util.UUID;
 
 
 @NoArgsConstructor
+@AllArgsConstructor
 @javax.persistence.Entity
 @Table(name = "entity")
 public class Entity {
