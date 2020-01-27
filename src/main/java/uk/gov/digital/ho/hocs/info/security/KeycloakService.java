@@ -64,6 +64,21 @@ public class KeycloakService {
         }
     }
 
+    public Set<UUID> getGroupsForUser(UUID userUUID) {
+        try {
+            RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
+            List<GroupRepresentation> encodedTeamUUIDs = hocsRealm.users().get(userUUID.toString()).groups();
+            Set<UUID> teamUUIDs = new HashSet<>();
+            if (encodedTeamUUIDs.size() > 0) {
+                encodedTeamUUIDs.forEach((group) -> teamUUIDs.add(Base64UUID.Base64StringToUUID(group.getName())));
+            }
+            return teamUUIDs;
+        } catch (Exception e) {
+            log.error("Failed to get groups for user {} for reason: {}, Event: {}", userUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            throw new KeycloakException(e.getMessage(), e);
+        }
+    }
+
     public void createTeamGroupIfNotExists(UUID teamUUID) {
         try {
             String encodedTeamUUID = Base64UUID.UUIDToBase64String(teamUUID);
