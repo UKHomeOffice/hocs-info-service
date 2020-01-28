@@ -89,6 +89,20 @@ public class TeamService {
         }
     }
 
+    public Set<Team> getTeamsForUser(UUID userUUID) {
+        log.debug("Getting teams for user {}", userUUID);
+        Set<UUID> teamUUIDs = keycloakService.getGroupsForUser(userUUID);
+        Set<Team> teams = new HashSet<>();
+        teamUUIDs.forEach((teamUUID) -> {
+            try {
+                teams.add(getTeam(teamUUID));
+            } catch (ApplicationExceptions.EntityNotFoundException e){
+                log.error("Team not found for UUID {}", teamUUID);
+            }
+        });
+        return teams;
+    }
+
     public Team getTeamByTopicAndStage(UUID caseUUID, UUID topicUUID, String stageType) {
         log.debug("Getting Team for Topic {} and Stage {}", topicUUID, stageType);
         GetTopicResponse topicResponse = caseworkClient.getTopic(caseUUID, topicUUID);
@@ -226,7 +240,6 @@ public class TeamService {
             throw new ApplicationExceptions.UserRemoveException("Unable to remove user {} from team {} as user has assigned cases", userUUID, teamUUID);
         }
     }
-
 
      Set<Team> findActiveTeamsByUnitUuid(UUID unitUUID) {
          log.debug("Getting active teams for Unit {}", unitUUID);

@@ -8,7 +8,6 @@ import uk.gov.digital.ho.hocs.info.api.dto.UpdateTeamNameRequest;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateTeamPermissionsRequest;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 
-
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -74,6 +73,12 @@ public class TeamResource {
     @GetMapping(value = "/unit/{unitUUID}/teams")
     public ResponseEntity<Set<TeamDto>> getTeamsForUnit(@PathVariable String unitUUID) {
         Set<Team> teams = teamService.getTeamsForUnit(UUID.fromString(unitUUID));
+        return ResponseEntity.ok(teams.stream().map(TeamDto::from).collect(Collectors.toSet()));
+    }
+
+    @GetMapping(value = "/user/{userUUID}/teams")
+    public ResponseEntity<Set<TeamDto>> getTeamsForUser(@PathVariable String userUUID) {
+        Set<Team> teams = teamService.getTeamsForUser(UUID.fromString(userUUID));
         return ResponseEntity.ok(teams.stream().map(TeamDto::from).collect(Collectors.toSet()));
     }
 

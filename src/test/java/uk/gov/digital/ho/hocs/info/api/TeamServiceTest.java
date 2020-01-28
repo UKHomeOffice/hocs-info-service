@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.api;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.keycloak.admin.client.Keycloak;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
@@ -21,13 +22,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TeamServiceTest {
 
+    private static final String HOCS_REALM = "hocs";
     @Mock
     private TeamRepository teamRepository;
 
@@ -42,6 +42,9 @@ public class TeamServiceTest {
 
     @Mock
     private KeycloakService keycloakService;
+
+    @Mock
+    private Keycloak keycloakClient;
 
     @Mock
     private AuditClient auditClient;
@@ -170,6 +173,23 @@ public class TeamServiceTest {
         assertThat(team.isActive()).isTrue();
         teamService.deleteTeam(team1UUID);
         assertThat(team.isActive()).isFalse();
+    }
+
+    @Test
+    public void shouldGetTeamsForUser() {
+        Set<Team> teams = new HashSet<>();
+        Team team = new Team(UUID.randomUUID().toString(), true);
+        teams.add(team);
+        UUID userId = UUID.randomUUID();
+        UUID teamId = UUID.randomUUID();
+        Set<UUID> teamUUIDs = new HashSet<>();
+        teamUUIDs.add(teamId);
+
+        when(keycloakService.getGroupsForUser(userId)).thenReturn(teamUUIDs);
+        when(teamRepository.findByUuid(teamId)).thenReturn(team);
+        Set<Team> result = teamService.getTeamsForUser(userId);
+
+        assertThat(result).isEqualTo(teams);
     }
 
     @Test

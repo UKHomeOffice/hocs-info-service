@@ -48,7 +48,6 @@ public class UserService {
     @Cacheable(value = "teamMembers")
     public List<UserDto> getUsersForTeam(UUID teamUUID) {
         return keycloakService.getUsersForTeam(teamUUID).stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
-
     }
 
     public List<UserDto> getUsersForTeamByStage(UUID caseUUID, UUID stageUUID) {
