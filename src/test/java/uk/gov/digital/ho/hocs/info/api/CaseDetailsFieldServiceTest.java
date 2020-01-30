@@ -46,7 +46,7 @@ public class CaseDetailsFieldServiceTest {
         CaseDetailsField fieldA = new CaseDetailsField(1L, caseType, nameA, componentA, propertyA);
         CaseDetailsField fieldB = new CaseDetailsField(2L, caseType, nameB, componentB, propertyB);
 
-        when(caseDetailsFieldRepository.findByCaseType(caseType)).thenReturn(List.of(fieldA, fieldB));
+        when(caseDetailsFieldRepository.findByCaseTypeOrderById(caseType)).thenReturn(List.of(fieldA, fieldB));
 
         List<CaseDetailsFieldDto> results = caseDetailsFieldService.getCaseDetailsFieldsByCaseType(caseType);
 
@@ -58,7 +58,7 @@ public class CaseDetailsFieldServiceTest {
         Assert.assertEquals("Field A props does not match", propertyA, results.get(0).getProps());
         Assert.assertEquals("Field B props does not match", propertyB, results.get(1).getProps());
 
-        verify(caseDetailsFieldRepository).findByCaseType(caseType);
+        verify(caseDetailsFieldRepository).findByCaseTypeOrderById(caseType);
         verifyNoMoreInteractions(caseDetailsFieldRepository);
 
     }
@@ -66,20 +66,20 @@ public class CaseDetailsFieldServiceTest {
     @Test
     public void getCaseDetailsFieldsByCaseType_EmptyList() {
 
-        when(caseDetailsFieldRepository.findByCaseType(caseType)).thenReturn(List.of());
+        when(caseDetailsFieldRepository.findByCaseTypeOrderById(caseType)).thenReturn(List.of());
 
         List<CaseDetailsFieldDto> results = caseDetailsFieldService.getCaseDetailsFieldsByCaseType(caseType);
 
         Assert.assertEquals("There should be 0 fields returned", 0, results.size());
 
-        verify(caseDetailsFieldRepository).findByCaseType(caseType);
+        verify(caseDetailsFieldRepository).findByCaseTypeOrderById(caseType);
         verifyNoMoreInteractions(caseDetailsFieldRepository);
     }
 
     @Test(expected = PersistenceException.class)
     public void getCaseDetailsFieldsByCaseType_throwsException() {
 
-        when(caseDetailsFieldRepository.findByCaseType(caseType)).thenThrow(new PersistenceException("Test Exception"));
+        when(caseDetailsFieldRepository.findByCaseTypeOrderById(caseType)).thenThrow(new PersistenceException("Test Exception"));
 
         caseDetailsFieldService.getCaseDetailsFieldsByCaseType(caseType);
 
