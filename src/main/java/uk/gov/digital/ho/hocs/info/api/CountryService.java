@@ -25,17 +25,17 @@ public class CountryService {
         this.listConsumerService = listConsumerService;
     }
 
-    @Cacheable(value = "ActiveCountrys", unless = "#result == null or #result.size() == 0" )
+    @Cacheable(value = "ActiveCountrys", unless = "#result == null or #result.size() == 0")
     public Set<Country> getAllActiveCountrys() {
-        log.debug("Getting all active countries" );
+        log.debug("Getting all active countries");
         Set<Country> countrys = countryRepository.findAllActiveCountrys();
         log.info("Got {} countries", countrys.size());
         return countrys;
     }
 
-    @CacheEvict(value = "ActiveCountrys" )
+    @CacheEvict(value = "ActiveCountrys")
     public void updateWebCountryList() {
-        log.info("Started Updating Countries/Territories List" );
+        log.info("Started Updating Countries/Territories List");
         countryRepository.deleteAll();
         updateCountry(listConsumerService.createFromCountryRegisterAPI());
         updateCountry(listConsumerService.createFromTerritoryRegisterAPI());
@@ -43,7 +43,7 @@ public class CountryService {
                 new Country("Unknown", true),
                 new Country("Netherlands Antilles", false));
         updateCountry(customEntries);
-        log.info("Finished Updating Countries/Territories List" );
+        log.info("Finished Updating Countries/Territories List");
     }
 
     private void updateCountry(Collection<Country> countrys) {
