@@ -15,7 +15,6 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CountryResourceTest {
@@ -31,7 +30,7 @@ public class CountryResourceTest {
     }
 
     @Test
-    public void shouldGetAllActiveCountrys(){
+    public void shouldGetAllActiveCountrys() {
         Set<Country> countrys = new HashSet<Country>();
         countrys.add(new Country("testCountry", false));
         when(countryService.getAllActiveCountrys()).thenReturn(countrys);

@@ -11,12 +11,12 @@ import uk.gov.digital.ho.hocs.info.domain.model.Country;
 import uk.gov.digital.ho.hocs.info.domain.repository.CountryRepository;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CountryServiceTest {
@@ -46,10 +46,10 @@ public class CountryServiceTest {
     @Test
     public void shouldUpdateWebCountryList() {
 
-        Set<Country> countrys = new HashSet<Country>();
+        Set<Country> countrys = new HashSet<>();
         countrys.add(new Country(1L, "country", false, false));
         when(listConsumerService.createFromCountryRegisterAPI()).thenReturn(countrys);
-        Set<Country> territorys = new HashSet<Country>();
+        Set<Country> territorys = new HashSet<>();
         territorys.add(new Country(1L, "territory", true, false));
         when(listConsumerService.createFromTerritoryRegisterAPI()).thenReturn(territorys);
 
@@ -58,7 +58,9 @@ public class CountryServiceTest {
         verify(countryRepository, times(1)).deleteAll();
         verify(countryRepository, times(1)).findByName("country");
         verify(countryRepository, times(1)).findByName("territory");
-        verify(countryRepository, times(2)).save(any(Country.class));
+        verify(countryRepository, times(1)).findByName("Unknown");
+        verify(countryRepository, times(1)).findByName("Netherlands Antilles");
+        verify(countryRepository, times(4)).save(any(Country.class));
         verifyNoMoreInteractions(countryRepository);
     }
 
@@ -66,7 +68,7 @@ public class CountryServiceTest {
     public void shouldUpdateWebCountryListWithCountry() {
 
         ArgumentCaptor<Country> argument = ArgumentCaptor.forClass(Country.class);
-        Set<Country> countrys = new HashSet<Country>();
+        Set<Country> countrys = new HashSet<>();
         countrys.add(new Country(1L, "country", false, false));
         when(listConsumerService.createFromCountryRegisterAPI()).thenReturn(countrys);
 
@@ -74,11 +76,24 @@ public class CountryServiceTest {
 
         verify(countryRepository, times(1)).deleteAll();
         verify(countryRepository, times(1)).findByName("country");
-        verify(countryRepository, times(1)).save(any(Country.class));
-        verify(countryRepository).save(argument.capture());
-        assertThat(argument.getValue().getName()).isEqualTo("country");
-        assertThat(argument.getValue().getIsTerritory()).isEqualTo(Boolean.FALSE);
-        assertThat(argument.getValue().getDeleted()).isEqualTo(Boolean.FALSE);
+        verify(countryRepository, times(1)).findByName("Unknown");
+        verify(countryRepository, times(1)).findByName("Netherlands Antilles");
+
+        verify(countryRepository, times(3)).save(any(Country.class));
+        verify(countryRepository, times(3)).save(argument.capture());
+
+        List<Country> capturedCountries = argument.getAllValues();
+        assertThat(capturedCountries.size()).isEqualTo(3);
+        assertThat(capturedCountries.get(0).getName()).isEqualTo("country");
+        assertThat(capturedCountries.get(0).getIsTerritory()).isEqualTo(Boolean.FALSE);
+        assertThat(capturedCountries.get(0).getDeleted()).isEqualTo(Boolean.FALSE);
+        assertThat(capturedCountries.get(1).getName()).isEqualTo("Unknown");
+        assertThat(capturedCountries.get(1).getIsTerritory()).isEqualTo(Boolean.TRUE);
+        assertThat(capturedCountries.get(1).getDeleted()).isEqualTo(Boolean.FALSE);
+        assertThat(capturedCountries.get(2).getName()).isEqualTo("Netherlands Antilles");
+        assertThat(capturedCountries.get(2).getIsTerritory()).isEqualTo(Boolean.FALSE);
+        assertThat(capturedCountries.get(2).getDeleted()).isEqualTo(Boolean.FALSE);
+
         verifyNoMoreInteractions(countryRepository);
     }
 
@@ -86,7 +101,7 @@ public class CountryServiceTest {
     public void shouldUpdateWebCountryListWithTerritory() {
 
         ArgumentCaptor<Country> argument = ArgumentCaptor.forClass(Country.class);
-        Set<Country> territorys = new HashSet<Country>();
+        Set<Country> territorys = new HashSet<>();
         territorys.add(new Country(1L, "territory", true, false));
         when(listConsumerService.createFromTerritoryRegisterAPI()).thenReturn(territorys);
 
@@ -94,11 +109,22 @@ public class CountryServiceTest {
 
         verify(countryRepository, times(1)).deleteAll();
         verify(countryRepository, times(1)).findByName("territory");
-        verify(countryRepository, times(1)).save(any(Country.class));
-        verify(countryRepository).save(argument.capture());
-        assertThat(argument.getValue().getName()).isEqualTo("territory");
-        assertThat(argument.getValue().getIsTerritory()).isEqualTo(Boolean.TRUE);
-        assertThat(argument.getValue().getDeleted()).isEqualTo(Boolean.FALSE);
+        verify(countryRepository, times(1)).findByName("Unknown");
+        verify(countryRepository, times(1)).findByName("Netherlands Antilles");
+        verify(countryRepository, times(3)).save(any(Country.class));
+        verify(countryRepository, times(3)).save(argument.capture());
+
+        List<Country> capturedCountries = argument.getAllValues();
+        assertThat(capturedCountries.size()).isEqualTo(3);
+        assertThat(capturedCountries.get(0).getName()).isEqualTo("territory");
+        assertThat(capturedCountries.get(0).getIsTerritory()).isEqualTo(Boolean.TRUE);
+        assertThat(capturedCountries.get(0).getDeleted()).isEqualTo(Boolean.FALSE);
+        assertThat(capturedCountries.get(1).getName()).isEqualTo("Unknown");
+        assertThat(capturedCountries.get(1).getIsTerritory()).isEqualTo(Boolean.TRUE);
+        assertThat(capturedCountries.get(1).getDeleted()).isEqualTo(Boolean.FALSE);
+        assertThat(capturedCountries.get(2).getName()).isEqualTo("Netherlands Antilles");
+        assertThat(capturedCountries.get(2).getIsTerritory()).isEqualTo(Boolean.FALSE);
+        assertThat(capturedCountries.get(2).getDeleted()).isEqualTo(Boolean.FALSE);
         verifyNoMoreInteractions(countryRepository);
     }
 }

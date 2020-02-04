@@ -9,6 +9,8 @@ import uk.gov.digital.ho.hocs.info.client.ingest.ListConsumerService;
 import uk.gov.digital.ho.hocs.info.domain.model.Country;
 import uk.gov.digital.ho.hocs.info.domain.repository.CountryRepository;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -37,10 +39,14 @@ public class CountryService {
         countryRepository.deleteAll();
         updateCountry(listConsumerService.createFromCountryRegisterAPI());
         updateCountry(listConsumerService.createFromTerritoryRegisterAPI());
+        List<Country> customEntries = List.of(
+                new Country("Unknown", true),
+                new Country("Netherlands Antilles", false));
+        updateCountry(customEntries);
         log.info("Finished Updating Countries/Territories List");
     }
 
-    private void updateCountry(Set<Country> countrys) {
+    private void updateCountry(Collection<Country> countrys) {
         countrys.forEach(country -> {
             log.debug("Looking for Country: {}", country.getName());
             Country countryFromDB = countryRepository.findByName(country.getName());
