@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS export_view
 (
     id                       BIGSERIAL PRIMARY KEY,
     code                     TEXT NOT NULL,
-    displayName              TEXT NOT NULL,
+    display_name              TEXT NOT NULL,
     required_permission      TEXT,
     CONSTRAINT export_view_idempotent UNIQUE (code)
 );
