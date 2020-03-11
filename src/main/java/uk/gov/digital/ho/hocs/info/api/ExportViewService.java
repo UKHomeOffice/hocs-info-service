@@ -34,8 +34,12 @@ public class ExportViewService {
     public ExportViewDto getExportView(String code) {
         log.debug("Getting ExportView for {}", code);
         ExportView exportView = exportViewRepository.findByCode(code);
-        log.info("Got {} ExportView", exportView.getDisplayName());
-        return exportView.toDto();
+        if(exportView != null){
+            log.info("Got {} ExportView", exportView.getDisplayName());
+            return exportView.toDto();
+        }
+        log.warn("ExportView for code {} not found", code);
+        return null;
     }
 
 
