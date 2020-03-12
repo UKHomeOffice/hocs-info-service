@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.domain.model;
 
+import com.amazonaws.util.CollectionUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.ExportViewFieldDto;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +40,7 @@ public class ExportViewField implements Serializable {
     private List<ExportViewFieldAdapter> adapters;
 
     public ExportViewFieldDto toDto() {
-        List<ExportViewFieldAdapterDto> adapterDtos = adapters.stream().map(ExportViewFieldAdapter::toDto).collect(Collectors.toList());
+        List<ExportViewFieldAdapterDto> adapterDtos = CollectionUtils.isNullOrEmpty(adapters) ? new ArrayList<>() : adapters.stream().map(ExportViewFieldAdapter::toDto).collect(Collectors.toList());
         return new ExportViewFieldDto(id, parentExportViewId, sortOrder, displayName, adapterDtos);
     }
 

@@ -2,10 +2,7 @@ package uk.gov.digital.ho.hocs.info.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
-import uk.gov.digital.ho.hocs.info.api.dto.UpdateTeamLetterNameRequest;
-import uk.gov.digital.ho.hocs.info.api.dto.UpdateTeamNameRequest;
-import uk.gov.digital.ho.hocs.info.api.dto.UpdateTeamPermissionsRequest;
+import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 
 import java.util.Set;
@@ -92,6 +89,12 @@ public class TeamResource {
     public ResponseEntity<TeamDto> getTeam(@PathVariable UUID teamUUID) {
         Team team = teamService.getTeam(teamUUID);
         return ResponseEntity.ok(TeamDto.from(team));
+    }
+
+    @GetMapping(value = "/team/{teamUUID}/unit", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<UnitDto> getUnitByTeam(@PathVariable UUID teamUUID) {
+        Team team = teamService.getTeam(teamUUID);
+        return ResponseEntity.ok(UnitDto.from(team.getUnit()));
     }
 
     @GetMapping(value = "/team")

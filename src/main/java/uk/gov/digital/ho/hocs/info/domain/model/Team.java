@@ -25,7 +25,7 @@ public class Team implements Serializable {
         this.displayName = displayName;
         this.uuid = UUID.randomUUID();
         this.permissions = new HashSet<>(permissions.size());
-        if(permissions != null) {
+        if (permissions != null) {
             addPermissions(permissions);
         }
     }
@@ -65,7 +65,7 @@ public class Team implements Serializable {
     private Set<Permission> permissions;
 
     public void addPermission(Permission permission) {
-        if(!permissions.contains(permission)) {
+        if (!permissions.contains(permission)) {
             permission.setTeam(this);
             permissions.add(permission);
         }
