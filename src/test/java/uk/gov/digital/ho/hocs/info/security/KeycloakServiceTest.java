@@ -4,7 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.*;
+import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -17,6 +19,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -43,10 +46,13 @@ public class KeycloakServiceTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     RealmResource hocsRealm;
 
+    private static final String ROLE_1 = "role1";
+    private static final String ROLE_2 = "role2";
+
     private UUID userUUID = UUID.randomUUID();
 
     @Before
-    public void before(){
+    public void before() {
         service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
     }
 
@@ -174,7 +180,7 @@ public class KeycloakServiceTest {
     }
 
     @Test
-    public void shouldGetGroupsOfUser () {
+    public void shouldGetGroupsOfUser() {
 
         UserRepresentation user = new UserRepresentation();
         user.setId(userUUID.toString());
@@ -229,12 +235,13 @@ public class KeycloakServiceTest {
         userRepresentations.add(user);
 
         String encodedTeamUUID = Base64UUID.UUIDToBase64String(teamUUID);
-        GroupRepresentation group = new GroupRepresentation(){
+        GroupRepresentation group = new GroupRepresentation() {
             {
                 setPath("/" + encodedTeamUUID);
                 setName(encodedTeamUUID);
                 setId("1");
-            }};
+            }
+        };
         when(keycloakClient.realm(HOCS_REALM).getGroupByPath("/" + encodedTeamUUID)).thenReturn(group);
         when(keycloakClient.realm(HOCS_REALM).groups().group("1").members()).thenReturn(userRepresentations);
 
@@ -270,31 +277,35 @@ public class KeycloakServiceTest {
     }
 
     @Test
-    public void getRolesForUser(){
-        List<RoleRepresentation> userRoles = new ArrayList<>();
+    public void getRolesForUser() {
+        RoleRepresentation role1 = new RoleRepresentation(ROLE_1, "Test role", true);
+        RoleRepresentation role2 = new RoleRepresentation(ROLE_2, "Test role2", false);
+        List<RoleRepresentation> userRoles = List.of(role1, role2);
 
-        UserResource userResource = mock(UserResource.class);
-        RoleMappingResource roleMappingResource = mock(RoleMappingResource.class);
-        RoleScopeResource roleScopeResource = mock(RoleScopeResource.class);
-        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
-        GroupRepresentation teamGroup = mock(GroupRepresentation.class);
+        when(keycloakClient.realm(HOCS_REALM).users().get(userUUID.toString()).roles().realmLevel().listEffective()).thenReturn(userRoles);
 
-        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
-        when(hocsRealm.users().get(userUUID.toString())).thenReturn(userResource);
-        when(userResource.roles()).thenReturn(roleMappingResource);
-        when(roleMappingResource.realmLevel()).thenReturn(roleScopeResource);
-        when(roleScopeResource.listEffective()).thenReturn(userRoles);
+        Set<String> result = service.getRolesForUser(userUUID);
 
-        service.getRolesForUser(userUUID);
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.containsAll(List.of(ROLE_1, ROLE_2)));
+
     }
 
-    private List<UserRepresentation> createUserBatch(int batchNum, int usersToCreate){
+    @Test(expected = KeycloakException.class)
+    public void getRolesForUser_onException() {
+        when(keycloakClient.realm(HOCS_REALM)).thenThrow(new InvalidParameterException("dummy exception"));
+        service.getRolesForUser(userUUID);
+
+    }
+
+    private List<UserRepresentation> createUserBatch(int batchNum, int usersToCreate) {
         List<UserRepresentation> userRepresentations = new ArrayList<>();
-        for(int i = 0 ; i < usersToCreate ;  i++){
+        for (int i = 0; i < usersToCreate; i++) {
             UserRepresentation user = new UserRepresentation();
             user.setId(UUID.randomUUID().toString());
             user.setFirstName("FirstNameBatch" + batchNum + "-" + (i + 1));
-            user.setLastName("LastNameBatch"+ batchNum + "-" + (i + 1));
+            user.setLastName("LastNameBatch" + batchNum + "-" + (i + 1));
             userRepresentations.add(user);
         }
 
