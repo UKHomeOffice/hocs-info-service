@@ -33,7 +33,6 @@ public class ExportViewService {
         this.exportViewRepository = exportViewRepository;
     }
 
-    @Cacheable("allExportViews")
     public List<ExportViewDto> getAllExportViews() {
         log.debug("Getting all ExportViews");
         List<ExportView> views = exportViewRepository.findAll();
@@ -52,7 +51,6 @@ public class ExportViewService {
         return results.stream().map(ExportView::toDto).collect(Collectors.toList());
     }
 
-    @Cacheable("getExportViews")
     public ExportViewDto getExportView(String code) {
         log.debug("Getting ExportView for {}", code);
         ExportView exportView = exportViewRepository.findByCode(code);
