@@ -80,22 +80,6 @@ public class KeycloakService {
         }
     }
 
-    public Set<String> getRolesForUser(UUID userUUID) {
-        Set<String> roles  = new HashSet<>();
-        try {
-            RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
-            List<RoleRepresentation> userRoles = hocsRealm.users().get(userUUID.toString()).roles().realmLevel().listEffective();
-            if (userRoles.size() > 0) {
-                userRoles.forEach((role) -> roles.add(role.getName()));
-            }
-        } catch (Exception e) {
-            log.error("Failed to get roles for user {} for reason: {}, Event: {}", userUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
-            throw new KeycloakException(e.getMessage(), e);
-        }
-
-        return roles;
-    }
-
     public void createTeamGroupIfNotExists(UUID teamUUID) {
         try {
             String encodedTeamUUID = Base64UUID.UUIDToBase64String(teamUUID);
