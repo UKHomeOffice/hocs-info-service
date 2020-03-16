@@ -6,16 +6,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.ExportViewDto;
-import uk.gov.digital.ho.hocs.info.application.RequestData;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.ExportView;
 import uk.gov.digital.ho.hocs.info.domain.model.ExportViewField;
 import uk.gov.digital.ho.hocs.info.domain.repository.ExportViewRepository;
-import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,11 +21,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ExportViewServiceTest {
 
-
-    @Mock
-    private RequestData requestData;
-    @Mock
-    private KeycloakService keycloakService;
     @Mock
     private ExportViewRepository exportViewRepository;
 
@@ -48,19 +40,15 @@ public class ExportViewServiceTest {
 
     @Before
     public void setUp() {
-        this.exportViewService = new ExportViewService(requestData, keycloakService, exportViewRepository);
+        this.exportViewService = new ExportViewService(exportViewRepository);
     }
 
     @Test
     public void getAllExportViews() {
 
-        Set<String> userRoles = Set.of(PERMISSION_1, PERMISSION_2);
-
         List<ExportView> exportViews = buildExportViews();
 
         when(exportViewRepository.findAll()).thenReturn(exportViews);
-        when(requestData.userIdUUID()).thenReturn(USER_UUID);
-        when(keycloakService.getRolesForUser(USER_UUID)).thenReturn(userRoles);
 
         List<ExportViewDto> results = exportViewService.getAllExportViews();
 
@@ -85,67 +73,29 @@ public class ExportViewServiceTest {
         assertThat(results.get(1).getFields().get(1).getDisplayName()).isEqualTo(FIELD_NAME_D);
 
         verify(exportViewRepository).findAll();
-        verify(requestData).userIdUUID();
-        verify(keycloakService).getRolesForUser(USER_UUID);
-        verifyNoMoreInteractions(exportViewRepository, requestData, keycloakService);
+        verifyNoMoreInteractions(exportViewRepository);
     }
 
-    @Test
-    public void getAllExportViews_NoPermissionShouldNotReturn() {
-
-        Set<String> userRoles = Set.of(PERMISSION_1);
-
-        List<ExportView> exportViews = buildExportViews();
-
-        when(exportViewRepository.findAll()).thenReturn(exportViews);
-        when(requestData.userIdUUID()).thenReturn(USER_UUID);
-        when(keycloakService.getRolesForUser(USER_UUID)).thenReturn(userRoles);
-
-        List<ExportViewDto> results = exportViewService.getAllExportViews();
-
-        assertThat(results.size()).isEqualTo(1);
-        assertThat(results.get(0).getCode()).isEqualTo(VIEW_CODE_1);
-        assertThat(results.get(0).getDisplayName()).isEqualTo(VIEW_DISPLAY_NAME_1);
-        assertThat(results.get(0).getId()).isEqualTo(1L);
-        assertThat(results.get(0).getRequiredPermission()).isEqualTo(PERMISSION_1);
-        assertThat(results.get(0).getFields().size()).isEqualTo(2);
-        assertThat(results.get(0).getFields().get(0).getId()).isEqualTo(1);
-        assertThat(results.get(0).getFields().get(0).getDisplayName()).isEqualTo(FIELD_NAME_A);
-        assertThat(results.get(0).getFields().get(1).getId()).isEqualTo(2);
-        assertThat(results.get(0).getFields().get(1).getDisplayName()).isEqualTo(FIELD_NAME_B);
-
-        verify(exportViewRepository).findAll();
-        verify(requestData).userIdUUID();
-        verify(keycloakService).getRolesForUser(USER_UUID);
-        verifyNoMoreInteractions(exportViewRepository, requestData, keycloakService);
-    }
 
     @Test
     public void getAllExportViews_Blank() {
 
         List<ExportView> exportViews = new ArrayList<>();
 
-        when(requestData.userIdUUID()).thenReturn(USER_UUID);
         when(exportViewRepository.findAll()).thenReturn(exportViews);
 
         List<ExportViewDto> results = exportViewService.getAllExportViews();
 
         assertThat(results.size()).isEqualTo(0);
         verify(exportViewRepository).findAll();
-        verify(requestData).userIdUUID();
-        verify(keycloakService).getRolesForUser(USER_UUID);
-        verifyNoMoreInteractions(exportViewRepository, requestData, keycloakService);
+        verifyNoMoreInteractions(exportViewRepository);
     }
 
 
     @Test
     public void getExportView() {
 
-        Set<String> userRoles = Set.of(PERMISSION_1);
-
         when(exportViewRepository.findByCode(VIEW_CODE_1)).thenReturn(buildExportView1());
-        when(requestData.userIdUUID()).thenReturn(USER_UUID);
-        when(keycloakService.getRolesForUser(USER_UUID)).thenReturn(userRoles);
 
         ExportViewDto result = exportViewService.getExportView(VIEW_CODE_1);
 
@@ -161,22 +111,7 @@ public class ExportViewServiceTest {
         assertThat(result.getFields().get(1).getDisplayName()).isEqualTo(FIELD_NAME_B);
 
         verify(exportViewRepository).findByCode(VIEW_CODE_1);
-        verify(requestData).userIdUUID();
-        verify(keycloakService).getRolesForUser(USER_UUID);
-        verifyNoMoreInteractions(exportViewRepository, requestData, keycloakService);
-    }
-
-    @Test(expected = ApplicationExceptions.EntityPermissionException.class)
-    public void getExportView_NoPermission() {
-
-        Set<String> userRoles = Set.of();
-
-        when(exportViewRepository.findByCode(VIEW_CODE_1)).thenReturn(buildExportView1());
-        when(requestData.userIdUUID()).thenReturn(USER_UUID);
-        when(keycloakService.getRolesForUser(USER_UUID)).thenReturn(userRoles);
-
-        exportViewService.getExportView(VIEW_CODE_1);
-
+        verifyNoMoreInteractions(exportViewRepository);
     }
 
     @Test(expected = ApplicationExceptions.EntityNotFoundException.class)

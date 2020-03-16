@@ -8,7 +8,6 @@ import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.GroupRepresentation;
-import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.Answers;
 import org.mockito.Mock;
@@ -19,7 +18,6 @@ import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -45,9 +43,6 @@ public class KeycloakServiceTest {
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     RealmResource hocsRealm;
-
-    private static final String ROLE_1 = "role1";
-    private static final String ROLE_2 = "role2";
 
     private UUID userUUID = UUID.randomUUID();
 
@@ -274,29 +269,6 @@ public class KeycloakServiceTest {
         assertThatThrownBy(() -> service.getUsersForTeam(teamUUID))
                 .isInstanceOf(ApplicationExceptions.EntityNotFoundException.class)
                 .hasMessage("Team not found for UUID %s", teamUUID);
-    }
-
-    @Test
-    public void getRolesForUser() {
-        RoleRepresentation role1 = new RoleRepresentation(ROLE_1, "Test role", true);
-        RoleRepresentation role2 = new RoleRepresentation(ROLE_2, "Test role2", false);
-        List<RoleRepresentation> userRoles = List.of(role1, role2);
-
-        when(keycloakClient.realm(HOCS_REALM).users().get(userUUID.toString()).roles().realmLevel().listEffective()).thenReturn(userRoles);
-
-        Set<String> result = service.getRolesForUser(userUUID);
-
-        assertThat(result).isNotNull();
-        assertThat(result.size()).isEqualTo(2);
-        assertThat(result.containsAll(List.of(ROLE_1, ROLE_2)));
-
-    }
-
-    @Test(expected = KeycloakException.class)
-    public void getRolesForUser_onException() {
-        when(keycloakClient.realm(HOCS_REALM)).thenThrow(new InvalidParameterException("dummy exception"));
-        service.getRolesForUser(userUUID);
-
     }
 
     private List<UserRepresentation> createUserBatch(int batchNum, int usersToCreate) {
