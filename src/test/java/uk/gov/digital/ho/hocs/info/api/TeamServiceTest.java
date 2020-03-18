@@ -155,7 +155,7 @@ public class TeamServiceTest {
         Unit unit = new Unit("UNIT1", "UNIT1", true);
         unit.addTeam(team);
 
-        TeamDto teamDto = new TeamDto( "Team1", null, team1UUID, true, new HashSet<>());
+        TeamDto teamDto = new TeamDto( "Team1", null, team1UUID, true, new HashSet<>(), null);
         when(unitRepository.findByUuid(unit.getUuid())).thenReturn(unit);
         when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
 
