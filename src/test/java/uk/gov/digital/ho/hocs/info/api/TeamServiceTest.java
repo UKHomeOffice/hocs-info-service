@@ -6,8 +6,8 @@ import org.junit.runner.RunWith;
 import org.keycloak.admin.client.Keycloak;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateTeamDto;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
-import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
@@ -53,6 +53,8 @@ public class TeamServiceTest {
     private CaseworkClient caseworkClient;
 
     private TeamService teamService;
+
+    private Set<String> caseTypes = new HashSet<>();
 
     @Before
     public void setUp() {
@@ -134,18 +136,31 @@ public class TeamServiceTest {
 
         Unit unit = new Unit("UNIT1", "UNIT1",true);
 
-        TeamDto teamDto = new TeamDto( "Team1", new HashSet<>());
+        CreateTeamDto createTeamDto = new CreateTeamDto("Team1", caseTypes);
+        Team team = new Team(createTeamDto.getDisplayName(), true);
 
-        when(teamRepository.findByUuid(any())).thenReturn(null);
+        when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
         when(unitRepository.findByUuid(unit.getUuid())).thenReturn(unit);
+        when(teamRepository.findByDisplayName(createTeamDto.getDisplayName())).thenReturn(null, team);
 
-        Team result = teamService.createTeam(teamDto, unit.getUuid());
+        Team result = teamService.createTeam(createTeamDto, unit.getUuid());
 
-        verify(teamRepository, times(1)).findByUuid(any());
         verify(unitRepository, times(1)).findByUuid(unit.getUuid());
-        verify(keycloakService, times(1)).createTeamGroupIfNotExists(result.getUuid());
+        verify(keycloakService, times(2)).createTeamGroupIfNotExists(result.getUuid());
+    }
+
+    @Test(expected = ApplicationExceptions.EntityAlreadyExistsException.class)
+    public void shouldThrowExceptionIfTeamAlreadyExists(){
+        CreateTeamDto createTeamDto = new CreateTeamDto("Team1", caseTypes);
+        Team team = new Team(createTeamDto.getDisplayName(), true);
+        Unit unit = new Unit("UNIT1", "UNIT1",true);
+
+        when(teamRepository.findByDisplayName(createTeamDto.getDisplayName())).thenReturn(team);
+
+        teamService.createTeam(createTeamDto, unit.getUuid());
+
+        verify(teamRepository, times(1)).findByDisplayName(createTeamDto.getDisplayName());
         verifyNoMoreInteractions(teamRepository);
-        verifyNoMoreInteractions(keycloakService);
     }
 
     @Test
@@ -155,14 +170,15 @@ public class TeamServiceTest {
         Unit unit = new Unit("UNIT1", "UNIT1", true);
         unit.addTeam(team);
 
-        TeamDto teamDto = new TeamDto( "Team1", null, team1UUID, true, new HashSet<>());
+        CreateTeamDto createTeamDto = new CreateTeamDto("Team1", caseTypes);
         when(unitRepository.findByUuid(unit.getUuid())).thenReturn(unit);
-        when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
+        when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
+        when(teamRepository.findByDisplayName(createTeamDto.getDisplayName())).thenReturn(null, team);
 
-        teamService.createTeam(teamDto, unit.getUuid());
+        teamService.createTeam(createTeamDto, unit.getUuid());
         verify(unitRepository, times(1)).findByUuid(unit.getUuid());
-        verify(unitRepository, never()).save(unit);
-        verify(keycloakService, times(1)).createTeamGroupIfNotExists(team.getUuid());
+        verify(unitRepository).save(unit);
+        verify(keycloakService, times(2)).createTeamGroupIfNotExists(team.getUuid());
         verifyNoMoreInteractions(keycloakService);
     }
 
@@ -380,13 +396,16 @@ public class TeamServiceTest {
 
     @Test
     public void ShouldAuditCreateTeam(){
-
         Unit unit = new Unit("UNIT1", "UNIT1",true);
+        CreateTeamDto createTeamDto = new CreateTeamDto("Team1", caseTypes);
+        Team team = new Team(createTeamDto.getDisplayName(), true);
 
-        TeamDto teamDto = new TeamDto( "Team1", new HashSet<>());
 
         when(unitRepository.findByUuid(unit.getUuid())).thenReturn(unit);
-        teamService.createTeam(teamDto, unit.getUuid());
+        when(teamRepository.findByDisplayName(createTeamDto.getDisplayName())).thenReturn(null, team);
+        when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
+
+        teamService.createTeam(createTeamDto, unit.getUuid());
 
         verify(auditClient, times(1)).createTeamAudit(any(Team.class));
     }
@@ -498,7 +517,6 @@ public class TeamServiceTest {
         assertThat(team.isActive()).isFalse();
 
         verify(auditClient, times(1)).deleteTeamAudit(team);
-
     }
 
     @Test

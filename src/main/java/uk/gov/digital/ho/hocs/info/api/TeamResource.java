@@ -28,12 +28,6 @@ public class TeamResource {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(value = "/unit/{unitUUID}/teams" )
-    public ResponseEntity<TeamDto> createUpdateTeam(@PathVariable String unitUUID, @RequestBody TeamDto team) {
-        Team createdTeam = teamService.createTeam(team, UUID.fromString(unitUUID));
-        return ResponseEntity.ok(TeamDto.from(createdTeam));
-    }
-
     @PostMapping(value = "/unit/{unitUUID}/teams/{teamUUID}")
     public ResponseEntity addTeamToUnit(@PathVariable String unitUUID, @PathVariable String teamUUID) {
         teamService.moveToNewUnit(UUID.fromString(unitUUID), UUID.fromString(teamUUID));

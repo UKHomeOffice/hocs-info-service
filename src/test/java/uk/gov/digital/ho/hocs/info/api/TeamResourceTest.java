@@ -125,21 +125,6 @@ public class TeamResourceTest {
     }
 
     @Test
-    public void shouldCreateNewTeam() {
-        UUID teamUUID = UUID.randomUUID();
-        UUID unitUUID = UUID.randomUUID();
-        Team team = new Team("Team1", true);
-        TeamDto teamDto = TeamDto.from(team);
-        when(teamService.createTeam(teamDto, unitUUID)).thenReturn(team);
-
-        ResponseEntity result = teamResource.createUpdateTeam(unitUUID.toString(), teamDto);
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        verify(teamService, times(1)).createTeam(teamDto, unitUUID);
-        verifyNoMoreInteractions(teamService);
-    }
-
-    @Test
     public void shouldUpdateTeamName(){
         UUID teamUUID = UUID.randomUUID();
         UpdateTeamNameRequest request = new UpdateTeamNameRequest("The Team");

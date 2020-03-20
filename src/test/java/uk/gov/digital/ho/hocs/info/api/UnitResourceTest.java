@@ -8,7 +8,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateTeamDto;
 import uk.gov.digital.ho.hocs.info.api.dto.UnitDto;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -21,12 +23,14 @@ public class UnitResourceTest {
 
     @Mock
     UnitService unitService;
+    @Mock
+    TeamService teamService;
 
-    UnitResource unitResource;
+    private UnitResource unitResource;
 
     @Before
     public void setUp() {
-        unitResource = new UnitResource(unitService);
+        unitResource = new UnitResource(unitService, teamService);
     }
 
 
@@ -58,7 +62,6 @@ public class UnitResourceTest {
 
     @Test
     public void shouldDeleteUnit(){
-
         UUID unitUUID = UUID.randomUUID();
 
         ResponseEntity response = unitResource.deleteUnit(unitUUID);
@@ -66,8 +69,19 @@ public class UnitResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(unitService, times(1)).deleteUnit(unitUUID);
         verifyNoMoreInteractions(unitService);
+    }
 
+    @Test
+    public void shouldCreateTeam (){
+        UUID unitUUID = UUID.randomUUID();
+        Set<String> caseTypes = new HashSet<>();
+        caseTypes.add("DTEN");
+        CreateTeamDto team = new CreateTeamDto("team", caseTypes);
 
+        ResponseEntity response = unitResource.createTeam(unitUUID.toString(), team);
 
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(teamService, times(1)).createTeam(team, unitUUID);
+        verifyNoMoreInteractions(teamService);
     }
 }

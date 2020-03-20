@@ -6,9 +6,9 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateTeamDto;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDeleteActiveParentTopicsDto;
-import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetTopicResponse;
@@ -78,6 +78,17 @@ public class TeamService {
         return activeTeams;
     }
 
+    private Team getTeamByDisplayName(String displayName) {
+        log.debug("Getting team with displayName {}", displayName);
+        Team team = teamRepository.findByDisplayName(displayName);
+        if (team != null) {
+            log.info("Got team With displayName {}", displayName);
+            return team;
+        } else {
+            throw new ApplicationExceptions.EntityNotFoundException("Team not found for displayName {}", displayName);
+        }
+    }
+
     public Team getTeam(UUID teamUUID) {
         log.debug("Getting Team {}", teamUUID);
         Team team = teamRepository.findByUuid(teamUUID);
@@ -116,22 +127,45 @@ public class TeamService {
     }
 
     @Transactional
-    public Team createTeam(TeamDto newTeam, UUID unitUUID) {
-        log.debug("Creating Team {}", newTeam.getDisplayName());
-        Team team = teamRepository.findByUuid(newTeam.getUuid());
+    public Team createTeam(CreateTeamDto newTeam, UUID unitUUID) {
+        String newTeamDisplayName = newTeam.getDisplayName();
+        log.debug("Creating Team {}", newTeamDisplayName);
+        Team existingTeam = teamRepository.findByDisplayName(newTeamDisplayName);
         Unit unit = unitRepository.findByUuid(unitUUID);
-        if (team == null) {
-            log.debug("Team {} doesn't exist, creating.", newTeam.getDisplayName());
-            team = new Team(newTeam.getDisplayName(), true);
-            team.addPermissions(getPermissionsFromDto(newTeam.getPermissions(), team));
+
+        if (existingTeam == null) {
+            log.debug("Team {} doesn't exist, creating.", newTeamDisplayName);
+            Set<String> caseTypeUUIDs = newTeam.getCaseTypes();
+            Set<CaseType> caseTypes = new HashSet<>();
+            Set<PermissionDto> permissionsDto = new HashSet<>();
+
+            Team teamToAdd = new Team(newTeamDisplayName, true);
+            teamToAdd.setUnit(unit);
+            teamRepository.save(teamToAdd);
+
+            Team team = teamRepository.findByDisplayName(newTeamDisplayName);
+            updateTeamPermissions(team.getUuid(), permissionsDto);
+
+            caseTypeUUIDs.forEach(caseType -> caseTypes.add(caseTypeService.getCaseType(caseType)));
+            caseTypes.forEach(caseType -> {
+                log.debug("Adding CaseType {} to new Team {}", caseType, newTeamDisplayName);
+                permissionsDto.add(new PermissionDto(caseType.getType(), AccessLevel.from(5)));
+            });
+
             unit.addTeam(team);
+            unitRepository.save(unit);
+
+            createKeyCloakMappings(team.getUuid(), Optional.empty());
+            auditClient.createTeamAudit(team);
+            auditClient.updateTeamPermissionsAudit(team.getUuid(), permissionsDto);
+
+            log.info("Team with UUID {} created in Unit {}", team.getUuid().toString(), unit.getShortCode(), value(EVENT, TEAM_CREATED));
+
+            return team;
         } else {
-            log.debug("Team {} exists, not creating.", newTeam.getDisplayName());
+            log.debug("Team {} exists, not creating.", newTeamDisplayName);
+            throw new ApplicationExceptions.EntityAlreadyExistsException("Team %s already exists", newTeamDisplayName);
         }
-        createKeyCloakMappings(team.getUuid(), Optional.empty());
-        auditClient.createTeamAudit(team);
-        log.info("Team with UUID {} created in Unit {}", team.getUuid().toString(), unit.getShortCode(), value(EVENT, TEAM_CREATED));
-        return team;
     }
 
     @Transactional

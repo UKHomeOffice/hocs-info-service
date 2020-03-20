@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
@@ -118,25 +119,17 @@ public class TeamIntegrationTests {
 
     @Test
     public void shouldAddTeamToDatabaseAndKeyCloak() {
+        Set<String> caseTypes = new HashSet<>();
+        caseTypes.add("DTEN");
+        CreateTeamDto team = new CreateTeamDto("Team 3000", caseTypes);
+        HttpEntity<CreateTeamDto> httpEntity = new HttpEntity<>(team, headers);
 
-        Set<PermissionDto> permissions = new HashSet<PermissionDto>() {{
-            add(new PermissionDto("CT1", AccessLevel.OWNER));
-        }};
-        TeamDto team = new TeamDto("Team 3000", permissions);
-
-        HttpEntity<TeamDto> httpEntity = new HttpEntity<>(team, headers);
-
-        ResponseEntity<TeamDto> result = testRestTemplate.exchange(
-                getBasePath() + "/unit/" + unitUUID.toString() + "/teams"
-                , HttpMethod.POST, httpEntity, TeamDto.class);
+        ResponseEntity result = testRestTemplate.exchange(
+                getBasePath() + "/unit/" + unitUUID.toString() + "/team"
+                , HttpMethod.POST, httpEntity, CreateTeamDto.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(teamRepository.findByUuid(result.getBody().getUuid())).isNotNull();
-
-        GroupRepresentation group = keycloakClient.realm("hocs")
-                .getGroupByPath("/" + Base64UUID.UUIDToBase64String(result.getBody().getUuid()));
-
-        assertThat(group).isNotNull();
+        assertThat(teamRepository.findByDisplayName(team.getDisplayName())).isNotNull();
     }
 
     @Test

@@ -1,7 +1,7 @@
 package uk.gov.digital.ho.hocs.info.domain.exception;
 
-import uk.gov.digital.ho.hocs.info.application.LogEvent;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDeleteActiveParentTopicsDto;
+import uk.gov.digital.ho.hocs.info.application.LogEvent;
 
 public interface ApplicationExceptions {
     class EntityCreationException extends RuntimeException {
@@ -111,6 +111,11 @@ public interface ApplicationExceptions {
         public EntityAlreadyExistsException(String msg, LogEvent event, Object... args) {
             super(String.format(msg, args));
             this.event = event;
+        }
+
+        public EntityAlreadyExistsException(String msg, Object... args) {
+            super(String.format(msg, args));
+            this.event = LogEvent.UNCAUGHT_EXCEPTION;
         }
 
         public EntityAlreadyExistsException(String msg) {

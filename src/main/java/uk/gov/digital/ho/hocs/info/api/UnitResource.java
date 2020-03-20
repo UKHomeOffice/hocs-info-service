@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateTeamDto;
 import uk.gov.digital.ho.hocs.info.api.dto.UnitDto;
 
 import java.util.Set;
@@ -16,10 +17,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 public class UnitResource {
 
     private final UnitService unitService;
+    private final TeamService teamService;
 
     @Autowired
-    public UnitResource(UnitService unitService) {
+    public UnitResource(UnitService unitService, TeamService teamService) {
         this.unitService = unitService;
+        this.teamService = teamService;
     }
 
     @GetMapping(value = "/unit", produces = APPLICATION_JSON_UTF8_VALUE)
@@ -37,6 +40,12 @@ public class UnitResource {
     @DeleteMapping(value = "/unit/{unitUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity deleteUnit(@PathVariable UUID unitUUID) {
         unitService.deleteUnit(unitUUID);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/unit/{unitUUID}/team" )
+    public ResponseEntity createTeam(@PathVariable String unitUUID, @RequestBody CreateTeamDto createTeamDto) {
+        teamService.createTeam(createTeamDto, UUID.fromString(unitUUID));
         return ResponseEntity.ok().build();
     }
 }
