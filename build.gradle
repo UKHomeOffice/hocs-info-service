@@ -50,6 +50,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-json')
 	compile('org.springframework.boot:spring-boot-starter-undertow')
+	compile('org.springframework.retry:spring-retry')
 
 	compile('net.logstash.logback:logstash-logback-encoder:5.3')
 
@@ -62,11 +63,14 @@ dependencies {
 	compile 'javax.xml.bind:jaxb-api:2.3.0'
 	compile('org.flywaydb:flyway-core')
 	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.9.6'
-	compile group: 'org.keycloak', name: 'keycloak-admin-client', version: '4.5.0.Final'
-	compile group: 'org.keycloak', name: 'keycloak-services', version: '4.5.0.Final'
-	compile group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.1.4.Final'
-	compile group: 'org.jboss.resteasy', name: 'resteasy-client', version: '3.1.4.Final'
-	compile group: 'org.jboss.resteasy', name: 'resteasy-jackson2-provider', version: '3.1.4.Final'
+	compile group: 'org.keycloak', name: 'keycloak-admin-client', version: '8.0.2'
+	compile ('org.keycloak:keycloak-admin-client:8.0.2')
+	compile ('org.keycloak:keycloak-services:8.0.2'){
+		exclude module: "slf4j-log4j12"
+	}
+	compile group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.9.1.Final'
+	compile group: 'org.jboss.resteasy', name: 'resteasy-client', version: '3.9.1.Final'
+	compile group: 'org.jboss.resteasy', name: 'resteasy-jackson2-provider', version: '3.9.1.Final'
 
 	compile('org.apache.commons:commons-csv:1.5')
 	compile('io.springfox:springfox-swagger2:2.9.2')

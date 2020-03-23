@@ -6,9 +6,10 @@ import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.GroupRepresentation;
-import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
@@ -41,7 +42,7 @@ public class KeycloakService {
 
     public void addUserToTeam(UUID userUUID, UUID teamUUID) {
         try {
-            String teamPath = "/" +  Base64UUID.UUIDToBase64String(teamUUID);
+            String teamPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
             UserResource user = hocsRealm.users().get(userUUID.toString());
             GroupRepresentation group = hocsRealm.getGroupByPath(teamPath);
@@ -54,28 +55,13 @@ public class KeycloakService {
 
     public void removeUserFromTeam(UUID userUUID, UUID teamUUID) {
         try {
-            String teamPath = "/" +  Base64UUID.UUIDToBase64String(teamUUID);
+            String teamPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
             UserResource user = hocsRealm.users().get(userUUID.toString());
             GroupRepresentation group = hocsRealm.getGroupByPath(teamPath);
             user.leaveGroup(group.getId());
         } catch (Exception e) {
             log.error("Failed to remove user {} from team {} for reason: {}, Event: {}", userUUID, teamUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
-            throw new KeycloakException(e.getMessage(), e);
-        }
-    }
-
-    public Set<UUID> getGroupsForUser(UUID userUUID) {
-        try {
-            RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
-            List<GroupRepresentation> encodedTeamUUIDs = hocsRealm.users().get(userUUID.toString()).groups();
-            Set<UUID> teamUUIDs = new HashSet<>();
-            if (encodedTeamUUIDs.size() > 0) {
-                encodedTeamUUIDs.forEach((group) -> teamUUIDs.add(Base64UUID.Base64StringToUUID(group.getName())));
-            }
-            return teamUUIDs;
-        } catch (Exception e) {
-            log.error("Failed to get groups for user {} for reason: {}, Event: {}", userUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }
@@ -107,13 +93,31 @@ public class KeycloakService {
         }
     }
 
+    @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
+    public Set<UUID> getGroupsForUser(UUID userUUID) {
+        try {
+            RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
+            List<GroupRepresentation> encodedTeamUUIDs = hocsRealm.users().get(userUUID.toString()).groups();
+            Set<UUID> teamUUIDs = new HashSet<>();
+            if (encodedTeamUUIDs.size() > 0) {
+                encodedTeamUUIDs.forEach((group) -> teamUUIDs.add(Base64UUID.Base64StringToUUID(group.getName())));
+            }
+            return teamUUIDs;
+        } catch (Exception e) {
+            log.error("Failed to get groups for user {} for reason: {}, Event: {}", userUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            throw new KeycloakException(e.getMessage(), e);
+        }
+    }
+
+
+    @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
     public List<UserRepresentation> getAllUsers() {
         log.info("Get users from Keycloak realm {}", hocsRealmName);
         UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
         int totalUserCount = usersResource.count();
         List<UserRepresentation> users = new ArrayList<>();
 
-        for(int i = 0; i < totalUserCount; i += USER_BATCH_FETCH_SIZE){
+        for (int i = 0; i < totalUserCount; i += USER_BATCH_FETCH_SIZE) {
             log.debug("Batch fetching users, total user count: {}, fetched so far: {}", totalUserCount, i);
             users.addAll(usersResource.list(i, USER_BATCH_FETCH_SIZE));
         }
@@ -122,20 +126,22 @@ public class KeycloakService {
         return users;
     }
 
+    @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
     public UserRepresentation getUserFromUUID(UUID userUUID) {
         return keycloakClient.realm(hocsRealmName).users().get(userUUID.toString()).toRepresentation();
     }
 
+    @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
     public Set<UserRepresentation> getUsersForTeam(UUID teamUUID) {
         String encodedTeamPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
         try {
-            if (teamRepository.findByUuid(teamUUID) != null){
+            if (teamRepository.findByUuid(teamUUID) != null) {
                 GroupRepresentation group = keycloakClient.realm(hocsRealmName).getGroupByPath(encodedTeamPath);
                 return new HashSet<>(keycloakClient.realm(hocsRealmName).groups().group((group).getId()).members());
             } else {
                 throw new ApplicationExceptions.EntityNotFoundException("Team not found for UUID %s", teamUUID);
             }
-        } catch (javax.ws.rs.NotFoundException e){
+        } catch (javax.ws.rs.NotFoundException e) {
             log.error("Keycloak has not found users assigned to this team, Not found exception thrown by keycloak: " + e.getMessage());
             return Collections.emptySet();
         }
