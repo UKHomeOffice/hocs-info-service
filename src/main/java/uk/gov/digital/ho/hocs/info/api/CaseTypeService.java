@@ -71,12 +71,12 @@ public class CaseTypeService {
         }
     }
 
-    LocalDate getDeadlineForCaseType(String type, LocalDate receivedDate) {
-        log.debug("Getting deadline for caseType {} with received date of {} ", type, receivedDate);
+    LocalDate getDeadlineForCaseType(String type, LocalDate receivedDate, int days) {
+        log.debug("Getting deadline for caseType {} with received date of {} and Days of {}", type, receivedDate, days);
         CaseType caseType = getCaseType(type);
-        int sla = stageTypeService.getStageType(caseType.getDeadlineStage()).getDeadline();
+        int sla = (days > 0) ? days : stageTypeService.getStageType(caseType.getDeadlineStage()).getDeadline();
         Set<ExemptionDate> exemptions = holidayDateRepository.findAllByCaseType(caseType.getUuid());
-        LocalDate deadline = Deadline.calculateDeadline(receivedDate, sla, exemptions);
+        LocalDate deadline = Deadline.calculateDeadline(receivedDate, null, sla, exemptions);
         log.info("Got deadline ({}) for caseType {} with received date of {} ", deadline, type, receivedDate);
         return deadline;
     }
@@ -86,7 +86,7 @@ public class CaseTypeService {
         CaseType caseType = getCaseType(type);
         Set<StageTypeEntity> stageTypes = stageTypeService.getAllStageTypesByCaseType(caseType.getUuid());
         Set<ExemptionDate> exemptions = holidayDateRepository.findAllByCaseType(caseType.getUuid());
-        Map<String, LocalDate> deadlines = stageTypes.stream().filter(st -> st.getDeadline() >= 0).collect(Collectors.toMap(StageTypeEntity::getType, stageType -> Deadline.calculateDeadline(receivedDate, stageType.getDeadline(), exemptions)));
+        Map<String, LocalDate> deadlines = stageTypes.stream().filter(st -> st.getDeadline() >= 0).collect(Collectors.toMap(StageTypeEntity::getType, stageType -> Deadline.calculateDeadline(receivedDate, null, stageType.getDeadline(), exemptions)));
         log.info("Got {} deadlines for caseType {} with received date of {} ", deadlines.size(), type, receivedDate);
         return deadlines;
     }

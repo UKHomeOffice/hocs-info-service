@@ -41,11 +41,12 @@ public class StageTypeResource {
         return ResponseEntity.ok(TeamDto.fromWithoutPermissions(team));
     }
 
-    @GetMapping(value = "/stageType/{stageType}/deadline", params = {"received"}, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<LocalDate> getDeadlineByStage(@PathVariable String stageType, @RequestParam String received) {
+    @GetMapping(value = "/stageType/{stageType}/deadline", params = {"received","caseDeadline"}, produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<LocalDate> getDeadlineByStage(@PathVariable String stageType, @RequestParam String received, @RequestParam String caseDeadline) {
         try {
             LocalDate receivedDate = LocalDate.parse(received);
-            LocalDate deadline = stageTypeService.getDeadlineForStageType(stageType, receivedDate);
+            LocalDate caseDeadlineDate = LocalDate.parse(caseDeadline);
+            LocalDate deadline = stageTypeService.getDeadlineForStageType(stageType, receivedDate, caseDeadlineDate);
             return ResponseEntity.ok(deadline);
         } catch (ApplicationExceptions.EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
