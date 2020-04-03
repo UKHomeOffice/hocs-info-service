@@ -49,10 +49,10 @@ public class CaseTypeResource {
         return ResponseEntity.ok(CaseTypeDto.from(caseType));
     }
 
-    @GetMapping(value = "/caseType/{caseType}/deadline", params = {"received"}, produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<LocalDate> getCaseDeadline(@PathVariable String caseType, @RequestParam String received) {
+    @GetMapping(value = "/caseType/{caseType}/deadline", params = {"received","days"}, produces = APPLICATION_JSON_UTF8_VALUE)
+    ResponseEntity<LocalDate> getCaseDeadline(@PathVariable String caseType, @RequestParam String received, @RequestParam int days) {
         LocalDate receivedDate = LocalDate.parse(received);
-        LocalDate deadline = caseTypeService.getDeadlineForCaseType(caseType,receivedDate);
+        LocalDate deadline = caseTypeService.getDeadlineForCaseType(caseType,receivedDate,days);
         return ResponseEntity.ok(deadline);
     }
 
