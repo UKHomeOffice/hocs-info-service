@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
+import uk.gov.digital.ho.hocs.info.domain.model.Unit;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import java.util.HashSet;
@@ -123,6 +124,55 @@ public class TeamResourceTest {
         verify(teamService, times(1)).getTeam(teamUUID);
         verifyNoMoreInteractions(teamService);
     }
+
+    @Test
+    public void shouldGetTeamForTeamUUID() {
+        Team team = new Team("Team1", true);
+        when(teamService.getTeam(team.getUuid())).thenReturn(team);
+
+        ResponseEntity<TeamDto> result = teamResource.getTeam(team.getUuid());
+        assertThat(result.getBody().getUuid()).isEqualTo(team.getUuid());
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(teamService).getTeam(team.getUuid());
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
+    public void returnNotFoundWhenTeamDoesNotExistForTeamUUID() {
+        UUID teamUUID = UUID.randomUUID();
+        when(teamService.getTeam(teamUUID)).thenThrow(new ApplicationExceptions.EntityNotFoundException(""));
+
+        teamResource.getTeam(teamUUID);
+        verify(teamService).getTeam(teamUUID);
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
+    public void getUnitByTeam() {
+
+        UUID unitUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+        Unit unit = mock(Unit.class);
+        Team team = mock(Team.class);
+        when(teamService.getTeam(teamUUID)).thenReturn(team);
+        when(team.getUnit()).thenReturn(unit);
+        when(unit.getUuid()).thenReturn(unitUUID);
+
+        ResponseEntity<UnitDto> result = teamResource.getUnitByTeam(teamUUID);
+        assertThat(result.getBody().getUuid()).isEqualTo(unitUUID.toString());
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(teamService).getTeam(teamUUID);
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
+    public void getUnitByTeam_returnNotFoundWhenTeamDoesNotExist() {
+        UUID teamUUID = UUID.randomUUID();
+        when(teamService.getTeam(teamUUID)).thenThrow(new ApplicationExceptions.EntityNotFoundException(""));
+
+        teamResource.getUnitByTeam(teamUUID);
+    }
+
 
     @Test
     public void shouldCreateNewTeam() {

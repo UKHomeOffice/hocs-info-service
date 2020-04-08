@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.security;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.keycloak.admin.client.Keycloak;
@@ -45,6 +46,11 @@ public class KeycloakServiceTest {
 
     private UUID userUUID = UUID.randomUUID();
 
+    @Before
+    public void before() {
+        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
+    }
+
     @Test
     public void shouldCallKeyCloakToAddUserToGroup() {
         UUID teamUUID = UUID.randomUUID();
@@ -58,7 +64,6 @@ public class KeycloakServiceTest {
         when(teamGroup.getId()).thenReturn("TEAM_GROUP");
         doNothing().when(userResource).joinGroup("TEAM_GROUP");
 
-        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
         service.addUserToTeam(userUUID, teamUUID);
         verify(userResource, times(1)).joinGroup("TEAM_GROUP");
     }
@@ -76,7 +81,6 @@ public class KeycloakServiceTest {
         when(teamGroup.getId()).thenReturn("TEAM_GROUP");
         doNothing().when(userResource).leaveGroup("TEAM_GROUP");
 
-        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
         service.removeUserFromTeam(userUUID, teamUUID);
         verify(userResource, times(1)).leaveGroup("TEAM_GROUP");
     }
@@ -86,7 +90,6 @@ public class KeycloakServiceTest {
 
         when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
         when(hocsRealm.groups().add(any())).thenReturn(mock(Response.class));
-        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
         service.createTeamGroupIfNotExists(UUID.randomUUID());
         verify(hocsRealm.groups(), times(1)).add(any());
     }
@@ -104,7 +107,6 @@ public class KeycloakServiceTest {
 
         when(keycloakClient.realm(HOCS_REALM).users().count()).thenReturn(1);
         when(keycloakClient.realm(HOCS_REALM).users().list(0, 100)).thenReturn(userRepresentations);
-        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
         List<UserRepresentation> result = service.getAllUsers();
         assertThat(result.size()).isEqualTo(1);
     }
@@ -133,7 +135,6 @@ public class KeycloakServiceTest {
         when(usersResource.list(batch1users + batch2users, expectedBatchFetchSize)).thenReturn(userRepresentations3);
         when(usersResource.list(batch1users + batch2users + batch3users, expectedBatchFetchSize)).thenReturn(userRepresentations4);
 
-        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
         List<UserRepresentation> result = service.getAllUsers();
 
         assertThat(result.size()).isEqualTo(totalNumberOfUsers);
@@ -167,7 +168,6 @@ public class KeycloakServiceTest {
         user.setLastName("LastName");
 
         when(keycloakClient.realm(HOCS_REALM).users().get(userUUID.toString()).toRepresentation()).thenReturn(user);
-        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
         UserRepresentation result = service.getUserFromUUID(userUUID);
         assertThat(result.getFirstName()).isEqualTo("FirstName");
         assertThat(result.getLastName()).isEqualTo("LastName");
@@ -175,7 +175,7 @@ public class KeycloakServiceTest {
     }
 
     @Test
-    public void shouldGetGroupsOfUser () {
+    public void shouldGetGroupsOfUser() {
 
         UserRepresentation user = new UserRepresentation();
         user.setId(userUUID.toString());
@@ -193,7 +193,6 @@ public class KeycloakServiceTest {
         String userUUIDString = userUUID.toString();
         when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
         when(hocsRealm.users().get(userUUIDString).groups()).thenReturn(groups);
-        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
         Set<UUID> result = service.getGroupsForUser(userUUID);
 
         assertThat(result).contains(Base64UUID.Base64StringToUUID(groups.get(0).getId()));
@@ -213,7 +212,6 @@ public class KeycloakServiceTest {
         String userUUIDString = userUUID.toString();
         when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
         when(hocsRealm.users().get(userUUIDString).groups()).thenThrow(mockException);
-        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
 
         assertThatThrownBy(() -> service.getGroupsForUser(userUUID))
                 .isInstanceOf(KeycloakException.class);
@@ -232,16 +230,16 @@ public class KeycloakServiceTest {
         userRepresentations.add(user);
 
         String encodedTeamUUID = Base64UUID.UUIDToBase64String(teamUUID);
-        GroupRepresentation group = new GroupRepresentation(){
+        GroupRepresentation group = new GroupRepresentation() {
             {
                 setPath("/" + encodedTeamUUID);
                 setName(encodedTeamUUID);
                 setId("1");
-            }};
+            }
+        };
         when(keycloakClient.realm(HOCS_REALM).getGroupByPath("/" + encodedTeamUUID)).thenReturn(group);
         when(keycloakClient.realm(HOCS_REALM).groups().group("1").members()).thenReturn(userRepresentations);
 
-        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
         Set<UserRepresentation> result = service.getUsersForTeam(teamUUID);
         assertThat(result.size()).isEqualTo(1);
     }
@@ -256,7 +254,6 @@ public class KeycloakServiceTest {
         when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
         when(hocsRealm.getGroupByPath(encodedTeamUUIDPath)).thenThrow(mockException);
 
-        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
         Set<UserRepresentation> result = service.getUsersForTeam(teamUUID);
         assertThat(result.size()).isEqualTo(0);
     }
@@ -268,20 +265,19 @@ public class KeycloakServiceTest {
 
         when(teamRepository.findByUuid(teamUUID)).thenReturn(null);
 
-        service = new KeycloakService(teamRepository, keycloakClient, HOCS_REALM);
 
         assertThatThrownBy(() -> service.getUsersForTeam(teamUUID))
                 .isInstanceOf(ApplicationExceptions.EntityNotFoundException.class)
                 .hasMessage("Team not found for UUID %s", teamUUID);
     }
 
-    private List<UserRepresentation> createUserBatch(int batchNum, int usersToCreate){
+    private List<UserRepresentation> createUserBatch(int batchNum, int usersToCreate) {
         List<UserRepresentation> userRepresentations = new ArrayList<>();
-        for(int i = 0 ; i < usersToCreate ;  i++){
+        for (int i = 0; i < usersToCreate; i++) {
             UserRepresentation user = new UserRepresentation();
             user.setId(UUID.randomUUID().toString());
             user.setFirstName("FirstNameBatch" + batchNum + "-" + (i + 1));
-            user.setLastName("LastNameBatch"+ batchNum + "-" + (i + 1));
+            user.setLastName("LastNameBatch" + batchNum + "-" + (i + 1));
             userRepresentations.add(user);
         }
 
