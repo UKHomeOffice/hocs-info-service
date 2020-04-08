@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Field;
+import uk.gov.digital.ho.hocs.info.domain.model.FieldScreen;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 import uk.gov.digital.ho.hocs.info.domain.repository.FieldRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.SchemaRepository;
@@ -55,10 +56,15 @@ public class SchemaServiceTest {
 
         Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true);
         Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true);
+        UUID schemaUUID = UUID.randomUUID();
 
-        List<Field> fields = List.of(field1, field2);
 
-        Schema testSchema = new Schema(20L, UUID.randomUUID(), "type", "schemaTitle", "save", true, "stageType", fields, null);
+        List<FieldScreen> fields = List.of(
+                new FieldScreen(schemaUUID, field1.getUuid(), 1L, field1),
+                new FieldScreen(schemaUUID, field2.getUuid(), 2L, field2));
+
+
+        Schema testSchema = new Schema(20L, schemaUUID, "type", "schemaTitle", "save", true, "stageType", fields, null);
 
         when(schemaRepository.findExtractOnlySchema()).thenReturn(testSchema);
 
@@ -98,8 +104,15 @@ public class SchemaServiceTest {
         Field field3 = new Field(12L, UUID.randomUUID(), "component", "Field3", "label", "", "", false, true, true);
         Field field4 = new Field(13L, UUID.randomUUID(), "component", "Field4", "label", "", "", false, false, true);
 
-        List<Field> fields1 = List.of(field1, field2);
-        List<Field> fields2 = List.of(field3, field4);
+        UUID schema1UUID = UUID.randomUUID();
+        UUID schema2UUID = UUID.randomUUID();
+
+        List<FieldScreen> fields1 = List.of(
+                new FieldScreen(schema1UUID, field1.getUuid(), 1L, field1),
+                new FieldScreen(schema1UUID, field2.getUuid(), 2L, field2));
+        List<FieldScreen> fields2 = List.of(
+                new FieldScreen(schema2UUID, field3.getUuid(), 1L, field3),
+                new FieldScreen(schema2UUID, field4.getUuid(), 2L, field4));
 
         Schema schema1 = new Schema(21L, UUID.randomUUID(), "type1", "schemaTitle1", "save", true, "stageType", fields1, null);
         Schema schema2 = new Schema(22L, UUID.randomUUID(), "type2", "schemaTitle2", "save", true, "stageType", fields2, null);
