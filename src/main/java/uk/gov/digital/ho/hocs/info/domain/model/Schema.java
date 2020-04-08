@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "screen_schema")
@@ -43,24 +45,27 @@ public class Schema implements Serializable {
     @Column(name = "stage_type", insertable = false, updatable = false)
     private String stageType;
 
-    @Getter
-    @OneToMany
-    @JoinTable(
-            name="field_screen",
-            joinColumns = @JoinColumn(name="schema_uuid", referencedColumnName="uuid"),
-            inverseJoinColumns = @JoinColumn( name="field_uuid", referencedColumnName="uuid")
-    )
-    @OrderBy("id")
-    private List<Field> fields;
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schema_uuid", referencedColumnName = "uuid", insertable = false, updatable = false)
+    @OrderBy("sortOrder")
+    private List<FieldScreen> fieldScreens;
 
     @Getter
     @OneToMany
     @JoinTable(
-            name="secondary_action_screen",
-            joinColumns = @JoinColumn(name="schema_uuid", referencedColumnName="uuid"),
-            inverseJoinColumns = @JoinColumn( name="secondary_action_uuid", referencedColumnName="uuid")
+            name = "secondary_action_screen",
+            joinColumns = @JoinColumn(name = "schema_uuid", referencedColumnName = "uuid"),
+            inverseJoinColumns = @JoinColumn(name = "secondary_action_uuid", referencedColumnName = "uuid")
     )
     @OrderBy("id")
     private List<SecondaryAction> secondaryActions;
+
+
+    public List<Field> getFields() {
+        return fieldScreens.stream()
+                .map(e -> e.getField())
+                .collect(Collectors.toList());
+
+    }
 
 }
