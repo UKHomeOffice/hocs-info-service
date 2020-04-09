@@ -2,11 +2,10 @@ package uk.gov.digital.ho.hocs.info.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.Set;
+import java.util.UUID;
 
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCorrespondentTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCorrespondentTypeResponse;
@@ -27,6 +26,13 @@ public class CorrespondentTypeResource {
     @GetMapping(value = "/correspondentType", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetCorrespondentTypeResponse> getCorrespondentTypes() {
         Set<CorrespondentType> correspondentTypes = correspondentTypeService.getAllCorrespondentTypes();
+        GetCorrespondentTypeResponse response = GetCorrespondentTypeResponse.from(correspondentTypes);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/correspondentType/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<GetCorrespondentTypeResponse> getCorrespondentTypesByCaseType(@PathVariable String caseType) {
+        Set<CorrespondentType> correspondentTypes = correspondentTypeService.getCorrespondentTypesByCaseType(caseType);
         GetCorrespondentTypeResponse response = GetCorrespondentTypeResponse.from(correspondentTypes);
         return ResponseEntity.ok(response);
     }
