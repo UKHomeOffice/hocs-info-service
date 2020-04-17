@@ -172,7 +172,7 @@ public class AuditClient {
 
     public void addTeamToTopicAudit(TeamLink teamLink) {
         String auditPayload = Json.createObjectBuilder()
-                .add("topicUUID", teamLink.getLinkUUID().toString())
+                .add("topicUUID", teamLink.getLinkValue())
                 .add("teamUUID", teamLink.getResponsibleTeamUUID().toString())
                 .add("caseType", teamLink.getCaseType())
                 .add("stageType", teamLink.getStageType())
@@ -183,7 +183,7 @@ public class AuditClient {
 
     public void updateTeamForTopicAudit(TeamLink teamLink, UUID oldTeamUUID) {
         String auditPayload = Json.createObjectBuilder()
-                .add("topicUUID", teamLink.getLinkUUID().toString())
+                .add("topicUUID", teamLink.getLinkValue())
                 .add("teamUUID", teamLink.getResponsibleTeamUUID().toString())
                 .add("caseType", teamLink.getCaseType())
                 .add("stageType", teamLink.getStageType())

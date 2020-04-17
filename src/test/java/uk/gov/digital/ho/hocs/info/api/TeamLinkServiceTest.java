@@ -59,7 +59,7 @@ public class TeamLinkServiceTest {
 
 
         verify(teamLinkRepository, times(1)).save(any());
-        verify(teamLinkRepository, times(1)).findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(any(), eq("TOPIC"), any(), any());
+        verify(teamLinkRepository, times(1)).findByLinkValueAndLinkTypeAndCaseTypeAndStageType(any(), eq("TOPIC"), any(), any());
         verifyNoMoreInteractions(teamLinkRepository);
     }
 
@@ -221,12 +221,12 @@ public class TeamLinkServiceTest {
         when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
         when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
         when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
-        when(teamLinkRepository.findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(
+        when(teamLinkRepository.findByLinkValueAndLinkTypeAndCaseTypeAndStageType(
                 any(), eq("TOPIC"), any(), any())).thenReturn(new TeamLink());
 
         topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
 
-        verify(teamLinkRepository, times(1)).findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(any(), eq("TOPIC"), any(), any());
+        verify(teamLinkRepository, times(1)).findByLinkValueAndLinkTypeAndCaseTypeAndStageType(any(), eq("TOPIC"), any(), any());
         verify(teamLinkRepository, times(1)).save(any());
         verifyNoMoreInteractions(teamLinkRepository);
     }
