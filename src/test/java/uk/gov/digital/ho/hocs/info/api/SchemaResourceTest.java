@@ -22,12 +22,14 @@ public class SchemaResourceTest {
 
     @Mock
     SchemaService schemaService;
+    @Mock
+    ExtractService extractService;
 
     private SchemaResource schemaResource;
 
     @Before
     public void setup() {
-        schemaResource = new SchemaResource(schemaService);
+        schemaResource = new SchemaResource(schemaService, extractService);
     }
 
     @Test
@@ -57,7 +59,7 @@ public class SchemaResourceTest {
         when(schemaService.getExtractOnlyFields()).thenReturn(List.of(field4ExtractOnly));
         when(schemaService.getAllReportingFieldsForCaseType(caseType)).thenReturn(List.of(field1, field2, field3).stream());
 
-        ResponseEntity<Set<String>> result = schemaResource.getAllReportingFieldsForCaseType(caseType);
+        ResponseEntity<List<String>> result = schemaResource.getAllReportingFieldsForCaseType(caseType);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCodeValue()).isEqualTo(200);
