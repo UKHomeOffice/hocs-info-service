@@ -57,8 +57,8 @@ public class ParentTopicRepositoryTest {
         Team team = new Team("__Team1__", true);
         team.setUnit(unit);
         StageTypeEntity stageTypeEntity = new StageTypeEntity(UUID.randomUUID(), "__STAGETYPE__", "__STAGETYPE__", "__STAGETYPE__", caseType.getUuid(), 1, true, team);
-        TeamLink teamLink1 = new TeamLink(childTopic1.getUuid(), "TOPIC", team.getUuid(), "__CASETYPE__", "__STAGETYPE__");
-        TeamLink teamLink2 = new TeamLink(childTopic5.getUuid(), "TOPIC", team.getUuid(), "__CASETYPE__", "__STAGETYPE__");
+        TeamLink teamLink1 = new TeamLink(childTopic1.getUuid().toString(), "TOPIC", team.getUuid(), "__CASETYPE__", "__STAGETYPE__");
+        TeamLink teamLink2 = new TeamLink(childTopic5.getUuid().toString(), "TOPIC", team.getUuid(), "__CASETYPE__", "__STAGETYPE__");
 
         this.entityManager.persist(childTopic1);
         this.entityManager.persist(childTopic2);

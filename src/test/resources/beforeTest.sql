@@ -90,7 +90,7 @@ VALUES ('test topic 1', '11111111-ffff-1111-1111-111111111131', '94a10f9f-a42e-4
        ('test inactive topic 5 with inactive parent', '11111111-ffff-1111-1111-111111111135', '71caee7b-4632-4ac6-9c15-b91d4c0d27e5', FALSE);
 
 
-INSERT INTO team_link (link_uuid, link_type, case_type, responsible_team_uuid, stage_type)
+INSERT INTO team_link (link_value, link_type, case_type, responsible_team_uuid, stage_type)
 VALUES ('11111111-ffff-1111-1111-111111111131', 'TOPIC', 'CT1', '08612f06-bae2-4d2f-90d2-2254a68414b8' ,'ST1'),
        ('11111111-ffff-1111-1111-111111111132', 'TOPIC', 'CT1', '5d584129-66ea-4e97-9277-7576ab1d32c0' ,'ST1'),
        ('11111111-ffff-1111-1111-111111111131', 'TOPIC', 'CT1', '7c33c878-9404-4f67-9bbc-ca52dff285ca' ,'ST2'),

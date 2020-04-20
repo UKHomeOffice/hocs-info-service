@@ -35,6 +35,7 @@ public class TeamResourceTest {
 
     private UUID userUUID = UUID.randomUUID();
     private UUID teamUUID = UUID.randomUUID();
+    private UUID caseUUID = UUID.randomUUID();
 
     @Test
     public void shouldAddUserToTeam() {
@@ -234,6 +235,19 @@ public class TeamResourceTest {
         ResponseEntity result = teamResource.updateTeamPermissions(teamUUID.toString(), request);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(teamService, times(1)).updateTeamPermissions(teamUUID, permissionDtoSet);
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
+    public void shouldGetActiveTeamsByLinkValue(){
+        Team team = new Team("Team1", true);
+        when(teamService.getTeamByStageAndText("stageType", "text")).thenReturn(team);
+
+        ResponseEntity<TeamDto> response = teamResource.getActiveTeamsByLinkValue("stageType", "text");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getUuid()).isEqualTo(team.getUuid());
+        verify(teamService).getTeamByStageAndText("stageType", "text");
         verifyNoMoreInteractions(teamService);
     }
 

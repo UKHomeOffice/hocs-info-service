@@ -45,8 +45,8 @@ public class TopicTeamService {
         String caseType = request.getCaseType();
 
         validateTeamTopicStageAndCase(teamUUID, topicUUID, stageType, caseType);
-        TeamLink teamLink = Optional.ofNullable(teamLinkRepository.findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(topicUUID, "TOPIC", caseType, stageType))
-                 .orElse(new TeamLink(topicUUID, "TOPIC", teamUUID, caseType, stageType));
+        TeamLink teamLink = Optional.ofNullable(teamLinkRepository.findByLinkValueAndLinkTypeAndCaseTypeAndStageType(topicUUID.toString(), "TOPIC", caseType, stageType))
+                 .orElse(new TeamLink(topicUUID.toString(), "TOPIC", teamUUID, caseType, stageType));
         teamLink.setResponsibleTeamUUID(teamUUID);
         teamLinkRepository.save(teamLink);
         log.info("Added team: {} to topic: {}", teamUUID, topicUUID);

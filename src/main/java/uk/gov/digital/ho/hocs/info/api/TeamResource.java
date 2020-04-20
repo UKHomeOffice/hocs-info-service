@@ -121,11 +121,15 @@ public class TeamResource {
         return ResponseEntity.ok(TeamDto.from(team));
     }
 
+    @GetMapping(value = "/team/stage/{stageType}/text/{text}")
+    public ResponseEntity<TeamDto> getActiveTeamsByLinkValue(@PathVariable String stageType, @PathVariable String text) {
+        Team team = teamService.getTeamByStageAndText(stageType, text);
+        return ResponseEntity.ok(TeamDto.from(team));
+    }
+
     @DeleteMapping(value = "/users/{userUUID}/team/{teamUUID}")
     public ResponseEntity removeUserFromTeam(@PathVariable String userUUID, @PathVariable String teamUUID) {
         teamService.removeUserFromTeam(UUID.fromString(userUUID), UUID.fromString(teamUUID));
         return ResponseEntity.ok().build();
     }
 }
-
-
