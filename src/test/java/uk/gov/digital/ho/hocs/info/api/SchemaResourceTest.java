@@ -11,8 +11,6 @@ import uk.gov.digital.ho.hocs.info.domain.model.Field;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
@@ -34,7 +32,7 @@ public class SchemaResourceTest {
 
     @Test
     public void shouldGetAllSummaryFieldsForCaseType() {
-        Field field = new Field( "component", "Field1", "label", "", "", true);
+        Field field = new Field("component", "Field1", "label", "", "", true);
         List<Field> fields = new ArrayList<>();
         fields.add(field);
         when(schemaService.getAllSummaryFieldsForCaseType("CASE_TYPE")).thenReturn(fields);
@@ -48,16 +46,10 @@ public class SchemaResourceTest {
 
 
     @Test
-    public void getAllReportingFieldsForCaseType(){
-        String caseType  =  "Type1";
+    public void getAllReportingFieldsForCaseType() {
+        String caseType = "Type1";
 
-        Field field1 = new Field( 10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, true, true);
-        Field field2 = new Field( 11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true);
-        Field field3 = new Field( 12L, UUID.randomUUID(), "component", "Field3", "label", "", "", false, true, true);
-        Field field4ExtractOnly = new Field( 13L, UUID.randomUUID(), "component", "Field4ExtractOnly", "label", "", "", false, true, false);
-
-        when(schemaService.getExtractOnlyFields()).thenReturn(List.of(field4ExtractOnly));
-        when(schemaService.getAllReportingFieldsForCaseType(caseType)).thenReturn(List.of(field1, field2, field3).stream());
+        when(extractService.getAllReportingFieldsForCaseType(caseType)).thenReturn(List.of("Field4ExtractOnly", "Field1", "Field2", "Field3"));
 
         ResponseEntity<List<String>> result = schemaResource.getAllReportingFieldsForCaseType(caseType);
 
@@ -72,8 +64,7 @@ public class SchemaResourceTest {
         assertThat(resultList.get(3)).isEqualTo("Field3");
 
 
-        verify(schemaService).getExtractOnlyFields();
-        verify(schemaService).getAllReportingFieldsForCaseType(caseType);
+        verify(extractService).getAllReportingFieldsForCaseType(caseType);
 
         verifyNoMoreInteractions(schemaService);
 
