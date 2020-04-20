@@ -1,18 +1,6 @@
 
-DO $$
-BEGIN
-ALTER TABLE team_link ADD COLUMN IF NOT EXISTS link_value VARCHAR(80);
+ALTER TABLE team_link
+RENAME COLUMN link_uuid TO link_value;
 
-IF (SELECT EXISTS (SELECT 1
-    FROM information_schema.columns
-    WHERE table_schema='info' AND table_name='team_link' AND column_name='link_uuid')) THEN
-
-    UPDATE team_link
-        SET link_value = link_uuid
-        WHERE link_value IS null;
-END IF;
-
-ALTER TABLE team_link DROP COLUMN IF EXISTS link_uuid;
-
-END
-$$
+ALTER TABLE team_link
+ALTER COLUMN link_value TYPE VARCHAR(80);
