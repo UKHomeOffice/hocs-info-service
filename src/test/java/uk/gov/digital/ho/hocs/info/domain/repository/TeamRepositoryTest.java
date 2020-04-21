@@ -9,10 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
-import uk.gov.digital.ho.hocs.info.domain.model.Permission;
-import uk.gov.digital.ho.hocs.info.domain.model.Team;
-import uk.gov.digital.ho.hocs.info.domain.model.Unit;
+import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 import javax.persistence.PersistenceException;
 import java.util.*;
@@ -47,6 +44,10 @@ public class TeamRepositoryTest {
         Team team = new Team("a team", permissions);
         unit.addTeam(team);
         this.entityManager.persist(unit);
+        StageTypeEntity stage = new StageTypeEntity(UUID.randomUUID(),"Stage","c","stageType",caseType.getUuid(),1,true,team);
+        entityManager.persistAndFlush(stage);
+        TeamLink teamLink = new TeamLink("linkValue", "TEXT", team.getUuid(), "TEST", "stageType");
+        entityManager.persistAndFlush(teamLink);
         teamUUID = team.getUuid();
         unitUUID = unit.getUuid();
     }
@@ -93,5 +94,11 @@ public class TeamRepositoryTest {
 
     }
 
+    @Test()
+    public void shouldFindByStageAndText() {
+        Team team = repository.findByStageAndText("stageType","linkValue");
 
+        assertThat(team).isNotNull();
+        assertThat(team.getUuid()).isEqualTo(teamUUID);
+    }
 }

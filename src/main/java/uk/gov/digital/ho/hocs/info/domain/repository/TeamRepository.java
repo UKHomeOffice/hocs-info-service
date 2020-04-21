@@ -21,8 +21,11 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
 
     Set<Team> findTeamsByUnitUuid(UUID unitUUID);
 
-    @Query(value = "SELECT t.* FROM team t JOIN team_link tl on tl.responsible_team_uuid = t.uuid WHERE tl.link_uuid = ?1 and tl.link_type = 'TOPIC' and tl.stage_type = ?2", nativeQuery = true)
+    @Query(value = "SELECT t.* FROM team t JOIN team_link tl on tl.responsible_team_uuid = t.uuid WHERE tl.link_value = cast(?1 as text) and tl.link_type = 'TOPIC' and tl.stage_type = ?2", nativeQuery = true)
     Team findByTopicAndStage(UUID topicUUID, String stageType);
+
+    @Query(value = "SELECT t.* FROM team t JOIN team_link tl on tl.responsible_team_uuid = t.uuid WHERE tl.stage_type = ?1 and tl.link_type = 'TEXT' and tl.link_value = ?2", nativeQuery = true)
+    Team findByStageAndText(String stageType, String text);
 
     @Query(value = "SELECT t.* FROM team t WHERE t.unit_uuid = ?1 and t.active = TRUE", nativeQuery = true)
     Set<Team> findActiveTeamsByUnitUuid(UUID unitUUID);

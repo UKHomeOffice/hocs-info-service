@@ -38,6 +38,17 @@ public class CorrespondentTypeResourceTest {
     }
 
     @Test
+    public void shouldGetCorrespondentTypesByCaseType() {
+
+        when(correspondentTypeService.getCorrespondentTypesByCaseType("CASE_TYPE")).thenReturn(new HashSet<>());
+
+        correspondentTypeResource.getCorrespondentTypesByCaseType("CASE_TYPE");
+
+        verify(correspondentTypeService).getCorrespondentTypesByCaseType("CASE_TYPE");
+        verifyNoMoreInteractions(correspondentTypeService);
+    }
+
+    @Test
     public void shouldCreateNewCorrespondentType() {
         CreateCorrespondentTypeDto request = new CreateCorrespondentTypeDto("name","NAME");
 

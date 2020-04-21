@@ -13,22 +13,25 @@ public class Deadline implements Serializable {
 
     private final LocalDate date;
 
-    public Deadline(LocalDate receivedDate, int sla, Set<ExemptionDate> holidays) {
-        this.date = calculateDeadline(receivedDate, sla, holidays);
+    public Deadline(LocalDate receivedDate, LocalDate caseDeadline, int sla, Set<ExemptionDate> holidays) {
+        this.date = calculateDeadline(receivedDate, caseDeadline, sla, holidays);
     }
 
-    public static LocalDate calculateDeadline(LocalDate receivedDate, int sla, Set<ExemptionDate> holidays) {
-            LocalDate deadline = receivedDate;
-            Set<LocalDate> holidayDates = holidays.stream().map(ExemptionDate::getDate).collect(Collectors.toSet());
-            int i = 1;
-            while (i <= sla) {
-                deadline = deadline.plusDays(1);
-                // Only increment Mon-Fri and non-holidays
-                if (!(isWeekend(deadline) || holidayDates.contains(deadline))) {
-                    ++i;
-                }
+    public static LocalDate calculateDeadline(LocalDate receivedDate, LocalDate caseDeadline, int sla, Set<ExemptionDate> holidays) {
+        LocalDate deadline = receivedDate;
+        if (sla == -2 && caseDeadline != null){
+            return caseDeadline;
+        }
+        Set<LocalDate> holidayDates = holidays.stream().map(ExemptionDate::getDate).collect(Collectors.toSet());
+        int i = 1;
+        while (i <= sla) {
+            deadline = deadline.plusDays(1);
+            // Only increment Mon-Fri and non-holidays
+            if (!(isWeekend(deadline) || holidayDates.contains(deadline))) {
+                ++i;
             }
-            return deadline;
+        }
+        return deadline;
     }
 
     private static boolean isWeekend(LocalDate date) {

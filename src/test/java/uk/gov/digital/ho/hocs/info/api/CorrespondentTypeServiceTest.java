@@ -45,6 +45,16 @@ public class CorrespondentTypeServiceTest {
     }
 
     @Test
+    public void shouldGetCorrespondentTypesByCaseType() {
+        when(correspondentTypeRepository.findAllByCaseType("CASE_TYPE")).thenReturn(new HashSet<>());
+
+        correspondentTypeService.getCorrespondentTypesByCaseType("CASE_TYPE");
+
+        verify(correspondentTypeRepository).findAllByCaseType("CASE_TYPE");
+        verifyNoMoreInteractions(correspondentTypeRepository);
+    }
+
+    @Test
     public void shouldCreateCorrespondentType() {
 
         CorrespondentType correspondentType = correspondentTypeService.createCorrespondentType("name","NAME");

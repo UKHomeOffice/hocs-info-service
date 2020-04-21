@@ -115,6 +115,17 @@ public class TeamService {
         }
     }
 
+    public Team getTeamByStageAndText(String stageType, String text) {
+        log.debug("Getting Team for Stage {} and Text {}", stageType, text);
+        Team team = teamRepository.findByStageAndText(stageType, text);
+        if (team != null) {
+            log.info("Got Team for Stage {} and Text {}", stageType, text);
+            return team;
+        } else {
+            throw new ApplicationExceptions.EntityNotFoundException("Team not found for Stage %s and Text %s", stageType, text);
+        }
+    }
+
     @Transactional
     public Team createTeam(TeamDto newTeam, UUID unitUUID) {
         log.debug("Creating Team {}", newTeam.getDisplayName());

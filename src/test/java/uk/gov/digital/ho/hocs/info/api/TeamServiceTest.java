@@ -193,6 +193,16 @@ public class TeamServiceTest {
     }
 
     @Test
+    public void shouldGetTeamByStageAndText() {
+        Team team = new Team(UUID.randomUUID().toString(), true);
+        when(teamRepository.findByStageAndText("stageType", "text")).thenReturn(team);
+
+        Team result = teamService.getTeamByStageAndText("stageType", "text");
+
+        assertThat(result).isEqualTo(team);
+    }
+
+    @Test
     public void shouldGetTeamPermissions() {
         when(teamRepository.findByUuid(team1UUID)).thenReturn(getTeams().get(0));
         Team result = teamService.getTeam(team1UUID);
