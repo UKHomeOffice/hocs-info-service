@@ -3,10 +3,6 @@ package uk.gov.digital.ho.hocs.info.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
-import java.util.UUID;
-
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCorrespondentTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCorrespondentTypeResponse;
 import uk.gov.digital.ho.hocs.info.api.dto.GetCorrespondentTypeResponse;
