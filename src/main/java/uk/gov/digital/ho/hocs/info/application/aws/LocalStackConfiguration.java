@@ -40,7 +40,7 @@ public class LocalStackConfiguration {
 
         @Override
         public void refresh() {
-
+            //not needed locally
         }
 
     };

@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDeleteActiveParentTopicsDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
-import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
+import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetTopicResponse;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
@@ -93,7 +93,7 @@ public class TeamService {
         log.debug("Getting teams for user {}", userUUID);
         Set<UUID> teamUUIDs = keycloakService.getGroupsForUser(userUUID);
         Set<Team> teams = new HashSet<>();
-        teamUUIDs.forEach((teamUUID) -> {
+        teamUUIDs.forEach(teamUUID -> {
             try {
                 teams.add(getTeam(teamUUID));
             } catch (ApplicationExceptions.EntityNotFoundException e){
@@ -192,7 +192,7 @@ public class TeamService {
         Set<Permission> permissions = getPermissionsFromDto(permissionsDto, team);
         team.addPermissions(permissions);
         createKeyCloakMappings(teamUUID, Optional.empty());
-        auditClient.updateTeamPermissionsAudit(teamUUID, permissionsDto);
+        auditClient.updateTeamPermissionsAudit(permissionsDto);
         log.info("Updated Permissions for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_UPDATED));
     }
 
@@ -202,7 +202,7 @@ public class TeamService {
         Team team = getTeam(teamUUID);
         Set<Permission> permissions = getPermissionsFromDto(permissionsDto, team);
         team.deletePermissions(permissions);
-        auditClient.deleteTeamPermissionsAudit(teamUUID, permissionsDto);
+        auditClient.deleteTeamPermissionsAudit(permissionsDto);
         log.info("Deleted Permission for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_DELETED));
     }
 

@@ -25,9 +25,8 @@ public class Team implements Serializable {
         this.displayName = displayName;
         this.uuid = UUID.randomUUID();
         this.permissions = new HashSet<>(permissions.size());
-        if (permissions != null) {
-            addPermissions(permissions);
-        }
+        addPermissions(permissions);
+
     }
 
     @Id

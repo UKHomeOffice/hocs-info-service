@@ -3,7 +3,6 @@ package uk.gov.digital.ho.hocs.info.security;
 import org.apache.http.client.HttpClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient43Engine;
-import org.jboss.resteasy.client.jaxrs.engines.URLConnectionEngine;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.springframework.beans.factory.BeanCreationException;
@@ -56,5 +55,5 @@ public class KeyCloakConfiguration {
                         new ApacheHttpClient43Engine(httpClient))
                         .build())
                 .build();
-        }
+    }
 }

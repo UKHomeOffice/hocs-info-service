@@ -134,7 +134,7 @@ public class TeamIntegrationTests {
         assertThat(teamRepository.findByUuid(result.getBody().getUuid())).isNotNull();
 
         GroupRepresentation group = keycloakClient.realm("hocs")
-                .getGroupByPath("/" + Base64UUID.UUIDToBase64String(result.getBody().getUuid()));
+                .getGroupByPath("/" + Base64UUID.uuidToBase64String(result.getBody().getUuid()));
 
         assertThat(group).isNotNull();
     }
@@ -143,7 +143,7 @@ public class TeamIntegrationTests {
     public void shouldAddUserToGroup() {
 
         String teamId = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
-        String base64TeamUUID = Base64UUID.UUIDToBase64String(UUID.fromString(teamId));
+        String base64TeamUUID = Base64UUID.uuidToBase64String(UUID.fromString(teamId));
         HttpEntity httpEntity = new HttpEntity(headers);
 
         ResponseEntity<String> result = testRestTemplate.exchange(
@@ -165,7 +165,7 @@ public class TeamIntegrationTests {
     public void shouldRemoveUserFromGroup() throws JsonProcessingException {
 
         String teamId = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
-        String base64TeamUUID = Base64UUID.UUIDToBase64String(UUID.fromString(teamId));
+        String base64TeamUUID = Base64UUID.uuidToBase64String(UUID.fromString(teamId));
         HttpEntity httpEntity = new HttpEntity(headers);
 
         setupCaseworkServiceWithNoCases();
@@ -192,7 +192,7 @@ public class TeamIntegrationTests {
     public void shouldNotRemoveUserFromGroupWhenUserHasCases() throws JsonProcessingException {
 
         String teamId = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
-        String base64TeamUUID = Base64UUID.UUIDToBase64String(UUID.fromString(teamId));
+        String base64TeamUUID = Base64UUID.uuidToBase64String(UUID.fromString(teamId));
         HttpEntity httpEntity = new HttpEntity(headers);
 
         setupCaseworkServiceWithCases();

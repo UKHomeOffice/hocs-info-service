@@ -1,9 +1,9 @@
-package uk.gov.digital.ho.hocs.info.client.documentClient.dto;
+package uk.gov.digital.ho.hocs.info.client.documentclient.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import uk.gov.digital.ho.hocs.info.client.documentClient.model.ManagedDocumentType;
+import uk.gov.digital.ho.hocs.info.client.documentclient.model.ManagedDocumentType;
 
 import java.util.UUID;
 

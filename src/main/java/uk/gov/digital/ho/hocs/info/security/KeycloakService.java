@@ -82,7 +82,7 @@ public class KeycloakService {
 
     public void addUserToTeam(UUID userUUID, UUID teamUUID) {
         try {
-            String teamPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
+            String teamPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
             UserResource user = hocsRealm.users().get(userUUID.toString());
             GroupRepresentation group = hocsRealm.getGroupByPath(teamPath);
@@ -95,7 +95,7 @@ public class KeycloakService {
 
     public void removeUserFromTeam(UUID userUUID, UUID teamUUID) {
         try {
-            String teamPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
+            String teamPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
             UserResource user = hocsRealm.users().get(userUUID.toString());
             GroupRepresentation group = hocsRealm.getGroupByPath(teamPath);
@@ -108,7 +108,7 @@ public class KeycloakService {
 
     public void createTeamGroupIfNotExists(UUID teamUUID) {
         try {
-            String encodedTeamUUID = Base64UUID.UUIDToBase64String(teamUUID);
+            String encodedTeamUUID = Base64UUID.uuidToBase64String(teamUUID);
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
             GroupRepresentation teamGroup = new GroupRepresentation();
             teamGroup.setName(encodedTeamUUID);
@@ -121,7 +121,7 @@ public class KeycloakService {
     }
 
     public void deleteTeamGroup(UUID teamUUID) {
-        String encodedTeamUUID = Base64UUID.UUIDToBase64String(teamUUID);
+        String encodedTeamUUID = Base64UUID.uuidToBase64String(teamUUID);
         String path = "/" + encodedTeamUUID;
         try {
             String id = keycloakClient.realm(hocsRealmName).getGroupByPath(path).getId();
@@ -139,8 +139,8 @@ public class KeycloakService {
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
             List<GroupRepresentation> encodedTeamUUIDs = hocsRealm.users().get(userUUID.toString()).groups();
             Set<UUID> teamUUIDs = new HashSet<>();
-            if (encodedTeamUUIDs.size() > 0) {
-                encodedTeamUUIDs.forEach((group) -> teamUUIDs.add(Base64UUID.Base64StringToUUID(group.getName())));
+            if (!encodedTeamUUIDs.isEmpty()) {
+                encodedTeamUUIDs.forEach(group -> teamUUIDs.add(Base64UUID.base64StringToUUID(group.getName())));
             }
             return teamUUIDs;
         } catch (Exception e) {
@@ -173,7 +173,7 @@ public class KeycloakService {
 
     @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
     public Set<UserRepresentation> getUsersForTeam(UUID teamUUID) {
-        String encodedTeamPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
+        String encodedTeamPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
         try {
             if (teamRepository.findByUuid(teamUUID) != null) {
                 GroupRepresentation group = keycloakClient.realm(hocsRealmName).getGroupByPath(encodedTeamPath);

@@ -11,6 +11,9 @@ import uk.gov.digital.ho.hocs.info.api.dto.CreateCorrespondentTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCorrespondentTypeResponse;
 import uk.gov.digital.ho.hocs.info.api.dto.GetCorrespondentTypeResponse;
 import uk.gov.digital.ho.hocs.info.domain.model.CorrespondentType;
+
+import java.util.Set;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @RestController
@@ -38,7 +41,7 @@ public class CorrespondentTypeResource {
     }
 
     @PostMapping(value = "/correspondentType", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<CreateCorrespondentTypeResponse> createCorrespondentType(@RequestBody CreateCorrespondentTypeDto createCorrespondentTypeDto ) {
+    public ResponseEntity<CreateCorrespondentTypeResponse> createCorrespondentType(@RequestBody CreateCorrespondentTypeDto createCorrespondentTypeDto) {
         CorrespondentType correspondentType = correspondentTypeService.createCorrespondentType(createCorrespondentTypeDto.getDisplayName(), createCorrespondentTypeDto.getType());
         return ResponseEntity.ok(CreateCorrespondentTypeResponse.from(correspondentType));
     }

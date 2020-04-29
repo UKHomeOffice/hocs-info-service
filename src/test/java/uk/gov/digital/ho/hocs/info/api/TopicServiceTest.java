@@ -5,11 +5,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.api.TopicService;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateParentTopicDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateTopicDto;
-import uk.gov.digital.ho.hocs.info.api.dto.UpdateTopicParentDto;
-import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
+import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCaseworkCaseDataResponse;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
@@ -20,7 +18,6 @@ import uk.gov.digital.ho.hocs.info.domain.repository.TopicRepository;
 
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

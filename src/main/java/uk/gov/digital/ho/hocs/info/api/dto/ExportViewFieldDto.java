@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.util.List;
 
+@java.lang.SuppressWarnings("squid:S1068")
 @Getter
 @AllArgsConstructor
 public class ExportViewFieldDto {

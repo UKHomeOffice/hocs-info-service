@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
@@ -43,7 +42,7 @@ public class CaseTypeService {
     Set<CaseType> getAllCaseTypesForUser(boolean bulkOnly) {
         log.debug("Getting case types by User, bulkOnly = {}", bulkOnly);
         Set<UUID> userTeams = userPermissionsService.getUserTeams();
-        Set<String> teams = userTeams.stream().map(uuid -> uuid.toString()).collect(Collectors.toSet());
+        Set<String> teams = userTeams.stream().map(UUID::toString).collect(Collectors.toSet());
         log.debug("Finding case types for {} teams", teams);
         if(userTeams.isEmpty()) {
             log.warn("No Teams - Returning 0 CaseTypes");
