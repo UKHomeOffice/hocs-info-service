@@ -31,7 +31,7 @@ public class UserPermissionsService {
             uuid = uuid.substring(1);
         }
         try {
-            return Base64UUID.Base64StringToUUID(uuid);
+            return Base64UUID.base64StringToUUID(uuid);
         } catch (BufferUnderflowException e) {
             return null;
         }

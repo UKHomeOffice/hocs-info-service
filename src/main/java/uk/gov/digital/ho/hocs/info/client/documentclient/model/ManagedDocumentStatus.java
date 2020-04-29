@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.client.documentClient.model;
+package uk.gov.digital.ho.hocs.info.client.documentclient.model;
 
 import lombok.Getter;
 

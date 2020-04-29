@@ -3,10 +3,9 @@ package uk.gov.digital.ho.hocs.info.domain.repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import java.util.Set;
-import java.util.UUID;
-
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
+
+import java.util.Set;
 
 @Repository
 public interface CaseTypeRepository extends CrudRepository<CaseType, String> {
@@ -22,5 +21,5 @@ public interface CaseTypeRepository extends CrudRepository<CaseType, String> {
     CaseType findByShortCode(String shortCode);
 
     CaseType findByType(String type);
-    
+
 }

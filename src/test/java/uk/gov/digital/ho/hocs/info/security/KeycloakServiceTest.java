@@ -54,7 +54,7 @@ public class KeycloakServiceTest {
     @Test
     public void shouldCallKeyCloakToAddUserToGroup() {
         UUID teamUUID = UUID.randomUUID();
-        String teamUUIDPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
+        String teamUUIDPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
         UserResource userResource = mock(UserResource.class);
         GroupRepresentation teamGroup = mock(GroupRepresentation.class);
 
@@ -71,7 +71,7 @@ public class KeycloakServiceTest {
     @Test
     public void shouldCallKeyCloakToRemoveUserFromGroup() {
         UUID teamUUID = UUID.randomUUID();
-        String teamUUIDPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
+        String teamUUIDPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
         UserResource userResource = mock(UserResource.class);
         GroupRepresentation teamGroup = mock(GroupRepresentation.class);
 
@@ -185,8 +185,8 @@ public class KeycloakServiceTest {
         for (int i = 4; i > 0; i--) {
             GroupRepresentation groupRepresentation = new GroupRepresentation();
             UUID randomUUID = UUID.randomUUID();
-            groupRepresentation.setId(Base64UUID.UUIDToBase64String(randomUUID));
-            groupRepresentation.setName(Base64UUID.UUIDToBase64String(randomUUID));
+            groupRepresentation.setId(Base64UUID.uuidToBase64String(randomUUID));
+            groupRepresentation.setName(Base64UUID.uuidToBase64String(randomUUID));
             groups.add(groupRepresentation);
         }
 
@@ -195,8 +195,8 @@ public class KeycloakServiceTest {
         when(hocsRealm.users().get(userUUIDString).groups()).thenReturn(groups);
         Set<UUID> result = service.getGroupsForUser(userUUID);
 
-        assertThat(result).contains(Base64UUID.Base64StringToUUID(groups.get(0).getId()));
-        assertThat(result).contains(Base64UUID.Base64StringToUUID(groups.get(1).getId()));
+        assertThat(result).contains(Base64UUID.base64StringToUUID(groups.get(0).getId()));
+        assertThat(result).contains(Base64UUID.base64StringToUUID(groups.get(1).getId()));
         assertThat(result).hasSize(4);
         verify(keycloakClient).realm(HOCS_REALM);
         verifyNoMoreInteractions(keycloakClient);
@@ -229,7 +229,7 @@ public class KeycloakServiceTest {
         user.setLastName("LastName");
         userRepresentations.add(user);
 
-        String encodedTeamUUID = Base64UUID.UUIDToBase64String(teamUUID);
+        String encodedTeamUUID = Base64UUID.uuidToBase64String(teamUUID);
         GroupRepresentation group = new GroupRepresentation() {
             {
                 setPath("/" + encodedTeamUUID);
@@ -247,7 +247,7 @@ public class KeycloakServiceTest {
     @Test
     public void shouldGetEmptySetForTeamWithNoUsers() {
         UUID teamUUID = UUID.randomUUID();
-        String encodedTeamUUIDPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
+        String encodedTeamUUIDPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
 
         NotFoundException mockException = mock(NotFoundException.class);
         when(teamRepository.findByUuid(teamUUID)).thenReturn(new Team("Test Team", true));
@@ -261,7 +261,7 @@ public class KeycloakServiceTest {
     @Test
     public void shouldThrow404WhenSearchingForNonExistentTeam() {
         UUID teamUUID = UUID.randomUUID();
-        String encodedTeamUUIDPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
+        String encodedTeamUUIDPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
 
         when(teamRepository.findByUuid(teamUUID)).thenReturn(null);
 

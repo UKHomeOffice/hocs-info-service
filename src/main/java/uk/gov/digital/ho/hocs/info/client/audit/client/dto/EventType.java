@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.client.auditClient.dto;
+package uk.gov.digital.ho.hocs.info.client.audit.client.dto;
 
 public enum EventType {
     CREATE_TEAM,

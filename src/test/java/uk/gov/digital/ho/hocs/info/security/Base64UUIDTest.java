@@ -12,8 +12,8 @@ public class Base64UUIDTest {
     @Test
     public void shouldConvertUUIDToBase64AndBack() {
         UUID uuid = UUID.randomUUID();
-        String encodedUUID = Base64UUID.UUIDToBase64String(uuid);
-        UUID unencodedUUID = Base64UUID.Base64StringToUUID(encodedUUID);
+        String encodedUUID = Base64UUID.uuidToBase64String(uuid);
+        UUID unencodedUUID = Base64UUID.base64StringToUUID(encodedUUID);
         assertThat(unencodedUUID).isEqualTo(uuid);
 
     }

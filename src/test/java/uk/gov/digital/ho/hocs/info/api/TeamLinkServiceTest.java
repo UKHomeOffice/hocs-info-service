@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.AddTeamToTopicDto;
-import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
+import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.TeamLinkRepository;

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.UUID;
 
+@java.lang.SuppressWarnings("squid:S1068")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

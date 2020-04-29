@@ -3,7 +3,7 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
+import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.CorrespondentType;
 import uk.gov.digital.ho.hocs.info.domain.repository.CorrespondentTypeRepository;

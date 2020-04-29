@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.client.documentClient;
+package uk.gov.digital.ho.hocs.info.client.documentclient;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -8,8 +8,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.application.RestHelper;
-import uk.gov.digital.ho.hocs.info.client.documentClient.dto.CreateManagedDocumentRequest;
-import uk.gov.digital.ho.hocs.info.client.documentClient.model.ManagedDocumentType;
+import uk.gov.digital.ho.hocs.info.client.documentclient.dto.CreateManagedDocumentRequest;
+import uk.gov.digital.ho.hocs.info.client.documentclient.model.ManagedDocumentType;
 
 import java.util.UUID;
 

@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface MemberRepository extends CrudRepository<Member, String> {
 
-    Member findByExternalReference(String ExtRef);
+    Member findByExternalReference(String extRef);
 
     @Query(value = "SELECT m.* FROM member m WHERE m.deleted = FALSE", nativeQuery = true)
     Set<Member> findAllActiveMembers();
