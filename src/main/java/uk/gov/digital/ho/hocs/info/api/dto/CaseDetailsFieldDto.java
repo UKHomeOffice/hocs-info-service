@@ -2,11 +2,9 @@ package uk.gov.digital.ho.hocs.info.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseDetailsField;
-import uk.gov.digital.ho.hocs.info.domain.model.SearchField;
 
 
 @AllArgsConstructor()

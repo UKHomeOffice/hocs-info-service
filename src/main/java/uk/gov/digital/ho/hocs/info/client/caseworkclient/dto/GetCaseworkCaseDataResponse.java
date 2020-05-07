@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.UUID;
@@ -31,7 +30,7 @@ public class GetCaseworkCaseDataResponse {
     private String reference;
 
     @JsonRawValue
-    private Map<String,String> data;
+    private Map<String, String> data;
 
     @JsonProperty("primaryTopicUUID")
     private UUID primaryTopic;

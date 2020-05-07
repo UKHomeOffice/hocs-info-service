@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateParentTopicDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateTopicDto;
-import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
+import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCaseworkCaseDataResponse;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
@@ -81,7 +81,7 @@ public class TopicService {
             return newParentTopic.getUuid();
         } else {
             log.debug("Unable to create parent topic, parent topic with the same name already exists");
-            if (parentTopic.isActive() == true) {
+            if (parentTopic.isActive()) {
                 throw new ApplicationExceptions.TopicCreationException("Active parent topic already exists with this name");
             } else {
                 throw new ApplicationExceptions.TopicCreationException("Inactive parent topic already exists with this name");
@@ -105,7 +105,7 @@ public class TopicService {
                 auditClient.createTopicAudit(topic);
                 return topic.getUuid();
             } else {
-                if (existingTopic.isActive() == true) {
+                if (existingTopic.isActive()) {
                     log.debug(
                             "Unable to create topic, active topic with this name already exists for this parent");
                 } else {

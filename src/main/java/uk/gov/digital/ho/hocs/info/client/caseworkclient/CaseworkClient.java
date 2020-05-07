@@ -6,11 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.info.application.RestHelper;
-import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCasesForUserResponse;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetCaseworkCaseDataResponse;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetTopicResponse;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
-
 
 import java.util.Set;
 import java.util.UUID;
@@ -62,11 +60,11 @@ public class CaseworkClient {
             log.info("Got Topic {} for Case: {}", topicUUID, caseUUID);
             return response.getBody();
         } else {
-            throw new ApplicationExceptions.EntityNotFoundException("Could not get Topic %s for Case: %s response: %s",  topicUUID, caseUUID, response.getStatusCodeValue());
+            throw new ApplicationExceptions.EntityNotFoundException("Could not get Topic %s for Case: %s response: %s", topicUUID, caseUUID, response.getStatusCodeValue());
         }
     }
 
-    public Set getCasesForUser(UUID userUUID, UUID teamUUID){
+    public Set getCasesForUser(UUID userUUID, UUID teamUUID) {
         ResponseEntity<Set> response = restHelper.get(serviceBaseURL, String.format("/stage/team/%s/user/%s", teamUUID, userUUID), Set.class);
         if (response.getStatusCodeValue() == 200) {
             log.info("Got cases for User: {}", userUUID);
@@ -76,14 +74,14 @@ public class CaseworkClient {
         }
     }
 
-    public void clearCachedStandardLineForTopic(UUID topicUUID){
+    public void clearCachedStandardLineForTopic(UUID topicUUID) {
         ResponseEntity<String> response = restHelper.post(serviceBaseURL, String.format("/topic/%s/clearCachedStandardLine", topicUUID), null, String.class);
         if (response.getStatusCodeValue() == 200) {
             log.info("Cleared cached standard line for Topic: {}", topicUUID);
         }
     }
 
-    public void clearCachedTemplateForCaseType(String caseType){
+    public void clearCachedTemplateForCaseType(String caseType) {
         ResponseEntity<String> response = restHelper.post(serviceBaseURL, String.format("/caseType/%s/clearCachedTemplate", caseType), null, String.class);
         if (response.getStatusCodeValue() == 200) {
             log.info("Cleared cached template for caseType: {}", caseType);

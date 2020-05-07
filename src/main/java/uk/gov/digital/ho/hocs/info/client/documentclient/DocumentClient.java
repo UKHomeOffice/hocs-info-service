@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.client.documentClient;
+package uk.gov.digital.ho.hocs.info.client.documentclient;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.info.application.RestHelper;
-import uk.gov.digital.ho.hocs.info.client.documentClient.dto.CreateManagedDocumentRequest;
-import uk.gov.digital.ho.hocs.info.client.documentClient.model.ManagedDocumentType;
+import uk.gov.digital.ho.hocs.info.client.documentclient.dto.CreateManagedDocumentRequest;
+import uk.gov.digital.ho.hocs.info.client.documentclient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 
 import java.util.UUID;
