@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor()
 @NoArgsConstructor()
@@ -37,7 +38,7 @@ public class Configuration implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("id")
     @JoinColumn(name = "parent_system_name", referencedColumnName = "system_name")
-    private List<WorkstackColumn> workstackColumns;
+    private List<WorkstackType> workstackTypes;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("id")
