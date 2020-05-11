@@ -9,14 +9,13 @@ public class WorkstackColumnDtoTest {
 
     @Test
     public void from() {
-        String parentSystemName = "system";
         String displayName = "ColumnABC";
         String dataAdapter = "adapter123";
         String renderer = "renderer";
         String dataValueKey = "valueKey";
         Boolean filterable = true;
         String headerClassName = "some css header name";
-        WorkstackColumn workstackColumn = new WorkstackColumn(10L, parentSystemName, displayName, dataAdapter, renderer, dataValueKey, filterable, headerClassName);
+        WorkstackColumn workstackColumn = new WorkstackColumn(10L, displayName, dataAdapter, renderer, dataValueKey, filterable, headerClassName);
 
         WorkstackColumnDto dto = WorkstackColumnDto.from(workstackColumn);
 

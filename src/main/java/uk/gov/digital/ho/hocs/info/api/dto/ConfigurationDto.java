@@ -7,9 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.domain.model.Configuration;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -28,8 +27,8 @@ public class ConfigurationDto {
     @JsonProperty("deadlinesEnabled")
     private boolean deadlinesEnabled;
 
-    @JsonProperty("workstackColumns")
-    private List<WorkstackColumnDto> workstackColumns;
+    @JsonProperty("workstackTypeColumns")
+    private List<WorkstackTypeDto> workstackTypeColumns;
 
     @JsonProperty("searchFields")
     private List<SearchFieldDto> searchFields;
@@ -44,7 +43,7 @@ public class ConfigurationDto {
         String documentLabelsString = configuration.getDocumentLabels();
         List<String> documentLabels = StringUtils.isBlank(documentLabelsString) ? null : new ArrayList<>(Arrays.asList(documentLabelsString.split(",")));
 
-        List<WorkstackColumnDto> workstackColumns = configuration.getWorkstackColumns().stream().map(WorkstackColumnDto::from).collect(Collectors.toList());
+        List<WorkstackTypeDto> workstackTypeColumns = configuration.getWorkstackTypes().stream().map(WorkstackTypeDto::from).collect(Collectors.toList());
         List<SearchFieldDto> searchFieldDtos = configuration.getSearchFields().stream().map(SearchFieldDto::from).collect(Collectors.toList());
 
         return new ConfigurationDto(
@@ -52,7 +51,7 @@ public class ConfigurationDto {
                 documentLabels,
                 configuration.isBulkCreateEnabled(),
                 configuration.isDeadlinesEnabled(),
-                workstackColumns,
+                workstackTypeColumns,
                 searchFieldDtos,
                 configuration.isAutoCreateAndAllocateEnabled(),
                 configuration.getReadOnlyCaseViewAdapter());
