@@ -38,7 +38,7 @@ public class ConfigurationServiceTest {
         String systemName = "system";
         String systemDisplayName = "Test System Name";
         String docLabelString = "label1,label2";
-        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, "columnName1", "adapter", "renderer", "valueKey", true, "cssClass"));
+        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, "columnName1", "adapter", "renderer", "valueKey", true, "cssClass", "SortStrategy"));
         List<WorkstackType> workstackTypes = Arrays.asList(new WorkstackType(10L, systemName, "some_type", workstackColumns));
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, "system", "name", "component", "validationRules", "properties"));
         String readOnlyCaseViewAdapter = "Adapter";
@@ -60,6 +60,7 @@ public class ConfigurationServiceTest {
         Assert.assertEquals("Workstack column data value key do not match", "valueKey", result.getWorkstackTypes().get(0).getWorkstackColumns().get(0).getDataValueKey());
         Assert.assertEquals("Workstack column isFilterable do not match", true, result.getWorkstackTypes().get(0).getWorkstackColumns().get(0).isFilterable());
         Assert.assertEquals("Workstack column header class name do not match", "cssClass", result.getWorkstackTypes().get(0).getWorkstackColumns().get(0).getHeaderClassName());
+        Assert.assertEquals("Workstack column sort strategy do not match", "SortStrategy", result.getWorkstackTypes().get(0).getWorkstackColumns().get(0).getSortStrategy());
         Assert.assertEquals("Workstack type matches expected value", "some_type", result.getWorkstackTypes().get(0).getType());
         Assert.assertEquals("There should be 1 search field", 1, result.getSearchFields().size());
         Assert.assertEquals("Search field name do not match", "name", result.getSearchFields().get(0).getName());

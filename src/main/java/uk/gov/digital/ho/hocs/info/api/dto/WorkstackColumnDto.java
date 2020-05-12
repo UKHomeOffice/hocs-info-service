@@ -7,7 +7,6 @@ import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.domain.model.WorkstackColumn;
 
 
-
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class WorkstackColumnDto {
@@ -31,7 +30,11 @@ public class WorkstackColumnDto {
     @JsonProperty("headerClassName")
     private String headerClassName;
 
+    @JsonProperty("sortStrategy")
+    private String sortStrategy;
+
     public static WorkstackColumnDto from(WorkstackColumn column) {
-        return new WorkstackColumnDto(column.getDisplayName(), column.getDataAdapter(), column.getRenderer(), column.getDataValueKey(), column.isFilterable(), column.getHeaderClassName());
+        return new WorkstackColumnDto(column.getDisplayName(), column.getDataAdapter(), column.getRenderer(),
+                column.getDataValueKey(), column.isFilterable(), column.getHeaderClassName(), column.getSortStrategy());
     }
 }

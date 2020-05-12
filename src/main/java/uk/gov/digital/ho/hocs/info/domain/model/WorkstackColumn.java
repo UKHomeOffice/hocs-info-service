@@ -42,4 +42,8 @@ public class WorkstackColumn implements Serializable {
     @Column(name = "header_class_name")
     private String headerClassName;
 
+    @Getter
+    @Column(name = "sort_strategy")
+    private String sortStrategy;
+
 }

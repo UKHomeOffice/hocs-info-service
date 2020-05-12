@@ -20,8 +20,9 @@ public class WorkstackTypeDtoTest {
         String dataValueKey = "some_valueKey";
         Boolean isFilterable = true;
         String cssClass = "some_css_class";
+        String sortStrategy = "TestSortStrategy";
 
-        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, displayName, dataAdapter, renderer, dataValueKey, isFilterable, cssClass));
+        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, displayName, dataAdapter, renderer, dataValueKey, isFilterable, cssClass, sortStrategy));
         WorkstackType workstackType = new WorkstackType(10L, "system", "some_type", workstackColumns);
 
 
@@ -34,6 +35,7 @@ public class WorkstackTypeDtoTest {
         Assert.assertEquals("workstackColumn dataValueKey contains expected string", dataValueKey, sut.getWorkstackColumns().get(0).getDataValueKey());
         Assert.assertEquals("workstackColumn isFilterable contains expected boolean", isFilterable, sut.getWorkstackColumns().get(0).isFilterable());
         Assert.assertEquals("workstackColumn headerClassName contains expected string", cssClass, sut.getWorkstackColumns().get(0).getHeaderClassName());
+        Assert.assertEquals("workstackColumn sortStrategy contains expected string", sortStrategy, sut.getWorkstackColumns().get(0).getSortStrategy());
 
     }
 }
