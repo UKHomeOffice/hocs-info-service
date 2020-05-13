@@ -28,6 +28,7 @@ public class ConfigurationDtoTest {
         String columnDataValueKey = "valueKey";
         Boolean columnFilterable = true;
         String columnHeaderClassName = "some css header name";
+        String columnSortStrategy = "TestSortStrategy";
 
         String searchFieldDisplayName = "Field";
         String searchFieldComponent = "checkbox";
@@ -36,7 +37,7 @@ public class ConfigurationDtoTest {
 
         String workstackType = "SomeType";
 
-        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, columnDisplayName, columnDataAdapter, columnRenderer, columnDataValueKey, columnFilterable, columnHeaderClassName));
+        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, columnDisplayName, columnDataAdapter, columnRenderer, columnDataValueKey, columnFilterable, columnHeaderClassName, columnSortStrategy));
 
         List<WorkstackType> workstackTypes = Arrays.asList(new WorkstackType(10L, systemName, workstackType,workstackColumns));
 
@@ -62,6 +63,7 @@ public class ConfigurationDtoTest {
         Assert.assertEquals("Workstack column data value key do not match", columnDataValueKey, dto.getWorkstackTypeColumns().get(0).getWorkstackColumns().get(0).getDataValueKey());
         Assert.assertEquals("Workstack column isFilterable do not match", columnFilterable, dto.getWorkstackTypeColumns().get(0).getWorkstackColumns().get(0).isFilterable());
         Assert.assertEquals("Workstack column header class name do not match", columnHeaderClassName, dto.getWorkstackTypeColumns().get(0).getWorkstackColumns().get(0).getHeaderClassName());
+        Assert.assertEquals("Workstack column sort strategy do not match", columnSortStrategy, dto.getWorkstackTypeColumns().get(0).getWorkstackColumns().get(0).getSortStrategy());
 
         Assert.assertEquals("There should be 1 search field", 1, dto.getSearchFields().size());
         Assert.assertEquals("Search field name do not match", searchFieldDisplayName, dto.getSearchFields().get(0).getName());

@@ -15,7 +15,8 @@ public class WorkstackColumnDtoTest {
         String dataValueKey = "valueKey";
         Boolean filterable = true;
         String headerClassName = "some css header name";
-        WorkstackColumn workstackColumn = new WorkstackColumn(10L, displayName, dataAdapter, renderer, dataValueKey, filterable, headerClassName);
+        String sortStrategy = "TestSortStrategy";
+        WorkstackColumn workstackColumn = new WorkstackColumn(10L, displayName, dataAdapter, renderer, dataValueKey, filterable, headerClassName, sortStrategy);
 
         WorkstackColumnDto dto = WorkstackColumnDto.from(workstackColumn);
 
@@ -25,6 +26,7 @@ public class WorkstackColumnDtoTest {
         Assert.assertEquals("Workstack column data value key do not match", dataValueKey, dto.getDataValueKey());
         Assert.assertEquals("Workstack column isFilterable do not match", filterable, dto.isFilterable());
         Assert.assertEquals("Workstack column header class name do not match", headerClassName, dto.getHeaderClassName());
+        Assert.assertEquals("Workstack column sort strategy do not match", sortStrategy, dto.getSortStrategy());
 
 
     }
