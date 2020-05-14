@@ -7,6 +7,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,6 +62,12 @@ public class CaseTypeResource {
         LocalDate receivedDate = LocalDate.parse(received);
         Map<String, LocalDate> deadlines = caseTypeService.getAllStageDeadlinesForCaseType(caseType, receivedDate);
         return ResponseEntity.ok(deadlines);
+    }
+
+    @GetMapping(value = "/caseType/{caseType}/documentTags", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<List<String>> getDocumentTags(@PathVariable String caseType) {
+        List<String> documentTags = caseTypeService.getDocumentTagsForCaseType(caseType);
+        return ResponseEntity.ok(documentTags);
     }
 
     @PostMapping

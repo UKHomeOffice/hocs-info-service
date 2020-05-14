@@ -108,6 +108,20 @@ public class CaseTypeResourceTest {
 
     }
 
+    @Test
+    public void shouldGetDocumentTags(){
+        List<String> docTags = new ArrayList<String>();
+        when(caseTypeService.getDocumentTagsForCaseType("TEST")).thenReturn(docTags);
+
+        ResponseEntity<List<String>> response = caseTypeResource.getDocumentTags("TEST");
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isSameAs(docTags);
+        verify(caseTypeService).getDocumentTagsForCaseType("TEST");
+        verifyNoMoreInteractions(caseTypeService);
+    }
+
     private Set<CaseType> getMockCaseTypes() {
         UUID unitUUID1 = UUID.randomUUID();
         UUID unitUUID2 = UUID.randomUUID();
