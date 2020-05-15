@@ -37,14 +37,13 @@ public class ConfigurationResourceTest {
     public void shouldReturnConfiguration() {
         String systemName = "system";
         String systemDisplayName = "Test System Name";
-        String docLabelString = "label1,label2";
 
         List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, "columnName1", "adapter", "renderer", "valueKey", true, "cssClass", "SortStrategy"));
         List<WorkstackType> workstackTypes = Arrays.asList(new WorkstackType(10L, systemName, "some_type", workstackColumns));
 
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, "system", "name", "component", "validationRules", "properties"));
         String readOnlyCaseViewAdapter = "Adapter";
-        when(configurationService.getConfiguration("system")).thenReturn(new Configuration(systemName, systemDisplayName, docLabelString, false, true, workstackTypes, searchFields, false, readOnlyCaseViewAdapter));
+        when(configurationService.getConfiguration("system")).thenReturn(new Configuration(systemName, systemDisplayName, false, true, workstackTypes, searchFields, false, readOnlyCaseViewAdapter));
 
         ResponseEntity<ConfigurationDto> result = configurationResource.getConfiguration();
 
@@ -53,7 +52,6 @@ public class ConfigurationResourceTest {
         Assert.assertEquals("Display name do not match", systemDisplayName, result.getBody().getDisplayName());
         Assert.assertEquals("Bulk Create setting is incorrect", false, result.getBody().isBulkCreateEnabled());
         Assert.assertEquals("Deadlines Enabled setting is incorrect", true, result.getBody().isDeadlinesEnabled());
-        Assert.assertEquals("Document labels do not match", new ArrayList<>(Arrays.asList(docLabelString.split(","))), result.getBody().getDocumentLabels());
         Assert.assertEquals("AutoCreateAndAllocateEnabled do not match", false, result.getBody().isAutoCreateAndAllocateEnabled());
         Assert.assertEquals("ReadOnlyCaseViewAdapter do not match", readOnlyCaseViewAdapter, result.getBody().getReadOnlyCaseViewAdapter());
         Assert.assertEquals("There should be 1 workstack column", 1, result.getBody().getWorkstackTypeColumns().size());

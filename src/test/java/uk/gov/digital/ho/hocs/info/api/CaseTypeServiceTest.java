@@ -8,7 +8,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
+import uk.gov.digital.ho.hocs.info.domain.model.DocumentTag;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
+import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.security.UserPermissionsService;
 
@@ -24,6 +26,9 @@ public class CaseTypeServiceTest {
 
     @Mock
     private CaseTypeRepository caseTypeRepository;
+
+    @Mock
+    private DocumentTagRepository documentTagRepository;
 
     @Mock
     private HolidayDateRepository holidayDateRepository;
@@ -44,7 +49,7 @@ public class CaseTypeServiceTest {
 
     @Before
     public void setUp() {
-        this.caseTypeService = new CaseTypeService(caseTypeRepository,holidayDateRepository, stageTypeService,userPermissionsService);
+        this.caseTypeService = new CaseTypeService(caseTypeRepository,documentTagRepository,holidayDateRepository,stageTypeService,userPermissionsService);
     }
 
     @Test
@@ -139,6 +144,22 @@ public class CaseTypeServiceTest {
         caseTypeService.createCaseType(caseType);
 
         verify(caseTypeRepository, times(1)).save(any(CaseType.class));
+    }
+
+    @Test
+    public void shouldGetDocumentTagsForCaseType(){
+        List<DocumentTag> documentTags = new ArrayList<>();
+        documentTags.add((new DocumentTag(null,null,null,"First",(short)1)));
+        documentTags.add((new DocumentTag(null,null,null,"Second",(short)2)));
+        when(documentTagRepository.findByCaseType("TEST")).thenReturn(documentTags);
+
+        List<String> tags = caseTypeService.getDocumentTagsForCaseType("TEST");
+
+        assertThat(tags.size()).isEqualTo(2);
+        assertThat(tags.get(0)).isEqualTo("First");
+        assertThat(tags.get(1)).isEqualTo("Second");
+        verify(documentTagRepository).findByCaseType("TEST");
+        verifyNoMoreInteractions(documentTagRepository);
     }
 
     private void assetCaseTypeDtoContainsCorrectElements(Set<CaseType> caseTypeDtos, String CaseType, String DisplayName, UUID tenant) {

@@ -37,12 +37,11 @@ public class ConfigurationServiceTest {
     public void shouldReturnConfiguration() {
         String systemName = "system";
         String systemDisplayName = "Test System Name";
-        String docLabelString = "label1,label2";
         List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, "columnName1", "adapter", "renderer", "valueKey", true, "cssClass", "SortStrategy"));
         List<WorkstackType> workstackTypes = Arrays.asList(new WorkstackType(10L, systemName, "some_type", workstackColumns));
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, "system", "name", "component", "validationRules", "properties"));
         String readOnlyCaseViewAdapter = "Adapter";
-        when(configurationRepository.findBySystemName(systemName)).thenReturn(new Configuration(systemName, systemDisplayName, docLabelString, false, false, workstackTypes, searchFields, true, readOnlyCaseViewAdapter));
+        when(configurationRepository.findBySystemName(systemName)).thenReturn(new Configuration(systemName, systemDisplayName, false, false, workstackTypes, searchFields, true, readOnlyCaseViewAdapter));
 
         Configuration result = configurationService.getConfiguration(systemName);
 
@@ -50,7 +49,6 @@ public class ConfigurationServiceTest {
         Assert.assertEquals("Display name do not match", systemDisplayName, result.getDisplayName());
         Assert.assertEquals("Bulk Create Setting is incorrect", false, result.isBulkCreateEnabled());
         Assert.assertEquals("Deadlines Enabled Setting is incorrect", false, result.isDeadlinesEnabled());
-        Assert.assertEquals("Document labels do not match", docLabelString, result.getDocumentLabels());
         Assert.assertEquals("AutoCreateAndAllocateEnabled do not match", true, result.isAutoCreateAndAllocateEnabled());
         Assert.assertEquals("ReadOnlyCaseViewAdapter do not match", readOnlyCaseViewAdapter, result.getReadOnlyCaseViewAdapter());
         Assert.assertEquals("There should be 1 workstack column", 1, result.getWorkstackTypes().size());

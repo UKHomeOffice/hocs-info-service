@@ -12,6 +12,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
+import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.security.UserPermissionsService;
 
@@ -20,13 +21,15 @@ import uk.gov.digital.ho.hocs.info.security.UserPermissionsService;
 public class CaseTypeService {
 
     private final CaseTypeRepository caseTypeRepository;
+    private final DocumentTagRepository documentTagRepository;
     private final HolidayDateRepository holidayDateRepository;
     private final StageTypeService stageTypeService;
     private final UserPermissionsService userPermissionsService;
 
     @Autowired
-    public CaseTypeService(CaseTypeRepository caseTypeRepository, HolidayDateRepository holidayDateRepository, StageTypeService stageTypeService, UserPermissionsService userPermissionsService) {
+    public CaseTypeService(CaseTypeRepository caseTypeRepository, DocumentTagRepository documentTagRepository, HolidayDateRepository holidayDateRepository, StageTypeService stageTypeService, UserPermissionsService userPermissionsService) {
         this.caseTypeRepository = caseTypeRepository;
+        this.documentTagRepository = documentTagRepository;
         this.holidayDateRepository = holidayDateRepository;
         this.stageTypeService = stageTypeService;
         this.userPermissionsService = userPermissionsService;
@@ -88,6 +91,14 @@ public class CaseTypeService {
         Map<String, LocalDate> deadlines = stageTypes.stream().filter(st -> st.getDeadline() >= 0).collect(Collectors.toMap(StageTypeEntity::getType, stageType -> Deadline.calculateDeadline(receivedDate, null, stageType.getDeadline(), exemptions)));
         log.info("Got {} deadlines for caseType {} with received date of {} ", deadlines.size(), type, receivedDate);
         return deadlines;
+    }
+
+    List<String> getDocumentTagsForCaseType(String caseType){
+        log.debug("Getting all document tags for caseType {}", caseType);
+        List<DocumentTag> documentTags = documentTagRepository.findByCaseType(caseType);
+        List<String> documentTagStrings = documentTags.stream().map(DocumentTag::getTag).collect(Collectors.toList());
+        log.info("Got {} document tags for caseType {}", documentTagStrings.size(), caseType);
+        return documentTagStrings;
     }
 
     CaseType getCaseType(String type) {
