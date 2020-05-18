@@ -2,12 +2,8 @@ package uk.gov.digital.ho.hocs.info.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
@@ -15,6 +11,11 @@ import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.security.UserPermissionsService;
+import uk.gov.digital.ho.hocs.info.utils.DateUtils;
+
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -25,14 +26,18 @@ public class CaseTypeService {
     private final HolidayDateRepository holidayDateRepository;
     private final StageTypeService stageTypeService;
     private final UserPermissionsService userPermissionsService;
+    private final LocalDateWrapper localDateWrapper;
 
     @Autowired
-    public CaseTypeService(CaseTypeRepository caseTypeRepository, DocumentTagRepository documentTagRepository, HolidayDateRepository holidayDateRepository, StageTypeService stageTypeService, UserPermissionsService userPermissionsService) {
+    public CaseTypeService(CaseTypeRepository caseTypeRepository, DocumentTagRepository documentTagRepository,
+                           HolidayDateRepository holidayDateRepository, StageTypeService stageTypeService,
+                           UserPermissionsService userPermissionsService, LocalDateWrapper localDateWrapper) {
         this.caseTypeRepository = caseTypeRepository;
         this.documentTagRepository = documentTagRepository;
         this.holidayDateRepository = holidayDateRepository;
         this.stageTypeService = stageTypeService;
         this.userPermissionsService = userPermissionsService;
+        this.localDateWrapper = localDateWrapper;
     }
 
     Set<CaseType> getAllCaseTypes() {
@@ -47,7 +52,7 @@ public class CaseTypeService {
         Set<UUID> userTeams = userPermissionsService.getUserTeams();
         Set<String> teams = userTeams.stream().map(UUID::toString).collect(Collectors.toSet());
         log.debug("Finding case types for {} teams", teams);
-        if(userTeams.isEmpty()) {
+        if (userTeams.isEmpty()) {
             log.warn("No Teams - Returning 0 CaseTypes");
             return new HashSet<>(0);
         } else {
@@ -62,10 +67,10 @@ public class CaseTypeService {
         }
     }
 
-    CaseType getCaseTypeByShortCode(String shortCode){
+    CaseType getCaseTypeByShortCode(String shortCode) {
         log.debug("Getting case type for short code {}", shortCode);
         CaseType caseType = caseTypeRepository.findByShortCode(shortCode);
-        if(caseType != null) {
+        if (caseType != null) {
             log.info("Got CaseType {} for short code {}", caseType.getType(), shortCode);
             return caseType;
         } else {
@@ -93,7 +98,7 @@ public class CaseTypeService {
         return deadlines;
     }
 
-    List<String> getDocumentTagsForCaseType(String caseType){
+    List<String> getDocumentTagsForCaseType(String caseType) {
         log.debug("Getting all document tags for caseType {}", caseType);
         List<DocumentTag> documentTags = documentTagRepository.findByCaseType(caseType);
         List<String> documentTagStrings = documentTags.stream().map(DocumentTag::getTag).collect(Collectors.toList());
@@ -110,6 +115,28 @@ public class CaseTypeService {
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("CaseType for type %s was not found", type);
         }
+    }
+
+    @Cacheable("calculateWorkingDaysElapsedForCaseType")
+    public int calculateWorkingDaysElapsedForCaseType(String caseType, LocalDate fromDate) {
+
+        LocalDate now = localDateWrapper.now();
+        if (fromDate == null || now.isBefore(fromDate) || now.isEqual(fromDate)) {
+            return 0;
+        }
+        List<LocalDate> exemptions = holidayDateRepository.findAllByCaseType(caseType).stream().map(ExemptionDate::getDate).collect(Collectors.toList());
+        LocalDate date = fromDate;
+        int workingDays = 0;
+        while (date.isBefore(now)) {
+            if (!DateUtils.isWeekend(date) && !exemptions.contains(date)) {
+                workingDays++;
+            }
+
+            date = date.plusDays(1);
+        }
+
+        return workingDays;
+
     }
 
     public void createCaseType(CreateCaseTypeDto caseType) {
