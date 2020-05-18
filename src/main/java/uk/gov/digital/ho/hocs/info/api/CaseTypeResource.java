@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.info.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
@@ -68,6 +69,11 @@ public class CaseTypeResource {
     public ResponseEntity<List<String>> getDocumentTags(@PathVariable String caseType) {
         List<String> documentTags = caseTypeService.getDocumentTagsForCaseType(caseType);
         return ResponseEntity.ok(documentTags);
+    }
+
+    @GetMapping(value = "/caseType/{caseType}/workingDays/{fromDate}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Integer> getWorkingDaysElapsedForCaseType(@PathVariable String caseType, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate) {
+        return ResponseEntity.ok(caseTypeService.calculateWorkingDaysElapsedForCaseType(caseType, fromDate));
     }
 
     @PostMapping

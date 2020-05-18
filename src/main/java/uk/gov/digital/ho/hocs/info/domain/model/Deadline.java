@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.info.domain.model;
 
 import lombok.Getter;
+import uk.gov.digital.ho.hocs.info.utils.DateUtils;
 
 import java.io.Serializable;
 import java.time.DayOfWeek;
@@ -27,14 +28,10 @@ public class Deadline implements Serializable {
         while (i <= sla) {
             deadline = deadline.plusDays(1);
             // Only increment Mon-Fri and non-holidays
-            if (!(isWeekend(deadline) || holidayDates.contains(deadline))) {
+            if (!(DateUtils.isWeekend(deadline) || holidayDates.contains(deadline))) {
                 ++i;
             }
         }
         return deadline;
-    }
-
-    private static boolean isWeekend(LocalDate date) {
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
 }

@@ -9,11 +9,13 @@ import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 import uk.gov.digital.ho.hocs.info.domain.model.DocumentTag;
+import uk.gov.digital.ho.hocs.info.domain.model.ExemptionDate;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.security.UserPermissionsService;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,6 +41,9 @@ public class CaseTypeServiceTest {
     @Mock
     private UserPermissionsService userPermissionsService;
 
+    @Mock
+    private LocalDateWrapper localDateWrapper;
+
     private CaseTypeService caseTypeService;
     private Set<UUID> team = new HashSet<UUID>() {{  add(UUID.fromString("74c79583-1375-494c-9883-f574e7e36541"));}};
     Set<String> teamString = team.stream().map(uuid -> uuid.toString()).collect(Collectors.toSet());
@@ -47,9 +52,11 @@ public class CaseTypeServiceTest {
     Set<String> teamsString = teams.stream().map(uuid -> uuid.toString()).collect(Collectors.toSet());
     private UUID unitUUID = UUID.randomUUID();
 
+    private static final String CASE_TYPE = "CaseType1";
+
     @Before
     public void setUp() {
-        this.caseTypeService = new CaseTypeService(caseTypeRepository,documentTagRepository,holidayDateRepository,stageTypeService,userPermissionsService);
+        this.caseTypeService = new CaseTypeService(caseTypeRepository,documentTagRepository,holidayDateRepository,stageTypeService,userPermissionsService, localDateWrapper);
     }
 
     @Test
@@ -160,6 +167,80 @@ public class CaseTypeServiceTest {
         assertThat(tags.get(1)).isEqualTo("Second");
         verify(documentTagRepository).findByCaseType("TEST");
         verifyNoMoreInteractions(documentTagRepository);
+    }
+
+    @Test
+    public void shouldCalculateWorkingDaysElapsedForCaseType(){
+        when(localDateWrapper.now()).thenReturn(LocalDate.parse("2020-05-18"));
+
+        int result = caseTypeService.calculateWorkingDaysElapsedForCaseType(CASE_TYPE, LocalDate.parse("2020-05-11"));
+
+        assertThat(result).isEqualTo(5);
+        verify(localDateWrapper).now();
+        verify(holidayDateRepository).findAllByCaseType(CASE_TYPE);
+        checkNoMoreInteractions();
+    }
+
+    @Test
+    public void shouldCalculateWorkingDaysElapsedForCaseType_sameDay(){
+        when(localDateWrapper.now()).thenReturn(LocalDate.parse("2020-05-18"));
+
+        int result = caseTypeService.calculateWorkingDaysElapsedForCaseType(CASE_TYPE, LocalDate.parse("2020-05-18"));
+
+        assertThat(result).isEqualTo(0);
+        verify(localDateWrapper).now();
+        checkNoMoreInteractions();
+    }
+
+    @Test
+    public void shouldCalculateWorkingDaysElapsedForCaseType_weekend(){
+        when(localDateWrapper.now()).thenReturn(LocalDate.parse("2020-05-17"));
+
+        int result = caseTypeService.calculateWorkingDaysElapsedForCaseType(CASE_TYPE, LocalDate.parse("2020-05-16"));
+
+        assertThat(result).isEqualTo(0);
+        verify(localDateWrapper).now();
+        verify(holidayDateRepository).findAllByCaseType(CASE_TYPE);
+        checkNoMoreInteractions();
+    }
+
+    @Test
+    public void shouldCalculateWorkingDaysElapsedForCaseType_withExemptions(){
+        when(localDateWrapper.now()).thenReturn(LocalDate.parse("2020-05-18"));
+        List<ExemptionDate> exemptions = List.of(new ExemptionDate(1L, LocalDate.parse("2020-05-11")), new ExemptionDate(1L, LocalDate.parse("2020-05-12")));
+        when(holidayDateRepository.findAllByCaseType(CASE_TYPE)).thenReturn(exemptions);
+
+        int result = caseTypeService.calculateWorkingDaysElapsedForCaseType(CASE_TYPE, LocalDate.parse("2020-05-11"));
+
+        assertThat(result).isEqualTo(3);
+        verify(localDateWrapper).now();
+        verify(holidayDateRepository).findAllByCaseType(CASE_TYPE);
+        checkNoMoreInteractions();
+    }
+
+    @Test
+    public void shouldCalculateWorkingDaysElapsedForCaseType_nullDate(){
+        when(localDateWrapper.now()).thenReturn(LocalDate.parse("2020-05-18"));
+        int result = caseTypeService.calculateWorkingDaysElapsedForCaseType(CASE_TYPE, null);
+
+        assertThat(result).isEqualTo(0);
+        verify(localDateWrapper).now();
+        checkNoMoreInteractions();
+    }
+
+    @Test
+    public void shouldCalculateWorkingDaysElapsedForCaseType_futureDate(){
+        when(localDateWrapper.now()).thenReturn(LocalDate.parse("2020-05-18"));
+        int result = caseTypeService.calculateWorkingDaysElapsedForCaseType(CASE_TYPE, LocalDate.parse("2020-05-19"));
+
+        assertThat(result).isEqualTo(0);
+        verify(localDateWrapper).now();
+        checkNoMoreInteractions();
+    }
+
+
+    private void checkNoMoreInteractions(){
+        verifyNoMoreInteractions(caseTypeRepository, documentTagRepository, holidayDateRepository, stageTypeService, userPermissionsService, localDateWrapper);
     }
 
     private void assetCaseTypeDtoContainsCorrectElements(Set<CaseType> caseTypeDtos, String CaseType, String DisplayName, UUID tenant) {
