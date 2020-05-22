@@ -10,6 +10,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.FieldRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.SchemaRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -70,5 +71,13 @@ public class SchemaService {
         }
 
         return new ArrayList<>();
+    }
+
+    Set<Schema> getAllSchemasForCaseTypeAndStage(String caseType, String stages) {
+        log.debug("Getting all Forms for stages {} and CaseType {}", stages, caseType);
+        List<String> stagesList = new ArrayList<>(Arrays.asList(stages.split(",")));
+        Set<Schema> caseTypeSchemas = schemaRepository.findAllActiveFormsByCaseTypeAndStages(caseType, stagesList);
+        log.info("Got {} Forms for CaseType {} and stages {}", caseTypeSchemas.size(), caseType, stages);
+        return caseTypeSchemas;
     }
 }

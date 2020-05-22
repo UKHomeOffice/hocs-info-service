@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.digital.ho.hocs.info.api.dto.FieldDto;
 import uk.gov.digital.ho.hocs.info.api.dto.SchemaDto;
@@ -35,10 +36,13 @@ public class SchemaResource {
         return ResponseEntity.ok(SchemaDto.from(schema));
     }
 
-    @GetMapping(value = "/schema/caseType/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Set<SchemaDto>> getAllSchemasForCaseType(@PathVariable String caseType) {
-        Set<Schema> schemas = schemaService.getAllSchemasForCaseType(caseType);
-        return ResponseEntity.ok(schemas.stream().map(SchemaDto::from).collect(Collectors.toSet()));
+    @GetMapping(value = "/schema/caseType/{caseType}", params = {"stages"}, produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<List<SchemaDto>> getAllSchemasForCaseType(
+            @PathVariable String caseType,
+            @RequestParam("stages") String stages
+    ) {
+        Set<Schema> schemas = schemaService.getAllSchemasForCaseTypeAndStage(caseType, stages);
+        return ResponseEntity.ok(schemas.stream().map(SchemaDto::from).collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/schema/caseType/{caseType}/summary", produces = APPLICATION_JSON_UTF8_VALUE)
