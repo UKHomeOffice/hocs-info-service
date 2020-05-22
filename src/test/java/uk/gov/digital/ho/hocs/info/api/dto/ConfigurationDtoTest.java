@@ -20,7 +20,6 @@ public class ConfigurationDtoTest {
     public void from() {
         String systemName = "system";
         String systemDisplayName = "Demo System";
-        String docLabelString = "label1,label2";
 
         String columnDisplayName = "ColumnABC";
         String columnDataAdapter = "adapter123";
@@ -43,13 +42,12 @@ public class ConfigurationDtoTest {
 
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, systemName, searchFieldDisplayName, searchFieldComponent, searchFieldValidation, searchFieldProps));
         String readOnlyCaseViewAdapter = "Adapter";
-        Configuration configuration = new Configuration(systemName, systemDisplayName, docLabelString, true, true, workstackTypes, searchFields, true, readOnlyCaseViewAdapter);
+        Configuration configuration = new Configuration(systemName, systemDisplayName, true, true, workstackTypes, searchFields, true, readOnlyCaseViewAdapter);
 
 
         ConfigurationDto dto = ConfigurationDto.from(configuration);
 
         Assert.assertEquals("Display name do not match", systemDisplayName, dto.getDisplayName());
-        Assert.assertEquals("Document labels do not match", new ArrayList<>(Arrays.asList(docLabelString.split(","))), dto.getDocumentLabels());
         Assert.assertEquals("Bulk Create setting is incorrect", true, dto.isBulkCreateEnabled());
         Assert.assertEquals("Deadline Enabled setting is incorrect", true, dto.isDeadlinesEnabled());
         Assert.assertEquals("AutoCreateAndAllocateEnabled setting is incorrect", true, dto.isAutoCreateAndAllocateEnabled());

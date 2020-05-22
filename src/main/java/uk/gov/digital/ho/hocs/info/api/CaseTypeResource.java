@@ -1,12 +1,14 @@
 package uk.gov.digital.ho.hocs.info.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,6 +63,17 @@ public class CaseTypeResource {
         LocalDate receivedDate = LocalDate.parse(received);
         Map<String, LocalDate> deadlines = caseTypeService.getAllStageDeadlinesForCaseType(caseType, receivedDate);
         return ResponseEntity.ok(deadlines);
+    }
+
+    @GetMapping(value = "/caseType/{caseType}/documentTags", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<List<String>> getDocumentTags(@PathVariable String caseType) {
+        List<String> documentTags = caseTypeService.getDocumentTagsForCaseType(caseType);
+        return ResponseEntity.ok(documentTags);
+    }
+
+    @GetMapping(value = "/caseType/{caseType}/workingDays/{fromDate}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Integer> getWorkingDaysElapsedForCaseType(@PathVariable String caseType, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate) {
+        return ResponseEntity.ok(caseTypeService.calculateWorkingDaysElapsedForCaseType(caseType, fromDate));
     }
 
     @PostMapping

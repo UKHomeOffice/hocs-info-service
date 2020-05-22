@@ -18,9 +18,6 @@ public class ConfigurationDto {
     @JsonProperty("displayName")
     private String displayName;
 
-    @JsonProperty("documentLabels")
-    private List<String> documentLabels;
-
     @JsonProperty("bulkCreateEnabled")
     private boolean bulkCreateEnabled;
 
@@ -40,15 +37,11 @@ public class ConfigurationDto {
     private String readOnlyCaseViewAdapter;
 
     public static ConfigurationDto from(Configuration configuration) {
-        String documentLabelsString = configuration.getDocumentLabels();
-        List<String> documentLabels = StringUtils.isBlank(documentLabelsString) ? null : new ArrayList<>(Arrays.asList(documentLabelsString.split(",")));
-
         List<WorkstackTypeDto> workstackTypeColumns = configuration.getWorkstackTypes().stream().map(WorkstackTypeDto::from).collect(Collectors.toList());
         List<SearchFieldDto> searchFieldDtos = configuration.getSearchFields().stream().map(SearchFieldDto::from).collect(Collectors.toList());
 
         return new ConfigurationDto(
                 configuration.getDisplayName(),
-                documentLabels,
                 configuration.isBulkCreateEnabled(),
                 configuration.isDeadlinesEnabled(),
                 workstackTypeColumns,

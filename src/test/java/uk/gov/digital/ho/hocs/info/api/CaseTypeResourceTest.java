@@ -11,6 +11,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -105,6 +106,36 @@ public class CaseTypeResourceTest {
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(caseTypeService, times(1)).createCaseType(caseType);
+
+    }
+
+    @Test
+    public void shouldGetDocumentTags(){
+        List<String> docTags = new ArrayList<String>();
+        when(caseTypeService.getDocumentTagsForCaseType("TEST")).thenReturn(docTags);
+
+        ResponseEntity<List<String>> response = caseTypeResource.getDocumentTags("TEST");
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isSameAs(docTags);
+        verify(caseTypeService).getDocumentTagsForCaseType("TEST");
+        verifyNoMoreInteractions(caseTypeService);
+    }
+
+    @Test
+    public void getWorkingDaysElapsedForCaseType(){
+        String caseType = "caseTypeA";
+        LocalDate fromDate = LocalDate.parse("2020-04-03");
+        when(caseTypeService.calculateWorkingDaysElapsedForCaseType(caseType, fromDate)).thenReturn(27);
+
+        ResponseEntity<Integer> response = caseTypeResource.getWorkingDaysElapsedForCaseType(caseType, fromDate);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(27);
+        verify(caseTypeService).calculateWorkingDaysElapsedForCaseType(caseType, fromDate);
+        verifyNoMoreInteractions(caseTypeService);
 
     }
 
