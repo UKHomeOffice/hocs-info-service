@@ -20,9 +20,13 @@ else
         echo "deploy ${VERSION} to demo namespace, using HOCS_INFO_SERVICE_DEMO drone secret"
         export KUBE_TOKEN=${HOCS_INFO_SERVICE_DEMO}
         export REPLICAS="1"
-    elif [[ ${ENVIRONMENT} == "dev" ]] ; then
+    elif [[ ${KUBE_NAMESPACE} == "cs-dev" ]] ; then
         echo "deploy ${VERSION} to dev namespace, using HOCS_INFO_SERVICE_DEV drone secret"
-        export KUBE_TOKEN=${HOCS_INFO_SERVICE_DEV}
+        export KUBE_TOKEN=${HOCS_INFO_SERVICE_DEV_CS}
+        export REPLICAS="1"
+    elif [[ ${KUBE_NAMESPACE} == "wcs-dev" ]] ; then
+        echo "deploy ${VERSION} to dev namespace, using HOCS_INFO_SERVICE_DEV drone secret"
+        export KUBE_TOKEN=${HOCS_INFO_SERVICE_DEV_WCS}
         export REPLICAS="1"
     else
         echo "Unable to find environment: ${ENVIRONMENT}"        
