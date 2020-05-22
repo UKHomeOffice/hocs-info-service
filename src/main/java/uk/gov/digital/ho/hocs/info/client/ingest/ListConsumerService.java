@@ -58,8 +58,12 @@ public class ListConsumerService {
         log.info("Updating European Parliament");
         HouseAddress houseAddress = houseAddressRepository.findByHouseCode("EU");
         EuropeMembers europeMembers = getDataFromAPI(apiEuropeanParliament, MediaType.APPLICATION_XML, EuropeMembers.class);
-        return europeMembers.getMembers().stream().map(m -> new Member(House.HOUSE_EUROPEAN_PARLIAMENT.getDisplayValue(), m.getName()+" MEP", houseAddress.getUuid(),"EU"+m.getId())).collect(Collectors.toSet());
-    }
+        if(europeMembers != null && europeMembers.getMembers() != null){
+            return europeMembers.getMembers().stream().map(m -> new Member(House.HOUSE_EUROPEAN_PARLIAMENT.getDisplayValue(), m.getName()+" MEP", houseAddress.getUuid(),"EU"+m.getId())).collect(Collectors.toSet());
+
+        }
+        return Set.of();
+     }
 
     public Set<Member> createFromIrishAssemblyAPI() {
         log.info("Updating Irish Assembly");
