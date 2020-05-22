@@ -20,15 +20,15 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ListConsumerService {
 
-    private final String HOUSE_LORDS = "lords/";
-    private final String HOUSE_COMMONS = "commons/";
-    private final String API_UK_PARLIAMENT;
-    private final String API_SCOTTISH_PARLIAMENT;
-    private final String API_NORTHERN_IRISH_ASSEMBLY;
-    private final String API_EUROPEAN_PARLIAMENT;
-    private final String API_WELSH_ASSEMBLY;
-    private final String API_COUNTRY_REGISTER;
-    private final String API_TERRITORY_REGISTER;
+    private static final String HOUSE_LORDS = "lords/";
+    private static final String HOUSE_COMMONS = "commons/";
+    private final String apiUkParliament;
+    private final String apiScottishParliament;
+    private final String apiNorthernIrishAssembly;
+    private final String apiEuropeanParliament;
+    private final String apiWelshAssembly;
+    private final String apiCountryRegister;
+    private final String apiTerritoryRegister;
 
     private HouseAddressRepository houseAddressRepository;
     private RestTemplate restTemplate;
@@ -42,13 +42,13 @@ public class ListConsumerService {
                                @Value("${api.country.register}") String apiCountryRegister,
                                @Value("${api.territory.register}") String apiTerritoryRegister,
                                HouseAddressRepository houseAddressRepository, RestTemplate restTemplate) {
-        this.API_UK_PARLIAMENT = apiUkParliament;
-        this.API_SCOTTISH_PARLIAMENT = apiScottishParliament;
-        this.API_NORTHERN_IRISH_ASSEMBLY = apiNorthernIrishAssembly;
-        this.API_EUROPEAN_PARLIAMENT = apiEuropeanParliament;
-        this.API_WELSH_ASSEMBLY = apiWelshAssembly;
-        this.API_COUNTRY_REGISTER = apiCountryRegister;
-        this.API_TERRITORY_REGISTER = apiTerritoryRegister;
+        this.apiUkParliament = apiUkParliament;
+        this.apiScottishParliament = apiScottishParliament;
+        this.apiNorthernIrishAssembly = apiNorthernIrishAssembly;
+        this.apiEuropeanParliament = apiEuropeanParliament;
+        this.apiWelshAssembly = apiWelshAssembly;
+        this.apiCountryRegister = apiCountryRegister;
+        this.apiTerritoryRegister = apiTerritoryRegister;
         this.houseAddressRepository = houseAddressRepository;
         this.restTemplate = restTemplate;
 
@@ -57,65 +57,61 @@ public class ListConsumerService {
     public  Set<Member> createFromEuropeanParliamentAPI() {
         log.info("Updating European Parliament");
         HouseAddress houseAddress = houseAddressRepository.findByHouseCode("EU");
-        EuropeMembers europeMembers = getDataFromAPI(API_EUROPEAN_PARLIAMENT, MediaType.APPLICATION_XML, EuropeMembers.class);
-        Set<Member> members = europeMembers.getMembers().stream().map(m -> new Member(House.HOUSE_EUROPEAN_PARLIAMENT.getDisplayValue(), m.getName()+" MEP", houseAddress.getUuid(),"EU"+m.getId())).collect(Collectors.toSet());
-        return members;
-    }
+        EuropeMembers europeMembers = getDataFromAPI(apiEuropeanParliament, MediaType.APPLICATION_XML, EuropeMembers.class);
+        if(europeMembers != null && europeMembers.getMembers() != null){
+            return europeMembers.getMembers().stream().map(m -> new Member(House.HOUSE_EUROPEAN_PARLIAMENT.getDisplayValue(), m.getName()+" MEP", houseAddress.getUuid(),"EU"+m.getId())).collect(Collectors.toSet());
+
+        }
+        return Set.of();
+     }
 
     public Set<Member> createFromIrishAssemblyAPI() {
         log.info("Updating Irish Assembly");
         HouseAddress houseAddress = houseAddressRepository.findByHouseCode("NI");
-        IrishMembers irishMembers = getDataFromAPI(API_NORTHERN_IRISH_ASSEMBLY, MediaType.APPLICATION_XML, IrishMembers.class);
-        Set<Member> members = irishMembers.getMembers().stream().map(m -> new Member(House.HOUSE_NORTHERN_IRISH_ASSEMBLY.getDisplayValue(), m.getFullDisplayName()+" MLA",houseAddress.getUuid(), "NI"+m.getPersonId())).collect(Collectors.toSet());
-        return members;
+        IrishMembers irishMembers = getDataFromAPI(apiNorthernIrishAssembly, MediaType.APPLICATION_XML, IrishMembers.class);
+        return irishMembers.getMembers().stream().map(m -> new Member(House.HOUSE_NORTHERN_IRISH_ASSEMBLY.getDisplayValue(), m.getFullDisplayName()+" MLA",houseAddress.getUuid(), "NI"+m.getPersonId())).collect(Collectors.toSet());
     }
 
     public Set<Member> createFromScottishParliamentAPI() {
         log.info("Updating Scottish Parliament");
         HouseAddress houseAddress = houseAddressRepository.findByHouseCode("SP");
-       ScottishMember[] scottishMembers = getDataFromAPI(API_SCOTTISH_PARLIAMENT, MediaType.APPLICATION_JSON, ScottishMember[].class);
-        Set<Member> members = Arrays.stream(scottishMembers).map(m -> new Member(House.HOUSE_SCOTTISH_PARLIAMENT.getDisplayValue(), m.getName()+" MSP", houseAddress.getUuid(),"SC"+m.getPersonId())).collect(Collectors.toSet());
-        return members;
+       ScottishMember[] scottishMembers = getDataFromAPI(apiScottishParliament, MediaType.APPLICATION_JSON, ScottishMember[].class);
+        return Arrays.stream(scottishMembers).map(m -> new Member(House.HOUSE_SCOTTISH_PARLIAMENT.getDisplayValue(), m.getName()+" MSP", houseAddress.getUuid(),"SC"+m.getPersonId())).collect(Collectors.toSet());
     }
 
     public Set<Member> createCommonsFromUKParliamentAPI() {
         log.info("Updating House of Commons");
         HouseAddress houseAddress = houseAddressRepository.findByHouseCode("HC");
         UKMembers ukUKMembers = getDataFromAPI(getFormattedUkEndpoint(HOUSE_COMMONS), MediaType.APPLICATION_XML, UKMembers.class);
-        Set<Member> members = ukUKMembers.getMembers().stream().map(m -> new Member(House.HOUSE_COMMONS.getDisplayValue(),m.getFullTitle(), houseAddress.getUuid(),"CO"+m.getMemberId())).collect(Collectors.toSet());
-        return members;
+        return ukUKMembers.getMembers().stream().map(m -> new Member(House.HOUSE_COMMONS.getDisplayValue(),m.getFullTitle(), houseAddress.getUuid(),"CO"+m.getMemberId())).collect(Collectors.toSet());
     }
 
     public Set<Member> createLordsFromUKParliamentAPI() {
         log.info("Updating House of Lords");
         HouseAddress houseAddress = houseAddressRepository.findByHouseCode("HL");
         UKMembers ukUKMembers = getDataFromAPI(getFormattedUkEndpoint(HOUSE_LORDS), MediaType.APPLICATION_XML, UKMembers.class);
-        Set<Member> members = ukUKMembers.getMembers().stream().map(m -> new Member(House.HOUSE_LORDS.getDisplayValue(), m.getFullTitle(), houseAddress.getUuid(),"LO"+m.getMemberId())).collect(Collectors.toSet());
-        return members;
+        return ukUKMembers.getMembers().stream().map(m -> new Member(House.HOUSE_LORDS.getDisplayValue(), m.getFullTitle(), houseAddress.getUuid(),"LO"+m.getMemberId())).collect(Collectors.toSet());
     }
 
     public Set<Member> createFromWelshAssemblyAPI() {
         log.info("Updating Welsh Assembly");
         HouseAddress houseAddress = houseAddressRepository.findByHouseCode("WA");
-        WelshWards welshWards = getDataFromAPI(API_WELSH_ASSEMBLY, MediaType.APPLICATION_XML, WelshWards.class);
+        WelshWards welshWards = getDataFromAPI(apiWelshAssembly, MediaType.APPLICATION_XML, WelshWards.class);
         Set<WelshMembers> welshMembers = welshWards.getWards().stream().map(WelshWard::getMembers).collect(Collectors.toSet());
         Set<WelshMember> welshMemberSet = welshMembers.stream().map(WelshMembers::getMembers).flatMap(Collection::stream).collect(Collectors.toSet());
-        Set<Member> members = welshMemberSet.stream().map(m -> new Member(House.HOUSE_WELSH_ASSEMBLY.getDisplayValue(), m.getName(), houseAddress.getUuid(),"WE"+m.getId())).collect(Collectors.toSet());
-        return members;
+        return welshMemberSet.stream().map(m -> new Member(House.HOUSE_WELSH_ASSEMBLY.getDisplayValue(), m.getName(), houseAddress.getUuid(),"WE"+m.getId())).collect(Collectors.toSet());
     }
 
     public Set<Country> createFromCountryRegisterAPI() {
         log.info("Updating Countries");
-        HashMap<String, HashMap<String, ArrayList<HashMap<String, String>>>> hashMap = getDataFromAPI(API_COUNTRY_REGISTER, MediaType.APPLICATION_JSON, HashMap.class);
-        Set<Country> countrys = hashMap.values().stream().map(c -> new Country(c.get("item").get(0).get("name"), false)).collect(Collectors.toSet());
-        return countrys;
+        HashMap<String, HashMap<String, ArrayList<HashMap<String, String>>>> hashMap = getDataFromAPI(apiCountryRegister, MediaType.APPLICATION_JSON, HashMap.class);
+        return hashMap.values().stream().map(c -> new Country(c.get("item").get(0).get("name"), false)).collect(Collectors.toSet());
     }
 
     public Set<Country> createFromTerritoryRegisterAPI() {
         log.info("Updating Territories");
-        HashMap<String, HashMap<String, ArrayList<HashMap<String, String>>>> hashMap = getDataFromAPI(API_TERRITORY_REGISTER, MediaType.APPLICATION_JSON, HashMap.class);
-        Set<Country> territorys = hashMap.values().stream().map(c -> new Country(c.get("item").get(0).get("name"), true)).collect(Collectors.toSet());
-        return territorys;
+        HashMap<String, HashMap<String, ArrayList<HashMap<String, String>>>> hashMap = getDataFromAPI(apiTerritoryRegister, MediaType.APPLICATION_JSON, HashMap.class);
+        return hashMap.values().stream().map(c -> new Country(c.get("item").get(0).get("name"), true)).collect(Collectors.toSet());
     }
 
     private <T> T getDataFromAPI(String apiEndpoint, MediaType mediaType, Class<T> returnClass) {
@@ -125,14 +121,14 @@ public class ListConsumerService {
 
         ResponseEntity<T> response = restTemplate.exchange(apiEndpoint, HttpMethod.GET, entity, returnClass);
 
-        if (response == null || response.getStatusCodeValue() != 200) {
+        if (response.getStatusCodeValue() != 200) {
             throw new ApplicationExceptions.IngestException("members Not Found at " + apiEndpoint);
         }
         return response.getBody();
     }
 
     private String getFormattedUkEndpoint(final String house) {
-        return String.format(API_UK_PARLIAMENT, house);
+        return String.format(apiUkParliament, house);
     }
 
 }

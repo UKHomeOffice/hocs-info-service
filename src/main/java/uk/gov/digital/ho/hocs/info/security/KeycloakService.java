@@ -1,16 +1,20 @@
 package uk.gov.digital.ho.hocs.info.security;
 
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 
@@ -40,9 +44,45 @@ public class KeycloakService {
         this.hocsRealmName = hocsRealmName;
     }
 
+    public void createUser(CreateUserDto createUserDto) {
+        try {
+            CredentialRepresentation credential = new CredentialRepresentation();
+            credential.setType(CredentialRepresentation.PASSWORD);
+            credential.setValue(createUserDto.getPassword());
+            credential.setTemporary(createUserDto.isTemporaryPassword());
+
+            UserRepresentation user = new UserRepresentation();
+            user.setUsername(createUserDto.getUsername());
+            user.setFirstName(createUserDto.getFirstName());
+            user.setLastName(createUserDto.getLastName());
+            user.setEmail(createUserDto.getEmail());
+            user.setCredentials(Arrays.asList(credential));
+            user.setEnabled(true);
+            user.setRealmRoles(createUserDto.getRealmRoles());
+
+            Response result = keycloakClient.realm(hocsRealmName).users().create(user);
+            if (result.getStatus() != 201) {
+                log.error("Failed to create user {}, status {}", createUserDto.getUsername(), result.getStatus(), value(EVENT, KEYCLOAK_FAILURE));
+                throw new KeycloakException(String.format("Failed to create user %s, status %s", createUserDto.getUsername(), result.getStatus()));
+            }
+
+
+            UUID userUUID = UUID.fromString(CreatedResponseUtil.getCreatedId(result));
+            if (!CollectionUtils.isEmpty(createUserDto.getTeams())) {
+                for (UUID teamUUID : createUserDto.getTeams()) {
+                    addUserToTeam(userUUID, teamUUID);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Failed to create user {}, exception {}", createUserDto.getUsername(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            throw new KeycloakException(e.getMessage(), e);
+        }
+
+    }
+
     public void addUserToTeam(UUID userUUID, UUID teamUUID) {
         try {
-            String teamPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
+            String teamPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
             UserResource user = hocsRealm.users().get(userUUID.toString());
             GroupRepresentation group = hocsRealm.getGroupByPath(teamPath);
@@ -55,7 +95,7 @@ public class KeycloakService {
 
     public void removeUserFromTeam(UUID userUUID, UUID teamUUID) {
         try {
-            String teamPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
+            String teamPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
             UserResource user = hocsRealm.users().get(userUUID.toString());
             GroupRepresentation group = hocsRealm.getGroupByPath(teamPath);
@@ -68,7 +108,7 @@ public class KeycloakService {
 
     public void createTeamGroupIfNotExists(UUID teamUUID) {
         try {
-            String encodedTeamUUID = Base64UUID.UUIDToBase64String(teamUUID);
+            String encodedTeamUUID = Base64UUID.uuidToBase64String(teamUUID);
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
             GroupRepresentation teamGroup = new GroupRepresentation();
             teamGroup.setName(encodedTeamUUID);
@@ -81,7 +121,7 @@ public class KeycloakService {
     }
 
     public void deleteTeamGroup(UUID teamUUID) {
-        String encodedTeamUUID = Base64UUID.UUIDToBase64String(teamUUID);
+        String encodedTeamUUID = Base64UUID.uuidToBase64String(teamUUID);
         String path = "/" + encodedTeamUUID;
         try {
             String id = keycloakClient.realm(hocsRealmName).getGroupByPath(path).getId();
@@ -99,8 +139,8 @@ public class KeycloakService {
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
             List<GroupRepresentation> encodedTeamUUIDs = hocsRealm.users().get(userUUID.toString()).groups();
             Set<UUID> teamUUIDs = new HashSet<>();
-            if (encodedTeamUUIDs.size() > 0) {
-                encodedTeamUUIDs.forEach((group) -> teamUUIDs.add(Base64UUID.Base64StringToUUID(group.getName())));
+            if (!encodedTeamUUIDs.isEmpty()) {
+                encodedTeamUUIDs.forEach(group -> teamUUIDs.add(Base64UUID.base64StringToUUID(group.getName())));
             }
             return teamUUIDs;
         } catch (Exception e) {
@@ -133,7 +173,7 @@ public class KeycloakService {
 
     @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
     public Set<UserRepresentation> getUsersForTeam(UUID teamUUID) {
-        String encodedTeamPath = "/" + Base64UUID.UUIDToBase64String(teamUUID);
+        String encodedTeamPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
         try {
             if (teamRepository.findByUuid(teamUUID) != null) {
                 GroupRepresentation group = keycloakClient.realm(hocsRealmName).getGroupByPath(encodedTeamPath);

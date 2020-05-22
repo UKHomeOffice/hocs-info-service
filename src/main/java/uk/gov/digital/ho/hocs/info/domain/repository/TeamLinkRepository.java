@@ -5,13 +5,12 @@ import org.springframework.stereotype.Repository;
 import uk.gov.digital.ho.hocs.info.domain.model.TeamLink;
 
 import java.util.Set;
-import java.util.UUID;
 
 @Repository
 public interface TeamLinkRepository extends CrudRepository<TeamLink, String> {
 
-    Set<TeamLink> findAllByLinkUUIDAndLinkType(UUID linkUUID, String linkType);
+    Set<TeamLink> findAllByLinkValueAndLinkType(String linkValue, String linkType);
 
-    TeamLink findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(UUID linkUUID, String linkType, String caseType, String stageType);
+    TeamLink findByLinkValueAndLinkTypeAndCaseTypeAndStageType(String linkValue, String linkType, String caseType, String stageType);
 
 }

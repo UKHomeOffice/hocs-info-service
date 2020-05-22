@@ -29,18 +29,18 @@ public class TeamLink implements Serializable {
     @Column(name = "stage_type")
     private String stageType;
 
-    @Column(name = "link_uuid")
-    private UUID linkUUID;
-
     @Column(name = "link_type")
     private String linkType;
+
+    @Column(name = "link_value")
+    private String linkValue;
 
     @Setter
     @Column(name = "responsible_team_uuid")
     private UUID responsibleTeamUUID;
 
-    public TeamLink(UUID linkUUID, String linkType, UUID responsibleTeamUUID, String caseType, String stageType) {
-        this.linkUUID = linkUUID;
+    public TeamLink(String linkValue, String linkType, UUID responsibleTeamUUID, String caseType, String stageType) {
+        this.linkValue = linkValue;
         this.linkType = linkType;
         this.responsibleTeamUUID = responsibleTeamUUID;
         this.caseType = caseType;

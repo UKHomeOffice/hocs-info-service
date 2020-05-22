@@ -19,10 +19,6 @@ public class WorkstackColumn implements Serializable {
     private Long id;
 
     @Getter
-    @Column(name = "parent_system_name")
-    private String parentSystemName;
-
-    @Getter
     @Column(name = "display_name")
     private String displayName;
 
@@ -45,5 +41,9 @@ public class WorkstackColumn implements Serializable {
     @Getter
     @Column(name = "header_class_name")
     private String headerClassName;
+
+    @Getter
+    @Column(name = "sort_strategy")
+    private String sortStrategy;
 
 }

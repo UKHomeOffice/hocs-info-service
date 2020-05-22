@@ -3,7 +3,7 @@ import uk.gov.digital.ho.hocs.info.application.LogEvent;
 
 public interface SecurityExceptions {
     class PermissionCheckException extends RuntimeException {
-        LogEvent event;
+        private final LogEvent event;
         public PermissionCheckException(String s, LogEvent event) {
             super(s);
             this.event = event;

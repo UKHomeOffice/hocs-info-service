@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.client.auditClient;
+package uk.gov.digital.ho.hocs.info.client.audit.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.application.RequestData;
-import uk.gov.digital.ho.hocs.info.client.auditClient.dto.CreateAuditRequest;
-import uk.gov.digital.ho.hocs.info.client.auditClient.dto.EventType;
+import uk.gov.digital.ho.hocs.info.client.audit.client.dto.CreateAuditRequest;
+import uk.gov.digital.ho.hocs.info.client.audit.client.dto.EventType;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 
 import javax.json.Json;
@@ -37,7 +37,12 @@ public class AuditClient {
     private final ObjectMapper objectMapper;
     private final RequestData requestData;
     private final JsonArrayBuilder permissionArray;
-    private final String EVENT_TYPE_HEADER ="event_type";
+    private static final String EVENT_TYPE_HEADER = "event_type";
+    private static final String TOPIC = "topicUUID";
+    private static final String STAGE_TYPE = "stageType";
+    private static final String TEAM_UUID = "teamUUID";
+    private static final String CASE_TYPE = "caseType";
+    private static final String DISPLAY_NAME = "displayName";
 
 
     @Autowired
@@ -57,48 +62,48 @@ public class AuditClient {
     }
 
     public void createTeamAudit(Team team) {
-        String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).build().toString();
+        String auditPayload = Json.createObjectBuilder().add(TEAM_UUID, team.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.CREATE_TEAM.toString());
         sendAuditMessage(request);
     }
 
     public void renameTeamAudit(Team team) {
-        String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).build().toString();
+        String auditPayload = Json.createObjectBuilder().add(TEAM_UUID, team.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.RENAME_TEAM.toString());
         sendAuditMessage(request);
     }
 
     public void deleteTeamAudit(Team team) {
-        String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).build().toString();
+        String auditPayload = Json.createObjectBuilder().add(TEAM_UUID, team.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.DELETE_TEAM.toString());
         sendAuditMessage(request);
     }
 
     public void addUserToTeamAudit(UUID userUUID, Team team) {
-        String auditPayload = Json.createObjectBuilder().add("teamUUID", team.getUuid().toString()).add("userUUID", userUUID.toString()).build().toString();
+        String auditPayload = Json.createObjectBuilder().add(TEAM_UUID, team.getUuid().toString()).add("userUUID", userUUID.toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.ADD_USER_TO_TEAM.toString());
         sendAuditMessage(request);
     }
 
 
     public void moveToNewUnitAudit(String teamUUID, String oldUnitUUID, String newUnitUUID) {
-        String auditPayload = Json.createObjectBuilder().add("teamUUID", teamUUID).add("oldUnit", oldUnitUUID).add("newUnit", newUnitUUID).build().toString();
+        String auditPayload = Json.createObjectBuilder().add(TEAM_UUID, teamUUID).add("oldUnit", oldUnitUUID).add("newUnit", newUnitUUID).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.MOVE_TEAM_TO_UNIT.toString());
         sendAuditMessage(request);
     }
 
-    public void updateTeamPermissionsAudit(UUID teamUUID, Set<PermissionDto> permissions) {
+    public void updateTeamPermissionsAudit(Set<PermissionDto> permissions) {
         for (PermissionDto permission : permissions) {
-            permissionArray.add(Json.createObjectBuilder().add("caseType", permission.getCaseTypeCode()).add("accessLevel", permission.getAccessLevel().toString()).build());
+            permissionArray.add(Json.createObjectBuilder().add(CASE_TYPE, permission.getCaseTypeCode()).add("accessLevel", permission.getAccessLevel().toString()).build());
         }
         String auditPayload = Json.createObjectBuilder().add("permissions", permissionArray).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.UPDATE_TEAM_PERMISSIONS.toString());
         sendAuditMessage(request);
     }
 
-    public void deleteTeamPermissionsAudit(UUID teamUUID, Set<PermissionDto> permissions) {
+    public void deleteTeamPermissionsAudit(Set<PermissionDto> permissions) {
         for (PermissionDto permission : permissions) {
-            permissionArray.add(Json.createObjectBuilder().add("caseType", permission.getCaseTypeCode()).add("accessLevel", permission.getAccessLevel().toString()).build());
+            permissionArray.add(Json.createObjectBuilder().add(CASE_TYPE, permission.getCaseTypeCode()).add("accessLevel", permission.getAccessLevel().toString()).build());
         }
         String auditPayload = Json.createObjectBuilder().add("permissions", permissionArray).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REMOVE_PERMISSIONS_FROM_TEAM.toString());
@@ -106,15 +111,15 @@ public class AuditClient {
     }
 
     public void removeUserFromTeamAudit(UUID userUUID, UUID teamUUID) {
-        String auditPayload = Json.createObjectBuilder().add("teamUUID", teamUUID.toString()).add("userUUID", userUUID.toString()).build().toString();
+        String auditPayload = Json.createObjectBuilder().add(TEAM_UUID, teamUUID.toString()).add("userUUID", userUUID.toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REMOVE_USER_FROM_TEAM.toString());
         sendAuditMessage(request);
     }
 
     public void createTopicAudit(Topic topic) {
         String auditPayload = Json.createObjectBuilder()
-                .add("topicUUID", topic.getUuid().toString())
-                .add("displayName", topic.getDisplayName())
+                .add(TOPIC, topic.getUuid().toString())
+                .add(DISPLAY_NAME, topic.getDisplayName())
                 .add("parentTopicUUID", topic.getParentTopic().toString())
                 .build()
                 .toString();
@@ -124,8 +129,8 @@ public class AuditClient {
 
     public void createParentTopicAudit(ParentTopic parentTopic) {
         String auditPayload = Json.createObjectBuilder()
-                .add("topicUUID", parentTopic.getUuid().toString())
-                .add("displayName", parentTopic.getDisplayName())
+                .add(TOPIC, parentTopic.getUuid().toString())
+                .add(DISPLAY_NAME, parentTopic.getDisplayName())
                 .build()
                 .toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.CREATE_PARENT_TOPIC.toString());
@@ -134,35 +139,35 @@ public class AuditClient {
 
     public void deleteTopicAudit(Topic topic) {
         String auditPayload = Json.createObjectBuilder()
-                .add("topicUUID", topic.getUuid().toString()).build().toString();
+                .add(TOPIC, topic.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REMOVE_TOPIC.toString());
         sendAuditMessage(request);
     }
 
     public void deleteParentTopicAudit(ParentTopic parentTopic) {
         String auditPayload = Json.createObjectBuilder()
-                .add("topicUUID", parentTopic.getUuid().toString()).build().toString();
+                .add(TOPIC, parentTopic.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REMOVE_PARENT_TOPIC.toString());
         sendAuditMessage(request);
     }
 
     public void reactivateTopicAudit(Topic topic) {
         String auditPayload = Json.createObjectBuilder()
-                .add("topicUUID", topic.getUuid().toString()).build().toString();
+                .add(TOPIC, topic.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REACTIVATE_TOPIC.toString());
         sendAuditMessage(request);
     }
 
     public void reactivateParentTopicAudit(ParentTopic parentTopic) {
         String auditPayload = Json.createObjectBuilder()
-                .add("topicUUID", parentTopic.getUuid().toString()).build().toString();
+                .add(TOPIC, parentTopic.getUuid().toString()).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REACTIVATE_PARENT_TOPIC.toString());
         sendAuditMessage(request);
     }
 
     public void updateTopicParentAudit(Topic topic) {
         String auditPayload = Json.createObjectBuilder()
-                .add("topicUUID", topic.getUuid().toString())
+                .add(TOPIC, topic.getUuid().toString())
                 .add("newParentTopicUUID", topic.getParentTopic().toString())
                 .build()
                 .toString();
@@ -172,10 +177,10 @@ public class AuditClient {
 
     public void addTeamToTopicAudit(TeamLink teamLink) {
         String auditPayload = Json.createObjectBuilder()
-                .add("topicUUID", teamLink.getLinkUUID().toString())
-                .add("teamUUID", teamLink.getResponsibleTeamUUID().toString())
-                .add("caseType", teamLink.getCaseType())
-                .add("stageType", teamLink.getStageType())
+                .add(TOPIC, teamLink.getLinkValue())
+                .add(TEAM_UUID, teamLink.getResponsibleTeamUUID().toString())
+                .add(CASE_TYPE, teamLink.getCaseType())
+                .add(STAGE_TYPE, teamLink.getStageType())
                 .build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.ADD_TEAM_TO_TOPIC.toString());
         sendAuditMessage(request);
@@ -183,10 +188,10 @@ public class AuditClient {
 
     public void updateTeamForTopicAudit(TeamLink teamLink, UUID oldTeamUUID) {
         String auditPayload = Json.createObjectBuilder()
-                .add("topicUUID", teamLink.getLinkUUID().toString())
-                .add("teamUUID", teamLink.getResponsibleTeamUUID().toString())
-                .add("caseType", teamLink.getCaseType())
-                .add("stageType", teamLink.getStageType())
+                .add(TOPIC, teamLink.getLinkValue())
+                .add(TEAM_UUID, teamLink.getResponsibleTeamUUID().toString())
+                .add(CASE_TYPE, teamLink.getCaseType())
+                .add(STAGE_TYPE, teamLink.getStageType())
                 .add("oldTeamUUID", oldTeamUUID.toString())
                 .build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.UPDATE_TEAM_FOR_TOPIC.toString());
@@ -197,7 +202,7 @@ public class AuditClient {
     public void createCorrespondentType(CorrespondentType correspondentType) {
         String auditPayload = Json.createObjectBuilder()
                 .add("correspondentTypeUUID", correspondentType.getUuid().toString())
-                .add("displayName", correspondentType.getDisplayName())
+                .add(DISPLAY_NAME, correspondentType.getDisplayName())
                 .add("type", correspondentType.getType())
                 .build()
                 .toString();

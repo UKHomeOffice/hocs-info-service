@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor()
 @NoArgsConstructor()
@@ -17,16 +18,12 @@ import java.util.List;
 @EqualsAndHashCode(of = {"systemName"})
 public class Configuration implements Serializable {
 
-
     @Id
     @Column(name = "system_name")
     private String systemName;
 
     @Column(name = "display_name")
     private String displayName;
-
-    @Column(name = "document_labels")
-    private String documentLabels;
 
     @Column(name = "bulk_create_enabled")
     private boolean bulkCreateEnabled;
@@ -37,7 +34,7 @@ public class Configuration implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("id")
     @JoinColumn(name = "parent_system_name", referencedColumnName = "system_name")
-    private List<WorkstackColumn> workstackColumns;
+    private List<WorkstackType> workstackTypes;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("id")

@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
+import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.CorrespondentType;
 import uk.gov.digital.ho.hocs.info.domain.repository.CorrespondentTypeRepository;
@@ -42,6 +42,16 @@ public class CorrespondentTypeServiceTest {
         verify(correspondentTypeRepository, times(1)).findAll();
         verifyNoMoreInteractions(correspondentTypeRepository);
 
+    }
+
+    @Test
+    public void shouldGetCorrespondentTypesByCaseType() {
+        when(correspondentTypeRepository.findAllByCaseType("CASE_TYPE")).thenReturn(new HashSet<>());
+
+        correspondentTypeService.getCorrespondentTypesByCaseType("CASE_TYPE");
+
+        verify(correspondentTypeRepository).findAllByCaseType("CASE_TYPE");
+        verifyNoMoreInteractions(correspondentTypeRepository);
     }
 
     @Test

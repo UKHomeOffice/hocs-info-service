@@ -146,7 +146,7 @@ public interface ApplicationExceptions {
     class TeamDeleteException extends RuntimeException {
         private final LogEvent event;
 
-        private TeamDeleteActiveParentTopicsDto teamDeleteActiveParentTopicsDto;
+        private final TeamDeleteActiveParentTopicsDto teamDeleteActiveParentTopicsDto;
 
         public TeamDeleteException(TeamDeleteActiveParentTopicsDto teamDeleteActiveParentTopicsDto,String msg, LogEvent event, Object... args) {
             super(String.format(msg, args));
@@ -180,7 +180,7 @@ public interface ApplicationExceptions {
         }
 
         public UnitDeleteException(String msg, Object... args) {
-            super(msg);
+            super(String.format(msg, args));
             this.event = LogEvent.UNCAUGHT_EXCEPTION;
         }
 
@@ -216,7 +216,7 @@ public interface ApplicationExceptions {
         }
 
         public NominatedContactDeleteException(String msg, Object... args) {
-            super(msg);
+            super(String.format(msg, args));
             this.event = LogEvent.UNCAUGHT_EXCEPTION;
         }
 

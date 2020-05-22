@@ -3,7 +3,7 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
+import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.CorrespondentType;
 import uk.gov.digital.ho.hocs.info.domain.repository.CorrespondentTypeRepository;
@@ -28,6 +28,13 @@ public class CorrespondentTypeService {
         log.debug("Getting all correspondent types");
         Set<CorrespondentType> correspondentTypes = correspondentTypeRepository.findAll();
         log.info("Got {} correspondent types", correspondentTypes.size());
+        return correspondentTypes;
+    }
+
+    Set<CorrespondentType> getCorrespondentTypesByCaseType(String caseType) {
+        log.debug("Getting all correspondent types for Case Type {}", caseType);
+        Set<CorrespondentType> correspondentTypes = correspondentTypeRepository.findAllByCaseType(caseType);
+        log.info("Got {} correspondent types for Case Type {}", correspondentTypes.size(), caseType);
         return correspondentTypes;
     }
 

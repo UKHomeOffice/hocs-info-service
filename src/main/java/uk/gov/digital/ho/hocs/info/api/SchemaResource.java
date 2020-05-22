@@ -10,13 +10,9 @@ import uk.gov.digital.ho.hocs.info.api.dto.SchemaDto;
 import uk.gov.digital.ho.hocs.info.domain.model.Field;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 
-import java.io.IOException;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
@@ -24,10 +20,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 public class SchemaResource {
 
     private final SchemaService schemaService;
+    private final ExtractService extractService;
 
     @Autowired
-    public SchemaResource(SchemaService schemaService) {
+    public SchemaResource(SchemaService schemaService,
+                          ExtractService extractService) {
         this.schemaService = schemaService;
+        this.extractService = extractService;
     }
 
     @GetMapping(value = "/schema/{type}", produces = APPLICATION_JSON_UTF8_VALUE)
@@ -49,10 +48,9 @@ public class SchemaResource {
     }
 
     @GetMapping(value = "/schema/caseType/{caseType}/reporting", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Set<String>> getAllReportingFieldsForCaseType(@PathVariable String caseType) {
-        Stream<Field> fields = Stream.concat(schemaService.getExtractOnlyFields().stream(), schemaService.getAllReportingFieldsForCaseType(caseType).sorted(Comparator.comparingLong(Field::getId)));
-
-        return ResponseEntity.ok(fields.map(Field::getName).collect(Collectors.toCollection(LinkedHashSet::new)));
+    public ResponseEntity<List<String>> getAllReportingFieldsForCaseType(@PathVariable String caseType) {
+        List<String> fields = extractService.getAllReportingFieldsForCaseType(caseType);
+        return ResponseEntity.ok(fields);
     }
 
 }

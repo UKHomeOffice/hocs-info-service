@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.api.dto.AddTeamToTopicDto;
-import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
+import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.TeamLink;
@@ -45,8 +45,8 @@ public class TopicTeamService {
         String caseType = request.getCaseType();
 
         validateTeamTopicStageAndCase(teamUUID, topicUUID, stageType, caseType);
-        TeamLink teamLink = Optional.ofNullable(teamLinkRepository.findByLinkUUIDAndLinkTypeAndCaseTypeAndStageType(topicUUID, "TOPIC", caseType, stageType))
-                 .orElse(new TeamLink(topicUUID, "TOPIC", teamUUID, caseType, stageType));
+        TeamLink teamLink = Optional.ofNullable(teamLinkRepository.findByLinkValueAndLinkTypeAndCaseTypeAndStageType(topicUUID.toString(), "TOPIC", caseType, stageType))
+                 .orElse(new TeamLink(topicUUID.toString(), "TOPIC", teamUUID, caseType, stageType));
         teamLink.setResponsibleTeamUUID(teamUUID);
         teamLinkRepository.save(teamLink);
         log.info("Added team: {} to topic: {}", teamUUID, topicUUID);

@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
-import uk.gov.digital.ho.hocs.info.client.auditClient.AuditClient;
+import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
@@ -190,6 +190,16 @@ public class TeamServiceTest {
         Set<Team> result = teamService.getTeamsForUser(userId);
 
         assertThat(result).isEqualTo(teams);
+    }
+
+    @Test
+    public void shouldGetTeamByStageAndText() {
+        Team team = new Team(UUID.randomUUID().toString(), true);
+        when(teamRepository.findByStageAndText("stageType", "text")).thenReturn(team);
+
+        Team result = teamService.getTeamByStageAndText("stageType", "text");
+
+        assertThat(result).isEqualTo(team);
     }
 
     @Test
@@ -454,14 +464,14 @@ public class TeamServiceTest {
         when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
         when(caseTypeService.getCaseType(any())).thenReturn(caseType);
 
-        Set<PermissionDto> permissions = new HashSet<PermissionDto>() {{
+        Set<PermissionDto> permissions = new HashSet<>() {{
             add(new PermissionDto("MIN", AccessLevel.READ));
             add(new PermissionDto("MIN", AccessLevel.OWNER));
         }};
 
         teamService.updateTeamPermissions(team.getUuid(), permissions);
 
-        verify(auditClient, times(1)).updateTeamPermissionsAudit(team.getUuid(), permissions);
+        verify(auditClient, times(1)).updateTeamPermissionsAudit(permissions);
     }
 
     @Test
@@ -478,12 +488,12 @@ public class TeamServiceTest {
         when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
         when(caseTypeService.getCaseType(any())).thenReturn(caseType);
 
-        Set<PermissionDto> permissionDtoSet = new HashSet<PermissionDto>() {{
+        Set<PermissionDto> permissionDtoSet = new HashSet<>() {{
             add(new PermissionDto("MIN", AccessLevel.READ));
         }};
         teamService.deleteTeamPermissions(team.getUuid(), permissionDtoSet);
 
-        verify(auditClient, times(1)).deleteTeamPermissionsAudit(team.getUuid(), permissionDtoSet);
+        verify(auditClient, times(1)).deleteTeamPermissionsAudit(permissionDtoSet);
 
     }
 
