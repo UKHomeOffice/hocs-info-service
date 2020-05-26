@@ -12,10 +12,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 import uk.gov.digital.ho.hocs.info.domain.repository.FieldRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.SchemaRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -173,4 +170,19 @@ public class SchemaServiceTest {
 
         service.getSchemaByType(type);
     }
+
+    @Test
+    public void getAllSchemasForCaseTypeAndStage() {
+
+        String stages = "STAGE_1,STAGE_2";
+        String caseType = "caseType";
+
+        List<String> expectedStagesList = new ArrayList<>();
+        expectedStagesList.add("STAGE_1");
+        expectedStagesList.add("STAGE_2");
+
+        service.getAllSchemasForCaseTypeAndStage(caseType, stages);
+        verify(schemaRepository).findAllActiveFormsByCaseTypeAndStages(caseType, expectedStagesList);
+    }
+
 }
