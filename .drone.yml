@@ -141,6 +141,7 @@ pipeline:
     when:
       event: deployment
       environment: qa
+      kube_namespace: cs-qa
 
   deploy-to-qa-wcs:
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
@@ -158,6 +159,7 @@ pipeline:
     when:
       event: deployment
       environment: qa
+      kube_namespace: wcs-qa
 
   deploy-to-prod-cs:
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
@@ -173,6 +175,7 @@ pipeline:
     when:
       event: deployment
       environment: prod
+      kube_namespace: cs-prod
 
   deploy-to-prod-wcs:
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
@@ -188,6 +191,7 @@ pipeline:
     when:
       event: deployment
       environment: prod
+      kube_namespace: wcs-prod
 
 services:
 
