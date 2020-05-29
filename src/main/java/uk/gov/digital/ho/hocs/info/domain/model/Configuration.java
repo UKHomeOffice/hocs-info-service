@@ -37,9 +37,8 @@ public class Configuration implements Serializable {
     private List<WorkstackType> workstackTypes;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OrderBy("id")
     @JoinColumn(name = "parent_system_name", referencedColumnName = "system_name")
-    private List<SearchField> searchFields;
+    private List<Profile> profiles;
 
     @Column(name = "auto_create_and_allocate_enabled")
     private boolean autoCreateAndAllocateEnabled;

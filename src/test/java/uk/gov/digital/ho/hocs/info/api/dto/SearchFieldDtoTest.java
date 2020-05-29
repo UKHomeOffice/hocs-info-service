@@ -9,13 +9,13 @@ public class SearchFieldDtoTest {
 
     @Test
     public void from() {
-        String systemName = "system";
+        String profileName = "DCU";
         String searchFieldDisplayName = "Field";
         String searchFieldComponent = "checkbox";
         String searchFieldValidation = "validationRuleC";
         String searchFieldProps = "props";
 
-        SearchField searchField = new SearchField(10L, systemName, searchFieldDisplayName, searchFieldComponent, searchFieldValidation, searchFieldProps);
+        SearchField searchField = new SearchField(10L, profileName, searchFieldDisplayName, searchFieldComponent, searchFieldValidation, searchFieldProps);
 
         SearchFieldDto dto = SearchFieldDto.from(searchField);
 
