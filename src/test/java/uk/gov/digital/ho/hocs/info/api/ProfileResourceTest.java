@@ -52,7 +52,7 @@ public class ProfileResourceTest {
 
         List<String> expectedResult = new ArrayList<>(Arrays.asList("Profile1", "Profile2"));
         when(caseTypeService.getAllCaseTypesForUser(false)).thenReturn(Set.of(caseType1, caseType2));
-        when(profileRepository.findAllProfileNamesByCaseTypesAndSystemName(List.of("type1", "type2"), "system")).thenReturn(expectedResult);
+        when(profileRepository.findAllProfileNamesByCaseTypesAndSystemName(anyList(), eq("system"))).thenReturn(expectedResult);
 
         ResponseEntity<List<String>> response = profileResource.getProfileNameForUser();
 
@@ -61,7 +61,7 @@ public class ProfileResourceTest {
         assertThat(response.getBody()).isEqualTo(expectedResult);
 
         verify(caseTypeService).getAllCaseTypesForUser(false);
-        verify(profileRepository).findAllProfileNamesByCaseTypesAndSystemName(List.of("type1", "type2"), "system");
+        verify(profileRepository).findAllProfileNamesByCaseTypesAndSystemName(anyList(), eq("system"));
         verifyNoMoreInteractions(caseTypeService, profileRepository);
 
 
