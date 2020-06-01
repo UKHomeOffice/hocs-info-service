@@ -2,16 +2,10 @@ package uk.gov.digital.ho.hocs.info.api.dto;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.gov.digital.ho.hocs.info.domain.model.Configuration;
-import uk.gov.digital.ho.hocs.info.domain.model.SearchField;
-import uk.gov.digital.ho.hocs.info.domain.model.WorkstackColumn;
-import uk.gov.digital.ho.hocs.info.domain.model.WorkstackType;
+import uk.gov.digital.ho.hocs.info.domain.model.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.mockito.Mockito.when;
 
 
 public class ConfigurationDtoTest {
@@ -34,15 +28,20 @@ public class ConfigurationDtoTest {
         String searchFieldValidation = "validationRuleC";
         String searchFieldProps = "props";
 
+        String profileName = "Profile1";
+
         String workstackType = "SomeType";
 
         List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, columnDisplayName, columnDataAdapter, columnRenderer, columnDataValueKey, columnFilterable, columnHeaderClassName, columnSortStrategy));
 
-        List<WorkstackType> workstackTypes = Arrays.asList(new WorkstackType(10L, systemName, workstackType,workstackColumns));
+        List<WorkstackType> workstackTypes = Arrays.asList(new WorkstackType(10L, systemName, workstackType, workstackColumns));
 
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, systemName, searchFieldDisplayName, searchFieldComponent, searchFieldValidation, searchFieldProps));
+
+        List<Profile> profiles = Arrays.asList(new Profile(profileName, systemName, searchFields));
+
         String readOnlyCaseViewAdapter = "Adapter";
-        Configuration configuration = new Configuration(systemName, systemDisplayName, true, true, workstackTypes, searchFields, true, readOnlyCaseViewAdapter);
+        Configuration configuration = new Configuration(systemName, systemDisplayName, true, true, workstackTypes, profiles, true, readOnlyCaseViewAdapter);
 
 
         ConfigurationDto dto = ConfigurationDto.from(configuration);
@@ -63,12 +62,14 @@ public class ConfigurationDtoTest {
         Assert.assertEquals("Workstack column header class name do not match", columnHeaderClassName, dto.getWorkstackTypeColumns().get(0).getWorkstackColumns().get(0).getHeaderClassName());
         Assert.assertEquals("Workstack column sort strategy do not match", columnSortStrategy, dto.getWorkstackTypeColumns().get(0).getWorkstackColumns().get(0).getSortStrategy());
 
-        Assert.assertEquals("There should be 1 search field", 1, dto.getSearchFields().size());
-        Assert.assertEquals("Search field name do not match", searchFieldDisplayName, dto.getSearchFields().get(0).getName());
-        Assert.assertEquals("Search field component do not match", searchFieldComponent, dto.getSearchFields().get(0).getComponent());
-        Assert.assertEquals("Search field validation do not match", searchFieldValidation, dto.getSearchFields().get(0).getValidation());
-        Assert.assertEquals("Search field props do not match", searchFieldProps, dto.getSearchFields().get(0).getProps());
+        Assert.assertEquals("Profile name do not match", profileName, dto.getProfiles().get(0).getProfileName());
+        List<SearchFieldDto> resultSearchFields = dto.getProfiles().get(0).getSearchFields();
 
+        Assert.assertEquals("There should be 1 search field", 1, resultSearchFields.size());
+        Assert.assertEquals("Search field name do not match", searchFieldDisplayName, resultSearchFields.get(0).getName());
+        Assert.assertEquals("Search field component do not match", searchFieldComponent, resultSearchFields.get(0).getComponent());
+        Assert.assertEquals("Search field validation do not match", searchFieldValidation, resultSearchFields.get(0).getValidation());
+        Assert.assertEquals("Search field props do not match", searchFieldProps, resultSearchFields.get(0).getProps());
 
 
     }

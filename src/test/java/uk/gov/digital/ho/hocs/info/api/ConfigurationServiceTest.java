@@ -6,12 +6,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.domain.model.Configuration;
-import uk.gov.digital.ho.hocs.info.domain.model.SearchField;
-import uk.gov.digital.ho.hocs.info.domain.model.WorkstackColumn;
-import uk.gov.digital.ho.hocs.info.domain.model.WorkstackType;
+import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.ConfigurationRepository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,13 +33,14 @@ public class ConfigurationServiceTest {
 
     @Test
     public void shouldReturnConfiguration() {
-        String systemName = "system";
+        String systemName = "profile";
         String systemDisplayName = "Test System Name";
         List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, "columnName1", "adapter", "renderer", "valueKey", true, "cssClass", "SortStrategy"));
         List<WorkstackType> workstackTypes = Arrays.asList(new WorkstackType(10L, systemName, "some_type", workstackColumns));
-        List<SearchField> searchFields = Arrays.asList(new SearchField(10L, "system", "name", "component", "validationRules", "properties"));
+        List<SearchField> searchFields = Arrays.asList(new SearchField(10L, "profile", "name", "component", "validationRules", "properties"));
+        List<Profile> profiles =  Arrays.asList(new Profile("testProfile", "system", searchFields));
         String readOnlyCaseViewAdapter = "Adapter";
-        when(configurationRepository.findBySystemName(systemName)).thenReturn(new Configuration(systemName, systemDisplayName, false, false, workstackTypes, searchFields, true, readOnlyCaseViewAdapter));
+        when(configurationRepository.findBySystemName(systemName)).thenReturn(new Configuration(systemName, systemDisplayName, false, false, workstackTypes, profiles, true, readOnlyCaseViewAdapter));
 
         Configuration result = configurationService.getConfiguration(systemName);
 
@@ -60,12 +59,16 @@ public class ConfigurationServiceTest {
         Assert.assertEquals("Workstack column header class name do not match", "cssClass", result.getWorkstackTypes().get(0).getWorkstackColumns().get(0).getHeaderClassName());
         Assert.assertEquals("Workstack column sort strategy do not match", "SortStrategy", result.getWorkstackTypes().get(0).getWorkstackColumns().get(0).getSortStrategy());
         Assert.assertEquals("Workstack type matches expected value", "some_type", result.getWorkstackTypes().get(0).getType());
-        Assert.assertEquals("There should be 1 search field", 1, result.getSearchFields().size());
-        Assert.assertEquals("Search field name do not match", "name", result.getSearchFields().get(0).getName());
-        Assert.assertEquals("Search field parent system name do not match", "system", result.getSearchFields().get(0).getParentSystemName());
-        Assert.assertEquals("Search field component do not match", "component", result.getSearchFields().get(0).getComponent());
-        Assert.assertEquals("Search field validation do not match", "validationRules", result.getSearchFields().get(0).getValidation());
-        Assert.assertEquals("Search field props do not match", "properties", result.getSearchFields().get(0).getProps());
+        Assert.assertEquals("There should be 1 profile", 1, result.getProfiles().size());
+        Assert.assertEquals("Profile name do not match", "testProfile", result.getProfiles().get(0).getProfileName());
+        Assert.assertEquals("Profile parent system name do not match", "system", result.getProfiles().get(0).getParentSystemName());
+        List<SearchField> resultSearchFields = result.getProfiles().get(0).getSearchFields();
+        Assert.assertEquals("There should be 1 search field", 1, resultSearchFields.size());
+        Assert.assertEquals("Search field name do not match", "name", resultSearchFields.get(0).getName());
+        Assert.assertEquals("Search field profile name do not match", "profile", resultSearchFields.get(0).getProfileName());
+        Assert.assertEquals("Search field component do not match", "component", resultSearchFields.get(0).getComponent());
+        Assert.assertEquals("Search field validation do not match", "validationRules", resultSearchFields.get(0).getValidation());
+        Assert.assertEquals("Search field props do not match", "properties", resultSearchFields.get(0).getProps());
 
 
         verify(configurationRepository).findBySystemName(systemName);

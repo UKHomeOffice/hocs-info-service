@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.domain.model.Configuration;
+import uk.gov.digital.ho.hocs.info.domain.model.Profile;
 
 
 import java.util.*;
@@ -27,8 +28,8 @@ public class ConfigurationDto {
     @JsonProperty("workstackTypeColumns")
     private List<WorkstackTypeDto> workstackTypeColumns;
 
-    @JsonProperty("searchFields")
-    private List<SearchFieldDto> searchFields;
+    @JsonProperty("profiles")
+    private List<ProfileDto> profiles;
 
     @JsonProperty("autoCreateAndAllocateEnabled")
     private boolean autoCreateAndAllocateEnabled;
@@ -38,14 +39,14 @@ public class ConfigurationDto {
 
     public static ConfigurationDto from(Configuration configuration) {
         List<WorkstackTypeDto> workstackTypeColumns = configuration.getWorkstackTypes().stream().map(WorkstackTypeDto::from).collect(Collectors.toList());
-        List<SearchFieldDto> searchFieldDtos = configuration.getSearchFields().stream().map(SearchFieldDto::from).collect(Collectors.toList());
+        List<ProfileDto> profileDtos = configuration.getProfiles().stream().map(ProfileDto::from).collect(Collectors.toList());
 
         return new ConfigurationDto(
                 configuration.getDisplayName(),
                 configuration.isBulkCreateEnabled(),
                 configuration.isDeadlinesEnabled(),
                 workstackTypeColumns,
-                searchFieldDtos,
+                profileDtos,
                 configuration.isAutoCreateAndAllocateEnabled(),
                 configuration.getReadOnlyCaseViewAdapter());
     }
