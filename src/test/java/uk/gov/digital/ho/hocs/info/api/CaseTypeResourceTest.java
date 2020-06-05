@@ -110,6 +110,21 @@ public class CaseTypeResourceTest {
     }
 
     @Test
+    public void shouldGetCaseDeadlineWarning(){
+        LocalDate receivedDate = LocalDate.of(2020,2,1);
+        LocalDate warningDate = LocalDate.of(2020,2,3);
+        when(caseTypeService.getDeadlineWarningForCaseType("TEST",receivedDate,1)).thenReturn(warningDate);
+
+        ResponseEntity<LocalDate> response = caseTypeResource.getCaseDeadlineWarning("TEST",receivedDate.toString(),1);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isSameAs(warningDate);
+        verify(caseTypeService).getDeadlineWarningForCaseType("TEST",receivedDate,1);
+        verifyNoMoreInteractions(caseTypeService);
+    }
+
+    @Test
     public void shouldGetDocumentTags(){
         List<String> docTags = new ArrayList<String>();
         when(caseTypeService.getDocumentTagsForCaseType("TEST")).thenReturn(docTags);
