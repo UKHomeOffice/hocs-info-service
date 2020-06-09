@@ -88,6 +88,16 @@ public class CaseTypeService {
         return deadline;
     }
 
+    LocalDate getDeadlineWarningForCaseType(String type, LocalDate receivedDate, int days) {
+        log.debug("Getting deadline for caseType {} with received date of {} and Days of {}", type, receivedDate, days);
+        CaseType caseType = getCaseType(type);
+        int sla = (days > 0) ? days : stageTypeService.getStageType(caseType.getDeadlineStage()).getDeadlineWarning();
+        Set<ExemptionDate> exemptions = holidayDateRepository.findAllByCaseType(caseType.getUuid());
+        LocalDate deadline = Deadline.calculateDeadline(receivedDate, null, sla, exemptions);
+        log.info("Got deadline ({}) for caseType {} with received date of {} ", deadline, type, receivedDate);
+        return deadline;
+    }
+
     Map<String, LocalDate> getAllStageDeadlinesForCaseType(String type, LocalDate receivedDate) {
         log.debug("Getting all stage deadlines for caseType {} with received date of {} ", type, receivedDate);
         CaseType caseType = getCaseType(type);

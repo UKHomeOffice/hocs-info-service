@@ -147,14 +147,14 @@ public class DeadlinesServiceTest {
     }
 
     private static StageTypeEntity getMinus2DaySla() {
-        return new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),-2,true, null);
+        return new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),-2,-2,true, null);
     }
 
     private static StageTypeEntity get3DaySla() {
-        return new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),3,true, null);
+        return new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),3,-2,true, null);
     }
 
     private static StageTypeEntity get10DaySla() {
-        return new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),10,true, null);
+        return new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),10,-2,true, null);
     }
 }

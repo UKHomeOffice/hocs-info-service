@@ -53,4 +53,16 @@ public class StageTypeResource {
         }
     }
 
+    @GetMapping(value = "/stageType/{stageType}/deadlineWarning", params = {"received","caseDeadlineWarning"}, produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<LocalDate> getDeadlineWarningByStage(@PathVariable String stageType, @RequestParam String received, @RequestParam String caseDeadlineWarning) {
+        try {
+            LocalDate receivedDate = LocalDate.parse(received);
+            LocalDate caseDeadlineWarningDate = LocalDate.parse(caseDeadlineWarning);
+            LocalDate deadline = stageTypeService.getDeadlineWarningForStageType(stageType, receivedDate, caseDeadlineWarningDate);
+            return ResponseEntity.ok(deadline);
+        } catch (ApplicationExceptions.EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
 }

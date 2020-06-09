@@ -52,6 +52,15 @@ public class StageTypeService {
         return deadline.getDate();
     }
 
+    LocalDate getDeadlineWarningForStageType(String stageType, LocalDate receivedDate, LocalDate caseDeadlineWarning) {
+        log.debug("Getting deadline warning for stageType {} with received date of {} ", stageType, receivedDate);
+        Set<ExemptionDate> holidays = holidayDateRepository.findAllByStageType(stageType);
+        int sla = getStageType(stageType).getDeadlineWarning();
+        Deadline deadline = new Deadline(receivedDate, caseDeadlineWarning, sla, holidays);
+        log.info("Got deadline warning ({}) for stageType {} with received date of {} ", deadline.getDate(), stageType, receivedDate);
+        return deadline.getDate();
+    }
+
     Set<StageTypeEntity> getAllStageTypesByCaseType(UUID caseTypeUUID) {
         log.debug("Getting all StageTypes for caseType {}", caseTypeUUID);
         Set<StageTypeEntity> stageTypes = stageTypeRepository.findAllByCaseTypeUUID(caseTypeUUID);

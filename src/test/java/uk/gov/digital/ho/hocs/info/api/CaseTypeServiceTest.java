@@ -154,6 +154,21 @@ public class CaseTypeServiceTest {
     }
 
     @Test
+    public void shouldGetDeadlineWarningForCaseType(){
+        LocalDate receivedDate = LocalDate.of(2020,5,8); // Friday
+        CaseType caseType = new CaseType();
+        when(caseTypeRepository.findByType(CASE_TYPE)).thenReturn(caseType);
+        Set<ExemptionDate> exemptions = Set.of(new ExemptionDate(1L, LocalDate.parse("2020-05-11")), new ExemptionDate(1L, LocalDate.parse("2020-05-12")));
+        when(holidayDateRepository.findAllByCaseType(caseType.getUuid())).thenReturn(exemptions);
+
+        LocalDate response = caseTypeService.getDeadlineWarningForCaseType(CASE_TYPE,receivedDate,1);
+
+        assertThat(response).isEqualTo(LocalDate.of(2020,5,13));
+        verify(caseTypeRepository).findByType(CASE_TYPE);
+        verifyNoMoreInteractions(caseTypeRepository);
+    }
+
+    @Test
     public void shouldGetDocumentTagsForCaseType(){
         List<DocumentTag> documentTags = new ArrayList<>();
         documentTags.add((new DocumentTag(null,null,null,"First",(short)1)));
