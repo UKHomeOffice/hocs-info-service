@@ -40,7 +40,7 @@ public class ConfigurationResourceTest {
         List<WorkstackType> workstackTypes = Arrays.asList(new WorkstackType(10L, systemName, "some_type", workstackColumns));
 
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, "system", "name", "component", "validationRules", "properties"));
-        List<Profile> profiles =  Arrays.asList(new Profile("testProfile", "system", searchFields));
+        List<Profile> profiles =  Arrays.asList(new Profile("testProfile", "system", true, searchFields));
 
         String readOnlyCaseViewAdapter = "Adapter";
         when(configurationService.getConfiguration("system")).thenReturn(new Configuration(systemName, systemDisplayName, false, true, workstackTypes, profiles, false, readOnlyCaseViewAdapter));
@@ -64,6 +64,7 @@ public class ConfigurationResourceTest {
         Assert.assertEquals("Workstack column header class name do not match", "cssClass", result.getBody().getWorkstackTypeColumns().get(0).getWorkstackColumns().get(0).getHeaderClassName());
         Assert.assertEquals("Workstack column sort strategy do not match", "SortStrategy", result.getBody().getWorkstackTypeColumns().get(0).getWorkstackColumns().get(0).getSortStrategy());
         Assert.assertEquals("Profile name do not match", "testProfile", result.getBody().getProfiles().get(0).getProfileName());
+        Assert.assertEquals("Profile summaryDeadlinesEnabled name do not match", true, result.getBody().getProfiles().get(0).isSummaryDeadlineEnabled());
         List<SearchFieldDto> resultSearchFields = result.getBody().getProfiles().get(0).getSearchFields();
         Assert.assertEquals("There should be 1 search field", 1, resultSearchFields.size());
         Assert.assertEquals("Search field name do not match", "name", resultSearchFields.get(0).getName());

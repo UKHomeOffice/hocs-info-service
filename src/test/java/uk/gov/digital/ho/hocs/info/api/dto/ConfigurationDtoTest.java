@@ -38,7 +38,7 @@ public class ConfigurationDtoTest {
 
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, systemName, searchFieldDisplayName, searchFieldComponent, searchFieldValidation, searchFieldProps));
 
-        List<Profile> profiles = Arrays.asList(new Profile(profileName, systemName, searchFields));
+        List<Profile> profiles = Arrays.asList(new Profile(profileName, systemName, false, searchFields));
 
         String readOnlyCaseViewAdapter = "Adapter";
         Configuration configuration = new Configuration(systemName, systemDisplayName, true, true, workstackTypes, profiles, true, readOnlyCaseViewAdapter);
@@ -63,6 +63,7 @@ public class ConfigurationDtoTest {
         Assert.assertEquals("Workstack column sort strategy do not match", columnSortStrategy, dto.getWorkstackTypeColumns().get(0).getWorkstackColumns().get(0).getSortStrategy());
 
         Assert.assertEquals("Profile name do not match", profileName, dto.getProfiles().get(0).getProfileName());
+        Assert.assertEquals("Profile summaryDeadlinesEnabled name do not match", false, dto.getProfiles().get(0).isSummaryDeadlineEnabled());
         List<SearchFieldDto> resultSearchFields = dto.getProfiles().get(0).getSearchFields();
 
         Assert.assertEquals("There should be 1 search field", 1, resultSearchFields.size());
