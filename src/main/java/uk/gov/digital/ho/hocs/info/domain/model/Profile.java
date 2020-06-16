@@ -22,6 +22,9 @@ public class Profile implements Serializable {
     @Column(name = "parent_system_name")
     private String parentSystemName;
 
+    @Column(name = "summary_deadlines_enabled")
+    private boolean summaryDeadlinesEnabled;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("id")
     @JoinColumn(name = "profile_name", referencedColumnName = "profile_name")
