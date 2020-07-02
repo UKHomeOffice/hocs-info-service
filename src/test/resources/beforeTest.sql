@@ -61,9 +61,9 @@ VALUES ('TEAM 4',null, '08612f06-bae2-4d2f-90d2-2254a68414b8', '09221c48-b916-47
        ('TEAM 9',null,  '7c33c878-9404-4f67-9bbc-ca52dff285ca', '09221c48-b916-47df-9aa0-a0194f86f6dd', TRUE),
        ('TEAM 10',null, 'd09f1444-87ec-4197-8ec5-f28f548d11be', '10d5b353-a8ed-4530-bcc0-3edab0397d2f', FALSE);
 
-INSERT INTO stage_type (uuid, display_name, short_code, type, case_type_uuid, acting_team_uuid, deadline, active)
-VALUES ('a4f3226a-4845-4f41-b1d5-8d4d5146935e', 'stage type 1', 'x1', 'ST1', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0', 'd09f1444-87ec-4197-8ec5-f28f548d11be', 5, true),
-       ('b4f3226a-4845-4f41-b1d5-8d4d5146935e', 'stage type 2', 'x2', 'ST2', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0', 'd09f1444-87ec-4197-8ec5-f28f548d11be', 5, true);
+INSERT INTO stage_type (uuid, display_name, short_code, type, case_type_uuid, acting_team_uuid, deadline, display_stage_order, active)
+VALUES ('a4f3226a-4845-4f41-b1d5-8d4d5146935e', 'stage type 1', 'x1', 'ST1', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0', 'd09f1444-87ec-4197-8ec5-f28f548d11be', 5, 1, true),
+       ('b4f3226a-4845-4f41-b1d5-8d4d5146935e', 'stage type 2', 'x2', 'ST2', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0', 'd09f1444-87ec-4197-8ec5-f28f548d11be', 5, 2, true);
 
 
 INSERT INTO permission (team_uuid, case_type, access_level)
