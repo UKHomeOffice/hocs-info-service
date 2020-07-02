@@ -103,7 +103,9 @@ public class CaseTypeService {
         CaseType caseType = getCaseType(type);
         Set<StageTypeEntity> stageTypes = stageTypeService.getAllStageTypesByCaseType(caseType.getUuid());
         Set<ExemptionDate> exemptions = holidayDateRepository.findAllByCaseType(caseType.getUuid());
-        Map<String, LocalDate> deadlines = stageTypes.stream().filter(st -> st.getDeadline() >= 0).collect(Collectors.toMap(StageTypeEntity::getType, stageType -> Deadline.calculateDeadline(receivedDate, null, stageType.getDeadline(), exemptions)));
+        Map<String, LocalDate> deadlines = stageTypes.stream().filter(st -> st.getDeadline() >= 0)
+                .sorted(Comparator.comparingInt(StageTypeEntity::getDisplayStageOrder))
+                .collect(Collectors.toMap(StageTypeEntity::getType, stageType -> Deadline.calculateDeadline(receivedDate, null, stageType.getDeadline(), exemptions), (oldValue, newValue) -> oldValue, LinkedHashMap::new));
         log.info("Got {} deadlines for caseType {} with received date of {} ", deadlines.size(), type, receivedDate);
         return deadlines;
     }

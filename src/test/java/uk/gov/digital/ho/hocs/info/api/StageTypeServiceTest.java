@@ -39,7 +39,7 @@ public class StageTypeServiceTest {
 
     @Test
     public void shouldGetAllStageTypes() {
-        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,true, team);
+        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true, team);
         Set<StageTypeEntity> stages = new HashSet<StageTypeEntity>() {{
             add(stage);
         }};
@@ -52,7 +52,7 @@ public class StageTypeServiceTest {
 
     @Test
     public void shouldGetTeamForStageType() {
-        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,true,team);
+        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true,team);
 
         when(stageTypeRepository.findByType("STAGE_TYPE")).thenReturn(stage);
 
@@ -63,7 +63,7 @@ public class StageTypeServiceTest {
 
     @Test
     public void shouldGetDeadlineWarningForStageType() {
-        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),9,1,true,team);
+        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),9,1,1,true,team);
         when(stageTypeRepository.findByType("STAGE_TYPE")).thenReturn(stage);
         Set<ExemptionDate> exemptions = Set.of(new ExemptionDate(1L, LocalDate.parse("2020-05-11")), new ExemptionDate(1L, LocalDate.parse("2020-05-12")));
         when(holidayDateRepository.findAllByStageType("STAGE_TYPE")).thenReturn(exemptions);

@@ -43,6 +43,9 @@ public class StageTypeEntity implements Serializable {
     @Column(name = "deadline_warning")
     private int deadlineWarning;
 
+    @Column(name = "display_stage_order")
+    private int displayStageOrder;
+
     @Column(name = "active")
     private boolean active;
 
@@ -50,7 +53,7 @@ public class StageTypeEntity implements Serializable {
     @JoinColumn(name = "acting_team_uuid", referencedColumnName = "uuid")
     private Team team;
 
-    public StageTypeEntity(UUID uuid, String displayName, String shortCode, String type, UUID caseTypeUUID, int deadline, int deadlineWarning, boolean active, Team team) {
+    public StageTypeEntity(UUID uuid, String displayName, String shortCode, String type, UUID caseTypeUUID, int deadline, int deadlineWarning, int displayStageOrder, boolean active, Team team) {
         this.uuid = uuid;
         this.displayName = displayName;
         this.shortCode = shortCode;
@@ -58,6 +61,7 @@ public class StageTypeEntity implements Serializable {
         this.caseTypeUUID = caseTypeUUID;
         this.deadline = deadline;
         this.deadlineWarning = deadlineWarning;
+        this.displayStageOrder = displayStageOrder;
         this.active = active;
         this.team = team;
     }
