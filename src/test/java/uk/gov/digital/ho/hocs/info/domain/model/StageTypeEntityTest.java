@@ -22,6 +22,7 @@ public class StageTypeEntityTest {
                 caseTypeUuid,
                 1,
                 2,
+                1,
                 true,
                 team1
         );

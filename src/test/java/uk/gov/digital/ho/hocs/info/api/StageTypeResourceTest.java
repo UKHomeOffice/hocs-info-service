@@ -35,7 +35,7 @@ public class StageTypeResourceTest {
 
     @Test
     public void shouldGetStageTypes() {
-        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,true,team);
+        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true,team);
         Set<StageTypeEntity> stages = new HashSet<StageTypeEntity>() {{
             add(stage);
         }};
