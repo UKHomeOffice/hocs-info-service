@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.UserDto;
@@ -25,12 +26,15 @@ public class UserServiceTest {
     @Mock
     private KeycloakService keycloakService;
 
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private StageTypeService stageTypeService;
+
     @Mock
     private CaseworkClient caseworkClient;
 
     @Before
     public void setUp() {
-        this.service = new UserService(keycloakService, caseworkClient);
+        this.service = new UserService(keycloakService, caseworkClient, stageTypeService);
     }
 
     UUID userUUID = UUID.randomUUID();
@@ -96,5 +100,34 @@ public class UserServiceTest {
         verifyNoMoreInteractions(keycloakService);
     }
 
+    @Test
+    public void shouldGetUsersForTeamByStage(){
+        UUID caseUUID = UUID.randomUUID();
+        UUID stageUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+        String stageType = "some-stage-type";
+
+
+        Set<UserRepresentation> userRepresentations = new HashSet<>();
+        UserRepresentation user = new UserRepresentation();
+        user.setId(userUUID.toString());
+        user.setFirstName("FirstName");
+        user.setFirstName("LastName");
+        userRepresentations.add(user);
+        UserRepresentation user2 = new UserRepresentation();
+        user2.setId(userUUID.toString());
+        user2.setFirstName("FirstName2");
+        user2.setFirstName("LastName2");
+        userRepresentations.add(user2);
+
+        when(keycloakService.getUsersForTeam(teamUUID)).thenReturn(userRepresentations);
+
+        when(caseworkClient.getStageTypeFromStage(caseUUID, stageUUID)).thenReturn(stageType);
+        when(stageTypeService.getTeamForStageType(stageType).getUuid()).thenReturn(teamUUID);
+        verifyNoMoreInteractions(keycloakService);
+
+        List<UserDto> result = service.getUsersForTeamByStage(caseUUID, stageUUID);
+        assertThat(result.size()).isEqualTo(2);
+    }
 
 }
