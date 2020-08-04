@@ -60,6 +60,10 @@ public class Schema implements Serializable {
     @OrderBy("id")
     private List<SecondaryAction> secondaryActions;
 
+    @Getter
+    @Column(name = "props")
+    private String props;
+
 
     public List<Field> getFields() {
         return fieldScreens.stream()
