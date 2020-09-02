@@ -12,10 +12,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 import uk.gov.digital.ho.hocs.info.domain.repository.FieldRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.SchemaRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -64,7 +61,7 @@ public class SchemaServiceTest {
                 new FieldScreen(schemaUUID, field2.getUuid(), 2L, field2));
 
 
-        Schema testSchema = new Schema(20L, schemaUUID, "type", "schemaTitle", "save", true, "stageType", fields, null);
+        Schema testSchema = new Schema(20L, schemaUUID, "type", "schemaTitle", "save", true, "stageType", fields, null, null);
 
         when(schemaRepository.findExtractOnlySchema()).thenReturn(testSchema);
 
@@ -114,8 +111,8 @@ public class SchemaServiceTest {
                 new FieldScreen(schema2UUID, field3.getUuid(), 1L, field3),
                 new FieldScreen(schema2UUID, field4.getUuid(), 2L, field4));
 
-        Schema schema1 = new Schema(21L, UUID.randomUUID(), "type1", "schemaTitle1", "save", true, "stageType", fields1, null);
-        Schema schema2 = new Schema(22L, UUID.randomUUID(), "type2", "schemaTitle2", "save", true, "stageType", fields2, null);
+        Schema schema1 = new Schema(21L, UUID.randomUUID(), "type1", "schemaTitle1", "save", true, "stageType", fields1, null, null);
+        Schema schema2 = new Schema(22L, UUID.randomUUID(), "type2", "schemaTitle2", "save", true, "stageType", fields2, null, null);
 
         when(schemaRepository.findAllActiveFormsByCaseType(caseType)).thenReturn(Set.of(schema1, schema2));
 
@@ -146,7 +143,7 @@ public class SchemaServiceTest {
     public void getSchemaByType() {
         String type = "TEST_TYPE";
         UUID uuid = UUID.randomUUID();
-        Schema testSchema = new Schema(1L, uuid, type, "schemaTitle", "save", true, "stageType", null, null);
+        Schema testSchema = new Schema(1L, uuid, type, "schemaTitle", "save", true, "stageType", null, null, null);
 
         when(schemaRepository.findByType(type)).thenReturn(testSchema);
 
@@ -173,4 +170,19 @@ public class SchemaServiceTest {
 
         service.getSchemaByType(type);
     }
+
+    @Test
+    public void getAllSchemasForCaseTypeAndStage() {
+
+        String stages = "STAGE_1,STAGE_2";
+        String caseType = "caseType";
+
+        List<String> expectedStagesList = new ArrayList<>();
+        expectedStagesList.add("STAGE_1");
+        expectedStagesList.add("STAGE_2");
+
+        service.getAllSchemasForCaseTypeAndStage(caseType, stages);
+        verify(schemaRepository).findAllActiveFormsByCaseTypeAndStages(caseType, expectedStagesList);
+    }
+
 }

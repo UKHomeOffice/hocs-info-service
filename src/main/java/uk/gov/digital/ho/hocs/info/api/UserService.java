@@ -21,11 +21,13 @@ public class UserService {
 
     private KeycloakService keycloakService;
     private CaseworkClient caseworkClient;
+    private StageTypeService stageTypeService;
 
     @Autowired
-    public UserService(KeycloakService keycloakService, CaseworkClient caseworkClient) {
+    public UserService(KeycloakService keycloakService, CaseworkClient caseworkClient, StageTypeService stageTypeService) {
         this.keycloakService = keycloakService;
         this.caseworkClient = caseworkClient;
+        this.stageTypeService = stageTypeService;
     }
 
     @Cacheable("users")
@@ -56,7 +58,8 @@ public class UserService {
     }
 
     public List<UserDto> getUsersForTeamByStage(UUID caseUUID, UUID stageUUID) {
-        UUID teamUUID = caseworkClient.getStageTeam(caseUUID, stageUUID);
+        String stageType = caseworkClient.getStageTypeFromStage(caseUUID, stageUUID);
+        UUID teamUUID = stageTypeService.getTeamForStageType(stageType).getUuid();
         return getUsersForTeam(teamUUID);
     }
 

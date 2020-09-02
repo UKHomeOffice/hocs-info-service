@@ -11,6 +11,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.domain.model.StageTypeEntity;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -34,7 +35,7 @@ public class StageTypeResourceTest {
 
     @Test
     public void shouldGetStageTypes() {
-        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,true,team);
+        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true,team);
         Set<StageTypeEntity> stages = new HashSet<StageTypeEntity>() {{
             add(stage);
         }};
@@ -59,6 +60,18 @@ public class StageTypeResourceTest {
         ResponseEntity<TeamDto> result = service.getTeamForStageType("STAGE_TYPE");
         assertThat(result.getBody().getUuid()).isEqualTo(team.getUuid());
         assertThat(result.getBody().getDisplayName()).isEqualTo("Team1");
+    }
 
+    @Test
+    public void shouldGetDeadlineWarningByStage() {
+        LocalDate receivedDate = LocalDate.of(2020,6,5);
+        LocalDate caseDeadlineWarningDate = LocalDate.of(2020,6,7);
+        LocalDate deadline = LocalDate.of(2020,6,9);
+        when(stageTypeService.getDeadlineWarningForStageType("STAGE_TYPE",receivedDate,caseDeadlineWarningDate)).thenReturn(deadline);
+
+        ResponseEntity<LocalDate> response = service.getDeadlineWarningByStage("STAGE_TYPE",receivedDate.toString(),caseDeadlineWarningDate.toString());
+
+        assertThat(response).isNotNull();
+        assertThat(response.getBody()).isEqualTo(deadline);
     }
 }

@@ -10,6 +10,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 import uk.gov.digital.ho.hocs.info.domain.model.DocumentTag;
 import uk.gov.digital.ho.hocs.info.domain.model.ExemptionDate;
+import uk.gov.digital.ho.hocs.info.domain.model.StageTypeEntity;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
@@ -151,6 +152,39 @@ public class CaseTypeServiceTest {
         caseTypeService.createCaseType(caseType);
 
         verify(caseTypeRepository, times(1)).save(any(CaseType.class));
+    }
+
+    @Test
+    public void shouldGetDeadlineWarningForCaseType(){
+        LocalDate receivedDate = LocalDate.of(2020,5,8); // Friday
+        CaseType caseType = new CaseType();
+        when(caseTypeRepository.findByType(CASE_TYPE)).thenReturn(caseType);
+        Set<ExemptionDate> exemptions = Set.of(new ExemptionDate(1L, LocalDate.parse("2020-05-11")), new ExemptionDate(1L, LocalDate.parse("2020-05-12")));
+        when(holidayDateRepository.findAllByCaseType(caseType.getUuid())).thenReturn(exemptions);
+
+        LocalDate response = caseTypeService.getDeadlineWarningForCaseType(CASE_TYPE,receivedDate,1);
+
+        assertThat(response).isEqualTo(LocalDate.of(2020,5,13));
+        verify(caseTypeRepository).findByType(CASE_TYPE);
+        verifyNoMoreInteractions(caseTypeRepository);
+    }
+
+    @Test
+    public void shoudGetAllStageDeadlinesForCaseType(){
+        CaseType caseType = new CaseType();
+        when(caseTypeRepository.findByType(CASE_TYPE)).thenReturn(caseType);
+        Set<StageTypeEntity> stageTypes = new HashSet<>();
+        stageTypes.add(new StageTypeEntity(1L, UUID.randomUUID(), "stage 8", "111","STAGE_TYPE_8", UUID.randomUUID(),8,8,8,true,null));
+        stageTypes.add(new StageTypeEntity(1L, UUID.randomUUID(), "stage 2", "111","STAGE_TYPE_2", UUID.randomUUID(),2,2,2,true,null));
+        when(stageTypeService.getAllStageTypesByCaseType(caseType.getUuid())).thenReturn(stageTypes);
+
+        Map<String, LocalDate> response = caseTypeService.getAllStageDeadlinesForCaseType(CASE_TYPE, LocalDate.now());
+
+        assertThat(response.size()).isEqualTo(2);
+        Iterator<Map.Entry<String, LocalDate>> iterator = response.entrySet().iterator();
+        Map.Entry<String, LocalDate> first = iterator.next();
+        Map.Entry<String, LocalDate> second = iterator.next();
+        assertThat(first.getValue()).isBefore(second.getValue());
     }
 
     @Test

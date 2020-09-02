@@ -41,14 +41,14 @@ public class CaseworkClient {
         }
     }
 
-    public UUID getStageTeam(UUID caseUUID, UUID stageUUID) {
-        ResponseEntity<UUID> response = restHelper.get(serviceBaseURL, String.format("/case/%s/stage/%s/team", caseUUID, stageUUID), UUID.class);
+    public String getStageTypeFromStage(UUID caseUUID, UUID stageUUID) {
+        ResponseEntity<String> response = restHelper.get(serviceBaseURL, String.format("/case/%s/stage/%s/type", caseUUID, stageUUID), String.class);
 
         if (response.getStatusCodeValue() == 200) {
-            log.info("Got Team for stage: {}", stageUUID);
+            log.info("Got Type for stage: {}", stageUUID);
             return response.getBody();
         } else {
-            throw new ApplicationExceptions.EntityNotFoundException("Could not get Team for stage %s; response: %s", stageUUID, response.getStatusCodeValue());
+            throw new ApplicationExceptions.EntityNotFoundException("Could not get Type for stage %s; response: %s", stageUUID, response.getStatusCodeValue());
         }
     }
 

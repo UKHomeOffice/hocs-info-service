@@ -19,8 +19,8 @@ public class SearchField implements Serializable {
     private Long id;
 
     @Getter
-    @Column(name = "parent_system_name")
-    private String parentSystemName;
+    @Column(name = "profile_name")
+    private String profileName;
 
     @Getter
     @Column(name = "name")
