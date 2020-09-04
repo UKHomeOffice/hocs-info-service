@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.domain.entity.dto.EntityDto;
 import uk.gov.digital.ho.hocs.info.domain.entity.dto.GetCaseSummaryFieldsResponse;
@@ -75,6 +76,22 @@ public class EntityResourceTest {
         assertThat(result.getBody().get(1).getData()).isEqualTo(data2);
 
         verify(entityService).getByEntityListName(listName);
+        verifyNoMoreInteractions(entityService);
+    }
+
+    @Test
+    public void createEntity() {
+        String listName = "L1";
+        String simpleName = "name";
+        String uuid = UUID.randomUUID().toString();
+        String data = "data";
+        EntityDto entityDto = new EntityDto(simpleName, uuid, data);
+
+        ResponseEntity<String> response = entityResource.createEntity(listName, entityDto);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        verify(entityService).createEntity(listName, entityDto);
         verifyNoMoreInteractions(entityService);
     }
 

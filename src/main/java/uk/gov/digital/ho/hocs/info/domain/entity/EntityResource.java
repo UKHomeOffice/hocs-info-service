@@ -4,9 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.domain.entity.dto.EntityDto;
 import uk.gov.digital.ho.hocs.info.domain.entity.dto.GetCaseSummaryFieldsResponse;
 
@@ -34,10 +32,16 @@ class EntityResource {
     }
 
     @GetMapping(value = "/entity/list/{name}", produces = APPLICATION_JSON_UTF8_VALUE)
-    @Cacheable(value = "getEntitiesForListName", unless = "#result == null", key = "#name")
+    @Cacheable(value = "getEntitiesForListName", unless = "#result == null || #name == 'MPAM_CAMPAIGNS'", key = "#name")
     public ResponseEntity<List<EntityDto>> getEntitiesForListName(@PathVariable String name) {
         List<Entity> entities = entityService.getByEntityListName(name);
         return ResponseEntity.ok(entities.stream().map(EntityDto::from).collect(Collectors.toList()));
+    }
+
+    @PostMapping(value = "/entity/list/{listName}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity createEntity(@PathVariable String listName, @RequestBody EntityDto entityDto) {
+        entityService.createEntity(listName, entityDto);
+        return ResponseEntity.ok().build();
     }
 
 
