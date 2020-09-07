@@ -38,9 +38,21 @@ class EntityResource {
         return ResponseEntity.ok(entities.stream().map(EntityDto::from).collect(Collectors.toList()));
     }
 
+    @GetMapping(value = "/entity/{uuid}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<EntityDto> getEntity(@PathVariable String uuid) {
+        Entity entity = entityService.getEntity(uuid);
+        return ResponseEntity.ok(EntityDto.from(entity));
+    }
+
     @PostMapping(value = "/entity/list/{listName}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity createEntity(@PathVariable String listName, @RequestBody EntityDto entityDto) {
+    public ResponseEntity<String> createEntity(@PathVariable String listName, @RequestBody EntityDto entityDto) {
         entityService.createEntity(listName, entityDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(value = "/entity/list/{listName}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> updateEntity(@PathVariable String listName, @RequestBody EntityDto entityDto) {
+        entityService.updateEntity(listName, entityDto);
         return ResponseEntity.ok().build();
     }
 

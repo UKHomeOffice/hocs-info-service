@@ -95,4 +95,43 @@ public class EntityResourceTest {
         verifyNoMoreInteractions(entityService);
     }
 
+    @Test
+    public void getEntity() {
+        String testUUID = UUID.randomUUID().toString();
+
+        String simpleName = "name123";
+        String data = "{ title: 'Title 321' }";
+        UUID uuid = UUID.randomUUID();
+        UUID listUuid = UUID.randomUUID();
+        Entity entity = new Entity(1L, uuid, simpleName, data, listUuid, true);
+        when(entityService.getEntity(testUUID)).thenReturn(entity);
+
+        ResponseEntity<EntityDto> response = entityResource.getEntity(testUUID);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getUuid()).isEqualTo(uuid.toString());
+        assertThat(response.getBody().getSimpleName()).isEqualTo(simpleName);
+        assertThat(response.getBody().getData()).isEqualTo(data);
+
+        verify(entityService).getEntity(testUUID);
+        verifyNoMoreInteractions(entityService);
+    }
+
+    @Test
+    public void updateEntity() {
+        String listName = "L1";
+        String simpleName = "name";
+        String uuid = UUID.randomUUID().toString();
+        String data = "data";
+        EntityDto entityDto = new EntityDto(simpleName, uuid, data);
+
+        ResponseEntity<String> response = entityResource.updateEntity(listName, entityDto);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        verify(entityService).updateEntity(listName, entityDto);
+        verifyNoMoreInteractions(entityService);
+    }
+
 }
