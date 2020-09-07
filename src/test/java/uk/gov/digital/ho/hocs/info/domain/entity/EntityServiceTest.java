@@ -169,4 +169,60 @@ public class EntityServiceTest {
 
     }
 
+    @Test
+    public void getEntity(){
+        UUID testUUID = UUID.randomUUID();
+
+        entityService.getEntity(testUUID.toString());
+
+        verify(entityRepository).findByUuid(testUUID);
+        verifyNoMoreInteractions(entityRepository);
+    }
+
+    @Test
+    public void updateEntity() {
+        String listName = "L1";
+        String simpleName = "name";
+        UUID uuid = UUID.randomUUID();
+        UUID listUUID = UUID.randomUUID();
+        String data = "data";
+        EntityDto entityDto = new EntityDto(simpleName, uuid.toString(), data);
+
+        Entity mockEntity = mock(Entity.class);
+
+        when(mockEntity.getEntityListUUID()).thenReturn(listUUID);
+        when(entityRepository.findByUuid(uuid)).thenReturn(mockEntity);
+        when(entityRepository.findEntityListUUIDBySimpleName(listName)).thenReturn(listUUID.toString());
+
+        entityService.updateEntity(listName, entityDto);
+
+        verify(mockEntity).getEntityListUUID();
+        verify(mockEntity).update(entityDto);
+        verify(entityRepository).save(mockEntity);
+        verify(entityRepository).findByUuid(uuid);
+        verify(entityRepository).findEntityListUUIDBySimpleName(listName);
+        verifyNoMoreInteractions(entityRepository);
+
+    }
+
+    @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
+    public void updateEntity_listMismatch() {
+        String listName = "L1";
+        String simpleName = "name";
+        UUID uuid = UUID.randomUUID();
+        UUID listUUID = UUID.randomUUID();
+        String data = "data";
+        EntityDto entityDto = new EntityDto(simpleName, uuid.toString(), data);
+
+        Entity mockEntity = mock(Entity.class);
+
+        when(mockEntity.getEntityListUUID()).thenReturn(UUID.randomUUID());
+        when(entityRepository.findByUuid(uuid)).thenReturn(mockEntity);
+        when(entityRepository.findEntityListUUIDBySimpleName(listName)).thenReturn(listUUID.toString());
+
+        entityService.updateEntity(listName, entityDto);
+
+
+    }
+
 }

@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.domain.entity;
 
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,25 @@ public class EntityService {
         Entity newEntity = new Entity(null, UUID.randomUUID(), entityDto.getSimpleName(), entityDto.getData(), UUID.fromString(entityListUUID), true);
 
         entityRepository.save(newEntity);
+
+    }
+
+    public Entity getEntity(String uuid) {
+        return entityRepository.findByUuid(UUID.fromString(uuid));
+    }
+
+    public void updateEntity(String listName, EntityDto entityDto) {
+        String entityListUUID = entityRepository.findEntityListUUIDBySimpleName(listName);
+
+        Entity entity = entityRepository.findByUuid(UUID.fromString(entityDto.getUuid()));
+
+        if (StringUtils.isNotEmpty(entityListUUID) && entity.getEntityListUUID().equals(UUID.fromString(entityListUUID))) {
+            entity.update(entityDto);
+            entityRepository.save(entity);
+        } else {
+            throw new ApplicationExceptions.EntityNotFoundException("Entity %s not found for entity list: %s, cannot update! ", entityDto.getUuid(), listName);
+        }
+
 
     }
 }

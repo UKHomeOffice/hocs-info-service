@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.domain.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import uk.gov.digital.ho.hocs.info.domain.entity.dto.EntityDto;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -39,4 +40,7 @@ public class Entity {
     @Column(name = "active")
     private boolean active;
 
+    public void update(EntityDto entityDto) {
+        this.data = entityDto.getData();
+    }
 }
