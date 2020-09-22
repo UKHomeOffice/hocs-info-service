@@ -115,6 +115,12 @@ public class TeamService {
         }
     }
 
+    public Set<Team> getTeamsByTopic(UUID topicUUID) {
+        log.debug("Getting Team by Topic {}", topicUUID);
+        Set<Team> teams = teamRepository.findTeamsByTopicUuid(topicUUID);
+        return teams;
+    }
+
     public Team getTeamByStageAndText(String stageType, String text) {
         log.debug("Getting Team for Stage {} and Text {}", stageType, text);
         Team team = teamRepository.findByStageAndText(stageType, text);

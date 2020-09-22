@@ -8,14 +8,17 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
+import uk.gov.digital.ho.hocs.info.domain.model.TopicTeam;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TeamLinkResourceTest {
+public class TopicTeamResourceTest {
 
     @Mock
     private TopicTeamService topicTeamService;
@@ -25,6 +28,17 @@ public class TeamLinkResourceTest {
     @Before
     public void setUp() {
         topicTeamResource = new TopicTeamResource(topicTeamService);
+    }
+
+    @Test
+    public void shouldGetTopicsByCaseTypeWithTeam() {
+        when(topicTeamService.getTopicsByCaseTypeWithTeams("TEST")).thenReturn(new HashSet<TopicTeam>());
+
+        ResponseEntity<Set<TopicTeamDto>> response = topicTeamResource.getTopicsByCaseTypeWithTeams("TEST");
+
+        verify(topicTeamService).getTopicsByCaseTypeWithTeams("TEST");
+        verifyNoMoreInteractions(topicTeamService);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test

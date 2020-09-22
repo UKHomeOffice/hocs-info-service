@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
@@ -235,6 +236,20 @@ public class TeamResourceTest {
         ResponseEntity result = teamResource.updateTeamPermissions(teamUUID.toString(), request);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(teamService, times(1)).updateTeamPermissions(teamUUID, permissionDtoSet);
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
+    public void shouldGetTeamsByTopic() {
+        UUID topicUuid = UUID.randomUUID();
+        Set<Team> teams = Set.of(new Team(UUID.randomUUID().toString(), true));
+        when(teamService.getTeamsByTopic(topicUuid)).thenReturn(teams);
+
+        ResponseEntity<Set<TeamDto>> response = teamResource.getTeamsByTopic(topicUuid);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().iterator().next().getUuid()).isEqualTo(teams.iterator().next().getUuid());
+        verify(teamService).getTeamsByTopic(topicUuid);
         verifyNoMoreInteractions(teamService);
     }
 

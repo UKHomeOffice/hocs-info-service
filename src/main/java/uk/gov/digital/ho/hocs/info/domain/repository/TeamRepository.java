@@ -29,4 +29,7 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
 
     @Query(value = "SELECT t.* FROM team t WHERE t.unit_uuid = ?1 and t.active = TRUE", nativeQuery = true)
     Set<Team> findActiveTeamsByUnitUuid(UUID unitUUID);
+
+    @Query(value = "SELECT t.* FROM team t INNER JOIN team_link tl ON tl.responsible_team_uuid=t.uuid INNER JOIN topic ON cast(topic.uuid as text)=tl.link_value WHERE tl.link_type='TOPIC' AND topic.uuid=?1 AND topic.active=TRUE AND t.active=TRUE", nativeQuery = true)
+    Set<Team> findTeamsByTopicUuid(UUID topicUUID);
 }
