@@ -8,16 +8,21 @@ import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.TeamLink;
+import uk.gov.digital.ho.hocs.info.domain.model.Topic;
+import uk.gov.digital.ho.hocs.info.domain.model.TopicTeam;
 import uk.gov.digital.ho.hocs.info.domain.repository.TeamLinkRepository;
+import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
+import uk.gov.digital.ho.hocs.info.domain.repository.TopicRepository;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
 public class TopicTeamService {
 
     private final TeamLinkRepository teamLinkRepository;
+    private final TopicRepository topicRepository;
+    private final TeamRepository teamRepository;
     private final TopicService topicService;
     private final TeamService teamService;
     private final CaseTypeService caseTypeService;
@@ -26,17 +31,36 @@ public class TopicTeamService {
 
     @Autowired
     public TopicTeamService(TeamLinkRepository teamLinkRepository,
+                            TopicRepository topicRepository,
+                            TeamRepository teamRepository,
                             TopicService topicService,
                             TeamService teamService,
                             CaseTypeService caseTypeService,
                             StageTypeService stageTypeService,
                             AuditClient auditClient) {
         this.topicService = topicService;
+        this.topicRepository = topicRepository;
+        this.teamRepository = teamRepository;
         this.teamLinkRepository = teamLinkRepository;
         this.teamService = teamService;
         this.caseTypeService = caseTypeService;
         this.stageTypeService = stageTypeService;
         this.auditClient = auditClient;
+    }
+
+    public Set<TopicTeam> getTopicsByCaseTypeWithTeams(String caseType) {
+        log.debug("Requesting all topics for case type {}", caseType);
+        List<Topic> topics = topicRepository.findTopicsByCaseType(caseType);
+        Set<TopicTeam> topicTeams = new HashSet<>();
+        topics.forEach(topic -> {
+            Set<TeamLink> teamLinks = teamLinkRepository.findAllByLinkValueAndLinkType(topic.getUuid().toString(), "TOPIC");
+            Set<Team> teams = new HashSet<>();
+            teamLinks.forEach(teamLink -> {
+                teams.add(teamRepository.findByUuid(teamLink.getResponsibleTeamUUID()));
+            });
+            topicTeams.add(new TopicTeam(topic.getUuid(), topic.getDisplayName(), teams));
+        });
+        return topicTeams;
     }
 
     public void addTeamToTopic(UUID topicUUID, UUID teamUUID, AddTeamToTopicDto request) {

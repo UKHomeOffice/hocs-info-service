@@ -121,6 +121,12 @@ public class TeamResource {
         return ResponseEntity.ok(TeamDto.from(team));
     }
 
+    @GetMapping(value = "/teams/topic/{topicUUID}")
+    public ResponseEntity<Set<TeamDto>> getTeamsByTopic(@PathVariable UUID topicUUID) {
+        Set<Team> teams = teamService.getTeamsByTopic(topicUUID);
+        return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
+    }
+
     @GetMapping(value = "/team/stage/{stageType}/text/{text}")
     public ResponseEntity<TeamDto> getActiveTeamsByLinkValue(@PathVariable String stageType, @PathVariable String text) {
         Team team = teamService.getTeamByStageAndText(stageType, text);

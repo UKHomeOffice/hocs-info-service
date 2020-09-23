@@ -193,6 +193,17 @@ public class TeamServiceTest {
     }
 
     @Test
+    public void shouldGetTeamsByTopic() {
+        UUID topicUuid = UUID.randomUUID();
+        Set<Team> teams = Set.of(new Team(UUID.randomUUID().toString(), true));
+        when(teamRepository.findTeamsByTopicUuid(topicUuid)).thenReturn(teams);
+
+        Set<Team> result = teamService.getTeamsByTopic(topicUuid);
+
+        assertThat(result).isEqualTo(teams);
+    }
+
+    @Test
     public void shouldGetTeamByStageAndText() {
         Team team = new Team(UUID.randomUUID().toString(), true);
         when(teamRepository.findByStageAndText("stageType", "text")).thenReturn(team);
