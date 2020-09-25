@@ -3,10 +3,13 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
+import uk.gov.digital.ho.hocs.info.api.dto.UpdateStandardLineDto;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @Entity
@@ -40,7 +43,7 @@ public class StandardLine implements Serializable {
     @Column(name = "expires")
     private LocalDateTime expires;
 
-    public StandardLine(String displayName, UUID topicUUID, LocalDateTime expires){
+    public StandardLine(String displayName, UUID topicUUID, LocalDateTime expires) {
         this.uuid = UUID.randomUUID();
         this.displayName = displayName;
         this.topicUUID = topicUUID;
@@ -49,5 +52,15 @@ public class StandardLine implements Serializable {
 
     public void expire() {
         this.expires = LocalDateTime.now();
+    }
+
+    public void update(UpdateStandardLineDto request) {
+        if (StringUtils.hasText(request.getDisplayName())) {
+            this.displayName = request.getDisplayName();
+        }
+
+        if (request.getExpires() != null) {
+            this.expires = LocalDateTime.of(request.getExpires(), LocalTime.MAX.minusHours(1));
+        }
     }
 }

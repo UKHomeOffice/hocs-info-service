@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.api.dto.UpdateStandardLineDto;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.documentclient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.client.documentclient.model.ManagedDocumentType;
@@ -14,6 +15,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -49,7 +51,7 @@ public class StandardLineService {
             caseworkClient.clearCachedStandardLineForTopic(topicUUID);
         }
 
-        StandardLine newStandardLine = new StandardLine(displayName, topicUUID, LocalDateTime.of(expires, LocalTime.MAX));
+        StandardLine newStandardLine = new StandardLine(displayName, topicUUID, LocalDateTime.of(expires, LocalTime.MAX.minusHours(1)));
         UUID documentUUID = documentClient.createDocument(newStandardLine.getUuid(), displayName, s3URL, ManagedDocumentType.STANDARD_LINE);
         newStandardLine.setDocumentUUID(documentUUID);
         standardLineRepository.save(newStandardLine);
@@ -64,6 +66,13 @@ public class StandardLineService {
         return standardLines;
     }
 
+    List<StandardLine> getAllStandardLines() {
+        log.debug("Getting All Standard Lines");
+        List<StandardLine> standardLines = standardLineRepository.findAllStandardLines();
+        log.info("Got {} Standard Lines", standardLines.size());
+        return standardLines;
+    }
+
     StandardLine getStandardLineForTopic(UUID topicUUID) {
         log.debug("Getting Standard Line for Topic {} ", topicUUID);
         LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
@@ -74,5 +83,37 @@ public class StandardLineService {
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("Standard Line for Topic: %s, not found!", topicUUID);
         }
+    }
+
+    public void expireStandardLine(UUID standardLineUuid) {
+        log.debug("About to expire standard line {} ", standardLineUuid);
+        StandardLine standardLine = standardLineRepository.findByUuid(standardLineUuid);
+        standardLine.expire();
+        standardLineRepository.save(standardLine);
+        log.debug("Standard line expired {} ", standardLineUuid);
+    }
+
+    public void deleteStandardLine(UUID standardLineUuid) {
+        log.debug("About to delete standard line {} ", standardLineUuid);
+        StandardLine standardLine = standardLineRepository.findByUuid(standardLineUuid);
+        standardLineRepository.delete(standardLine);
+        documentClient.deleteDocument(standardLine.getDocumentUUID());
+        caseworkClient.clearCachedStandardLineForTopic(standardLine.getTopicUUID());
+        log.debug("Standard line deleted {} ", standardLineUuid);
+    }
+
+    public StandardLine getStandardLine(UUID standardLineUuid) {
+        log.debug("About to get standard line {} ", standardLineUuid);
+        return standardLineRepository.findByUuid(standardLineUuid);
+
+    }
+
+    public void updateStandardLine(UUID standardLineUuid, UpdateStandardLineDto request) {
+        log.debug("About to update standard line {} ", standardLineUuid);
+        StandardLine standardLine = standardLineRepository.findByUuid(standardLineUuid);
+        standardLine.update(request);
+        standardLineRepository.save(standardLine);
+        caseworkClient.clearCachedStandardLineForTopic(standardLine.getTopicUUID());
+        log.debug("Standard line updated {} ", standardLineUuid);
     }
 }

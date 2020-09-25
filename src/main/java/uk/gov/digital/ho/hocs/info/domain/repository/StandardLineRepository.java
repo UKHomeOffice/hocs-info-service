@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import uk.gov.digital.ho.hocs.info.domain.model.StandardLine;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,4 +18,9 @@ public interface StandardLineRepository extends CrudRepository<StandardLine, Str
 
     @Query(value = "SELECT sl.* FROM standard_line sl WHERE sl.expires > ?1", nativeQuery = true)
     Set<StandardLine> findStandardLinesByExpires(LocalDateTime currentDate);
+
+    @Query(value = "SELECT sl.* FROM standard_line sl, topic t where sl.topic_uuid = t.uuid order by t.display_name, sl.display_name ", nativeQuery = true)
+    List<StandardLine> findAllStandardLines();
+
+    StandardLine findByUuid(UUID uuid);
 }
