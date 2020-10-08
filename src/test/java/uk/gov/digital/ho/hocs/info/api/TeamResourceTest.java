@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
+import uk.gov.digital.ho.hocs.info.api.data.SimpleMapItem;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
@@ -15,6 +15,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.Unit;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -44,7 +45,7 @@ public class TeamResourceTest {
 
         ResponseEntity result = teamResource.addUserToGroup(userUUID.toString(), teamUUID.toString());
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(teamService, times(1)).addUserToTeam(userUUID, teamUUID);
+        verify(teamService).addUserToTeam(userUUID, teamUUID);
         verifyNoMoreInteractions(teamService);
     }
 
@@ -53,7 +54,7 @@ public class TeamResourceTest {
         doNothing().when(teamService).deleteTeam(teamUUID);
         ResponseEntity result = teamResource.deleteTeam(teamUUID.toString());
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(teamService, times(1)).deleteTeam(teamUUID);
+        verify(teamService).deleteTeam(teamUUID);
         verifyNoMoreInteractions(teamService);
     }
 
@@ -75,7 +76,7 @@ public class TeamResourceTest {
         ResponseEntity<Set<TeamDto>> result = teamResource.getTeamsForUnit(unitUUID.toString());
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody().size()).isEqualTo(2);
-        verify(teamService, times(1)).getTeamsForUnit(unitUUID);
+        verify(teamService).getTeamsForUnit(unitUUID);
         verifyNoMoreInteractions(teamService);
     }
 
@@ -87,7 +88,7 @@ public class TeamResourceTest {
         ResponseEntity<Set<TeamDto>> result = teamResource.getTeamsForUser(userUUID.toString());
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody().size()).isEqualTo(2);
-        verify(teamService, times(1)).getTeamsForUser(userUUID);
+        verify(teamService).getTeamsForUser(userUUID);
         verifyNoMoreInteractions(teamService);
     }
 
@@ -99,7 +100,7 @@ public class TeamResourceTest {
         ResponseEntity<Set<TeamDto>> result = teamResource.getActiveTeams();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody().size()).isEqualTo(2);
-        verify(teamService, times(1)).getAllActiveTeams();
+        verify(teamService).getAllActiveTeams();
         verifyNoMoreInteractions(teamService);
     }
 
@@ -112,7 +113,7 @@ public class TeamResourceTest {
         ResponseEntity<TeamDto> result = teamResource.getTeam(unitUUID.toString(), team.getUuid().toString());
         assertThat(result.getBody().getUuid()).isEqualTo(team.getUuid());
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(teamService, times(1)).getTeam(team.getUuid());
+        verify(teamService).getTeam(team.getUuid());
         verifyNoMoreInteractions(teamService);
     }
 
@@ -123,7 +124,7 @@ public class TeamResourceTest {
         when(teamService.getTeam(teamUUID)).thenThrow(new ApplicationExceptions.EntityNotFoundException(""));
 
         teamResource.getTeam(unitUUID.toString(), teamUUID.toString());
-        verify(teamService, times(1)).getTeam(teamUUID);
+        verify(teamService).getTeam(teamUUID);
         verifyNoMoreInteractions(teamService);
     }
 
@@ -187,29 +188,29 @@ public class TeamResourceTest {
         ResponseEntity result = teamResource.createUpdateTeam(unitUUID.toString(), teamDto);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        verify(teamService, times(1)).createTeam(teamDto, unitUUID);
+        verify(teamService).createTeam(teamDto, unitUUID);
         verifyNoMoreInteractions(teamService);
     }
 
     @Test
-    public void shouldUpdateTeamName(){
+    public void shouldUpdateTeamName() {
         UUID teamUUID = UUID.randomUUID();
         UpdateTeamNameRequest request = new UpdateTeamNameRequest("The Team");
         ResponseEntity result = teamResource.updateTeamName(teamUUID.toString(), request);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        verify(teamService, times(1)).updateTeamName(teamUUID, request.getDisplayName());
+        verify(teamService).updateTeamName(teamUUID, request.getDisplayName());
         verifyNoMoreInteractions(teamService);
     }
 
     @Test
-    public void shouldUpdateTeamLetterName(){
+    public void shouldUpdateTeamLetterName() {
         UUID teamUUID = UUID.randomUUID();
         UpdateTeamLetterNameRequest request = new UpdateTeamLetterNameRequest("Bob");
         ResponseEntity result = teamResource.updateTeamLetterName(teamUUID.toString(), request);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        verify(teamService, times(1)).updateTeamLetterName(teamUUID, request.getLetterName());
+        verify(teamService).updateTeamLetterName(teamUUID, request.getLetterName());
         verifyNoMoreInteractions(teamService);
     }
 
@@ -220,7 +221,7 @@ public class TeamResourceTest {
 
         ResponseEntity result = teamResource.addTeamToUnit(unitUUID.toString(), teamUUID.toString());
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(teamService, times(1)).moveToNewUnit(unitUUID, teamUUID);
+        verify(teamService).moveToNewUnit(unitUUID, teamUUID);
         verifyNoMoreInteractions(teamService);
     }
 
@@ -235,7 +236,7 @@ public class TeamResourceTest {
 
         ResponseEntity result = teamResource.updateTeamPermissions(teamUUID.toString(), request);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(teamService, times(1)).updateTeamPermissions(teamUUID, permissionDtoSet);
+        verify(teamService).updateTeamPermissions(teamUUID, permissionDtoSet);
         verifyNoMoreInteractions(teamService);
     }
 
@@ -254,7 +255,7 @@ public class TeamResourceTest {
     }
 
     @Test
-    public void shouldGetActiveTeamsByLinkValue(){
+    public void shouldGetActiveTeamsByLinkValue() {
         Team team = new Team("Team1", true);
         when(teamService.getTeamByStageAndText("stageType", "text")).thenReturn(team);
 
@@ -277,7 +278,7 @@ public class TeamResourceTest {
 
         ResponseEntity result = teamResource.deleteTeamPermissions(teamUUID.toString(), request);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(teamService, times(1)).deleteTeamPermissions(teamUUID, permissionDtoSet);
+        verify(teamService).deleteTeamPermissions(teamUUID, permissionDtoSet);
         verifyNoMoreInteractions(teamService);
     }
 
@@ -289,15 +290,31 @@ public class TeamResourceTest {
     }
 
     @Test
-    public void shouldRemoveUserFromTeam()
-    {
+    public void shouldRemoveUserFromTeam() {
         UUID teamUUID = UUID.randomUUID();
         UUID userUUID = UUID.randomUUID();
 
-        doNothing().when(teamService).removeUserFromTeam(userUUID, teamUUID);
         ResponseEntity result = teamResource.removeUserFromTeam(userUUID.toString(), teamUUID.toString());
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(teamService, times(1)).removeUserFromTeam(userUUID, teamUUID);
+        verify(teamService).removeUserFromTeam(userUUID, teamUUID);
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
+    public void getTopicToTeamMappingByStageType() {
+        String testStageString = "STAGE_321";
+
+        List<SimpleMapItem> mockItems = List.of(mock(SimpleMapItem.class), mock(SimpleMapItem.class));
+        when(teamService.getTopicToTeamMappingByStageType(testStageString)).thenReturn(mockItems);
+
+        ResponseEntity<List<SimpleMapItem>> response = teamResource.getTopicToTeamMappingByStageType(testStageString);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().size()).isEqualTo(2);
+
+        verify(teamService).getTopicToTeamMappingByStageType(testStageString);
         verifyNoMoreInteractions(teamService);
     }
 }

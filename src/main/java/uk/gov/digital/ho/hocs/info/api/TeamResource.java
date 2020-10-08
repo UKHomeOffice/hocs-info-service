@@ -2,9 +2,11 @@ package uk.gov.digital.ho.hocs.info.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uk.gov.digital.ho.hocs.info.api.data.SimpleMapItem;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -25,7 +27,7 @@ public class TeamResource {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(value = "/unit/{unitUUID}/teams" )
+    @PostMapping(value = "/unit/{unitUUID}/teams")
     public ResponseEntity<TeamDto> createUpdateTeam(@PathVariable String unitUUID, @RequestBody TeamDto team) {
         Team createdTeam = teamService.createTeam(team, UUID.fromString(unitUUID));
         return ResponseEntity.ok(TeamDto.from(createdTeam));
@@ -57,7 +59,7 @@ public class TeamResource {
 
     @PutMapping(value = "/team/{teamUUID}/permissions")
     public ResponseEntity updateTeamPermissions(@PathVariable String teamUUID, @RequestBody UpdateTeamPermissionsRequest team) {
-        teamService.updateTeamPermissions(UUID.fromString(teamUUID),team.getPermissions());
+        teamService.updateTeamPermissions(UUID.fromString(teamUUID), team.getPermissions());
         return ResponseEntity.ok().build();
     }
 
@@ -119,6 +121,11 @@ public class TeamResource {
     public ResponseEntity<TeamDto> getActiveTeams(@PathVariable UUID caseUUID, @PathVariable UUID topicUUID, @PathVariable String stageType) {
         Team team = teamService.getTeamByTopicAndStage(caseUUID, topicUUID, stageType);
         return ResponseEntity.ok(TeamDto.from(team));
+    }
+
+    @GetMapping(value = "/team/topic/stage/{stageType}")
+    public ResponseEntity<List<SimpleMapItem>> getTopicToTeamMappingByStageType(@PathVariable String stageType) {
+        return ResponseEntity.ok(teamService.getTopicToTeamMappingByStageType(stageType));
     }
 
     @GetMapping(value = "/teams/topic/{topicUUID}")

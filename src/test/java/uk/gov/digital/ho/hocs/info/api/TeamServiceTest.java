@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.keycloak.admin.client.Keycloak;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.api.data.SimpleMapItem;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
@@ -66,7 +67,7 @@ public class TeamServiceTest {
                 caseworkClient);
     }
 
-    private UUID team1UUID =UUID.randomUUID();
+    private UUID team1UUID = UUID.randomUUID();
 
     @Test
     public void shouldGetAllTeams() {
@@ -90,7 +91,7 @@ public class TeamServiceTest {
 
     @Test
     public void shouldGetTeamById() {
-        Team team = new Team( "Team1", new HashSet<>());
+        Team team = new Team("Team1", new HashSet<>());
         when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
         teamService.getTeam(team.getUuid());
         verify(teamRepository, times(1)).findByUuid(team.getUuid());
@@ -132,9 +133,9 @@ public class TeamServiceTest {
     @Test
     public void shouldAddTeamToRepositoryAndKeycloak() {
 
-        Unit unit = new Unit("UNIT1", "UNIT1",true);
+        Unit unit = new Unit("UNIT1", "UNIT1", true);
 
-        TeamDto teamDto = new TeamDto( "Team1", new HashSet<>());
+        TeamDto teamDto = new TeamDto("Team1", new HashSet<>());
 
         when(teamRepository.findByUuid(any())).thenReturn(null);
         when(unitRepository.findByUuid(unit.getUuid())).thenReturn(unit);
@@ -155,7 +156,7 @@ public class TeamServiceTest {
         Unit unit = new Unit("UNIT1", "UNIT1", true);
         unit.addTeam(team);
 
-        TeamDto teamDto = new TeamDto( "Team1", null, team1UUID, true, new HashSet<>(), null);
+        TeamDto teamDto = new TeamDto("Team1", null, team1UUID, true, new HashSet<>(), null);
         when(unitRepository.findByUuid(unit.getUuid())).thenReturn(unit);
         when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
 
@@ -168,7 +169,7 @@ public class TeamServiceTest {
 
     @Test
     public void shouldMarkTeamAsInactive() {
-        Team team = new Team( "Team1", true);
+        Team team = new Team("Team1", true);
         when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
         assertThat(team.isActive()).isTrue();
         teamService.deleteTeam(team1UUID);
@@ -251,7 +252,7 @@ public class TeamServiceTest {
 
         Set<Permission> permissions = new HashSet<>();
         Unit unit = new Unit("a unit", "UNIT", true);
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN","a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
         Permission permission = new Permission(AccessLevel.OWNER, null, caseType);
         permissions.add(permission);
         Team team = new Team("a team", true);
@@ -265,20 +266,20 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void shouldRemoveUserWithNoCasesFromTeam(){
+    public void shouldRemoveUserWithNoCasesFromTeam() {
         Team team = new Team("a team", true);
         UUID userUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
 
         when(caseworkClient.getCasesForUser(userUUID, teamUUID)).thenReturn(new HashSet<>());
 
-        teamService.removeUserFromTeam(userUUID,teamUUID);
+        teamService.removeUserFromTeam(userUUID, teamUUID);
         verify(keycloakService, times(1)).removeUserFromTeam(userUUID, teamUUID);
         verifyNoMoreInteractions(keycloakService);
     }
 
     @Test(expected = ApplicationExceptions.UserRemoveException.class)
-    public void shouldNotRemoveUserWithCasesFromTeam(){
+    public void shouldNotRemoveUserWithCasesFromTeam() {
         Team team = new Team("a team", true);
         UUID userUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
@@ -299,7 +300,7 @@ public class TeamServiceTest {
         Team team = new Team("a team", true);
         team.setUnit(unit);
 
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN","a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
 
         when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
         when(caseTypeService.getCaseType(any())).thenReturn(caseType);
@@ -324,7 +325,7 @@ public class TeamServiceTest {
         Unit unit = new Unit("a unit", "UNIT", true);
         Team team = new Team("a team", true);
         team.setUnit(unit);
-        CaseType caseType = new CaseType(1L,UUID.randomUUID(), "MIN","a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true,true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
         permissions.add(new Permission(AccessLevel.READ, team, caseType));
         permissions.add(new Permission(AccessLevel.OWNER, team, caseType));
         team.addPermissions(permissions);
@@ -350,10 +351,10 @@ public class TeamServiceTest {
 
         UUID unitUUID = UUID.randomUUID();
         Set<Permission> permissions = new HashSet<>();
-        Unit unit = new Unit( "a unit", "UNIT", true);
+        Unit unit = new Unit("a unit", "UNIT", true);
         Team team = new Team("a team", true);
         team.setUnit(unit);
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN","a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
         permissions.add(new Permission(AccessLevel.READ, team, caseType));
         permissions.add(new Permission(AccessLevel.OWNER, team, caseType));
         team.addPermissions(permissions);
@@ -376,7 +377,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void ShouldDeleteTeamWhenNoActiveParentTopicsAreLinkedToIt(){
+    public void ShouldDeleteTeamWhenNoActiveParentTopicsAreLinkedToIt() {
         Team team = new Team("a team", true);
         when(parentTopicRepository.findAllActiveParentTopicsForTeam(team.getUuid())).thenReturn(new ArrayList<>());
         when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
@@ -392,7 +393,7 @@ public class TeamServiceTest {
     }
 
     @Test(expected = ApplicationExceptions.TeamDeleteException.class)
-    public void shouldThrowTeamDeleteExceptionWhenActiveParentTopicsAreLinkedToTeam(){
+    public void shouldThrowTeamDeleteExceptionWhenActiveParentTopicsAreLinkedToTeam() {
         List<ParentTopic> parentTopicsList = new ArrayList<>();
         parentTopicsList.add(new ParentTopic());
         when(parentTopicRepository.findAllActiveParentTopicsForTeam(team1UUID)).thenReturn(parentTopicsList);
@@ -400,11 +401,11 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void ShouldAuditCreateTeam(){
+    public void ShouldAuditCreateTeam() {
 
-        Unit unit = new Unit("UNIT1", "UNIT1",true);
+        Unit unit = new Unit("UNIT1", "UNIT1", true);
 
-        TeamDto teamDto = new TeamDto( "Team1", new HashSet<>());
+        TeamDto teamDto = new TeamDto("Team1", new HashSet<>());
 
         when(unitRepository.findByUuid(unit.getUuid())).thenReturn(unit);
         teamService.createTeam(teamDto, unit.getUuid());
@@ -413,23 +414,23 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void ShouldAuditUpdateTeamName(){
-        Team team = new Team( "Team1", true);
+    public void ShouldAuditUpdateTeamName() {
+        Team team = new Team("Team1", true);
 
         when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
-        teamService.updateTeamName(team.getUuid(),"" );
+        teamService.updateTeamName(team.getUuid(), "");
 
         verify(auditClient, times(1)).renameTeamAudit(team);
     }
 
 
     @Test
-    public void ShouldAuditAddUserToTeam(){
+    public void ShouldAuditAddUserToTeam() {
         UUID userUUID = UUID.randomUUID();
 
         Set<Permission> permissions = new HashSet<>();
         Unit unit = new Unit("a unit", "UNIT", true);
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN","a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
         Permission permission = new Permission(AccessLevel.OWNER, null, caseType);
         permissions.add(permission);
         Team team = new Team("a team", true);
@@ -441,7 +442,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void ShouldAuditMoveToNewUnit(){
+    public void ShouldAuditMoveToNewUnit() {
         UUID newUnitUUID = UUID.randomUUID();
         UUID oldUnitUUID = UUID.randomUUID();
 
@@ -460,17 +461,17 @@ public class TeamServiceTest {
 
         teamService.moveToNewUnit(newUnitUUID, team1UUID);
 
-        verify(auditClient, times(1)).moveToNewUnitAudit(team1UUID.toString(), "UNIT1" , "UNIT2");
+        verify(auditClient, times(1)).moveToNewUnitAudit(team1UUID.toString(), "UNIT1", "UNIT2");
 
     }
 
     @Test
-    public void ShouldAuditUpdateTeamPermissions(){
-        Unit unit = new Unit("a unit", "UNIT",true);
+    public void ShouldAuditUpdateTeamPermissions() {
+        Unit unit = new Unit("a unit", "UNIT", true);
         Team team = new Team("a team", true);
         team.setUnit(unit);
 
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN","a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
 
         when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
         when(caseTypeService.getCaseType(any())).thenReturn(caseType);
@@ -486,13 +487,13 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void ShouldAuditDeleteTeamPermissions(){
+    public void ShouldAuditDeleteTeamPermissions() {
         Set<Permission> permissions = new HashSet<>();
-        Unit unit = new Unit( "a unit", "UNIT", true);
+        Unit unit = new Unit("a unit", "UNIT", true);
         Team team = new Team("a team", true);
         team.addPermissions(permissions);
         team.setUnit(unit);
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN","a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
         permissions.add(new Permission(AccessLevel.READ, team, caseType));
         permissions.add(new Permission(AccessLevel.OWNER, team, caseType));
 
@@ -509,7 +510,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void ShouldAuditSuccessfulDeleteTeam(){
+    public void ShouldAuditSuccessfulDeleteTeam() {
         Team team = new Team("a team", true);
         when(parentTopicRepository.findAllActiveParentTopicsForTeam(team.getUuid())).thenReturn(new ArrayList<>());
         when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
@@ -523,7 +524,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void shouldNotAuditWhenDeleteTeamThrowsException(){
+    public void shouldNotAuditWhenDeleteTeamThrowsException() {
         List<ParentTopic> parentTopicsList = new ArrayList<>();
         parentTopicsList.add(new ParentTopic());
         when(parentTopicRepository.findAllActiveParentTopicsForTeam(team1UUID)).thenReturn(parentTopicsList);
@@ -536,32 +537,32 @@ public class TeamServiceTest {
     }
 
     private List<Team> getTeams() {
-        CaseType caseType = new CaseType(1L,UUID.randomUUID(), "MIN","a1", "MIN", UUID.randomUUID(),"DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
         Set<Permission> permissions = new HashSet<Permission>() {{
-            add(new Permission( AccessLevel.OWNER, null, caseType));
-            add(new Permission( AccessLevel.OWNER, null, caseType));
+            add(new Permission(AccessLevel.OWNER, null, caseType));
+            add(new Permission(AccessLevel.OWNER, null, caseType));
         }};
 
         return new ArrayList<Team>() {{
-            add(new Team("Team1",permissions));
-            add(new Team( "Team2", new HashSet<>()));
+            add(new Team("Team1", permissions));
+            add(new Team("Team2", new HashSet<>()));
         }};
     }
 
     @Test
-    public void shouldAuditSuccessfulRemoveUserFromTeam(){
+    public void shouldAuditSuccessfulRemoveUserFromTeam() {
         Team team = new Team("a team", true);
         UUID userUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
 
         when(caseworkClient.getCasesForUser(userUUID, teamUUID)).thenReturn(new HashSet<>());
 
-        teamService.removeUserFromTeam(userUUID,teamUUID);
+        teamService.removeUserFromTeam(userUUID, teamUUID);
         verify(auditClient, times(1)).removeUserFromTeamAudit(userUUID, teamUUID);
     }
 
     @Test
-    public void shouldNotAuditWhenRemoveUserFromTeamThrowsException(){
+    public void shouldNotAuditWhenRemoveUserFromTeamThrowsException() {
         Team team = new Team("a team", true);
         UUID userUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
@@ -577,6 +578,22 @@ public class TeamServiceTest {
         }
 
         verifyZeroInteractions(auditClient);
+    }
+
+    @Test
+    public void getTopicToTeamMappingByStageType() {
+        String testStageString = "STAGE_321";
+
+        List<SimpleMapItem> mockItems = List.of(mock(SimpleMapItem.class), mock(SimpleMapItem.class));
+        when(teamRepository.findTopicToTeamMappingByStageType(testStageString)).thenReturn(mockItems);
+
+        List<SimpleMapItem> results = teamService.getTopicToTeamMappingByStageType(testStageString);
+
+        assertThat(results).isNotNull();
+        assertThat(results.size()).isEqualTo(2);
+
+        verify(teamRepository).findTopicToTeamMappingByStageType(testStageString);
+        verifyNoMoreInteractions(teamRepository);
     }
 
 }
