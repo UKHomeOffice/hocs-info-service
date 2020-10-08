@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.api.data.SimpleMapItem;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
@@ -15,7 +14,6 @@ import uk.gov.digital.ho.hocs.info.domain.model.Unit;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -300,21 +298,4 @@ public class TeamResourceTest {
         verifyNoMoreInteractions(teamService);
     }
 
-    @Test
-    public void getTopicToTeamMappingByStageType() {
-        String testStageString = "STAGE_321";
-
-        List<SimpleMapItem> mockItems = List.of(mock(SimpleMapItem.class), mock(SimpleMapItem.class));
-        when(teamService.getTopicToTeamMappingByStageType(testStageString)).thenReturn(mockItems);
-
-        ResponseEntity<List<SimpleMapItem>> response = teamResource.getTopicToTeamMappingByStageType(testStageString);
-
-        assertThat(response).isNotNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().size()).isEqualTo(2);
-
-        verify(teamService).getTopicToTeamMappingByStageType(testStageString);
-        verifyNoMoreInteractions(teamService);
-    }
 }

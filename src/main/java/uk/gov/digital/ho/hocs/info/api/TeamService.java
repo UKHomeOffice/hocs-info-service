@@ -7,7 +7,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
-import uk.gov.digital.ho.hocs.info.api.data.SimpleMapItem;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDeleteActiveParentTopicsDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
@@ -131,10 +130,6 @@ public class TeamService {
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("Team not found for Stage %s and Text %s", stageType, text);
         }
-    }
-
-    public List<SimpleMapItem> getTopicToTeamMappingByStageType(String stageType) {
-        return teamRepository.findTopicToTeamMappingByStageType(stageType);
     }
 
     @Transactional

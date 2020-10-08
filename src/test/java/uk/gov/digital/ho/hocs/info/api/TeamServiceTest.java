@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.keycloak.admin.client.Keycloak;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.api.data.SimpleMapItem;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
@@ -580,20 +579,5 @@ public class TeamServiceTest {
         verifyZeroInteractions(auditClient);
     }
 
-    @Test
-    public void getTopicToTeamMappingByStageType() {
-        String testStageString = "STAGE_321";
-
-        List<SimpleMapItem> mockItems = List.of(mock(SimpleMapItem.class), mock(SimpleMapItem.class));
-        when(teamRepository.findTopicToTeamMappingByStageType(testStageString)).thenReturn(mockItems);
-
-        List<SimpleMapItem> results = teamService.getTopicToTeamMappingByStageType(testStageString);
-
-        assertThat(results).isNotNull();
-        assertThat(results.size()).isEqualTo(2);
-
-        verify(teamRepository).findTopicToTeamMappingByStageType(testStageString);
-        verifyNoMoreInteractions(teamRepository);
-    }
 
 }
