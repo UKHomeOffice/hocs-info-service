@@ -4,9 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uk.gov.digital.ho.hocs.info.api.dto.*;
+import uk.gov.digital.ho.hocs.info.api.data.SimpleMapItem;
+import uk.gov.digital.ho.hocs.info.api.dto.AddTeamToTopicDto;
+import uk.gov.digital.ho.hocs.info.api.dto.TopicTeamDto;
 import uk.gov.digital.ho.hocs.info.domain.model.TopicTeam;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,7 +31,7 @@ public class TopicTeamResource {
     public ResponseEntity<Set<TopicTeamDto>> getTopicsByCaseTypeWithTeams(@PathVariable String caseType) {
         log.info("requesting all topics by case type {} with teams", caseType);
         Set<TopicTeam> topicTeams = topicTeamService.getTopicsByCaseTypeWithTeams(caseType);
-        return ResponseEntity.ok(topicTeams.stream().map(t->TopicTeamDto.from(t)).collect(Collectors.toSet()));
+        return ResponseEntity.ok(topicTeams.stream().map(t -> TopicTeamDto.from(t)).collect(Collectors.toSet()));
     }
 
     @PostMapping(value = "/topic/{topicUUID}/team/{teamUUID}")
@@ -36,5 +39,10 @@ public class TopicTeamResource {
         log.info("Adding team () to topic {}", teamUUID, topicUUID);
         topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/team/topic/stage/{stageType}")
+    public ResponseEntity<List<SimpleMapItem>> getTopicToTeamMappingByStageType(@PathVariable String stageType) {
+        return ResponseEntity.ok(topicTeamService.getTopicToTeamMappingByStageType(stageType));
     }
 }

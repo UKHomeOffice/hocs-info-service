@@ -4,8 +4,10 @@ package uk.gov.digital.ho.hocs.info.domain.repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import uk.gov.digital.ho.hocs.info.api.data.SimpleMapItem;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,6 +25,9 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
 
     @Query(value = "SELECT t.* FROM team t JOIN team_link tl on tl.responsible_team_uuid = t.uuid WHERE tl.link_value = cast(?1 as text) and tl.link_type = 'TOPIC' and tl.stage_type = ?2", nativeQuery = true)
     Team findByTopicAndStage(UUID topicUUID, String stageType);
+
+    @Query(value = "SELECT DISTINCT tl.link_value as value, t.display_name as label FROM team t JOIN team_link tl on tl.responsible_team_uuid = t.uuid WHERE tl.link_type = 'TOPIC' and tl.stage_type = ?1", nativeQuery = true)
+    List<SimpleMapItem> findTopicToTeamMappingByStageType(String stageType);
 
     @Query(value = "SELECT t.* FROM team t JOIN team_link tl on tl.responsible_team_uuid = t.uuid WHERE tl.stage_type = ?1 and tl.link_type = 'TEXT' and tl.link_value = ?2", nativeQuery = true)
     Team findByStageAndText(String stageType, String text);

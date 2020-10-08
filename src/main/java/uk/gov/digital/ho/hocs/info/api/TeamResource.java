@@ -25,7 +25,7 @@ public class TeamResource {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(value = "/unit/{unitUUID}/teams" )
+    @PostMapping(value = "/unit/{unitUUID}/teams")
     public ResponseEntity<TeamDto> createUpdateTeam(@PathVariable String unitUUID, @RequestBody TeamDto team) {
         Team createdTeam = teamService.createTeam(team, UUID.fromString(unitUUID));
         return ResponseEntity.ok(TeamDto.from(createdTeam));
@@ -57,7 +57,7 @@ public class TeamResource {
 
     @PutMapping(value = "/team/{teamUUID}/permissions")
     public ResponseEntity updateTeamPermissions(@PathVariable String teamUUID, @RequestBody UpdateTeamPermissionsRequest team) {
-        teamService.updateTeamPermissions(UUID.fromString(teamUUID),team.getPermissions());
+        teamService.updateTeamPermissions(UUID.fromString(teamUUID), team.getPermissions());
         return ResponseEntity.ok().build();
     }
 
