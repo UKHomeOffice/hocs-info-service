@@ -47,14 +47,14 @@ public class TopicTeamServiceTest {
 
     @Before
     public void setUp() {
-        this.topicTeamService = new TopicTeamService(teamLinkRepository,
-                topicRepository,
-                teamRepository,
-                topicService,
-                teamService,
-                caseTypeService,
-                stageTypeService,
-                auditClient);
+        this.topicTeamService = new TopicTeamService (teamLinkRepository,
+                     topicRepository,
+                     teamRepository,
+                     topicService,
+                     teamService,
+                     caseTypeService,
+                     stageTypeService,
+                     auditClient);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class TopicTeamServiceTest {
 
     @Test
     public void shouldSuccessfullyAddTeamToTopic() {
-        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN", "DCU_MIN_MARKUP");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
 
@@ -99,15 +99,15 @@ public class TopicTeamServiceTest {
         topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
 
 
-        verify(teamLinkRepository).save(any());
-        verify(teamLinkRepository).findByLinkValueAndLinkTypeAndCaseTypeAndStageType(any(), eq("TOPIC"), any(), any());
+        verify(teamLinkRepository, times(1)).save(any());
+        verify(teamLinkRepository, times(1)).findByLinkValueAndLinkTypeAndCaseTypeAndStageType(any(), eq("TOPIC"), any(), any());
         verifyNoMoreInteractions(teamLinkRepository);
     }
 
-    @Test(expected = ApplicationExceptions.TopicUpdateException.class)
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
     public void shouldThrowExceptionWhenAddingNonExistentTeamToTopic() {
 
-        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN", "DCU_MIN_MARKUP");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
         when(teamService.getTeam(teamUUID)).thenReturn(null);
@@ -121,7 +121,7 @@ public class TopicTeamServiceTest {
     @Test
     public void shouldNotAddTeamWhenAddingNonExistentTeamToTopic() {
 
-        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN", "DCU_MIN_MARKUP");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
         when(teamService.getTeam(teamUUID)).thenReturn(null);
@@ -129,8 +129,7 @@ public class TopicTeamServiceTest {
         when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
         when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
 
-        try {
-            topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
+        try { topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
         } catch (ApplicationExceptions.TopicUpdateException e) {
             // Do nothing.
         }
@@ -138,10 +137,10 @@ public class TopicTeamServiceTest {
         verifyZeroInteractions(teamLinkRepository);
     }
 
-    @Test(expected = ApplicationExceptions.TopicUpdateException.class)
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
     public void shouldThrowExceptionWhenAddingInactiveTeamToTopic() {
 
-        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN", "DCU_MIN_MARKUP");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
         when(teamService.getTeam(teamUUID)).thenReturn(new Team("name", false));
@@ -155,7 +154,7 @@ public class TopicTeamServiceTest {
     @Test
     public void shouldNotAddTeamWhenAddingInactiveTeamToTopic() {
 
-        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN", "DCU_MIN_MARKUP");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
         when(teamService.getTeam(teamUUID)).thenReturn(new Team("name", false));
@@ -163,8 +162,7 @@ public class TopicTeamServiceTest {
         when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
         when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
 
-        try {
-            topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
+        try { topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
         } catch (ApplicationExceptions.TopicUpdateException e) {
             // Do nothing.
         }
@@ -172,13 +170,13 @@ public class TopicTeamServiceTest {
         verifyZeroInteractions(teamLinkRepository);
     }
 
-    @Test(expected = ApplicationExceptions.TopicUpdateException.class)
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
     public void shouldThrowExceptionWhenAddingTeamToNonexistentTopic() {
 
-        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN", "DCU_MIN_MARKUP");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
-
+        
         topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
     }
 
@@ -198,10 +196,10 @@ public class TopicTeamServiceTest {
         verifyZeroInteractions(teamLinkRepository);
     }
 
-    @Test(expected = ApplicationExceptions.TopicUpdateException.class)
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
     public void shouldThrowExceptionWhenAddingTeamToTopicAndCaseTypeIsInvalid() {
 
-        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN", "DCU_MIN_MARKUP");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
 
@@ -214,13 +212,12 @@ public class TopicTeamServiceTest {
     @Test
     public void shouldNotAddTeamWhenAddingTeamToTopicAndCaseTypeIsInvalid() {
 
-        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN", "DCU_MIN_MARKUP");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
         when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
         when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
-        try {
-            topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
+        try { topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
         } catch (ApplicationExceptions.TopicUpdateException e) {
             // Do nothing.
         }
@@ -228,10 +225,10 @@ public class TopicTeamServiceTest {
         verifyZeroInteractions(teamLinkRepository);
     }
 
-    @Test(expected = ApplicationExceptions.TopicUpdateException.class)
+    @Test (expected = ApplicationExceptions.TopicUpdateException.class)
     public void shouldThrowExceptionWhenAddingTeamToTopicAndStageTypeIsInvalid() {
 
-        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN", "DCU_MIN_MARKUP");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
         when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
@@ -242,12 +239,11 @@ public class TopicTeamServiceTest {
     @Test
     public void shouldNotAddTeamWhenAddingTeamToTopicAndStageTypeIsInvalid() {
 
-        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN", "DCU_MIN_MARKUP");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
         when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
-        try {
-            topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
+        try { topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
         } catch (ApplicationExceptions.TopicUpdateException e) {
             // Do nothing.
         }
@@ -258,7 +254,7 @@ public class TopicTeamServiceTest {
     @Test
     public void shouldUpdateTeamWhenAddingTeamToTopicAndTopicAlreadyHasATeam() {
 
-        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN", "DCU_MIN_MARKUP");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
 
@@ -271,16 +267,16 @@ public class TopicTeamServiceTest {
 
         topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
 
-        verify(teamLinkRepository).findByLinkValueAndLinkTypeAndCaseTypeAndStageType(any(), eq("TOPIC"), any(), any());
-        verify(teamLinkRepository).save(any());
+        verify(teamLinkRepository, times(1)).findByLinkValueAndLinkTypeAndCaseTypeAndStageType(any(), eq("TOPIC"), any(), any());
+        verify(teamLinkRepository, times(1)).save(any());
         verifyNoMoreInteractions(teamLinkRepository);
     }
 
 
     @Test
-    public void shouldAuditAddTeamToTopic() {
+    public void shouldAuditAddTeamToTopic(){
 
-        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN", "DCU_MIN_MARKUP");
+        AddTeamToTopicDto request = new AddTeamToTopicDto("MIN","DCU_MIN_MARKUP");
         UUID topicUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
 
@@ -291,7 +287,7 @@ public class TopicTeamServiceTest {
 
         topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
 
-        verify(auditClient).addTeamToTopicAudit(any());
+        verify(auditClient, times(1)).addTeamToTopicAudit(any());
         verifyNoMoreInteractions(auditClient);
     }
 

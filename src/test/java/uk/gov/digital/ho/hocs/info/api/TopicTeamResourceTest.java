@@ -51,7 +51,7 @@ public class TopicTeamResourceTest {
         UUID topicUUID = UUID.randomUUID();
 
         ResponseEntity response = topicTeamResource.addTeamToTopic(topicUUID, teamUUID, request);
-        verify(topicTeamService).addTeamToTopic(topicUUID, teamUUID, request);
+        verify(topicTeamService, times(1)).addTeamToTopic(topicUUID, teamUUID, request);
         verifyNoMoreInteractions(topicTeamService);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
