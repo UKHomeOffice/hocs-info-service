@@ -7,6 +7,16 @@ if [[ -z ${VERSION} ]] ; then
     export VERSION=${IMAGE_VERSION}
 fi
 
+if [[ -z ${HOCS_INFO_SERVICE_DATA_VERSION} ]] ; then
+    export HOCS_INFO_SERVICE_DATA_VERSION=${VERSION}
+fi
+
+if [[ ${KUBE_NAMESPACE} == cs-* ]]; then
+    export HOCS_DATA_REPO=hocs-data
+else
+    export HOCS_DATA_REPO=hocs-data-wcs
+fi
+
 if [[ ${KUBE_NAMESPACE} == "cs-prod" ]] ; then
     echo "deploy ${VERSION} to prod namespace, using HOCS_INFO_SERVICE_PROD_CS drone secret"
     export KUBE_TOKEN=${HOCS_INFO_SERVICE_PROD_CS}
