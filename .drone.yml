@@ -105,6 +105,7 @@ pipeline:
       - UKHomeOffice/hocs-data
       - UKHomeOffice/hocs-data-wcs
     when:
+      branch: master
       event: push
 
   trigger_hocs_data_wcs_build_with_semver_tag:
