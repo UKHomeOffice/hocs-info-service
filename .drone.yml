@@ -48,7 +48,9 @@ pipeline:
     commands:
       - docker login -u="ukhomeofficedigital+hocs" -p=$${DOCKER_PASSWORD} quay.io
       - docker tag hocs-info-service quay.io/ukhomeofficedigital/hocs-info-service:build-$${DRONE_BUILD_NUMBER}
+      - docker tag hocs-info-service quay.io/ukhomeofficedigital/hocs-info-service:latest
       - docker push quay.io/ukhomeofficedigital/hocs-info-service:build-$${DRONE_BUILD_NUMBER}
+      - docker push quay.io/ukhomeofficedigital/hocs-info-service:latest
     when:
       branch: master
       event: [push]
