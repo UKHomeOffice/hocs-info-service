@@ -22,7 +22,7 @@ pipeline:
       - export AWS_LOCAL_HOST='localstack'
       - ./gradlew build --no-daemon
     when:
-      event: [push, pull_request, tag, deployment]
+      event: [push, pull_request, tag]
 
   sonar-scanner:
     image: quay.io/ukhomeofficedigital/sonar-scanner:v3.0.2
