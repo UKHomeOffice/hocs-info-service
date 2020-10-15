@@ -130,7 +130,6 @@ pipeline:
     commands:
       - git clone https://github.com/UKHomeOffice/kube-hocs-info-service.git
     when:
-      branch: master
       event: [push, tag, deployment]
 
   deploy-to-cs-dev-from-build-number:
