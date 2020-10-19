@@ -13,11 +13,12 @@ import uk.gov.digital.ho.hocs.info.domain.entity.Entity;
 public class EntityDto {
 
     private String simpleName;
+    private String uuid;
     @JsonRawValue
     private String data;
 
     public static EntityDto from(Entity entity) {
-        return new EntityDto(entity.getSimpleName(), entity.getData());
+        return new EntityDto(entity.getSimpleName(), entity.getUuid() != null ? entity.getUuid().toString() : null, entity.getData());
     }
 
 }

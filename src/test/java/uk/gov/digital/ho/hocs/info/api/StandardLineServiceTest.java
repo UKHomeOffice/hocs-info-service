@@ -5,6 +5,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import uk.gov.digital.ho.hocs.info.api.dto.GetStandardLineResponse;
+import uk.gov.digital.ho.hocs.info.api.dto.UpdateStandardLineDto;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.documentclient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.client.documentclient.model.ManagedDocumentType;
@@ -15,9 +19,11 @@ import uk.gov.digital.ho.hocs.info.domain.repository.StandardLineRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -36,6 +42,9 @@ public class StandardLineServiceTest {
     private StandardLineService standardLineService;
 
     private static final UUID uuid = UUID.randomUUID();
+    private static final UUID standardLineUUID = UUID.randomUUID();
+    private static final UUID topicUUID = UUID.randomUUID();
+    private static final UUID documentUUID = UUID.randomUUID();
     private static final LocalDateTime END_OF_DAY = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
     private static final String DISPLAY_NAME = "dn";
     private static final UUID NEW_DOCUMENT_UUID = UUID.randomUUID();
@@ -49,7 +58,7 @@ public class StandardLineServiceTest {
     public void shouldReturnStandardLine(){
         when(standardLineRepository.findStandardLinesByExpires(END_OF_DAY)).thenReturn(Set.of(new StandardLine()));
         standardLineService.getActiveStandardLines();
-        verify(standardLineRepository, times(1)).findStandardLinesByExpires(END_OF_DAY);
+        verify(standardLineRepository).findStandardLinesByExpires(END_OF_DAY);
         verifyNoMoreInteractions(standardLineRepository);
     }
 
@@ -57,7 +66,7 @@ public class StandardLineServiceTest {
     public void shouldReturnStandardLineForPrimaryTopic(){
         when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid, END_OF_DAY)).thenReturn(new StandardLine());
         standardLineService.getStandardLineForTopic(uuid);
-        verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
+        verify(standardLineRepository).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
         verifyNoMoreInteractions(standardLineRepository);
     }
 
@@ -70,9 +79,9 @@ public class StandardLineServiceTest {
 
         standardLineService.createStandardLine(request.getDisplayName(), request.getTopicUUID(), request.getExpires(), request.getS3UntrustedUrl());
 
-        verify(documentClient,times(1)).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq("URL"), eq(ManagedDocumentType.STANDARD_LINE));
-        verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
-        verify(standardLineRepository, times(1)).save(any());
+        verify(documentClient).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq("URL"), eq(ManagedDocumentType.STANDARD_LINE));
+        verify(standardLineRepository).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
+        verify(standardLineRepository).save(any());
         verifyNoMoreInteractions(standardLineRepository);
         verifyNoMoreInteractions(documentClient);
     }
@@ -89,13 +98,96 @@ public class StandardLineServiceTest {
       
         standardLineService.createStandardLine(request.getDisplayName(), request.getTopicUUID(), request.getExpires(), request.getS3UntrustedUrl());
 
-        verify(documentClient,times(1)).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq("URL"), eq(ManagedDocumentType.STANDARD_LINE));
-        verify(standardLineRepository, times(1)).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
+        verify(documentClient).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq("URL"), eq(ManagedDocumentType.STANDARD_LINE));
+        verify(standardLineRepository).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
         verify(standardLineRepository, times(2)).save(any());
         verify(documentClient).deleteDocument(standardLine.getDocumentUUID());
         verifyNoMoreInteractions(standardLineRepository);
         verifyNoMoreInteractions(documentClient);
-        verify(caseworkClient, times(1)).clearCachedStandardLineForTopic(uuid);
+        verify(caseworkClient).clearCachedStandardLineForTopic(uuid);
         verifyNoMoreInteractions(caseworkClient);
+    }
+
+    @Test
+    public void getAllStandardLines(){
+        List<StandardLine> standardLines = List.of(new StandardLine("DisplayName", uuid, LocalDateTime.now()));
+
+        when(standardLineRepository.findAllStandardLines()).thenReturn(standardLines);
+
+        List<StandardLine> result = standardLineService.getAllStandardLines();
+        verify(standardLineRepository).findAllStandardLines();
+        checkNoMoreInteractions();
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getDisplayName()).isEqualTo("DisplayName");
+        assertThat(result.get(0).getTopicUUID()).isEqualTo(uuid);
+    }
+
+    @Test
+    public void getStandardLine(){
+        when(standardLineRepository.findByUuid(standardLineUUID)).thenReturn(new StandardLine("DisplayName", uuid, LocalDateTime.now()));
+
+        StandardLine result = standardLineService.getStandardLine(standardLineUUID);
+        verify(standardLineRepository).findByUuid(standardLineUUID);
+        checkNoMoreInteractions();
+        assertThat(result).isNotNull();
+        assertThat(result.getDisplayName()).isEqualTo("DisplayName");
+        assertThat(result.getTopicUUID()).isEqualTo(uuid);
+    }
+
+    @Test
+    public void expireStandardLine(){
+        StandardLine standardLineMock = mock(StandardLine.class);
+        when(standardLineRepository.findByUuid(standardLineUUID)).thenReturn(standardLineMock);
+
+        standardLineService.expireStandardLine(standardLineUUID);
+
+        verify(standardLineMock).expire();
+        verify(standardLineRepository).findByUuid(standardLineUUID);
+        verify(standardLineRepository).save(standardLineMock);
+        checkNoMoreInteractions();
+
+    }
+
+    @Test
+    public void deleteStandardLine(){
+        StandardLine standardLineMock = mock(StandardLine.class);
+        when(standardLineMock.getTopicUUID()).thenReturn(topicUUID);
+        when(standardLineMock.getDocumentUUID()).thenReturn(documentUUID);
+        when(standardLineRepository.findByUuid(standardLineUUID)).thenReturn(standardLineMock);
+
+        standardLineService.deleteStandardLine(standardLineUUID);
+
+        verify(standardLineMock).getTopicUUID();
+        verify(standardLineMock).getDocumentUUID();
+        verify(standardLineRepository).findByUuid(standardLineUUID);
+        verify(standardLineRepository).delete(standardLineMock);
+        verify(documentClient).deleteDocument(documentUUID);
+        verify(caseworkClient).clearCachedStandardLineForTopic(topicUUID);
+
+        checkNoMoreInteractions();
+
+    }
+
+    @Test
+    public void updateStandardLine(){
+        StandardLine standardLineMock = mock(StandardLine.class);
+        when(standardLineMock.getTopicUUID()).thenReturn(topicUUID);
+        UpdateStandardLineDto updateStandardLineDto = new UpdateStandardLineDto("NewDN", LocalDate.now().plusDays(10));
+        when(standardLineRepository.findByUuid(standardLineUUID)).thenReturn(standardLineMock);
+
+        standardLineService.updateStandardLine(standardLineUUID, updateStandardLineDto);
+
+        verify(standardLineMock).update(updateStandardLineDto);
+        verify(standardLineMock).getTopicUUID();
+        verify(standardLineRepository).findByUuid(standardLineUUID);
+        verify(standardLineRepository).save(standardLineMock);
+        verify(caseworkClient).clearCachedStandardLineForTopic(topicUUID);
+        checkNoMoreInteractions();
+
+    }
+
+    private void checkNoMoreInteractions(){
+        verifyNoMoreInteractions(standardLineRepository, documentClient, caseworkClient);
     }
 }

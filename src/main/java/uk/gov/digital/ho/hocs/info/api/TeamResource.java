@@ -25,7 +25,7 @@ public class TeamResource {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(value = "/unit/{unitUUID}/teams" )
+    @PostMapping(value = "/unit/{unitUUID}/teams")
     public ResponseEntity<TeamDto> createUpdateTeam(@PathVariable String unitUUID, @RequestBody TeamDto team) {
         Team createdTeam = teamService.createTeam(team, UUID.fromString(unitUUID));
         return ResponseEntity.ok(TeamDto.from(createdTeam));
@@ -57,7 +57,7 @@ public class TeamResource {
 
     @PutMapping(value = "/team/{teamUUID}/permissions")
     public ResponseEntity updateTeamPermissions(@PathVariable String teamUUID, @RequestBody UpdateTeamPermissionsRequest team) {
-        teamService.updateTeamPermissions(UUID.fromString(teamUUID),team.getPermissions());
+        teamService.updateTeamPermissions(UUID.fromString(teamUUID), team.getPermissions());
         return ResponseEntity.ok().build();
     }
 
@@ -119,6 +119,12 @@ public class TeamResource {
     public ResponseEntity<TeamDto> getActiveTeams(@PathVariable UUID caseUUID, @PathVariable UUID topicUUID, @PathVariable String stageType) {
         Team team = teamService.getTeamByTopicAndStage(caseUUID, topicUUID, stageType);
         return ResponseEntity.ok(TeamDto.from(team));
+    }
+
+    @GetMapping(value = "/teams/topic/{topicUUID}")
+    public ResponseEntity<Set<TeamDto>> getTeamsByTopic(@PathVariable UUID topicUUID) {
+        Set<Team> teams = teamService.getTeamsByTopic(topicUUID);
+        return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
     }
 
     @GetMapping(value = "/team/stage/{stageType}/text/{text}")

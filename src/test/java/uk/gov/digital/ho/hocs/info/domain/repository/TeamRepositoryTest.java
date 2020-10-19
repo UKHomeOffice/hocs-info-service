@@ -31,6 +31,7 @@ public class TeamRepositoryTest {
 
     UUID unitUUID;
     UUID teamUUID;
+    UUID topicUUID;
 
     @Before
     public void setup() {
@@ -42,14 +43,22 @@ public class TeamRepositoryTest {
             add(new Permission(AccessLevel.OWNER,null, caseType));
         }};
         Team team = new Team("a team", permissions);
+        team.setActive(true);
         unit.addTeam(team);
         this.entityManager.persist(unit);
         StageTypeEntity stage = new StageTypeEntity(UUID.randomUUID(),"Stage","c","stageType",caseType.getUuid(),1,1,1,true,team);
         entityManager.persistAndFlush(stage);
         TeamLink teamLink = new TeamLink("linkValue", "TEXT", team.getUuid(), "TEST", "stageType");
         entityManager.persistAndFlush(teamLink);
+        ParentTopic parentTopic = new ParentTopic("__ParentTopic__");
+        Topic topic = new Topic("__Topic__", parentTopic.getUuid());
+        this.entityManager.persist(topic);
+        this.entityManager.persist(parentTopic);
+        TeamLink teamLink2 = new TeamLink(topic.getUuid().toString(), "TOPIC", team.getUuid(), "TEST", "stageType");
+        entityManager.persistAndFlush(teamLink2);
         teamUUID = team.getUuid();
         unitUUID = unit.getUuid();
+        topicUUID = topic.getUuid();
     }
 
     @Test()
@@ -100,5 +109,14 @@ public class TeamRepositoryTest {
 
         assertThat(team).isNotNull();
         assertThat(team.getUuid()).isEqualTo(teamUUID);
+    }
+
+    @Test
+    public void shouldFindTeamsByTopicUuid() {
+        Set<Team> teams = repository.findTeamsByTopicUuid(topicUUID);
+
+        assertThat(teams).isNotNull();
+        assertThat(teams.size()).isEqualTo(1);
+        assertThat(teams.iterator().next().getUuid()).isEqualTo(teamUUID);
     }
 }

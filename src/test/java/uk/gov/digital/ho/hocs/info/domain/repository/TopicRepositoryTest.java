@@ -27,6 +27,30 @@ public class TopicRepositoryTest {
     @Autowired
     private TopicRepository repository;
 
+    @Test()
+    public void shouldFindTopicsByCaseType() {
+
+        ParentTopic parentTopic = new ParentTopic("__ParentTopic__");
+        Topic topic = new Topic("__Topic__", parentTopic.getUuid());
+        Unit unit = new Unit("__UNIT__", "__U1__", true);
+        CaseType caseType = new CaseType("__CASETYPE__", "CT", "__CASETYPE__", unit.getUuid(), "__STAGETYPE__", false, true);
+        Team team = new Team("__Team__", true);
+        team.setUnit(unit);
+        StageTypeEntity stageTypeEntity = new StageTypeEntity(UUID.randomUUID(), "__STAGETYPE__", "__STAGETYPE__", "__STAGETYPE__", caseType.getUuid(), 1,1,1,true, team);
+        TeamLink teamLink = new TeamLink(topic.getUuid().toString(), "TOPIC", team.getUuid(), "__CASETYPE__", "__STAGETYPE__");
+        this.entityManager.persist(topic);
+        this.entityManager.persist(parentTopic);
+        this.entityManager.persist(unit);
+        this.entityManager.persist(caseType);
+        this.entityManager.persist(team);
+        this.entityManager.persist(stageTypeEntity);
+        this.entityManager.persist(teamLink);
+
+        List<Topic> topics = repository.findTopicsByCaseType("__CASETYPE__");
+
+        assertThat(topics.size()).isEqualTo(1);
+        assertThat(topics.get(0).getDisplayName()).isEqualTo("__Topic__");
+    }
 
     @Test()
     public void shouldGetAllActiveAssignedTopics() {

@@ -5,7 +5,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Repository
 public interface EntityRepository extends CrudRepository<Entity, Long> {
@@ -27,5 +29,12 @@ public interface EntityRepository extends CrudRepository<Entity, Long> {
             " and e.active = TRUE" +
             " order by e.id", nativeQuery = true)
     List<Entity> findByEntityListSimpleName(String listSimpleName);
+
+    @Query(value = "select Cast(el.uuid as varchar) id from entity_list el where el.simple_name = ?1", nativeQuery = true)
+    String findEntityListUUIDBySimpleName(String listSimpleName);
+
+    Optional<Entity> findBySimpleName(String simpleName);
+
+    Entity findByUuid(UUID uuid);
 
 }

@@ -37,7 +37,7 @@ public class TeamService {
     private AuditClient auditClient;
     private CaseworkClient caseworkClient;
 
-    public TeamService(TeamRepository teamRepository, UnitRepository unitRepository, CaseTypeService caseTypeService,ParentTopicRepository parentTopicRepository, KeycloakService keycloakService, AuditClient auditClient, CaseworkClient caseworkClient) {
+    public TeamService(TeamRepository teamRepository, UnitRepository unitRepository, CaseTypeService caseTypeService, ParentTopicRepository parentTopicRepository, KeycloakService keycloakService, AuditClient auditClient, CaseworkClient caseworkClient) {
         this.teamRepository = teamRepository;
         this.keycloakService = keycloakService;
         this.unitRepository = unitRepository;
@@ -72,7 +72,7 @@ public class TeamService {
     }
 
     public Set<Team> getAllActiveTeamsByUnitShortCode(String unitShortCode) {
-        log.debug("Getting all active Teams by Unit ShortCode {}", unitShortCode );
+        log.debug("Getting all active Teams by Unit ShortCode {}", unitShortCode);
         Set<Team> activeTeams = teamRepository.findAllByActiveTrueAndUnitShortCodeEquals(unitShortCode);
         log.info("Got {} active Teams by Unit ShortCode {}", activeTeams.size(), unitShortCode);
         return activeTeams;
@@ -96,7 +96,7 @@ public class TeamService {
         teamUUIDs.forEach(teamUUID -> {
             try {
                 teams.add(getTeam(teamUUID));
-            } catch (ApplicationExceptions.EntityNotFoundException e){
+            } catch (ApplicationExceptions.EntityNotFoundException e) {
                 log.error("Team not found for UUID {}", teamUUID);
             }
         });
@@ -113,6 +113,12 @@ public class TeamService {
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("Team not found for Topic %s and Stage %s", topicUUID, stageType);
         }
+    }
+
+    public Set<Team> getTeamsByTopic(UUID topicUUID) {
+        log.debug("Getting Team by Topic {}", topicUUID);
+        Set<Team> teams = teamRepository.findTeamsByTopicUuid(topicUUID);
+        return teams;
     }
 
     public Team getTeamByStageAndText(String stageType, String text) {
@@ -210,7 +216,7 @@ public class TeamService {
     public void deleteTeam(UUID teamUUID) {
         log.debug("Deleting Team {}", teamUUID);
         List<ParentTopic> parentTopics = parentTopicRepository.findAllActiveParentTopicsForTeam(teamUUID);
-        if(parentTopics.isEmpty()) {
+        if (parentTopics.isEmpty()) {
             log.debug("No topics assigned to Team {}, safe to delete", teamUUID);
             Team team = getTeam(teamUUID);
             team.setActive(false);
@@ -252,8 +258,8 @@ public class TeamService {
         }
     }
 
-     Set<Team> findActiveTeamsByUnitUuid(UUID unitUUID) {
-         log.debug("Getting active teams for Unit {}", unitUUID);
-         return teamRepository.findActiveTeamsByUnitUuid(unitUUID);
+    Set<Team> findActiveTeamsByUnitUuid(UUID unitUUID) {
+        log.debug("Getting active teams for Unit {}", unitUUID);
+        return teamRepository.findActiveTeamsByUnitUuid(unitUUID);
     }
 }
