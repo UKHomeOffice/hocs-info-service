@@ -2,7 +2,6 @@ package uk.gov.digital.ho.hocs.info.client.audit.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.ExchangePattern;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -215,7 +214,7 @@ public class AuditClient {
 
         try {
             Map<String, Object> queueHeaders = getQueueHeaders(request.getType());
-            producerTemplate.sendBodyAndHeaders(auditQueue, ExchangePattern.InOnly, objectMapper.writeValueAsString(request), queueHeaders);
+            producerTemplate.sendBodyAndHeaders(auditQueue, objectMapper.writeValueAsString(request), queueHeaders);
             log.info("Create audit for event {}, correlationID: {}, UserID: {}", request.getType(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
         } catch (Exception e) {
             log.error("Failed to create audit event {} for reason {}", request.getType(), e, value(EVENT, AUDIT_FAILED));
