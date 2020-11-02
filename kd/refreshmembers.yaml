@@ -14,7 +14,7 @@ spec:
               securityContext:
                 runAsNonRoot: true
                 runAsUser: 1000
-              image: quay.io/ukhomeofficedigital/openjdk11
+              image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
               env:
                 - name: HOCS_BASICAUTH
                   valueFrom:
