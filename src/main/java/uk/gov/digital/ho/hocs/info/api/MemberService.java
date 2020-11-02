@@ -49,7 +49,6 @@ public class MemberService {
         updateMember(listConsumerService.createCommonsFromUKParliamentAPI());
         updateMember(listConsumerService.createLordsFromUKParliamentAPI());
         updateMember(listConsumerService.createFromIrishAssemblyAPI());
-        updateMember(listConsumerService.createFromEuropeanParliamentAPI());
         log.info("Finished Updating Members Lists");
     }
 
