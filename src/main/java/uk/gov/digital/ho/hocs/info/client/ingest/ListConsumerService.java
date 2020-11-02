@@ -25,7 +25,6 @@ public class ListConsumerService {
     private final String apiUkParliament;
     private final String apiScottishParliament;
     private final String apiNorthernIrishAssembly;
-    private final String apiEuropeanParliament;
     private final String apiWelshAssembly;
     private final String apiCountryRegister;
     private final String apiTerritoryRegister;
@@ -37,7 +36,6 @@ public class ListConsumerService {
     public ListConsumerService(@Value("${api.uk.parliament}") String apiUkParliament,
                                @Value("${api.scottish.parliament}") String apiScottishParliament,
                                @Value("${api.ni.assembly}") String apiNorthernIrishAssembly,
-                               @Value("${api.european.parliament}") String apiEuropeanParliament,
                                @Value("${api.welsh.assembly}") String apiWelshAssembly,
                                @Value("${api.country.register}") String apiCountryRegister,
                                @Value("${api.territory.register}") String apiTerritoryRegister,
@@ -45,7 +43,6 @@ public class ListConsumerService {
         this.apiUkParliament = apiUkParliament;
         this.apiScottishParliament = apiScottishParliament;
         this.apiNorthernIrishAssembly = apiNorthernIrishAssembly;
-        this.apiEuropeanParliament = apiEuropeanParliament;
         this.apiWelshAssembly = apiWelshAssembly;
         this.apiCountryRegister = apiCountryRegister;
         this.apiTerritoryRegister = apiTerritoryRegister;
@@ -53,17 +50,6 @@ public class ListConsumerService {
         this.restTemplate = restTemplate;
 
     }
-
-    public  Set<Member> createFromEuropeanParliamentAPI() {
-        log.info("Updating European Parliament");
-        HouseAddress houseAddress = houseAddressRepository.findByHouseCode("EU");
-        EuropeMembers europeMembers = getDataFromAPI(apiEuropeanParliament, MediaType.APPLICATION_XML, EuropeMembers.class);
-        if(europeMembers != null && europeMembers.getMembers() != null){
-            return europeMembers.getMembers().stream().map(m -> new Member(House.HOUSE_EUROPEAN_PARLIAMENT.getDisplayValue(), m.getName()+" MEP", houseAddress.getUuid(),"EU"+m.getId())).collect(Collectors.toSet());
-
-        }
-        return Set.of();
-     }
 
     public Set<Member> createFromIrishAssemblyAPI() {
         log.info("Updating Irish Assembly");
@@ -118,12 +104,14 @@ public class ListConsumerService {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(mediaType));
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+        ResponseEntity<T> response = null;
 
-        ResponseEntity<T> response = restTemplate.exchange(apiEndpoint, HttpMethod.GET, entity, returnClass);
-
-        if (response.getStatusCodeValue() != 200) {
-            throw new ApplicationExceptions.IngestException("members Not Found at " + apiEndpoint);
+        try {
+            response = restTemplate.exchange(apiEndpoint, HttpMethod.GET, entity, returnClass);
+        } catch (Exception e) {
+            throw new ApplicationExceptions.IngestException("Members Not Found at " + apiEndpoint);
         }
+
         return response.getBody();
     }
 
