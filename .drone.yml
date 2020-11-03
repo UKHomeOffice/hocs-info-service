@@ -94,7 +94,7 @@ pipeline:
       event: deployment
       environment: [cs-qa]
 
-  trigger_hocs_data_*_builds_with_build_number:
+  trigger_hocs_data_builds_with_build_number:
     image: plugins/downstream
     server: https://drone-gh.acp.homeoffice.gov.uk
     fork: true
