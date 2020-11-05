@@ -121,7 +121,7 @@ pipeline:
     environment:
       - ENVIRONMENT=cs-dev
       - VERSION=build-${DRONE_BUILD_NUMBER}
-      - HOCS_INFO_SERVICE_DATA_VERSION=info-service-data-${DRONE_BUILD_NUMBER}
+      - HOCS_INFO_SERVICE_DATA_VERSION=latest
       - KUBE_SERVER=https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
     secrets:
       - hocs_info_service_dev_cs
@@ -137,7 +137,7 @@ pipeline:
     environment:
       - ENVIRONMENT=wcs-dev
       - VERSION=build-${DRONE_BUILD_NUMBER}
-      - HOCS_INFO_SERVICE_DATA_VERSION=info-service-data-${DRONE_BUILD_NUMBER}
+      - HOCS_INFO_SERVICE_DATA_VERSION=latest
       - KUBE_SERVER=https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
     secrets:
       - hocs_info_service_dev_wcs
