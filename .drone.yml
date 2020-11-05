@@ -94,22 +94,6 @@ pipeline:
       event: deployment
       environment: [cs-qa]
 
-  trigger_hocs_data_builds_with_build_number:
-    image: plugins/downstream
-    server: https://drone-gh.acp.homeoffice.gov.uk
-    fork: true
-    token: ${DRONE_TOKEN}
-    secrets:
-      - drone_token
-    params:
-      - "HOCS_INFO_SERVICE_DATA_VERSION=info-service-data-${DRONE_BUILD_NUMBER}"
-    repositories:
-      - UKHomeOffice/hocs-data
-      - UKHomeOffice/hocs-data-wcs
-    when:
-      branch: master
-      event: push
-
   trigger_hocs_data_wcs_build_with_semver_tag:
     image: plugins/downstream
     server: https://drone-gh.acp.homeoffice.gov.uk
