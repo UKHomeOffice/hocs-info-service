@@ -119,7 +119,7 @@ spec:
 
         - name: hocs-info-service-data-migration
           image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/hocs/{{.HOCS_DATA_REPO}}:{{.HOCS_INFO_SERVICE_DATA_VERSION}}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           securityContext:
             runAsNonRoot: true
           env:
