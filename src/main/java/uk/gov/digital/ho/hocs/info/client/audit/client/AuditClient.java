@@ -1,8 +1,9 @@
 package uk.gov.digital.ho.hocs.info.client.audit.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.CamelExecutionException;
 import org.apache.camel.ProducerTemplate;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,20 +16,15 @@ import uk.gov.digital.ho.hocs.info.domain.model.*;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static net.logstash.logback.argument.StructuredArguments.value;
-import static uk.gov.digital.ho.hocs.info.application.LogEvent.AUDIT_EVENT_CREATED;
-import static uk.gov.digital.ho.hocs.info.application.LogEvent.AUDIT_FAILED;
-import static uk.gov.digital.ho.hocs.info.application.LogEvent.EVENT;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.*;
 
-@Slf4j
 @Component
 public class AuditClient {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(AuditClient.class);
     private final String auditQueue;
     private final String raisingService;
     private final String namespace;
@@ -44,7 +40,6 @@ public class AuditClient {
     private static final String CASE_TYPE = "caseType";
     private static final String DISPLAY_NAME = "displayName";
 
-
     @Autowired
     public AuditClient(ProducerTemplate producerTemplate,
                        @Value("${audit.queue}") String auditQueue,
@@ -58,7 +53,9 @@ public class AuditClient {
         this.namespace = namespace;
         this.objectMapper = objectMapper;
         this.requestData = requestData;
-        permissionArray = Json.createArrayBuilder();
+        this.permissionArray = Json.createArrayBuilder();
+
+        log.info("Audit client initialisation, auditQueue: {}, raisingService: {}, namespace: {}", auditQueue, raisingService, namespace);
     }
 
     public void createTeamAudit(Team team) {
@@ -211,18 +208,24 @@ public class AuditClient {
     }
 
     private void sendAuditMessage(CreateAuditRequest request) {
+        Map<String, Object> queueHeaders = getQueueHeaders(request.getType());
 
         try {
-            Map<String, Object> queueHeaders = getQueueHeaders(request.getType());
             producerTemplate.sendBodyAndHeaders(auditQueue, objectMapper.writeValueAsString(request), queueHeaders);
-            log.info("Create audit for event {}, correlationID: {}, UserID: {}", request.getType(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
+            log.info("Create audit for event, type: {}, correlationID: {}, UserID: {}, event: {}", request.getType(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
         } catch (Exception e) {
-            log.error("Failed to create audit event {} for reason {}", request.getType(), e, value(EVENT, AUDIT_FAILED));
+            log.error("Failed to create audit event, type: {}, for reason {}, event: {}", request.getType(), e, value(EVENT, AUDIT_FAILED));
+            log.error("Failed to create audit event, Exception stackTrace: {}", Arrays.toString(e.getStackTrace()));
+            if (e instanceof CamelExecutionException) {
+                log.error("Failed to create audit event, CamelExecutionException stackTrace: {}", Arrays.toString(((CamelExecutionException) e).getExchange().getException().getStackTrace()));
+            }
         }
     }
 
     private CreateAuditRequest generateAuditRequest(String auditPayload, String eventType) {
-        return new CreateAuditRequest(
+        log.info("Generate audit request with payload: {}, eventType: {}", auditPayload, eventType);
+
+        CreateAuditRequest request = new CreateAuditRequest(
                 requestData.correlationId(),
                 raisingService,
                 auditPayload,
@@ -230,15 +233,26 @@ public class AuditClient {
                 LocalDateTime.now(),
                 eventType,
                 requestData.userId());
+
+        log.info("Generate audit request result: {}", request);
+
+        return request;
     }
 
     private Map<String, Object> getQueueHeaders(String eventType) {
         Map<String, Object> headers = new HashMap<>();
+
+        log.info("Get queue headers with eventType: {}", eventType);
+
         headers.put(EVENT_TYPE_HEADER, eventType);
         headers.put(RequestData.CORRELATION_ID_HEADER, requestData.correlationId());
         headers.put(RequestData.USER_ID_HEADER, requestData.userId());
         headers.put(RequestData.USERNAME_HEADER, requestData.username());
         headers.put(RequestData.GROUP_HEADER, requestData.groups());
+
+        log.info("Get queue headers with headers: correlationId: {}, userId: {}, username: {}, groups: {}",
+                requestData.correlationId(), requestData.userId(), requestData.username(), requestData.groups());
+
         return headers;
     }
 }
