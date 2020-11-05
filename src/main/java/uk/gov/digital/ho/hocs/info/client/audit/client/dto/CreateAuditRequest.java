@@ -3,13 +3,11 @@ package uk.gov.digital.ho.hocs.info.client.audit.client.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
-@ToString
 public class CreateAuditRequest {
 
     @JsonProperty(value= "correlation_id", required = true)
