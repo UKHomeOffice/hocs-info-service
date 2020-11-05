@@ -308,6 +308,8 @@ spec:
                 secretKeyRef:
                   name: '{{.KUBE_NAMESPACE}}-keycloak'
                   key: keycloak_client_id
+            - name: AUDIT_TOPIC_NAME
+              value: {{.KUBE_NAMESPACE}}-sns
             - name: AUDIT_AWS_SNS_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
