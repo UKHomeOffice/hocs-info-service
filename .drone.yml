@@ -117,6 +117,7 @@ pipeline:
       event: [push, tag, deployment]
 
   deploy-to-cs-dev-from-build-number:
+    group: deploy-to-dev
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
     environment:
       - ENVIRONMENT=cs-dev
@@ -133,6 +134,7 @@ pipeline:
       event: [push, tag]
 
   deploy-to-wcs-dev-from-build-number:
+    group: deploy-to-dev
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
     environment:
       - ENVIRONMENT=wcs-dev
