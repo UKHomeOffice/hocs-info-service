@@ -109,7 +109,9 @@ public class ListConsumerService {
         try {
             response = restTemplate.exchange(apiEndpoint, HttpMethod.GET, entity, returnClass);
         } catch (Exception e) {
-            throw new ApplicationExceptions.IngestException("Members Not Found at " + apiEndpoint);
+            log.info("exchange call exception : " + e.getMessage());
+            throw new ApplicationExceptions.IngestException("ListConsumerService exchange exception : " + e.getMessage() + " endpoint : " +
+                    apiEndpoint + " headers : " + headers.toString() + " media type : " +  mediaType.toString());
         }
 
         return response.getBody();
