@@ -33,4 +33,7 @@ public interface TopicRepository extends CrudRepository<Topic, String> {
 
     @Query(value = "SELECT DISTINCT t.* from info.topic t join info.team_link tl on cast(t.uuid as text) = tl.link_value join info.parent_topic pt on t.parent_topic_uuid = pt.uuid where tl.case_type = ?1 and pt.active = true and t.active = true order by t.display_name", nativeQuery = true)
     List<Topic>  findAllActiveAssignedTopicsByCaseType(String caseType);
+
+    @Query(value = "SELECT DISTINCT t.* FROM info.team_link tl INNER JOIN info.topic t ON cast(t.uuid as text) = tl.link_value WHERE tl.responsible_team_uuid in ?1 AND t.active = TRUE", nativeQuery = true)
+    List<Topic> findAllActiveTopicsByTeams(List<UUID> teamsUuids);
 }
