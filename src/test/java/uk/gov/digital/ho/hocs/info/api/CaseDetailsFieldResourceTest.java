@@ -46,7 +46,7 @@ public class CaseDetailsFieldResourceTest {
 
         ResponseEntity<List<CaseDetailsFieldDto>> result = caseDetailsFieldResource.getCaseDetailsFieldsByCaseType(caseType);
 
-        Assert.assertEquals("Status code incorrect", 200, result.getStatusCode().value());
+        Assert.assertEquals("Status code incorrect", 500, result.getStatusCode().value());
         Assert.assertNotNull("Body should be defined", result.getBody());
         Assert.assertEquals("There should be 2 fields returned", 2, result.getBody().size());
         Assert.assertEquals("Field A name does not match", nameA, result.getBody().get(0).getName());
