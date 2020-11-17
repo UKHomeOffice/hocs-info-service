@@ -22,6 +22,9 @@ public class ConfigurationDto {
     @JsonProperty("bulkCreateEnabled")
     private boolean bulkCreateEnabled;
 
+    @JsonProperty("viewStandardLinesEnabled")
+    private boolean viewStandardLinesEnabled;
+
     @JsonProperty("deadlinesEnabled")
     private boolean deadlinesEnabled;
 
@@ -44,6 +47,7 @@ public class ConfigurationDto {
         return new ConfigurationDto(
                 configuration.getDisplayName(),
                 configuration.isBulkCreateEnabled(),
+                configuration.isViewStandardLinesEnabled(),
                 configuration.isDeadlinesEnabled(),
                 workstackTypeColumns,
                 profileDtos,

@@ -214,6 +214,11 @@ public class TopicService {
         }
     }
 
+    public List<Topic> findActiveTopicsForTeams(List<UUID> teamsUuids) {
+        log.debug("Requesting all active topics for the following teams: {}", teamsUuids);
+        return topicRepository.findAllActiveTopicsByTeams(teamsUuids);
+    }
+
     public List<Topic> getTopics() {
         log.debug("Requesting all topics");
         return topicRepository.findAllBy();

@@ -40,8 +40,8 @@ public class TopicServiceTest {
 
     private TopicService topicService;
 
-    private UUID uuid = UUID.randomUUID();
-    private UUID parentUuid = UUID.randomUUID();
+    private final UUID uuid = UUID.randomUUID();
+    private final UUID parentUuid = UUID.randomUUID();
 
     @Before
     public void setUp() {
@@ -167,15 +167,12 @@ public class TopicServiceTest {
 
     @Test (expected = ApplicationExceptions.TopicCreationException.class)
     public void shouldNotCreateTopicWhenParentAlreadyHasTopicWithGivenName() {
-
         CreateTopicDto request = new CreateTopicDto("Topic");
         ParentTopic parentTopic = new ParentTopic("ParentTopic", false);
-        Topic topic = new Topic("Topic", UUID.randomUUID());
 
         when(parentTopicRepository.findByUuid(any())).thenReturn(parentTopic);
 
         topicService.createTopic(request, UUID.randomUUID());
-
     }
 
     @Test
@@ -290,7 +287,7 @@ public class TopicServiceTest {
     public void shouldReturnTopicsForCaseType() {
         UUID caseUUID = UUID.randomUUID();
         var topics = getTopics();
-        GetCaseworkCaseDataResponse getCaseworkCaseDataResponse = new GetCaseworkCaseDataResponse(caseUUID, ZonedDateTime.now(), "", "", new HashMap<String, String>(), UUID.randomUUID(), UUID.randomUUID());
+        GetCaseworkCaseDataResponse getCaseworkCaseDataResponse = new GetCaseworkCaseDataResponse(caseUUID, ZonedDateTime.now(), "", "", new HashMap<>(), UUID.randomUUID(), UUID.randomUUID());
         when(caseworkClient.getCase(any())).thenReturn(getCaseworkCaseDataResponse);
 
         when(topicRepository.findAllActiveAssignedTopicsByCaseType(any())).thenReturn(topics);
@@ -303,19 +300,32 @@ public class TopicServiceTest {
         assertThat(returnedTopics).containsAll(topics);
     }
 
-    private List<ParentTopic> getParentTopics() {
-        return new ArrayList<ParentTopic>() {{
-            add(new ParentTopic(1l, UUID.randomUUID(), "ParentTopic1", new HashSet<>(), true));
-            add(new ParentTopic(2l, UUID.randomUUID(), "ParentTopic2", new HashSet<>(), true));
-        }};
+    @Test
+    public void shouldFindActiveTopicsForTeams() {
+        var topics = getTopics();
+       
+        when(topicRepository.findAllActiveTopicsByTeams(any())).thenReturn(topics);
 
+        var returnedTopics = topicService.findActiveTopicsForTeams(any());
+
+        verify(topicRepository).findAllActiveTopicsByTeams(any());
+        verifyNoMoreInteractions(topicRepository);
+
+        assertThat(returnedTopics).isNotNull();
+        assertThat(returnedTopics).containsAll(topics);
+    }
+
+    private List<ParentTopic> getParentTopics() {
+        return new ArrayList<>() {{
+            add(new ParentTopic(1L, UUID.randomUUID(), "ParentTopic1", new HashSet<>(), true));
+            add(new ParentTopic(2L, UUID.randomUUID(), "ParentTopic2", new HashSet<>(), true));
+        }};
     }
 
     private List<Topic> getTopics() {
-        return new ArrayList<Topic>() {{
+        return new ArrayList<>() {{
             add(new Topic("Topic1", UUID.randomUUID()));
             add(new Topic("Topic2", UUID.randomUUID()));
         }};
-
     }
 }

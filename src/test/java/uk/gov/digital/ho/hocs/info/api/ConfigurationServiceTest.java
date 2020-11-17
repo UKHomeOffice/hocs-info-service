@@ -40,13 +40,14 @@ public class ConfigurationServiceTest {
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, "profile", "name", "component", "validationRules", "properties"));
         List<Profile> profiles =  Arrays.asList(new Profile("testProfile", "system", true, searchFields));
         String readOnlyCaseViewAdapter = "Adapter";
-        when(configurationRepository.findBySystemName(systemName)).thenReturn(new Configuration(systemName, systemDisplayName, false, false, workstackTypes, profiles, true, readOnlyCaseViewAdapter));
+        when(configurationRepository.findBySystemName(systemName)).thenReturn(new Configuration(systemName, systemDisplayName, false, false, false, workstackTypes, profiles, true, readOnlyCaseViewAdapter));
 
         Configuration result = configurationService.getConfiguration(systemName);
 
         Assert.assertEquals("System name incorrect", systemName, result.getSystemName());
         Assert.assertEquals("Display name do not match", systemDisplayName, result.getDisplayName());
         Assert.assertEquals("Bulk Create Setting is incorrect", false, result.isBulkCreateEnabled());
+        Assert.assertEquals("View Standard Lines setting is incorrect", false, result.isViewStandardLinesEnabled());
         Assert.assertEquals("Deadlines Enabled Setting is incorrect", false, result.isDeadlinesEnabled());
         Assert.assertEquals("AutoCreateAndAllocateEnabled do not match", true, result.isAutoCreateAndAllocateEnabled());
         Assert.assertEquals("ReadOnlyCaseViewAdapter do not match", readOnlyCaseViewAdapter, result.getReadOnlyCaseViewAdapter());

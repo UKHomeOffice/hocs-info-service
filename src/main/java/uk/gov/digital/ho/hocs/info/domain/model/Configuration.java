@@ -28,6 +28,9 @@ public class Configuration implements Serializable {
     @Column(name = "bulk_create_enabled")
     private boolean bulkCreateEnabled;
 
+    @Column(name = "view_standard_lines_enabled")
+    private boolean viewStandardLinesEnabled;
+
     @Column(name = "deadlines_enabled")
     private boolean deadlinesEnabled;
 

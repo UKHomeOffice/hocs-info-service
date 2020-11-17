@@ -151,4 +151,21 @@ public class StandardLineResourceTest {
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
+    @Test
+    public void getStandardLinesForUser(){
+        List<StandardLine> standardLines = List.of(new StandardLine("DisplayName", uuid, LocalDateTime.now()));
+
+        when(standardLineService.getStandardLinesForUser(any())).thenReturn(standardLines);
+
+        ResponseEntity<List<GetStandardLineResponse>> response = standardLineResource.getStandardLinesForUser(any());
+        verify(standardLineService).getStandardLinesForUser(any());
+        verifyNoMoreInteractions(standardLineService);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().size()).isEqualTo(1);
+        assertThat(response.getBody().get(0).getDisplayName()).isEqualTo("DisplayName");
+        assertThat(response.getBody().get(0).getTopicUUID()).isEqualTo(uuid);
+    }
 }

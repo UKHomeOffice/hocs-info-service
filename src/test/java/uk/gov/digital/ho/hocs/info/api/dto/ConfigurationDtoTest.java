@@ -41,7 +41,7 @@ public class ConfigurationDtoTest {
         List<Profile> profiles = Arrays.asList(new Profile(profileName, systemName, false, searchFields));
 
         String readOnlyCaseViewAdapter = "Adapter";
-        Configuration configuration = new Configuration(systemName, systemDisplayName, true, true, workstackTypes, profiles, true, readOnlyCaseViewAdapter);
+        Configuration configuration = new Configuration(systemName, systemDisplayName, true, true, true, workstackTypes, profiles, true, readOnlyCaseViewAdapter);
 
 
         ConfigurationDto dto = ConfigurationDto.from(configuration);
@@ -49,6 +49,7 @@ public class ConfigurationDtoTest {
         Assert.assertEquals("Display name do not match", systemDisplayName, dto.getDisplayName());
         Assert.assertEquals("Bulk Create setting is incorrect", true, dto.isBulkCreateEnabled());
         Assert.assertEquals("Deadline Enabled setting is incorrect", true, dto.isDeadlinesEnabled());
+        Assert.assertEquals("View Standard Lines setting is incorrect", true, dto.isViewStandardLinesEnabled());
         Assert.assertEquals("AutoCreateAndAllocateEnabled setting is incorrect", true, dto.isAutoCreateAndAllocateEnabled());
         Assert.assertEquals("ReadOnlyCaseViewAdapter setting is incorrect", readOnlyCaseViewAdapter, dto.getReadOnlyCaseViewAdapter());
 

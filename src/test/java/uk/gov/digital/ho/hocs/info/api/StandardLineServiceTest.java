@@ -5,23 +5,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.api.dto.GetStandardLineResponse;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateStandardLineDto;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.documentclient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.client.documentclient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateStandardLineDocumentDto;
 import uk.gov.digital.ho.hocs.info.domain.model.StandardLine;
+import uk.gov.digital.ho.hocs.info.domain.model.Team;
+import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 import uk.gov.digital.ho.hocs.info.domain.repository.StandardLineRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,19 +36,26 @@ public class StandardLineServiceTest {
     @Mock
     private CaseworkClient caseworkClient;
 
+    @Mock
+    private TeamService teamService;
+
+    @Mock
+    private TopicService topicService;
+
     private StandardLineService standardLineService;
 
     private static final UUID uuid = UUID.randomUUID();
     private static final UUID standardLineUUID = UUID.randomUUID();
     private static final UUID topicUUID = UUID.randomUUID();
     private static final UUID documentUUID = UUID.randomUUID();
+    private static final UUID userUUID = UUID.randomUUID();
     private static final LocalDateTime END_OF_DAY = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
     private static final String DISPLAY_NAME = "dn";
     private static final UUID NEW_DOCUMENT_UUID = UUID.randomUUID();
 
     @Before
     public void setUp() {
-        this.standardLineService = new StandardLineService(standardLineRepository, documentClient, caseworkClient);
+        this.standardLineService = new StandardLineService(standardLineRepository, documentClient, caseworkClient, teamService, topicService);
     }
 
     @Test
@@ -187,7 +191,79 @@ public class StandardLineServiceTest {
 
     }
 
+    @Test
+    public void getStandardLinesForUser(){
+        List<StandardLine> standardLines = List.of(new StandardLine("DisplayName", uuid, LocalDateTime.now()));
+        Team team = new Team("Test", true);
+        Topic topic = new Topic("Topic Test", UUID.randomUUID());
+        Set<Team> teamsSet = Set.of(team);
+        List<Topic> topics = List.of(topic);
+
+        when(teamService.getTeamsForUser(userUUID)).thenReturn(teamsSet);
+        when(topicService.findActiveTopicsForTeams(List.of(team.getUuid()))).thenReturn(topics);
+        when(standardLineRepository.findStandardLinesByTopics(List.of(topic.getUuid()))).thenReturn(standardLines);
+
+        List<StandardLine> result = standardLineService.getStandardLinesForUser(userUUID);
+        verify(teamService).getTeamsForUser(userUUID);
+        verify(topicService).findActiveTopicsForTeams(List.of(team.getUuid()));
+        verify(standardLineRepository).findStandardLinesByTopics(List.of(topic.getUuid()));
+        checkNoMoreInteractions();
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getDisplayName()).isEqualTo("DisplayName");
+        assertThat(result.get(0).getTopicUUID()).isEqualTo(uuid);
+    }
+
+    @Test
+    public void getStandardLinesForUser_NoTeams_ReturnsEmptyList(){
+        Set<Team> teamSet = new HashSet<>();
+
+        when(teamService.getTeamsForUser(userUUID)).thenReturn(teamSet);
+
+        List<StandardLine> result = standardLineService.getStandardLinesForUser(userUUID);
+        verify(teamService).getTeamsForUser(userUUID);
+        checkNoMoreInteractions();
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void getStandardLinesForUser_TeamWithNoTopic_ReturnsEmptyList(){
+        Team team = new Team("Test", true);
+        Set<Team> teamsSet = Set.of(team);
+
+        when(teamService.getTeamsForUser(userUUID)).thenReturn(teamsSet);
+
+        List<StandardLine> result = standardLineService.getStandardLinesForUser(userUUID);
+        verify(teamService).getTeamsForUser(userUUID);
+        verify(topicService).findActiveTopicsForTeams(List.of(team.getUuid()));
+        checkNoMoreInteractions();
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void getStandardLinesForUser_TeamTopicNoStandardLines_ReturnsEmptyList(){
+        List<StandardLine> standardLines = new ArrayList<>();
+        Team team = new Team("Test", true);
+        Topic topic = new Topic("Topic Test", UUID.randomUUID());
+        Set<Team> teamsSet = Set.of(team);
+        List<Topic> topics = List.of(topic);
+
+        when(teamService.getTeamsForUser(userUUID)).thenReturn(teamsSet);
+        when(topicService.findActiveTopicsForTeams(List.of(team.getUuid()))).thenReturn(topics);
+        when(standardLineRepository.findStandardLinesByTopics(List.of(topic.getUuid()))).thenReturn(standardLines);
+
+        List<StandardLine> result = standardLineService.getStandardLinesForUser(userUUID);
+        verify(teamService).getTeamsForUser(userUUID);
+        verify(topicService).findActiveTopicsForTeams(List.of(team.getUuid()));
+        verify(standardLineRepository).findStandardLinesByTopics(List.of(topic.getUuid()));
+        checkNoMoreInteractions();
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(0);
+    }
+
     private void checkNoMoreInteractions(){
-        verifyNoMoreInteractions(standardLineRepository, documentClient, caseworkClient);
+        verifyNoMoreInteractions(standardLineRepository, documentClient, caseworkClient, teamService, topicService);
     }
 }

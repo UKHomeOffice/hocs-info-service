@@ -9,15 +9,19 @@ import uk.gov.digital.ho.hocs.info.client.documentclient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.client.documentclient.model.ManagedDocumentType;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.StandardLine;
+import uk.gov.digital.ho.hocs.info.domain.model.Team;
+import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 import uk.gov.digital.ho.hocs.info.domain.repository.StandardLineRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -26,15 +30,21 @@ public class StandardLineService {
     private final StandardLineRepository standardLineRepository;
     private final DocumentClient documentClient;
     private final CaseworkClient caseworkClient;
-
+    private final TeamService teamService;
+    private final TopicService topicService;
+    
     @Autowired
     public StandardLineService(
             StandardLineRepository standardLineRepository,
             DocumentClient documentClient,
-            CaseworkClient caseworkClient) {
+            CaseworkClient caseworkClient, 
+            TeamService teamService,
+            TopicService topicService) {
         this.standardLineRepository = standardLineRepository;
         this.documentClient = documentClient;
         this.caseworkClient = caseworkClient;
+        this.teamService = teamService;
+        this.topicService = topicService;
     }
 
     @Transactional
@@ -83,6 +93,26 @@ public class StandardLineService {
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("Standard Line for Topic: %s, not found!", topicUUID);
         }
+    }
+    
+    List<StandardLine> getStandardLinesForUser(UUID userUUID) {
+        List<StandardLine> standardLines = new ArrayList<>();
+        
+        log.debug("Getting teams for user: {} ", userUUID);
+        List<UUID> usersTeamUuids = teamService.getTeamsForUser(userUUID).stream().map(Team::getUuid).collect(Collectors.toList());
+        
+        if (usersTeamUuids.size() > 0) {
+            log.debug("Getting active topics for teams: {} ", usersTeamUuids);
+            List<UUID> topicsUuids = topicService.findActiveTopicsForTeams(usersTeamUuids).stream().map(Topic::getUuid).collect(Collectors.toList());
+            
+            if (topicsUuids.size() > 0) {
+                log.debug("Getting standard lines associated for topics: {} ", topicsUuids);
+                standardLines = standardLineRepository.findStandardLinesByTopics(topicsUuids);
+            }
+        }
+   
+        log.info("Got {} Standard Lines", standardLines.size());
+        return standardLines;
     }
 
     public void expireStandardLine(UUID standardLineUuid) {
