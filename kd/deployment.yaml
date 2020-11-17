@@ -114,8 +114,8 @@ spec:
               cpu: 600m
               memory: 64Mi
             requests:
-              memory: 16Mi
               cpu: 200m
+              memory: 16Mi
 
         - name: hocs-info-service-data-migration
           image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/hocs/{{.HOCS_DATA_REPO}}:{{.HOCS_INFO_SERVICE_DATA_VERSION}}
