@@ -47,6 +47,12 @@ public class StandardLineResource {
         return ResponseEntity.ok(GetStandardLineResponse.from(standardLine));
     }
 
+    @GetMapping(value = "/user/{userUUID}/standardLine", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<List<GetStandardLineResponse>> getStandardLinesForUser(@PathVariable UUID userUUID) {
+        List<StandardLine> standardLines = standardLineService.getStandardLinesForUser(userUUID);
+        return ResponseEntity.ok(standardLines.stream().map(GetStandardLineResponse::from).collect(Collectors.toList()));
+    }
+
     @GetMapping(value = "/standardLine/all", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<GetStandardLineResponse>> getAllStandardLines() {
         List<StandardLine> standardLines = standardLineService.getAllStandardLines();
