@@ -1,0 +1,66 @@
+package uk.gov.digital.ho.hocs.info.domain.repository;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+import uk.gov.digital.ho.hocs.info.domain.model.SomuType;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@RunWith(SpringRunner.class)
+@DataJpaTest
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("test")
+public class SomuTypeRepositoryTest {
+
+    @Autowired
+    private TestEntityManager entityManager;
+
+    @Autowired
+    private SomuTypeRepository repository;
+
+    @Test()
+    public void findAllBy() {
+        var somuType1 = new SomuType("CaseType1", "Type1", "{}", false);
+        var somuType2 = new SomuType("CaseType2", "Type2", "{}", true);
+        entityManager.persist(somuType1);
+        entityManager.persist(somuType2);
+
+        var somuTypes = repository.findAllBy();
+
+        assertThat(somuTypes).isNotNull();
+        assertThat(somuTypes.size()).isEqualTo(2);
+    }
+
+    @Test()
+    public void findAllByCaseType() {
+        var somuType1 = new SomuType("CaseType1", "Type1", "{}", false);
+        var somuType2 = new SomuType("CaseType2", "Type2", "{}", true);
+        entityManager.persist(somuType1);
+        entityManager.persist(somuType2);
+
+        var somuTypes = repository.findAllByCaseType("CaseType1");
+
+        assertThat(somuTypes).isNotNull();
+        assertThat(somuTypes.size()).isEqualTo(1);
+    }
+
+    @Test()
+    public void findByCaseTypeAndType() {
+        var somuType1 = new SomuType("CaseType1", "Type1", "{}", false);
+        var somuType2 = new SomuType("CaseType2", "Type2", "{}", true);
+        entityManager.persist(somuType1);
+        entityManager.persist(somuType2);
+
+        var somuType = repository.findByCaseTypeAndType("CaseType1", "Type1");
+
+        assertThat(somuType).isNotNull();
+        assertThat(somuType.getCaseType()).isEqualTo("CaseType1");
+        assertThat(somuType.getType()).isEqualTo("Type1");
+    }
+}
