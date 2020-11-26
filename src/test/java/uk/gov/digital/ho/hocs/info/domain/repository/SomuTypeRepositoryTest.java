@@ -39,8 +39,8 @@ public class SomuTypeRepositoryTest {
 
     @Test()
     public void findAllByCaseType() {
-        var somuType1 = new SomuType("CaseType3", "Type1", "{}", false);
-        var somuType2 = new SomuType("CaseType4", "Type2", "{}", true);
+        var somuType1 = new SomuType("CaseType3", "Type3", "{}", false);
+        var somuType2 = new SomuType("CaseType4", "Type4", "{}", true);
         entityManager.persist(somuType1);
         entityManager.persist(somuType2);
 
@@ -52,15 +52,15 @@ public class SomuTypeRepositoryTest {
 
     @Test()
     public void findByCaseTypeAndType() {
-        var somuType1 = new SomuType("CaseType5", "Type1", "{}", false);
-        var somuType2 = new SomuType("CaseType6", "Type2", "{}", true);
+        var somuType1 = new SomuType("CaseType5", "Type5", "{}", false);
+        var somuType2 = new SomuType("CaseType6", "Type6", "{}", true);
         entityManager.persist(somuType1);
         entityManager.persist(somuType2);
 
-        var somuType = repository.findByCaseTypeAndType("CaseType5", "Type1");
+        var somuType = repository.findByCaseTypeAndType("CaseType5", "Type5");
 
         assertThat(somuType).isNotNull();
         assertThat(somuType.getCaseType()).isEqualTo("CaseType5");
-        assertThat(somuType.getType()).isEqualTo("Type1");
+        assertThat(somuType.getType()).isEqualTo("Type5");
     }
 }
