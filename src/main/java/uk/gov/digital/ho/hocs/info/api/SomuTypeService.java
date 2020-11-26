@@ -20,10 +20,10 @@ public class SomuTypeService {
         this.somuTypeRepository = somuTypeRepository;
     }
 
-    Set<SomuType> getAllSomuTypes() {
-        log.debug("Getting all SomuTypes");
-        Set<SomuType> somuTypes = somuTypeRepository.findAllBy();
-        log.info("Got {} SomuTypes", somuTypes.size());
+    Set<SomuType> getAllActiveSomuTypes() {
+        log.debug("Getting all active SomuTypes");
+        Set<SomuType> somuTypes = somuTypeRepository.findAllActive();
+        log.info("Got {} active SomuTypes", somuTypes.size());
         return somuTypes;
     }
 
@@ -38,7 +38,7 @@ public class SomuTypeService {
         log.debug("Upserting SomuTypes for Case Type {} and Type {}", caseType, type);
         SomuType somuType = somuTypeRepository.findByCaseTypeAndType(caseType, type);
         if (somuType == null) {
-        somuType = new SomuType(caseType, type, schema, true);
+            somuType = new SomuType(caseType, type, schema, true);
             somuTypeRepository.save(somuType);
             log.info("Inserted SomuType {} for Case Type {} and Type {}", somuType.getUuid(), caseType, type);
         } else {

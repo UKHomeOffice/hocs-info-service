@@ -10,6 +10,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.info.domain.model.SomuType;
 
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -25,16 +27,17 @@ public class SomuTypeRepositoryTest {
     private SomuTypeRepository repository;
 
     @Test()
-    public void findAllBy() {
+    public void findAllActive() {
         var somuType1 = new SomuType("CaseType1", "Type1", "{}", false);
         var somuType2 = new SomuType("CaseType2", "Type2", "{}", true);
         entityManager.persist(somuType1);
         entityManager.persist(somuType2);
 
-        var somuTypes = repository.findAllBy();
+        var somuTypes = repository.findAllActive();
 
         assertThat(somuTypes).isNotNull();
-        assertThat(somuTypes.size()).isGreaterThan(1);
+        assertThat(somuTypes.size()).isGreaterThan(0);
+        assertThat(somuTypes.stream().filter(st -> st.isActive() == false).collect(Collectors.toSet())).isEmpty();
     }
 
     @Test()

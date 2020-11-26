@@ -36,9 +36,9 @@ public class SomuTypeServiceTest {
         Set<SomuType> somuTypes = new HashSet<SomuType>() {{
             add(somuType);
         }};
-        when(somuTypeRepository.findAllBy()).thenReturn(somuTypes);
+        when(somuTypeRepository.findAllActive()).thenReturn(somuTypes);
 
-        Set<SomuType> result = service.getAllSomuTypes();
+        Set<SomuType> result = service.getAllActiveSomuTypes();
 
         assertThat(result.size()).isEqualTo(1);
         assertThat(result).isEqualTo(somuTypes);

@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateSomuTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.SomuTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.model.SomuType;
 
@@ -35,9 +36,9 @@ public class SomuTypeResourceTest {
         Set<SomuType> somuTypes = new HashSet<SomuType>() {{
             add(somuType);
         }};
-        when(somuTypeService.getAllSomuTypes()).thenReturn(somuTypes);
+        when(somuTypeService.getAllActiveSomuTypes()).thenReturn(somuTypes);
 
-        ResponseEntity<Set<SomuTypeDto>> result = somuTypeResource.getAllSomuTypes();
+        ResponseEntity<Set<SomuTypeDto>> result = somuTypeResource.getAllActiveSomuTypes();
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCodeValue()).isEqualTo(200);
@@ -48,7 +49,7 @@ public class SomuTypeResourceTest {
         assertThat(somuTypeDto.getType()).isEqualTo("Type");
         assertThat(somuTypeDto.getSchema()).isEqualTo("{}");
         assertThat(somuTypeDto.isActive()).isTrue();
-        verify(somuTypeService).getAllSomuTypes();
+        verify(somuTypeService).getAllActiveSomuTypes();
         verifyNoMoreInteractions(somuTypeService);
     }
 
@@ -75,8 +76,9 @@ public class SomuTypeResourceTest {
     public void upsertSomuTypeForCaseTypeAndType() {
         SomuType somuType = new SomuType(1L, UUID.randomUUID(), "CaseType", "Type", "{}", true);
         when(somuTypeService.upsertSomuTypeForCaseTypeAndType("CaseType", "Type", "{}")).thenReturn(somuType);
+        CreateSomuTypeDto createSomuTypeDto = new CreateSomuTypeDto("CaseType", "Type", "{}");
 
-        ResponseEntity<SomuTypeDto> result = somuTypeResource.upsertSomuTypeForCaseTypeAndType("CaseType", "Type", "{}");
+        ResponseEntity<SomuTypeDto> result = somuTypeResource.upsertSomuTypeForCaseTypeAndType(createSomuTypeDto);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCodeValue()).isEqualTo(200);
