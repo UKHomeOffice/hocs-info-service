@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -28,6 +29,7 @@ public class SomuType {
     @Column(name = "type")
     private String type;
 
+    @Setter
     @Column(name = "schema")
     private String schema = "{}";
 
@@ -40,5 +42,9 @@ public class SomuType {
         this.type = type;
         this.schema = schema;
         this.active = active;
+    }
+
+    public void delete() {
+        active = false;
     }
 }

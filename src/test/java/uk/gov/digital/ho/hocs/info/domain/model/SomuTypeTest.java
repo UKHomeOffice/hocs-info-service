@@ -16,4 +16,17 @@ public class SomuTypeTest {
         assertThat(somuType.getCaseType()).isEqualTo("caseType");
         assertThat(somuType.getType()).isEqualTo("type");
     }
+
+    @Test
+    public void deleteSetsActiveFlagToFalse() {
+        SomuType somuType = new SomuType(
+                "caseType",
+                "type",
+                "schema",
+                true);
+
+        somuType.delete();
+
+        assertThat(somuType.isActive()).isFalse();
+    }
 }

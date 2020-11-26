@@ -2,9 +2,7 @@ package uk.gov.digital.ho.hocs.info.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.SomuTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.model.SomuType;
 
@@ -33,5 +31,17 @@ public class SomuTypeResource {
     ResponseEntity<SomuTypeDto> getSomuTypeForCaseTypeAndType(@PathVariable String caseType, @PathVariable String type) {
         SomuType somuType = somuTypeService.getSomuTypeForCaseTypeAndType(caseType, type);
         return ResponseEntity.ok(SomuTypeDto.from(somuType));
+    }
+
+    @PostMapping(value = "/somuType/{caseType}/{type}", produces = APPLICATION_JSON_UTF8_VALUE)
+    ResponseEntity<SomuTypeDto> upsertSomuTypeForCaseTypeAndType(@PathVariable String caseType, @PathVariable String type, @RequestBody String schema) {
+        SomuType somuType = somuTypeService.upsertSomuTypeForCaseTypeAndType(caseType, type, schema);
+        return ResponseEntity.ok(SomuTypeDto.from(somuType));
+    }
+
+    @DeleteMapping(value = "/somuType/{caseType}/{type}", produces = APPLICATION_JSON_UTF8_VALUE)
+    ResponseEntity deleteSomuTypeForCaseTypeAndType(@PathVariable String caseType, @PathVariable String type) {
+        somuTypeService.deleteSomuTypeForCaseTypeAndType(caseType, type);
+        return ResponseEntity.ok().build();
     }
 }
