@@ -20,10 +20,10 @@ public class SomuTypeService {
         this.somuTypeRepository = somuTypeRepository;
     }
 
-    Set<SomuType> getAllActiveSomuTypes() {
-        log.debug("Getting all active SomuTypes");
-        Set<SomuType> somuTypes = somuTypeRepository.findAllActive();
-        log.info("Got {} active SomuTypes", somuTypes.size());
+    Set<SomuType> getAllSomuTypes() {
+        log.debug("Getting all SomuTypes");
+        Set<SomuType> somuTypes = somuTypeRepository.findAll();
+        log.info("Got all {} SomuTypes", somuTypes.size());
         return somuTypes;
     }
 
@@ -34,32 +34,19 @@ public class SomuTypeService {
         return somuType;
     }
 
-    SomuType upsertSomuTypeForCaseTypeAndType(String caseType, String type, String schema) {
+    SomuType upsertSomuTypeForCaseTypeAndType(String caseType, String type, String schema, boolean active) {
         log.debug("Upserting SomuTypes for Case Type {} and Type {}", caseType, type);
         SomuType somuType = somuTypeRepository.findByCaseTypeAndType(caseType, type);
         if (somuType == null) {
-            somuType = new SomuType(caseType, type, schema, true);
+            somuType = new SomuType(caseType, type, schema, active);
             somuTypeRepository.save(somuType);
             log.info("Inserted SomuType {} for Case Type {} and Type {}", somuType.getUuid(), caseType, type);
         } else {
             somuType.setSchema(schema);
+            somuType.setActive(active);
             somuTypeRepository.save(somuType);
             log.info("Updated SomuType {} for Case Type {} and Type {}", somuType.getUuid(), caseType, type);
         }
         return somuType;
-    }
-
-    void deleteSomuTypeForCaseTypeAndType(String caseType, String type) {
-        log.debug("Deleting SomuTypes for Case Type {} and Type {}", caseType, type);
-        SomuType somuType = somuTypeRepository.findByCaseTypeAndType(caseType, type);
-        if (somuType == null) {
-            throw new ApplicationExceptions.EntityNotFoundException(
-                    String.format("SomuType {}/{} not found", caseType, type));
-        } else {
-            somuType.delete();
-            somuTypeRepository.save(somuType);
-        }
-        log.info("Deleted SomuType {} for Case Type {} and Type {}", somuType.getUuid(), caseType, type);
-        return;
     }
 }

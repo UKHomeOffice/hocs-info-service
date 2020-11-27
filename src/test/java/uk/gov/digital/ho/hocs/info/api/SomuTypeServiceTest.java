@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.SomuType;
 import uk.gov.digital.ho.hocs.info.domain.repository.SomuTypeRepository;
 
@@ -13,7 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -36,9 +34,9 @@ public class SomuTypeServiceTest {
         Set<SomuType> somuTypes = new HashSet<SomuType>() {{
             add(somuType);
         }};
-        when(somuTypeRepository.findAllActive()).thenReturn(somuTypes);
+        when(somuTypeRepository.findAll()).thenReturn(somuTypes);
 
-        Set<SomuType> result = service.getAllActiveSomuTypes();
+        Set<SomuType> result = service.getAllSomuTypes();
 
         assertThat(result.size()).isEqualTo(1);
         assertThat(result).isEqualTo(somuTypes);
@@ -59,7 +57,7 @@ public class SomuTypeServiceTest {
     public void upsertSomuTypeForCaseTypeAndTypeWhenInsert() {
         when(somuTypeRepository.findByCaseTypeAndType("CaseType", "Type")).thenReturn(null);
 
-        SomuType result = service.upsertSomuTypeForCaseTypeAndType("CaseType", "Type", "{}");
+        SomuType result = service.upsertSomuTypeForCaseTypeAndType("CaseType", "Type", "{}", true);
 
         assertThat(result).isNotNull();
         assertThat(result.getUuid()).isNotNull();
@@ -77,7 +75,7 @@ public class SomuTypeServiceTest {
         SomuType somuType = new SomuType(1L, UUID.randomUUID(), "CaseType", "Type", "{}", true);
         when(somuTypeRepository.findByCaseTypeAndType("CaseType", "Type")).thenReturn(somuType);
 
-        SomuType result = service.upsertSomuTypeForCaseTypeAndType("CaseType", "Type", "{'test':true}");
+        SomuType result = service.upsertSomuTypeForCaseTypeAndType("CaseType", "Type", "{'test':true}", true);
 
         assertThat(result).isNotNull();
         assertThat(result.getUuid()).isNotNull();
@@ -87,30 +85,6 @@ public class SomuTypeServiceTest {
         assertThat(result.isActive()).isTrue();
         verify(somuTypeRepository).findByCaseTypeAndType("CaseType", "Type");
         verify(somuTypeRepository).save(somuType);
-        verifyNoMoreInteractions(somuTypeRepository);
-    }
-
-    @Test
-    public void deleteSomuTypeForCaseTypeAndTypeWhenFound() {
-        SomuType somuType = new SomuType(1L, UUID.randomUUID(), "CaseType", "Type", "{}", true);
-        when(somuTypeRepository.findByCaseTypeAndType("CaseType", "Type")).thenReturn(somuType);
-
-        service.deleteSomuTypeForCaseTypeAndType("CaseType", "Type");
-
-        assertThat(somuType.isActive()).isFalse();
-        verify(somuTypeRepository).findByCaseTypeAndType("CaseType", "Type");
-        verify(somuTypeRepository).save(somuType);
-        verifyNoMoreInteractions(somuTypeRepository);
-    }
-
-    @Test
-    public void deleteSomuTypeForCaseTypeAndTypeWhenNotFound() {
-        when(somuTypeRepository.findByCaseTypeAndType("CaseType", "Type")).thenReturn(null);
-
-        assertThatThrownBy(() -> service.deleteSomuTypeForCaseTypeAndType("CaseType", "Type"))
-                .isInstanceOf(ApplicationExceptions.EntityNotFoundException.class);
-
-        verify(somuTypeRepository).findByCaseTypeAndType("CaseType", "Type");
         verifyNoMoreInteractions(somuTypeRepository);
     }
 }

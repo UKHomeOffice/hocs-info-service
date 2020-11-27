@@ -36,9 +36,9 @@ public class SomuTypeResourceTest {
         Set<SomuType> somuTypes = new HashSet<SomuType>() {{
             add(somuType);
         }};
-        when(somuTypeService.getAllActiveSomuTypes()).thenReturn(somuTypes);
+        when(somuTypeService.getAllSomuTypes()).thenReturn(somuTypes);
 
-        ResponseEntity<Set<SomuTypeDto>> result = somuTypeResource.getAllActiveSomuTypes();
+        ResponseEntity<Set<SomuTypeDto>> result = somuTypeResource.getAllSomuTypes();
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCodeValue()).isEqualTo(200);
@@ -49,7 +49,7 @@ public class SomuTypeResourceTest {
         assertThat(somuTypeDto.getType()).isEqualTo("Type");
         assertThat(somuTypeDto.getSchema()).isEqualTo("{}");
         assertThat(somuTypeDto.isActive()).isTrue();
-        verify(somuTypeService).getAllActiveSomuTypes();
+        verify(somuTypeService).getAllSomuTypes();
         verifyNoMoreInteractions(somuTypeService);
     }
 
@@ -75,8 +75,8 @@ public class SomuTypeResourceTest {
     @Test
     public void upsertSomuTypeForCaseTypeAndType() {
         SomuType somuType = new SomuType(1L, UUID.randomUUID(), "CaseType", "Type", "{}", true);
-        when(somuTypeService.upsertSomuTypeForCaseTypeAndType("CaseType", "Type", "{}")).thenReturn(somuType);
-        CreateSomuTypeDto createSomuTypeDto = new CreateSomuTypeDto("CaseType", "Type", "{}");
+        when(somuTypeService.upsertSomuTypeForCaseTypeAndType("CaseType", "Type", "{}", true)).thenReturn(somuType);
+        CreateSomuTypeDto createSomuTypeDto = new CreateSomuTypeDto("CaseType", "Type", "{}", true);
 
         ResponseEntity<SomuTypeDto> result = somuTypeResource.upsertSomuTypeForCaseTypeAndType(createSomuTypeDto);
 
@@ -88,19 +88,7 @@ public class SomuTypeResourceTest {
         assertThat(somuTypeDto.getType()).isEqualTo("Type");
         assertThat(somuTypeDto.getSchema()).isEqualTo("{}");
         assertThat(somuTypeDto.isActive()).isTrue();
-        verify(somuTypeService).upsertSomuTypeForCaseTypeAndType("CaseType", "Type", "{}");
-        verifyNoMoreInteractions(somuTypeService);
-    }
-
-    @Test
-    public void deleteSomuTypeForCaseTypeAndType() {
-
-        ResponseEntity result = somuTypeResource.deleteSomuTypeForCaseTypeAndType("CaseType", "Type");
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatusCodeValue()).isEqualTo(200);
-        assertThat(result.getBody()).isNull();
-        verify(somuTypeService).deleteSomuTypeForCaseTypeAndType("CaseType", "Type");
+        verify(somuTypeService).upsertSomuTypeForCaseTypeAndType("CaseType", "Type", "{}", true);
         verifyNoMoreInteractions(somuTypeService);
     }
 }

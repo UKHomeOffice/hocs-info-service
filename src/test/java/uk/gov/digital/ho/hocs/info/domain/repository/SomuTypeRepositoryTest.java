@@ -33,11 +33,10 @@ public class SomuTypeRepositoryTest {
         entityManager.persist(somuType1);
         entityManager.persist(somuType2);
 
-        var somuTypes = repository.findAllActive();
+        var somuTypes = repository.findAll();
 
         assertThat(somuTypes).isNotNull();
         assertThat(somuTypes.size()).isGreaterThan(0);
-        assertThat(somuTypes.stream().filter(st -> st.isActive() == false).collect(Collectors.toSet())).isEmpty();
     }
 
     @Test()

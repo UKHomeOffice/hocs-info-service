@@ -33,6 +33,7 @@ public class SomuType {
     @Column(name = "schema")
     private String schema = "{}";
 
+    @Setter
     @Column(name = "active")
     private boolean active;
 
@@ -42,9 +43,5 @@ public class SomuType {
         this.type = type;
         this.schema = schema;
         this.active = active;
-    }
-
-    public void delete() {
-        active = false;
     }
 }

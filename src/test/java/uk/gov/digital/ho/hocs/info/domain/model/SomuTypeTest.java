@@ -18,15 +18,9 @@ public class SomuTypeTest {
     }
 
     @Test
-    public void deleteSetsActiveFlagToFalse() {
-        SomuType somuType = new SomuType(
-                "caseType",
-                "type",
-                "schema",
-                true);
+    public void schemaDefault() {
+        SomuType somuType = new SomuType();
 
-        somuType.delete();
-
-        assertThat(somuType.isActive()).isFalse();
+        assertThat(somuType.getSchema()).isEqualTo("{}");
     }
 }

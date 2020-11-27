@@ -23,8 +23,8 @@ public class SomuTypeResource {
     }
 
     @GetMapping(value = "/somuType", produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<Set<SomuTypeDto>> getAllActiveSomuTypes() {
-        Set<SomuType> stageTypes = somuTypeService.getAllActiveSomuTypes();
+    ResponseEntity<Set<SomuTypeDto>> getAllSomuTypes() {
+        Set<SomuType> stageTypes = somuTypeService.getAllSomuTypes();
         return ResponseEntity.ok(stageTypes.stream().map(SomuTypeDto::from).collect(Collectors.toSet()));
     }
 
@@ -36,13 +36,7 @@ public class SomuTypeResource {
 
     @PostMapping(value = "/somuType", produces = APPLICATION_JSON_UTF8_VALUE)
     ResponseEntity<SomuTypeDto> upsertSomuTypeForCaseTypeAndType(@RequestBody CreateSomuTypeDto somuTypeDto) {
-        SomuType somuType = somuTypeService.upsertSomuTypeForCaseTypeAndType(somuTypeDto.getCaseType(), somuTypeDto.getType(), somuTypeDto.getSchema());
+        SomuType somuType = somuTypeService.upsertSomuTypeForCaseTypeAndType(somuTypeDto.getCaseType(), somuTypeDto.getType(), somuTypeDto.getSchema(), somuTypeDto.getActive());
         return ResponseEntity.ok(SomuTypeDto.from(somuType));
-    }
-
-    @DeleteMapping(value = "/somuType/{caseType}/{type}")
-    ResponseEntity deleteSomuTypeForCaseTypeAndType(@PathVariable String caseType, @PathVariable String type) {
-        somuTypeService.deleteSomuTypeForCaseTypeAndType(caseType, type);
-        return ResponseEntity.ok().build();
     }
 }

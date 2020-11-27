@@ -18,4 +18,7 @@ public class CreateSomuTypeDto {
 
     @JsonProperty("schema")
     private String schema;
+
+    @JsonProperty("active")
+    private Boolean active;
 }
