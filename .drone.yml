@@ -79,10 +79,11 @@ pipeline:
       event: deployment
       environment: [cs-qa, wcs-qa]
 
-  trigger_hocs_data_build_with_semver_tag:
+  trigger-cs-downstream-data-build:
     image: plugins/downstream
     server: https://drone-gh.acp.homeoffice.gov.uk
     fork: true
+    deploy: cs-qa
     token: ${DRONE_TOKEN}
     secrets:
       - drone_token
@@ -94,11 +95,12 @@ pipeline:
       event: deployment
       environment: [cs-qa]
 
-  trigger_hocs_data_wcs_build_with_semver_tag:
+  trigger-wcs-downstream-data-build:
     image: plugins/downstream
     server: https://drone-gh.acp.homeoffice.gov.uk
     fork: true
     token: ${DRONE_TOKEN}
+    deploy: wcs-qa
     secrets:
       - drone_token
     params:
