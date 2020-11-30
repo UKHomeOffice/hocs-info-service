@@ -84,6 +84,7 @@ pipeline:
     server: https://drone-gh.acp.homeoffice.gov.uk
     fork: true
     deploy: cs-qa
+    last_successful: true
     token: ${DRONE_TOKEN}
     secrets:
       - drone_token
@@ -101,6 +102,7 @@ pipeline:
     fork: true
     token: ${DRONE_TOKEN}
     deploy: wcs-qa
+    last_successful: true
     secrets:
       - drone_token
     params:
