@@ -79,32 +79,36 @@ pipeline:
       event: deployment
       environment: [cs-qa, wcs-qa]
 
-  trigger_hocs_data_build_with_semver_tag:
+  trigger-cs-downstream-data-build:
     image: plugins/downstream
     server: https://drone-gh.acp.homeoffice.gov.uk
     fork: true
+    deploy: cs-qa
+    last_successful: true
     token: ${DRONE_TOKEN}
     secrets:
       - drone_token
     params:
       - info-service-data-version.env
     repositories:
-      - UKHomeOffice/hocs-data
+      - UKHomeOffice/hocs-data@master
     when:
       event: deployment
       environment: [cs-qa]
 
-  trigger_hocs_data_wcs_build_with_semver_tag:
+  trigger-wcs-downstream-data-build:
     image: plugins/downstream
     server: https://drone-gh.acp.homeoffice.gov.uk
     fork: true
     token: ${DRONE_TOKEN}
+    deploy: wcs-qa
+    last_successful: true
     secrets:
       - drone_token
     params:
       - info-service-data-version.env
     repositories:
-      - UKHomeOffice/hocs-data-wcs
+      - UKHomeOffice/hocs-data-wcs@master
     when:
       event: deployment
       environment: [wcs-qa]
