@@ -18,6 +18,7 @@ public class SomuTypeDtoTest {
         SomuTypeDto somuTypeDto = SomuTypeDto.from(somuType);
 
         assertThat(somuTypeDto).isNotNull();
+        assertThat(somuTypeDto.getUuid()).isNotNull();
         assertThat(somuTypeDto.getCaseType()).isEqualTo("caseType");
         assertThat(somuTypeDto.getType()).isEqualTo("type");
         assertThat(somuTypeDto.getSchema()).isEqualTo("schema");
