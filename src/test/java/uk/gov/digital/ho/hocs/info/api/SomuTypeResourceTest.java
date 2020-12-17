@@ -19,6 +19,8 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SomuTypeResourceTest {
+    
+    private UUID somuUuid = UUID.randomUUID();
 
     @Mock
     SomuTypeService somuTypeService;
@@ -32,7 +34,7 @@ public class SomuTypeResourceTest {
 
     @Test
     public void getAllSomuTypes() {
-        SomuType somuType = new SomuType(1L, UUID.randomUUID(), "CaseType", "Type", "{}", true);
+        SomuType somuType = new SomuType(1L, somuUuid, "CaseType", "Type", "{}", true);
         Set<SomuType> somuTypes = new HashSet<SomuType>() {{
             add(somuType);
         }};
@@ -45,6 +47,7 @@ public class SomuTypeResourceTest {
         assertThat(result.getBody()).isNotNull();
         assertThat(result.getBody().size()).isEqualTo(1);
         SomuTypeDto somuTypeDto = (SomuTypeDto) result.getBody().toArray()[0];
+        assertThat(somuTypeDto.getUuid()).isEqualTo(somuUuid);
         assertThat(somuTypeDto.getCaseType()).isEqualTo("CaseType");
         assertThat(somuTypeDto.getType()).isEqualTo("Type");
         assertThat(somuTypeDto.getSchema()).isEqualTo("{}");
@@ -55,7 +58,7 @@ public class SomuTypeResourceTest {
 
     @Test
     public void getSomuTypeForCaseTypeAndType() {
-        SomuType somuType = new SomuType(1L, UUID.randomUUID(), "CaseType", "Type", "{}", true);
+        SomuType somuType = new SomuType(1L, somuUuid, "CaseType", "Type", "{}", true);
         when(somuTypeService.getSomuTypeForCaseTypeAndType("CaseType", "Type")).thenReturn(somuType);
 
         ResponseEntity<SomuTypeDto> result = somuTypeResource.getSomuTypeForCaseTypeAndType("CaseType", "Type");
@@ -64,6 +67,7 @@ public class SomuTypeResourceTest {
         assertThat(result.getStatusCodeValue()).isEqualTo(200);
         assertThat(result.getBody()).isNotNull();
         SomuTypeDto somuTypeDto = result.getBody();
+        assertThat(somuTypeDto.getUuid()).isEqualTo(somuUuid);
         assertThat(somuTypeDto.getCaseType()).isEqualTo("CaseType");
         assertThat(somuTypeDto.getType()).isEqualTo("Type");
         assertThat(somuTypeDto.getSchema()).isEqualTo("{}");
@@ -74,7 +78,7 @@ public class SomuTypeResourceTest {
 
     @Test
     public void upsertSomuTypeForCaseTypeAndType() {
-        SomuType somuType = new SomuType(1L, UUID.randomUUID(), "CaseType", "Type", "{}", true);
+        SomuType somuType = new SomuType(1L, somuUuid, "CaseType", "Type", "{}", true);
         when(somuTypeService.upsertSomuTypeForCaseTypeAndType("CaseType", "Type", "{}", true)).thenReturn(somuType);
         CreateSomuTypeDto createSomuTypeDto = new CreateSomuTypeDto("CaseType", "Type", "{}", true);
 
@@ -84,6 +88,7 @@ public class SomuTypeResourceTest {
         assertThat(result.getStatusCodeValue()).isEqualTo(200);
         assertThat(result.getBody()).isNotNull();
         SomuTypeDto somuTypeDto = result.getBody();
+        assertThat(somuTypeDto.getUuid()).isEqualTo(somuUuid);
         assertThat(somuTypeDto.getCaseType()).isEqualTo("CaseType");
         assertThat(somuTypeDto.getType()).isEqualTo("Type");
         assertThat(somuTypeDto.getSchema()).isEqualTo("{}");
