@@ -16,6 +16,8 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
 
     Team findByUuid(UUID uuid);
 
+    Set<Team> findAll();
+
     Set<Team> findAllByActiveTrue();
 
     @Query(value = "SELECT t.* FROM team t JOIN unit u on u.uuid = t.unit_uuid WHERE u.short_code = ?1", nativeQuery = true)
