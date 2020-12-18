@@ -91,6 +91,18 @@ public class TeamResourceTest {
     }
 
     @Test
+    public void shouldGetAllTeams() {
+
+        when(teamService.getAllTeams()).thenReturn(getAllTeams());
+
+        ResponseEntity<Set<TeamDto>> result = teamResource.getAllTeams();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody().size()).isEqualTo(3);
+        verify(teamService).getAllTeams();
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
     public void shouldGetAllActiveTeams() {
 
         when(teamService.getAllActiveTeams()).thenReturn(getTeams());
@@ -284,6 +296,14 @@ public class TeamResourceTest {
         return new HashSet<Team>() {{
             add(new Team("Team1", true));
             add(new Team("Team2", true));
+        }};
+    }
+
+    private Set<Team> getAllTeams() {
+        return new HashSet<Team>() {{
+            add(new Team("Team1", true));
+            add(new Team("Team2", true));
+            add(new Team("Team3", false));
         }};
     }
 

@@ -103,6 +103,12 @@ public class TeamResource {
         return ResponseEntity.ok(teams.stream().map(TeamDto::from).collect(Collectors.toSet()));
     }
 
+    @GetMapping(value = "/team/all")
+    public ResponseEntity<Set<TeamDto>> getAllTeams() {
+        Set<Team> teams = teamService.getAllTeams();
+        return ResponseEntity.ok(teams.stream().map(TeamDto::from).collect(Collectors.toSet()));
+    }
+
     @GetMapping(value = "/teams", params = {"unit"}, produces = APPLICATION_JSON_UTF8_VALUE)
     ResponseEntity<Set<TeamDto>> getCaseTypes(@RequestParam("unit") String unitShortCode) {
         Set<Team> teams = teamService.getAllActiveTeamsByUnitShortCode(unitShortCode);
