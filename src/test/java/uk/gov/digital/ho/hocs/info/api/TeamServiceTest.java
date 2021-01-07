@@ -71,6 +71,16 @@ public class TeamServiceTest {
     @Test
     public void shouldGetAllTeams() {
 
+        when(teamRepository.findAll()).thenReturn(getAllTeams().stream().collect(Collectors.toSet()));
+        Set<Team> result = teamService.getAllTeams();
+        assertThat(result).size().isEqualTo(3);
+        verify(teamRepository, times(1)).findAll();
+        verifyNoMoreInteractions(teamRepository);
+    }
+
+    @Test
+    public void shouldGetAllActiveTeams() {
+
         when(teamRepository.findAllByActiveTrue()).thenReturn(getTeams().stream().collect(Collectors.toSet()));
         Set<Team> result = teamService.getAllActiveTeams();
         assertThat(result).size().isEqualTo(2);
@@ -533,6 +543,20 @@ public class TeamServiceTest {
             // do nothing
         }
         verifyZeroInteractions(auditClient);
+    }
+
+    private List<Team> getAllTeams() {
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        Set<Permission> permissions = new HashSet<Permission>() {{
+            add(new Permission(AccessLevel.OWNER, null, caseType));
+            add(new Permission(AccessLevel.OWNER, null, caseType));
+        }};
+
+        return new ArrayList<Team>() {{
+            add(new Team("Team1", permissions));
+            add(new Team("Team2", false));
+            add(new Team("Team3", true));
+        }};
     }
 
     private List<Team> getTeams() {

@@ -59,6 +59,14 @@ public class TeamService {
         return getTeams();
     }
 
+    @Cacheable("teamsAll")
+    public Set<Team> getAllTeams() {
+        log.debug("Getting all Teams");
+        Set<Team> allTeams = teamRepository.findAll();
+        log.info("Got {} Teams", allTeams.size());
+        return allTeams;
+    }
+
     @CachePut("teams")
     public Set<Team> refreshTeamCache() {
         return getTeams();

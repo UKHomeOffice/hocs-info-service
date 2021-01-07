@@ -83,7 +83,6 @@ public class CaseTypeResource {
         return ResponseEntity.ok(caseTypeService.calculateWorkingDaysElapsedForCaseType(caseType, fromDate));
     }
 
-    @PostMapping
     public ResponseEntity createCaseType(CreateCaseTypeDto caseType) {
         caseTypeService.createCaseType(caseType);
         return ResponseEntity.ok().build();
