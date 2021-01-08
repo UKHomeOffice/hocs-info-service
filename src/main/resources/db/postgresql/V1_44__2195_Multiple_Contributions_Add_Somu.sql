@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS somu_type
   active            BOOLEAN     NOT NULL DEFAULT TRUE,
   
   CONSTRAINT somu_type_uuid_unique UNIQUE (uuid),
-  CONSTRAINT somu_type_type_unique UNIQUE (type),
   CONSTRAINT somu_type_case_type_type_unique UNIQUE (case_type, type)
 );
 
