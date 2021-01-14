@@ -57,6 +57,17 @@ public class UserService {
         return keycloakService.getUsersForTeam(teamUUID).stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
     }
 
+    public UserDto getUserForTeam(UUID teamUUID, UUID userUUID) {
+        String userId = userUUID.toString();
+        List<UserDto> users = getUsersForTeam(teamUUID);
+        for (UserDto user : users) {
+            if (user.getId().equals(userId)){
+                return user;
+            }
+        }
+        return null;
+    }
+
     public List<UserDto> getUsersForTeamByStage(UUID caseUUID, UUID stageUUID) {
         String stageType = caseworkClient.getStageTypeFromStage(caseUUID, stageUUID);
         UUID teamUUID = stageTypeService.getTeamForStageType(stageType).getUuid();
