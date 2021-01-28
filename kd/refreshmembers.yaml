@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: hocs-refersh-members-job
+  name: hocs-refresh-members-job
 spec:
   schedule: "0 {{.MEMBER_REFRESH_HOUR}} * * *"
   jobTemplate:
