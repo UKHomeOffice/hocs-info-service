@@ -8,6 +8,8 @@ spec:
     spec:
       backoffLimit: 3
       template:
+        metadata:
+          labels: hocs-backend
         spec:
           containers:
             - name: hocs-refersh-members-job
