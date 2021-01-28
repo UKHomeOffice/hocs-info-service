@@ -21,9 +21,11 @@ if [[ ${KUBE_NAMESPACE} == *prod ]]
 then
     export MIN_REPLICAS="2"
     export MAX_REPLICAS="6"
+    export MEMBER_REFRESH_HOUR="22"
 else
     export MIN_REPLICAS="1"
     export MAX_REPLICAS="2"
+    export MEMBER_REFRESH_HOUR="17" # notprod turns off earlier than prod
 fi
 
 if [[ ${KUBE_NAMESPACE} == "cs-prod" ]] ; then
