@@ -105,15 +105,18 @@ public class TopicService {
                 auditClient.createTopicAudit(topic);
                 return topic.getUuid();
             } else {
-                if (existingTopic.isActive()) {
+                if (!existingTopic.isActive()) {
                     log.debug(
-                            "Unable to create topic, active topic with this name already exists for this parent");
+                            "Reactivating existing inactive topic with this name for this parent");
+                    this.reactivateTopic(existingTopic.getUuid());
+
+                    return existingTopic.getUuid();
                 } else {
                     log.debug(
-                            "Unable to create topic, inactive topic with this name already exists for this parent");
+                            "Unable to create topic, active topic with this name already exists for this parent");
+                    throw new ApplicationExceptions.TopicCreationException(
+                            "Topic already exists with this name for the parent topic");
                 }
-                throw new ApplicationExceptions.TopicCreationException(
-                        "Topic already exists with this name for the parent topic");
             }
         }
     }
@@ -222,6 +225,11 @@ public class TopicService {
     public List<Topic> getTopics() {
         log.debug("Requesting all topics");
         return topicRepository.findAllBy();
+    }
+
+    public List<Topic> getActiveTopics() {
+        log.debug("Requesting all active topics");
+        return topicRepository.findAllByActiveIsTrue();
     }
 
     private List<Topic> findAllActiveAssignedTopicsByCaseType(String caseType) {

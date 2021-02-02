@@ -68,6 +68,13 @@ public class TopicResource {
         return ResponseEntity.ok(topics.stream().map(t->TopicDto.from(t)).collect(Collectors.toSet()));
     }
 
+    @GetMapping(value = "/topics/active", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Set<TopicDto>> getActiveTopics () {
+        log.info("requesting all active topics");
+        List<Topic> topics = topicService.getActiveTopics();
+        return ResponseEntity.ok(topics.stream().map(t->TopicDto.from(t)).collect(Collectors.toSet()));
+    }
+
     @GetMapping(value = "/topic/parents", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Set<ParentTopicDto>> getParentTopics () {
         log.info("requesting all parent topics");
