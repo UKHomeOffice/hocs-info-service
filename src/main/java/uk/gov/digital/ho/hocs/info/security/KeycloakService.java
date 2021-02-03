@@ -174,16 +174,30 @@ public class KeycloakService {
     @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
     public Set<UserRepresentation> getUsersForTeam(UUID teamUUID) {
         String encodedTeamPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
+        HashSet<UserRepresentation> groupUsers = new HashSet<>();
         try {
             if (teamRepository.findByUuid(teamUUID) != null) {
                 GroupRepresentation group = keycloakClient.realm(hocsRealmName).getGroupByPath(encodedTeamPath);
-                return new HashSet<>(keycloakClient.realm(hocsRealmName).groups().group((group).getId()).members());
+
+                do {
+                    List<UserRepresentation> pageUsers =
+                            keycloakClient.realm(hocsRealmName)
+                                    .groups().group((group).getId())
+                                    .members(groupUsers.size(), USER_BATCH_FETCH_SIZE);
+                    groupUsers.addAll(pageUsers);
+
+                    if (pageUsers.size() < USER_BATCH_FETCH_SIZE) {
+                        break;
+                    }
+                } while (groupUsers.size() != 0);
+
+                return groupUsers;
             } else {
-                throw new ApplicationExceptions.EntityNotFoundException("Team not found for UUID %s", teamUUID);
+               throw new ApplicationExceptions.EntityNotFoundException("Team not found for UUID %s", teamUUID);
             }
         } catch (javax.ws.rs.NotFoundException e) {
             log.error("Keycloak has not found users assigned to this team, Not found exception thrown by keycloak: " + e.getMessage());
-            return Collections.emptySet();
+            return groupUsers;
         }
     }
 }
