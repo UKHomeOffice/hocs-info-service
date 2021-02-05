@@ -238,7 +238,7 @@ public class KeycloakServiceTest {
             }
         };
         when(keycloakClient.realm(HOCS_REALM).getGroupByPath("/" + encodedTeamUUID)).thenReturn(group);
-        when(keycloakClient.realm(HOCS_REALM).groups().group("1").members()).thenReturn(userRepresentations);
+        when(keycloakClient.realm(HOCS_REALM).groups().group("1").members(0, 100)).thenReturn(userRepresentations);
 
         Set<UserRepresentation> result = service.getUsersForTeam(teamUUID);
         assertThat(result.size()).isEqualTo(1);
@@ -282,5 +282,59 @@ public class KeycloakServiceTest {
         }
 
         return userRepresentations;
+    }
+
+    @Test
+    public void shouldGetUsersForTeam_OutsideMaximum() {
+        UUID teamUUID = UUID.randomUUID();
+        List<UserRepresentation> userRepresentations = new ArrayList<>();
+        UserRepresentation user = new UserRepresentation();
+        user.setId(userUUID.toString());
+        user.setFirstName("FirstName");
+        user.setLastName("LastName");
+        userRepresentations.add(user);
+
+        String encodedTeamUUID = Base64UUID.uuidToBase64String(teamUUID);
+        GroupRepresentation group = new GroupRepresentation() {
+            {
+                setPath("/" + encodedTeamUUID);
+                setName(encodedTeamUUID);
+                setId("1");
+            }
+        };
+        when(keycloakClient.realm(HOCS_REALM).getGroupByPath("/" + encodedTeamUUID)).thenReturn(group);
+        when(keycloakClient.realm(HOCS_REALM).groups().group("1").members(any(), eq(100)))
+                .thenReturn(createUserBatch(1, 100))
+                .thenReturn(createUserBatch(2, 21));
+
+        Set<UserRepresentation> result = service.getUsersForTeam(teamUUID);
+        assertThat(result.size()).isEqualTo(121);
+    }
+
+    @Test
+    public void shouldGetUsersForTeam_MatchMaximum() {
+        UUID teamUUID = UUID.randomUUID();
+        List<UserRepresentation> userRepresentations = new ArrayList<>();
+        UserRepresentation user = new UserRepresentation();
+        user.setId(userUUID.toString());
+        user.setFirstName("FirstName");
+        user.setLastName("LastName");
+        userRepresentations.add(user);
+
+        String encodedTeamUUID = Base64UUID.uuidToBase64String(teamUUID);
+        GroupRepresentation group = new GroupRepresentation() {
+            {
+                setPath("/" + encodedTeamUUID);
+                setName(encodedTeamUUID);
+                setId("1");
+            }
+        };
+        when(keycloakClient.realm(HOCS_REALM).getGroupByPath("/" + encodedTeamUUID)).thenReturn(group);
+        when(keycloakClient.realm(HOCS_REALM).groups().group("1").members(any(), eq(100)))
+                .thenReturn(createUserBatch(1, 100))
+                .thenReturn(createUserBatch(2, 0));
+
+        Set<UserRepresentation> result = service.getUsersForTeam(teamUUID);
+        assertThat(result.size()).isEqualTo(100);
     }
 }

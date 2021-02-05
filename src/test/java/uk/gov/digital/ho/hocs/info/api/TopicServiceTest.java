@@ -59,6 +59,16 @@ public class TopicServiceTest {
     }
 
     @Test
+    public void shouldReturnAllActiveTopics() {
+        when(topicRepository.findAllByActiveIsTrue()).thenReturn(getActiveTopics());
+
+        topicService.getActiveTopics();
+
+        verify(topicRepository, times(1)).findAllByActiveIsTrue();
+        verifyNoMoreInteractions(topicRepository);
+    }
+
+    @Test
     public void shouldReturnAllParentTopics() {
         when(parentTopicRepository.findAll()).thenReturn(getParentTopics());
 
@@ -303,7 +313,7 @@ public class TopicServiceTest {
     @Test
     public void shouldFindActiveTopicsForTeams() {
         var topics = getTopics();
-       
+
         when(topicRepository.findAllActiveTopicsByTeams(any())).thenReturn(topics);
 
         var returnedTopics = topicService.findActiveTopicsForTeams(any());
@@ -323,6 +333,13 @@ public class TopicServiceTest {
     }
 
     private List<Topic> getTopics() {
+        return new ArrayList<>() {{
+            add(new Topic("Topic1", UUID.randomUUID()));
+            add(new Topic("Topic2", UUID.randomUUID()));
+        }};
+    }
+
+    private List<Topic> getActiveTopics() {
         return new ArrayList<>() {{
             add(new Topic("Topic1", UUID.randomUUID()));
             add(new Topic("Topic2", UUID.randomUUID()));

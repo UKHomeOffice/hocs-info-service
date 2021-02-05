@@ -19,6 +19,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.TopicRepository;
 
+import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -190,22 +191,25 @@ public class TopicIntegrationTests {
     }
 
     @Test
-    public void shouldNotCreateTopicWhenParentHasInactiveTopicWithSameNameAsGiven() {
+    public void shouldReactivateTopicWhenParentHasInactiveTopicWithSameNameAsGiven() {
 
         long numberOfTopicsBefore = topicRepository.count();
+        long numberOfActiveTopicsBefore = topicRepository.findAllByActiveIsTrue().size();
 
         CreateTopicDto request = new CreateTopicDto("test inactive topic 4");
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity<Void> result = restTemplate.exchange(
+        ResponseEntity<Map> result = restTemplate.exchange(
                 getBasePath() + "/topic/parent/" + parentTopicUUID
-                , HttpMethod.POST, httpEntity, Void.class);
+                , HttpMethod.POST, httpEntity, Map.class);
 
         long numberOfTopicsAfter = topicRepository.count();
+        long numberOfActiveTopicsAfter = topicRepository.findAllByActiveIsTrue().size();
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
-
+        assertThat(numberOfActiveTopicsAfter).isEqualTo(numberOfActiveTopicsBefore + 1);
+        assertThat(result.getBody().get("topicUUID")).isEqualTo("11111111-ffff-1111-1111-111111111134");
     }
 
     @Test
