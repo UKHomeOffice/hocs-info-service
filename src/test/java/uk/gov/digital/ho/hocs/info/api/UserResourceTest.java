@@ -77,4 +77,18 @@ public class UserResourceTest {
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody().size()).isEqualTo(2);
     }
+
+    @Test
+    public void shouldGetUserForTeam() {
+        UUID teamUUID = UUID.randomUUID();
+        UUID userUUID = UUID.randomUUID();
+        UserDto user =  new UserDto(userUUID.toString(),"some user","FirstName", "LastName","user1@noemail.com");
+        when(userService.getUserForTeam(teamUUID, userUUID)).thenReturn(user);
+
+        userResource = new UserResource(userService);
+        ResponseEntity<UserDto> result = userResource.getUserForTeam(teamUUID, userUUID);
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody()).isEqualTo(user);
+    }
 }
