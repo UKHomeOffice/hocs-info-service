@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.digital.ho.hocs.info.api.data.SimpleMapItem;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
@@ -14,6 +15,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.Unit;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -318,4 +320,44 @@ public class TeamResourceTest {
         verifyNoMoreInteractions(teamService);
     }
 
+    @Test
+    public void getMoveToAnotherTeamOptions_TransferAllowed() {
+        Team team = new Team("Team1", true);
+
+        Unit unit = new Unit("My Unit", "code", true);
+        unit.setAllowBulkTeamTransfer(true);
+        team.setUnit(unit);
+
+        when(teamService.getTeam(team.getUuid())).thenReturn(team);
+        when(teamService.findActiveTeamsByUnitUuid(unit.getUuid())).thenReturn(getAllTeams());
+
+        ResponseEntity<Set<TeamDto>> result = teamResource.getMoveToAnotherTeamOptions(team.getUuid());
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody().size()).isEqualTo(3);
+
+        verify(teamService).getTeam(team.getUuid());
+        verify(teamService).findActiveTeamsByUnitUuid(unit.getUuid());
+
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
+    public void getMoveToAnotherTeamOptions_TransferDisallowed() {
+        Team team = new Team("Team1", true);
+
+        Unit unit = new Unit("My Unit", "code", true);
+        unit.setAllowBulkTeamTransfer(false);
+        team.setUnit(unit);
+
+        when(teamService.getTeam(team.getUuid())).thenReturn(team);
+
+        ResponseEntity<Set<TeamDto>> result = teamResource.getMoveToAnotherTeamOptions(team.getUuid());
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody().size()).isEqualTo(0);
+
+        verify(teamService).getTeam(team.getUuid());
+        verifyNoMoreInteractions(teamService);
+    }
 }
