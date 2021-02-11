@@ -39,6 +39,11 @@ public class Unit implements Serializable {
     private boolean active;
 
     @Getter
+    @Setter
+    @Column(name = "allow_bulk_team_transfer")
+    private boolean allowBulkTeamTransfer;
+
+    @Getter
     @OneToMany(mappedBy = "unit", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Team> teams;
 

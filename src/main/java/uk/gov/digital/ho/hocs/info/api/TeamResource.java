@@ -6,6 +6,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Unit;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -100,13 +101,13 @@ public class TeamResource {
 
     @GetMapping(value = "/team/{teamUUID}/move_options", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Set<TeamDto>> getMoveToAnotherTeamOptions(@PathVariable UUID teamUUID) {
-        Team team = teamService.getTeam(teamUUID); // todo: this
-        final Unit unit = team.getUnit();
+        Team team = teamService.getTeam(teamUUID);
 
-        Set<Team> teams = teamService.findActiveTeamsByUnitUuid(team.getUnit().getUuid());
+        Set<Team> teams = team.getUnit().isAllowBulkTeamTransfer() ?
+                teamService.findActiveTeamsByUnitUuid(team.getUnit().getUuid()) : Collections.emptySet();
+
         return ResponseEntity.ok(teams.stream().map(TeamDto::from).collect(Collectors.toSet()));
     }
-
 
     @GetMapping(value = "/team")
     public ResponseEntity<Set<TeamDto>> getActiveTeams() {
