@@ -9,10 +9,12 @@ spec:
       backoffLimit: 3
       template:
         metadata:
-          labels: hocs-backend
+          labels:
+            name: hocs-refresh-members-job
+            role: hocs-backend
         spec:
           containers:
-            - name: hocs-refersh-members-job
+            - name: hocs-refresh-members-job
               securityContext:
                 runAsNonRoot: true
                 runAsUser: 1000
