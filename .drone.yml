@@ -85,7 +85,7 @@ pipeline:
       - /app/hocs-deploy --version=$${SEMVER} --serviceGitToken=$${GIT_PASSWORD} --service=hocs-info-service --gitToken=$${GITHUB_PASSWORD} --gitRepo="https://gitlab.digital.homeoffice.gov.uk/hocs/hocs-versions.git" --environment=qa --dockerRepository=quay.io/ukhomeofficedigital --sourceBuild=$${IMAGE_VERSION} --registryUser=ukhomeofficedigital+hocs --registryPassword=$${DOCKER_PASSWORD}
     when:
       event: deployment
-      environment: qa
+      environment: release
 
   generate-dot-env-file-for-hocs-data-image-build-steps:
     image: alpine:latest
@@ -94,7 +94,7 @@ pipeline:
       - echo HOCS_INFO_SERVICE_DATA_VERSION=$VERSION > info-service-data-version.env
     when:
       event: deployment
-      environment: qa
+      environment: release
 
   trigger-cs-downstream-data-build:
     image: plugins/downstream
@@ -111,7 +111,7 @@ pipeline:
       - UKHomeOffice/hocs-data@master
     when:
       event: deployment
-      environment: qa
+      environment: release
 
   trigger-wcs-downstream-data-build:
     image: plugins/downstream
@@ -128,7 +128,7 @@ pipeline:
       - UKHomeOffice/hocs-data-wcs@master
     when:
       event: deployment
-      environment: qa
+      environment: release
 
   clone-kube-project:
     image: plugins/git
@@ -186,7 +186,7 @@ pipeline:
       - ./deploy.sh
     when:
       event: deployment
-      environment: [cs-dev, cs-demo, wcs-dev, wcs-demo]
+      environment: [cs-dev, cs-qa, cs-demo, wcs-dev, wcs-qa, wcs-demo]
 
   deploy-to-qa-cs:
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
@@ -202,7 +202,7 @@ pipeline:
       - ./deploy.sh
     when:
       event: deployment
-      environment: [cs-qa, qa]
+      environment: release
 
   deploy-to-qa-wcs:
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
@@ -218,7 +218,7 @@ pipeline:
       - ./deploy.sh
     when:
       event: deployment
-      environment: [wcs-qa, qa]
+      environment: release
 
   deploy-to-prod-cs:
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
