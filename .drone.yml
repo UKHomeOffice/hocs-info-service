@@ -202,7 +202,7 @@ pipeline:
       - ./deploy.sh
     when:
       event: deployment
-      environment: cs-qa
+      environment: [cs-qa, qa]
 
   deploy-to-qa-wcs:
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
@@ -218,7 +218,7 @@ pipeline:
       - ./deploy.sh
     when:
       event: deployment
-      environment: wcs-qa
+      environment: [wcs-qa, qa]
 
   deploy-to-prod-cs:
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
