@@ -4,7 +4,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
+import uk.gov.digital.ho.hocs.info.domain.model.Unit;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -95,6 +97,16 @@ public class TeamResource {
     public ResponseEntity<UnitDto> getUnitByTeam(@PathVariable UUID teamUUID) {
         Team team = teamService.getTeam(teamUUID);
         return ResponseEntity.ok(UnitDto.from(team.getUnit()));
+    }
+
+    @GetMapping(value = "/team/{teamUUID}/move_options", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Set<TeamDto>> getMoveToAnotherTeamOptions(@PathVariable UUID teamUUID) {
+        Team team = teamService.getTeam(teamUUID);
+
+        Set<Team> teams = team.getUnit().isAllowBulkTeamTransfer() ?
+                teamService.findActiveTeamsByUnitUuid(team.getUnit().getUuid()) : Collections.emptySet();
+
+        return ResponseEntity.ok(teams.stream().map(TeamDto::from).collect(Collectors.toSet()));
     }
 
     @GetMapping(value = "/team")
