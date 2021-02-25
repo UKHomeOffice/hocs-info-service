@@ -220,6 +220,22 @@ pipeline:
       event: deployment
       environment: wcs-qa
 
+  deploy-to-hocs-qax:
+    image: quay.io/ukhomeofficedigital/kd:v1.16.0
+    environment:
+      - ENVIRONMENT=hocs-qax
+      - KUBE_SERVER=https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+    secrets:
+      - hocs_info_service_qax
+    commands:
+      - source version.txt
+      - echo $VERSION
+      - cd kube-hocs-info-service
+      - ./deploy.sh
+    when:
+      event: deployment
+      environment: hocs-qax
+
   deploy-to-prod-cs:
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
     environment:
