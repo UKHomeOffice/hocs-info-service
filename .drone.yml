@@ -94,7 +94,7 @@ pipeline:
       - echo HOCS_INFO_SERVICE_DATA_VERSION=$VERSION > info-service-data-version.env
     when:
       event: deployment
-      environment: [cs-qa, wcs-qa]
+      environment: [cs-qa, wcs-qa, hocs-qax]
 
   trigger-cs-downstream-data-build:
     image: plugins/downstream
@@ -112,6 +112,23 @@ pipeline:
     when:
       event: deployment
       environment: [cs-qa]
+
+  trigger-qax-cs-downstream-data-build:
+    image: plugins/downstream
+    server: https://drone-gh.acp.homeoffice.gov.uk
+    fork: true
+    deploy: hocs-qax
+    last_successful: true
+    token: ${DRONE_TOKEN}
+    secrets:
+      - drone_token
+    params:
+      - info-service-data-version.env
+    repositories:
+      - UKHomeOffice/hocs-data@master
+    when:
+      event: deployment
+      environment: [hocs-qax]
 
   trigger-wcs-downstream-data-build:
     image: plugins/downstream
