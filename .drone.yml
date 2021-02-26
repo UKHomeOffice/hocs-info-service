@@ -85,7 +85,7 @@ pipeline:
       - /app/hocs-deploy --version=$${SEMVER} --serviceGitToken=$${GIT_PASSWORD} --service=hocs-info-service --gitToken=$${GITHUB_PASSWORD} --gitRepo="https://gitlab.digital.homeoffice.gov.uk/hocs/hocs-versions.git" --environment=qa --dockerRepository=quay.io/ukhomeofficedigital --sourceBuild=$${IMAGE_VERSION} --registryUser=ukhomeofficedigital+hocs --registryPassword=$${DOCKER_PASSWORD}
     when:
       event: deployment
-      environment: [cs-qa, wcs-qa]
+      environment: [cs-qa, wcs-qa, hocs-qax]
 
   generate-dot-env-file-for-hocs-data-image-build-steps:
     image: alpine:latest
