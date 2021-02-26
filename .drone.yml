@@ -54,7 +54,7 @@ pipeline:
       - docker push quay.io/ukhomeofficedigital/hocs-info-service:build-$${DRONE_BUILD_NUMBER}
       - docker push quay.io/ukhomeofficedigital/hocs-info-service:branch-$${BRANCH_NAME_TAGFRIENDLY}
     when:
-      branch: [master, epic/*]
+      branch: [master, epic/*, hotfix/*]
       event: [push]
 
   install-docker-image-latest:
