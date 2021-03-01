@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.domain.model;
+package uk.gov.digital.ho.hocs.info.domain.model.enums;
 
 import lombok.Getter;
 
@@ -12,9 +12,9 @@ public enum House {
     HOUSE_WELSH_ASSEMBLY("Welsh Assembly");
 
     @Getter
-    private String displayValue;
+    private final String displayValue;
 
-    House(String value) {
+    House(final String value) {
         displayValue = value;
     }
 }
