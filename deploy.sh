@@ -14,7 +14,9 @@ fi
 if [[ ${KUBE_NAMESPACE} == cs-* ]]; then
     export HOCS_DATA_REPO=hocs-data
 else
-    export HOCS_DATA_REPO=hocs-data-wcs
+    if [[ ${KUBE_NAMESPACE} == wcs-* ]]; then
+        export HOCS_DATA_REPO=hocs-data-wcs
+    fi
 fi
 
 if [[ ${KUBE_NAMESPACE} == *prod ]]
