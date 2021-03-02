@@ -85,7 +85,7 @@ pipeline:
       - /app/hocs-deploy --version=$${SEMVER} --serviceGitToken=$${GIT_PASSWORD} --service=hocs-info-service --gitToken=$${GITHUB_PASSWORD} --gitRepo="https://gitlab.digital.homeoffice.gov.uk/hocs/hocs-versions.git" --environment=qa --dockerRepository=quay.io/ukhomeofficedigital --sourceBuild=$${IMAGE_VERSION} --registryUser=ukhomeofficedigital+hocs --registryPassword=$${DOCKER_PASSWORD}
     when:
       event: deployment
-      environment: [cs-qa, wcs-qa]
+      environment: [cs-qa, wcs-qa, hocs-qax]
 
   generate-dot-env-file-for-hocs-data-image-build-steps:
     image: alpine:latest
@@ -94,7 +94,7 @@ pipeline:
       - echo HOCS_INFO_SERVICE_DATA_VERSION=$VERSION > info-service-data-version.env
     when:
       event: deployment
-      environment: [cs-qa, wcs-qa]
+      environment: [cs-qa, wcs-qa, hocs-qax]
 
   trigger-cs-downstream-data-build:
     image: plugins/downstream
@@ -112,6 +112,23 @@ pipeline:
     when:
       event: deployment
       environment: [cs-qa]
+
+  trigger-qax-cs-downstream-data-build:
+    image: plugins/downstream
+    server: https://drone-gh.acp.homeoffice.gov.uk
+    fork: true
+    deploy: hocs-qax
+    last_successful: true
+    token: ${DRONE_TOKEN}
+    secrets:
+      - drone_token
+    params:
+      - info-service-data-version.env
+    repositories:
+      - UKHomeOffice/hocs-data@master
+    when:
+      event: deployment
+      environment: [hocs-qax]
 
   trigger-wcs-downstream-data-build:
     image: plugins/downstream
@@ -219,6 +236,22 @@ pipeline:
     when:
       event: deployment
       environment: wcs-qa
+
+  deploy-to-hocs-qax:
+    image: quay.io/ukhomeofficedigital/kd:v1.16.0
+    environment:
+      - ENVIRONMENT=hocs-qax
+      - KUBE_SERVER=https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+    secrets:
+      - hocs_info_service_qax
+    commands:
+      - source version.txt
+      - echo $VERSION
+      - cd kube-hocs-info-service
+      - ./deploy.sh
+    when:
+      event: deployment
+      environment: hocs-qax
 
   deploy-to-prod-cs:
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
