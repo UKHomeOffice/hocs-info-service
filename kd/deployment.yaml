@@ -140,8 +140,8 @@ spec:
                   key: rds_password
           resources:
             limits:
-              cpu: 600m
-              memory: 64Mi
+              cpu: 900m
+              memory: 128Mi
             requests:
               cpu: 100m
               memory: 16Mi
