@@ -1,10 +1,13 @@
 package uk.gov.digital.ho.hocs.info.api;
 
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateUserResponse;
+import uk.gov.digital.ho.hocs.info.api.dto.UpdateUserDto;
 import uk.gov.digital.ho.hocs.info.api.dto.UserDto;
 
 import java.util.List;
@@ -50,11 +53,17 @@ public class UserResource {
     }
 
     @PostMapping(value = "/user", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity createUser(@RequestBody CreateUserDto createUserDto) {
-        userService.createUser(createUserDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<CreateUserResponse> createUser(@Valid @RequestBody CreateUserDto createUserDto) {
+        CreateUserResponse createUserResponse = userService.createUser(createUserDto);
+        userService.refreshUserCache();
+        return ResponseEntity.ok().body(createUserResponse);
     }
 
-
+    @PutMapping(value = "/user/{userUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity updateUser(@PathVariable UUID userUUID, @Valid @RequestBody UpdateUserDto updateUserDto) {
+        userService.updateUser(userUUID, updateUserDto);
+        userService.refreshUserCache();
+        return ResponseEntity.ok().build();
+    }
 }
 

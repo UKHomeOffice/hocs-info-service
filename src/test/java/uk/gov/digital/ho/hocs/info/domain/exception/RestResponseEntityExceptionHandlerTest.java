@@ -1,19 +1,21 @@
 package uk.gov.digital.ho.hocs.info.domain.exception;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import uk.gov.digital.ho.hocs.info.security.KeycloakException;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-
 
 public class RestResponseEntityExceptionHandlerTest {
 
@@ -85,17 +87,35 @@ public class RestResponseEntityExceptionHandlerTest {
     }
 
     @Test
-    public void handleMethodArgumentNotValidException(){
+    public void handleMethodArgumentNotValidExceptionWithNoBindingErrors(){
         String msg = "Test Error msg";
         MethodArgumentNotValidException exception = mock(MethodArgumentNotValidException.class);
         when(exception.getMessage()).thenReturn(msg);
-
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(exception.getBindingResult()).thenReturn(bindingResult);
+        when(bindingResult.hasErrors()).thenReturn(false);
         ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 400", 400, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
+    }
 
+    @Test
+    public void handleMethodArgumentNotValidExceptionWithBingingErrors(){
+        String validationMessage = "Test Error msg";
+        MethodArgumentNotValidException exception = mock(MethodArgumentNotValidException.class);
+        when(exception.getMessage()).thenReturn("abc");
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(exception.getBindingResult()).thenReturn(bindingResult);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        List<ObjectError> errors = new ArrayList<>();
+        errors.add(new ObjectError("objectName", validationMessage));
+        when(bindingResult.getAllErrors()).thenReturn(errors);
 
+        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+
+        assertEquals("Http code should be 400", 400, result.getStatusCode().value());
+        assertEquals("Error msg incorrect", validationMessage, result.getBody());
     }
 
     @Test
@@ -138,15 +158,26 @@ public class RestResponseEntityExceptionHandlerTest {
 
     }
 
-
     @Test
-    public void handleKeycloakException(){
+    public void handleKeycloakExceptionWithoutHttpStatus(){
         String msg = "Test Error msg";
         KeycloakException exception = new KeycloakException(msg);
 
         ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 500", 500, result.getStatusCode().value());
+        assertEquals("Error msg incorrect", msg, result.getBody());
+    }
+
+    @Test
+    public void handleKeycloakExceptionWithHttpStatus(){
+        String msg = "Test Error msg";
+        int httpStatusCode = 409;
+        KeycloakException exception = new KeycloakException(msg, httpStatusCode);
+
+        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+
+        assertEquals("Http code should be " + httpStatusCode, httpStatusCode, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
 
     }
