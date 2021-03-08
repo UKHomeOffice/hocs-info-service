@@ -1,5 +1,11 @@
 package uk.gov.digital.ho.hocs.info.security;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.FilterInputStream;
+import java.net.URI;
+import javax.ws.rs.core.Response.Status;
+import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,8 +16,13 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.Answers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateUserResponse;
+import uk.gov.digital.ho.hocs.info.api.dto.UpdateUserDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
@@ -336,5 +347,81 @@ public class KeycloakServiceTest {
 
         Set<UserRepresentation> result = service.getUsersForTeam(teamUUID);
         assertThat(result.size()).isEqualTo(100);
+    }
+
+    @Test
+    public void shouldCreateUser() {
+
+        //given
+        String UUID = java.util.UUID.randomUUID().toString();
+        CreateUserDto createUserDto = new CreateUserDto("email", "firstname", "lastname");
+        UsersResource usersResource = mock(UsersResource.class);
+        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
+        when(hocsRealm.users()).thenReturn(usersResource);
+        Response response = mock(Response.class);
+        when(response.getLocation()).thenReturn(URI.create("/path/" + UUID));
+        when(response.getStatusInfo()).thenReturn(Response.Status.CREATED);
+        when(response.getStatus()).thenReturn(HttpStatus.SC_CREATED);
+        when(usersResource.create(any())).thenReturn(response);
+
+        //when
+        CreateUserResponse createUserResponse = service.createUser(createUserDto);
+
+        //then
+        assertThat(createUserResponse.getUserUUID()).isEqualTo(UUID);
+        ArgumentCaptor<UserRepresentation> userRepresentationCaptor = ArgumentCaptor.forClass(UserRepresentation.class);
+        verify(usersResource).create(userRepresentationCaptor.capture());
+        UserRepresentation userRepresentation = userRepresentationCaptor.getValue();
+        assertThat(userRepresentation.getEmail()).isEqualTo("email");
+        assertThat(userRepresentation.getFirstName()).isEqualTo("firstname");
+        assertThat(userRepresentation.getLastName()).isEqualTo("lastname");
+    }
+
+    @Test
+    public void shouldThrowKeycloakExceptionWithStatusCodeIfUserCreationFails() {
+
+        //given
+        String errorMessage = "xyz";
+        CreateUserDto createUserDto = new CreateUserDto("email", "firstname", "lastname");
+        UsersResource usersResource = mock(UsersResource.class);
+        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
+        when(hocsRealm.users()).thenReturn(usersResource);
+        Response response = mock(Response.class);
+        String mapString = "{ \"errorMessage\" : \"" + errorMessage + "\" }";
+        FilterInputStream fis = new BufferedInputStream(new ByteArrayInputStream(mapString.getBytes()));
+        when(response.getEntity()).thenReturn(fis);
+        when(response.getStatus()).thenReturn(HttpStatus.SC_BAD_REQUEST);
+        when(usersResource.create(any())).thenReturn(response);
+
+        //when & then
+        assertThatThrownBy(() -> service.createUser(createUserDto))
+            .isInstanceOf(KeycloakException.class)
+            .hasMessage(errorMessage);
+    }
+
+    @Test
+    public void shouldUpdateUser() {
+
+        //given
+        UUID userUUID = UUID.randomUUID();
+        UpdateUserDto updateUserDto = new UpdateUserDto("firstname", "lastname", true);
+        UsersResource usersResource = mock(UsersResource.class);
+        UserResource userResource = mock(UserResource.class);
+        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
+        when(hocsRealm.users()).thenReturn(usersResource);
+        when(usersResource.get(userUUID.toString())).thenReturn(userResource);
+        UserRepresentation userRepresentation = new UserRepresentation();
+        when(userResource.toRepresentation()).thenReturn(userRepresentation);
+
+        //when
+        service.updateUser(userUUID, updateUserDto);
+
+        //then
+        ArgumentCaptor<UserRepresentation> userRepresentationCaptor = ArgumentCaptor.forClass(UserRepresentation.class);
+        verify(userResource).update(userRepresentationCaptor.capture());
+        UserRepresentation newUserRepresentation = userRepresentationCaptor.getValue();
+        assertThat(newUserRepresentation.getFirstName()).isEqualTo(updateUserDto.getFirstName());
+        assertThat(newUserRepresentation.getLastName()).isEqualTo(updateUserDto.getLastName());
+        assertThat(newUserRepresentation.isEnabled()).isEqualTo(updateUserDto.getEnabled());
     }
 }

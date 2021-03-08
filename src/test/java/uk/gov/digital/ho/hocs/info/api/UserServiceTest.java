@@ -7,6 +7,9 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateUserResponse;
+import uk.gov.digital.ho.hocs.info.api.dto.UpdateUserDto;
 import uk.gov.digital.ho.hocs.info.api.dto.UserDto;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
@@ -37,15 +40,10 @@ public class UserServiceTest {
         this.service = new UserService(keycloakService, caseworkClient, stageTypeService);
     }
 
-    UUID userUUID = UUID.randomUUID();
-
     @Test
     public void shouldGetAllUsers() {
         List<UserRepresentation> userRepresentations = new ArrayList<UserRepresentation>();
-        UserRepresentation user = new UserRepresentation();
-        user.setId(userUUID.toString());
-        user.setFirstName("FirstName");
-        user.setFirstName("LastName");
+        UserRepresentation user = generateUserRepresentation(1);
         userRepresentations.add(user);
         when(keycloakService.getAllUsers()).thenReturn(userRepresentations);
 
@@ -58,15 +56,16 @@ public class UserServiceTest {
 
     @Test
     public void shouldGetUserFromUUID() {
-        UserRepresentation user = new UserRepresentation();
-        user.setId(userUUID.toString());
-        user.setFirstName("FirstName");
-        user.setLastName("LastName");
+        UserRepresentation user = generateUserRepresentation(1);
+        UUID userUUID = UUID.fromString(user.getId());
         when(keycloakService.getUserFromUUID(userUUID)).thenReturn(user);
 
         UserDto result = service.getUserByUUID(userUUID);
-        assertThat(result.getFirstName()).isEqualTo("FirstName");
-        assertThat(result.getLastName()).isEqualTo("LastName");
+        assertThat(result.getUsername()).isEqualTo(user.getUsername());
+        assertThat(result.getEmail()).isEqualTo(user.getEmail());
+        assertThat(result.getFirstName()).isEqualTo(user.getFirstName());
+        assertThat(result.getLastName()).isEqualTo(user.getLastName());
+        assertThat(result.isEnabled()).isEqualTo(user.isEnabled());
         assertThat(result.getId()).isEqualTo(userUUID.toString());
         verify(keycloakService, times(1)).getUserFromUUID(userUUID);
         verifyNoMoreInteractions(keycloakService);
@@ -74,22 +73,16 @@ public class UserServiceTest {
     }
 
     @Test
-    public void shouldGetAllUsersForTeam(){
+    public void shouldGetAllUsersForTeam() {
         UUID teamUUID = UUID.randomUUID();
         Unit unit = new Unit("UNIT ONE", "UNIT1", Boolean.TRUE);
-        Team team = new Team("Team1",Boolean.TRUE);
+        Team team = new Team("Team1", Boolean.TRUE);
         team.setUnit(unit);
 
         Set<UserRepresentation> userRepresentations = new HashSet<>();
-        UserRepresentation user = new UserRepresentation();
-        user.setId(userUUID.toString());
-        user.setFirstName("FirstName");
-        user.setLastName("LastName");
+        UserRepresentation user = generateUserRepresentation(1);
         userRepresentations.add(user);
-        UserRepresentation user2 = new UserRepresentation();
-        user2.setId(userUUID.toString());
-        user2.setFirstName("FirstName2");
-        user2.setLastName("LastName2");
+        UserRepresentation user2 = generateUserRepresentation(2);
         userRepresentations.add(user2);
 
         when(keycloakService.getUsersForTeam(teamUUID)).thenReturn(userRepresentations);
@@ -101,53 +94,42 @@ public class UserServiceTest {
     }
 
     @Test
-    public void shouldGetUserForTeam_whenUserIsPresent(){
+    public void shouldGetUserForTeam_whenUserIsPresent() {
         UUID teamUUID = UUID.randomUUID();
         Unit unit = new Unit("UNIT ONE", "UNIT1", Boolean.TRUE);
-        Team team = new Team("Team1",Boolean.TRUE);
+        Team team = new Team("Team1", Boolean.TRUE);
         team.setUnit(unit);
         Set<UserRepresentation> userRepresentations = new HashSet<>();
-        UserRepresentation user = new UserRepresentation();
-        user.setId(UUID.randomUUID().toString());
-        user.setFirstName("FirstName");
-        user.setLastName("LastName");
-        userRepresentations.add(user);
-        UserRepresentation user2 = new UserRepresentation();
-        user2.setId(userUUID.toString());
-        user2.setFirstName("FirstName2");
-        user2.setLastName("LastName2");
+        UserRepresentation user1 = generateUserRepresentation(1);
+        userRepresentations.add(user1);
+        UserRepresentation user2 = generateUserRepresentation(2);
+        UUID userUUID2 = UUID.fromString(user2.getId());
         userRepresentations.add(user2);
         when(keycloakService.getUsersForTeam(teamUUID)).thenReturn(userRepresentations);
 
-        UserDto result = service.getUserForTeam(teamUUID, userUUID);
+        UserDto result = service.getUserForTeam(teamUUID, userUUID2);
 
-        assertThat(result.getId()).isEqualTo(userUUID.toString());
-        assertThat(result.getFirstName()).isEqualTo("FirstName2");
-        assertThat(result.getLastName()).isEqualTo("LastName2");
+        assertThat(result.getId()).isEqualTo(userUUID2.toString());
+        assertThat(result.getFirstName()).isEqualTo(user2.getFirstName());
+        assertThat(result.getLastName()).isEqualTo(user2.getLastName());
         verify(keycloakService, times(1)).getUsersForTeam(teamUUID);
         verifyNoMoreInteractions(keycloakService);
     }
 
     @Test
-    public void shouldGetUserForTeam_whenUserIsNotPresent(){
+    public void shouldGetUserForTeam_whenUserIsNotPresent() {
         UUID teamUUID = UUID.randomUUID();
         Unit unit = new Unit("UNIT ONE", "UNIT1", Boolean.TRUE);
-        Team team = new Team("Team1",Boolean.TRUE);
+        Team team = new Team("Team1", Boolean.TRUE);
         team.setUnit(unit);
         Set<UserRepresentation> userRepresentations = new HashSet<>();
-        UserRepresentation user = new UserRepresentation();
-        user.setId(UUID.randomUUID().toString());
-        user.setFirstName("FirstName");
-        user.setLastName("LastName");
-        userRepresentations.add(user);
-        UserRepresentation user2 = new UserRepresentation();
-        user2.setId(UUID.randomUUID().toString());
-        user2.setFirstName("FirstName2");
-        user2.setLastName("LastName2");
+        UserRepresentation user1 = generateUserRepresentation(1);
+        userRepresentations.add(user1);
+        UserRepresentation user2 = generateUserRepresentation(2);
         userRepresentations.add(user2);
         when(keycloakService.getUsersForTeam(teamUUID)).thenReturn(userRepresentations);
 
-        UserDto result = service.getUserForTeam(teamUUID, userUUID);
+        UserDto result = service.getUserForTeam(teamUUID, UUID.randomUUID());
 
         assertThat(result).isNull();
         verify(keycloakService, times(1)).getUsersForTeam(teamUUID);
@@ -155,23 +137,16 @@ public class UserServiceTest {
     }
 
     @Test
-    public void shouldGetUsersForTeamByStage(){
+    public void shouldGetUsersForTeamByStage() {
         UUID caseUUID = UUID.randomUUID();
         UUID stageUUID = UUID.randomUUID();
         UUID teamUUID = UUID.randomUUID();
         String stageType = "some-stage-type";
 
-
         Set<UserRepresentation> userRepresentations = new HashSet<>();
-        UserRepresentation user = new UserRepresentation();
-        user.setId(userUUID.toString());
-        user.setFirstName("FirstName");
-        user.setFirstName("LastName");
-        userRepresentations.add(user);
-        UserRepresentation user2 = new UserRepresentation();
-        user2.setId(userUUID.toString());
-        user2.setFirstName("FirstName2");
-        user2.setFirstName("LastName2");
+        UserRepresentation user1 = generateUserRepresentation(1);
+        userRepresentations.add(user1);
+        UserRepresentation user2 = generateUserRepresentation(2);
         userRepresentations.add(user2);
 
         when(keycloakService.getUsersForTeam(teamUUID)).thenReturn(userRepresentations);
@@ -184,4 +159,43 @@ public class UserServiceTest {
         assertThat(result.size()).isEqualTo(2);
     }
 
+    @Test
+    public void shouldCreateUser() {
+
+        //given
+        CreateUserDto createUserDto = new CreateUserDto();
+        CreateUserResponse createUserResponse = new CreateUserResponse();
+        when(keycloakService.createUser(createUserDto)).thenReturn(createUserResponse);
+
+        //when
+        CreateUserResponse response = service.createUser(createUserDto);
+
+        //then
+        assertThat(response).isEqualTo(createUserResponse);
+    }
+
+    @Test
+    public void shouldUpdateUser() {
+
+        //given
+        UUID userUUID = UUID.randomUUID();
+        UpdateUserDto updateUserDto = new UpdateUserDto();
+
+        //when
+        service.updateUser(userUUID, updateUserDto);
+
+        //then
+        verify(keycloakService).updateUser(userUUID, updateUserDto);
+    }
+
+    private UserRepresentation generateUserRepresentation(int index) {
+        UserRepresentation user = new UserRepresentation();
+        user.setId(UUID.randomUUID().toString());
+        user.setUsername("username" + index);
+        user.setEmail("email" + index);
+        user.setFirstName("FirstName" + index);
+        user.setLastName("LastName" + index);
+        user.setEnabled(true);
+        return user;
+    }
 }

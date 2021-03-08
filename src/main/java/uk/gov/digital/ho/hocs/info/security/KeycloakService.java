@@ -1,29 +1,37 @@
 package uk.gov.digital.ho.hocs.info.security;
 
+import static net.logstash.logback.argument.StructuredArguments.value;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.EVENT;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.KEYCLOAK_FAILURE;
+
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import javax.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
-import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.util.JsonSerialization;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateUserResponse;
+import uk.gov.digital.ho.hocs.info.api.dto.UpdateUserDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
-
-import javax.ws.rs.core.Response;
-import java.util.*;
-
-import static net.logstash.logback.argument.StructuredArguments.value;
-import static uk.gov.digital.ho.hocs.info.application.LogEvent.EVENT;
-import static uk.gov.digital.ho.hocs.info.application.LogEvent.KEYCLOAK_FAILURE;
 
 @Service
 @Slf4j
@@ -34,6 +42,7 @@ public class KeycloakService {
     private String hocsRealmName;
 
     private static final int USER_BATCH_FETCH_SIZE = 100;
+    private static final String KEYCLOAK_ERROR_MESSAGE = "errorMessage";
 
     public KeycloakService(
             TeamRepository teamRepository,
@@ -44,40 +53,31 @@ public class KeycloakService {
         this.hocsRealmName = hocsRealmName;
     }
 
-    public void createUser(CreateUserDto createUserDto) {
-        try {
-            CredentialRepresentation credential = new CredentialRepresentation();
-            credential.setType(CredentialRepresentation.PASSWORD);
-            credential.setValue(createUserDto.getPassword());
-            credential.setTemporary(createUserDto.isTemporaryPassword());
+    public CreateUserResponse createUser(CreateUserDto createUserDto) {
 
-            UserRepresentation user = new UserRepresentation();
-            user.setUsername(createUserDto.getUsername());
-            user.setFirstName(createUserDto.getFirstName());
-            user.setLastName(createUserDto.getLastName());
-            user.setEmail(createUserDto.getEmail());
-            user.setCredentials(Arrays.asList(credential));
-            user.setEnabled(true);
-            user.setRealmRoles(createUserDto.getRealmRoles());
+        UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
 
-            Response result = keycloakClient.realm(hocsRealmName).users().create(user);
-            if (result.getStatus() != 201) {
-                log.error("Failed to create user {}, status {}", createUserDto.getUsername(), result.getStatus(), value(EVENT, KEYCLOAK_FAILURE));
-                throw new KeycloakException(String.format("Failed to create user %s, status %s", createUserDto.getUsername(), result.getStatus()));
-            }
+        UserRepresentation userRepresentation = mapToUserRepresentation(createUserDto);
 
-
-            UUID userUUID = UUID.fromString(CreatedResponseUtil.getCreatedId(result));
-            if (!CollectionUtils.isEmpty(createUserDto.getTeams())) {
-                for (UUID teamUUID : createUserDto.getTeams()) {
-                    addUserToTeam(userUUID, teamUUID);
-                }
-            }
-        } catch (Exception e) {
-            log.error("Failed to create user {}, exception {}", createUserDto.getUsername(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
-            throw new KeycloakException(e.getMessage(), e);
+        Response response = usersResource.create(userRepresentation);
+        if (response.getStatus() != HttpStatus.SC_CREATED) {
+            String errorMessage = extractCreateUserErrorMessage(response.getEntity());
+            log.error("Failed to create user {}, status {}", createUserDto.getEmail(), response.getStatus(), value(EVENT, KEYCLOAK_FAILURE));
+            throw new KeycloakException(errorMessage, response.getStatus());
         }
 
+        String userId = CreatedResponseUtil.getCreatedId(response);
+        return new CreateUserResponse(userId);
+    }
+
+    public void updateUser(UUID userUUID, UpdateUserDto updateUserDto) {
+
+        UserResource userResource = keycloakClient.realm(hocsRealmName).users().get(userUUID.toString());
+        UserRepresentation userRepresentation = userResource.toRepresentation();
+        userRepresentation.setFirstName(updateUserDto.getFirstName());
+        userRepresentation.setLastName(updateUserDto.getLastName());
+        userRepresentation.setEnabled(updateUserDto.getEnabled());
+        userResource.update(userRepresentation);
     }
 
     public void addUserToTeam(UUID userUUID, UUID teamUUID) {
@@ -199,5 +199,28 @@ public class KeycloakService {
             log.error("Keycloak has not found users assigned to this team, Not found exception thrown by keycloak: " + e.getMessage());
             return groupUsers;
         }
+    }
+
+    private String extractCreateUserErrorMessage(Object entity) {
+        if (entity instanceof FilterInputStream) {
+            FilterInputStream filterInputStream = (FilterInputStream) entity;
+            try {
+                Map error = JsonSerialization.readValue(filterInputStream, Map.class);
+                return (String) error.get(KEYCLOAK_ERROR_MESSAGE);
+            } catch (IOException e) {
+                log.warn("Could not parse error message");
+            }
+        }
+        return "";
+    }
+
+    private UserRepresentation mapToUserRepresentation(CreateUserDto createUserDto) {
+        UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setEmail(createUserDto.getEmail());
+        userRepresentation.setUsername(createUserDto.getEmail());
+        userRepresentation.setFirstName(createUserDto.getFirstName());
+        userRepresentation.setLastName(createUserDto.getLastName());
+        userRepresentation.setEnabled(true);
+        return userRepresentation;
     }
 }

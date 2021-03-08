@@ -6,6 +6,8 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateUserResponse;
+import uk.gov.digital.ho.hocs.info.api.dto.UpdateUserDto;
 import uk.gov.digital.ho.hocs.info.api.dto.UserDto;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
@@ -44,8 +46,12 @@ public class UserService {
         return keycloakService.getAllUsers().stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
     }
 
-    public void createUser(CreateUserDto createUserDto) {
-        keycloakService.createUser(createUserDto);
+    public CreateUserResponse createUser(CreateUserDto createUserDto) {
+        return keycloakService.createUser(createUserDto);
+    }
+
+    public void updateUser(UUID userUUID, UpdateUserDto updateUserDto) {
+        keycloakService.updateUser(userUUID, updateUserDto);
     }
 
     public UserDto getUserByUUID(UUID userUUID) {
