@@ -96,32 +96,15 @@ public class NominatedContactServiceTest {
 
         UUID contactUUID = UUID.randomUUID();
 
-        when(nominatedContactRepository.findAllByTeamUUID(teamUUID)).thenReturn(contacts);
         when(nominatedContactRepository.findByUuid(contactUUID)).thenReturn(contact);
         doNothing().when(nominatedContactRepository).delete(any());
 
         nominatedContactService.deleteNominatedContact(teamUUID, contactUUID);
 
-        verify(nominatedContactRepository, times(1)).findAllByTeamUUID(teamUUID);
         verify(nominatedContactRepository, times(1)).findByUuid(contactUUID);
         verify(nominatedContactRepository, times(1)).delete(contact);
         verifyNoMoreInteractions(nominatedContactRepository);
 
     }
 
-    @Test (expected = ApplicationExceptions.NominatedContactDeleteException.class)
-    public void shouldNotDeleteNominatedContactWhenTeamHasNoOthers() {
-        NominatedContact contact = new NominatedContact(teamUUID, emailAddress);
-        Set<NominatedContact> contacts = new HashSet<>();
-        contacts.add(contact);
-
-        UUID contactUUID = UUID.randomUUID();
-
-        when(nominatedContactRepository.findAllByTeamUUID(teamUUID)).thenReturn(contacts);
-
-        nominatedContactService.deleteNominatedContact(teamUUID, contactUUID);
-
-        verify(nominatedContactRepository, times(1)).findAllByTeamUUID(teamUUID);
-        verifyNoMoreInteractions(nominatedContactRepository);
-    }
 }
