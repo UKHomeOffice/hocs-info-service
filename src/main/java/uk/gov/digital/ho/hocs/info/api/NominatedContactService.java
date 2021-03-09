@@ -53,8 +53,14 @@ public class NominatedContactService {
     public void deleteNominatedContact(UUID teamUUID, UUID nominatedContactUUID){
         log.debug("Deleting nominated contact with uuid: {} from team {}", nominatedContactUUID, teamUUID);
 
-        NominatedContact nominatedContact = nominatedContactRepository.findByUuid(nominatedContactUUID);
-        nominatedContactRepository.delete(nominatedContact);
-        log.info("Deleted nominated contact uuid: {} ", nominatedContactUUID);
+        Set<NominatedContact> contacts = nominatedContactRepository.findAllByTeamUUID(teamUUID);
+        if (contacts.size() > 1 ) {
+            NominatedContact nominatedContact = nominatedContactRepository.findByUuid(nominatedContactUUID);
+            nominatedContactRepository.delete(nominatedContact);
+            log.info("Deleted nominated contact uuid: {} ", nominatedContactUUID);
+        } else {
+            throw new ApplicationExceptions.NominatedContactDeleteException(
+                    "Unable to delete nominated contact for team {} - teams must have at least one contact", teamUUID);
+        }
     }
 }
