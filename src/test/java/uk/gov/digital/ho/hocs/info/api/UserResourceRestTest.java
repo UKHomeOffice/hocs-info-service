@@ -15,6 +15,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
 
+import java.util.List;
+
 // NB. This sort of test reads the spring properties files.
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserResource.class)
@@ -29,13 +31,17 @@ public class UserResourceRestTest {
   private final ObjectMapper mapper = new ObjectMapper();
 
   @Test
-  public void testCreateUserWithWhitelistedDomain() throws Exception {
-    CreateUserDto user = new CreateUserDto("mick@homeoffice.gov.uk", "firstName", "lastName");
-    mockMvc.perform(post("/user")
-        .content(mapper.writeValueAsString(user))
-        .contentType(APPLICATION_JSON_UTF8)
-    )
-        .andExpect(status().isOk());
+  public void testCreateUserWithWhitelistedDomains() throws Exception {
+    List<String> whitelistedDomains = List.of("mick@homeoffice.gov.uk", "mick@hmpo.gov.uk");
+
+    for (String domain :
+            whitelistedDomains) {
+      CreateUserDto user = new CreateUserDto(domain, "firstName", "lastName");
+      mockMvc.perform(post("/user")
+              .content(mapper.writeValueAsString(user))
+              .contentType(APPLICATION_JSON_UTF8)
+      ).andExpect(status().isOk());
+    }
   }
 
   @Test
