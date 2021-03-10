@@ -146,12 +146,12 @@ public class TeamServiceTest {
 
         TeamDto teamDto = new TeamDto("Team1", new HashSet<>());
 
-        when(teamRepository.findByUuid(any())).thenReturn(null);
+        when(teamRepository.findByUuidOrDisplayName(any(), any())).thenReturn(null);
         when(unitRepository.findByUuid(unit.getUuid())).thenReturn(unit);
 
         Team result = teamService.createTeam(teamDto, unit.getUuid());
 
-        verify(teamRepository, times(1)).findByUuid(any());
+        verify(teamRepository, times(1)).findByUuidOrDisplayName(any(), any());
         verify(unitRepository, times(1)).findByUuid(unit.getUuid());
         verify(keycloakService, times(1)).createTeamGroupIfNotExists(result.getUuid());
         verifyNoMoreInteractions(teamRepository);
@@ -166,10 +166,13 @@ public class TeamServiceTest {
         unit.addTeam(team);
 
         TeamDto teamDto = new TeamDto("Team1", null, team1UUID, true, new HashSet<>(), null);
-        when(unitRepository.findByUuid(unit.getUuid())).thenReturn(unit);
-        when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
+        when(teamRepository.findByUuidOrDisplayName(team1UUID, team.getDisplayName())).thenReturn(team);
 
-        teamService.createTeam(teamDto, unit.getUuid());
+        try {
+            teamService.createTeam(teamDto, unit.getUuid());
+        } catch (ApplicationExceptions.EntityAlreadyExistsException e) {
+            assertThat(e.getMessage()).isEqualTo("Team: Team1 already exists.");
+        }
         verify(unitRepository, times(1)).findByUuid(unit.getUuid());
         verify(unitRepository, never()).save(unit);
         verify(keycloakService, times(1)).createTeamGroupIfNotExists(team.getUuid());

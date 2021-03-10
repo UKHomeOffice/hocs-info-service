@@ -143,7 +143,7 @@ public class TeamService {
     @Transactional
     public Team createTeam(TeamDto newTeam, UUID unitUUID) {
         log.debug("Creating Team {}", newTeam.getDisplayName());
-        Team team = teamRepository.findByUuid(newTeam.getUuid());
+        Team team = teamRepository.findByUuidOrDisplayName(newTeam.getUuid(), newTeam.getDisplayName());
         Unit unit = unitRepository.findByUuid(unitUUID);
         if (team == null) {
             log.debug("Team {} doesn't exist, creating.", newTeam.getDisplayName());
@@ -152,11 +152,17 @@ public class TeamService {
             unit.addTeam(team);
         } else {
             log.debug("Team {} exists, not creating.", newTeam.getDisplayName());
+            createKeyCloakMappings(team.getUuid(), Optional.empty());
+            throw new ApplicationExceptions.EntityAlreadyExistsException(
+                    "Team: " + newTeam.getDisplayName() + " already exists."
+            );
         }
         createKeyCloakMappings(team.getUuid(), Optional.empty());
         auditClient.createTeamAudit(team);
         log.info("Team with UUID {} created in Unit {}", team.getUuid().toString(), unit.getShortCode(), value(EVENT, TEAM_CREATED));
         return team;
+
+
     }
 
     @Transactional
