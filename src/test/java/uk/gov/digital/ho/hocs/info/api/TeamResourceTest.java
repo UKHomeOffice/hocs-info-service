@@ -201,6 +201,7 @@ public class TeamResourceTest {
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         verify(teamService).createTeam(teamDto, unitUUID);
+        verify(teamService).refreshTeamCache();
         verifyNoMoreInteractions(teamService);
     }
 
