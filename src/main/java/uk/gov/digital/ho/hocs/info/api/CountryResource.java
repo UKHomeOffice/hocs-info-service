@@ -41,7 +41,7 @@ public class CountryResource {
         try {
             countries = new ClassPathResource("countries-list.json").getFile();
         } catch (IOException e) {
-            log.info("local countries file not found.");
+            log.error("local countries file not found.");
             ResponseEntity.badRequest();
         }
         return ResponseEntity.ok().body(new FileSystemResource(countries));
@@ -55,7 +55,7 @@ public class CountryResource {
         try {
             territories = new ClassPathResource("territories-list.json").getFile();
         } catch (IOException e) {
-            log.info("local territories file not found.");
+            log.error("local territories file not found.");
             ResponseEntity.badRequest();
         }
         return ResponseEntity.ok().body(new FileSystemResource(territories));
