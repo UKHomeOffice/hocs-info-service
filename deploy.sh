@@ -9,11 +9,11 @@ if [[ ${KUBE_NAMESPACE} == wcs-* ]]; then
     export HOCS_DATA_REPO=hocs-data-wcs
 else
     if [[ ${KUBE_NAMESPACE} == cs-* ]]; then
-        export HOCS_DATA_REPO=hocs-data-cs
+        export HOCS_DATA_REPO=hocs-data
     else
       # if doesn't start with WCS or CS (i.e. hocs-)
       # fallback to already set value, or cs
-      export HOCS_DATA_REPO=${HOCS_DATA_REPO:-hocs-data-cs}
+      export HOCS_DATA_REPO=${HOCS_DATA_REPO:-hocs-data}
     fi
 fi
 
