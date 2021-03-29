@@ -227,16 +227,17 @@ steps:
 
   - name: CS downstream build
     image: plugins/downstream
-    server: https://drone-gh.acp.homeoffice.gov.uk
-    fork: false
-    deploy: cs-qa
-    last_successful: true
-    token:
-      from_secret: DRONE_TOKEN
-    params:
-      - info-service-data-version.env
-    repositories:
-      - UKHomeOffice/hocs-data@main
+    settings:
+      server: https://drone-gh.acp.homeoffice.gov.uk
+      deploy: cs-qa
+      fork: false
+      last_successful: true
+      token:
+        from_secret: DRONE_TOKEN
+      params:
+        - info-service-data-version.env
+      repositories:
+        - UKHomeOffice/hocs-data@main
     depends_on:
       - generate & tag build
       - env-file
@@ -248,16 +249,17 @@ steps:
 
   - name: WCS downstream build
     image: plugins/downstream
-    server: https://drone-gh.acp.homeoffice.gov.uk
-    fork: false
-    deploy: wcs-qa
-    last_successful: true
-    token:
-      from_secret: DRONE_TOKEN
-    params:
-      - info-service-data-version.env
-    repositories:
-      - UKHomeOffice/hocs-data-wcs@main
+    settings:
+      server: https://drone-gh.acp.homeoffice.gov.uk
+      token:
+        from_secret: DRONE_TOKEN
+      fork: false
+      deploy: wcs-qa
+      last_successful: true
+      params:
+        - info-service-data-version.env
+      repositories:
+        - UKHomeOffice/hocs-data-wcs@main
     depends_on:
       - generate & tag build
       - env-file
