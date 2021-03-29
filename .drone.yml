@@ -183,6 +183,19 @@ steps:
 
   - name: generate & tag build
     image: quay.io/ukhomeofficedigital/hocs-version-bot
+    commands:
+      - >
+        /app/hocs-deploy
+        --dockerRepository=quay.io/ukhomeofficedigital
+        --environment=qa
+        --registryPassword=$${DOCKER_PASSWORD}
+        --registryUser=ukhomeofficedigital+hocs_quay_robot
+        --service=hocs-info-service
+        --serviceGitToken=$${GITHUB_TOKEN}
+        --sourceBuild=$${VERSION}
+        --version=$${SEMVER}
+        --versionRepo="https://gitlab.digital.homeoffice.gov.uk/hocs/hocs-versions.git"
+        --versionRepoServiceToken=$${GITLAB_TOKEN}
     environment:
       DOCKER_API_VERSION: 1.40
       DOCKER_PASSWORD:
@@ -191,19 +204,6 @@ steps:
         from_secret: GITLAB_TOKEN
       GITHUB_TOKEN:
         from_secret: GITHUB_TOKEN
-    commands:
-      - >
-        /app/hocs-deploy
-        --dockerRepository=quay.io/ukhomeofficedigital
-        --environment=qa
-        --gitRepo="https://gitlab.digital.homeoffice.gov.uk/hocs/hocs-versions.git"
-        --gitToken=$${GITHUB_PASSWORD}
-        --registryPassword=$${DOCKER_PASSWORD}
-        --registryUser=ukhomeofficedigital+hocs
-        --service=hocs-info-service
-        --serviceGitToken=$${GIT_PASSWORD}
-        --sourceBuild=$${VERSION}
-        --version=$${SEMVER}
     depends_on:
       - wait for docker
     when:
