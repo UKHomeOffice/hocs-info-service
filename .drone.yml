@@ -352,7 +352,8 @@ trigger:
   event:
     - promote
   target:
-    - restart
+    include:
+      - restart*
 
 # This pipeline allows the downstream data repos to require a restart
 # on our dev environments to force info-service to repull :latest
@@ -378,6 +379,10 @@ steps:
         from_secret: hocs_info_service_cs_dev
     depends_on:
       - clone kube repo
+    when:
+      target:
+        - restart
+        - restart-cs
 
   - name: restart wcs-dev
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
@@ -393,3 +398,7 @@ steps:
         from_secret: hocs_info_service_wcs_dev
     depends_on:
       - clone kube repo
+    when:
+      target:
+        - restart
+        - restart-wcs
