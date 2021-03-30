@@ -119,6 +119,9 @@ trigger:
     exclude:
       - pull_request
       - tag
+  target:
+    exclude:
+      - restart*
 
 services:
   - name: docker
