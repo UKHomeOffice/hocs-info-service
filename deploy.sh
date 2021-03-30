@@ -44,7 +44,7 @@ if [[ ${JUST_RESTART:-"false"} == "true" ]]; then
   echo "JUST_RESTART environment variable set to true."
   echo "Not deploying; merely restarting existing deployment"
   echo
-  kd run rollout deployment/hocs-info-service restart
+  kd run rollout restart deployment hocs-info-service 
   exit 0
 fi
 
