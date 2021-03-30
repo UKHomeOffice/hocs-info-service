@@ -40,14 +40,6 @@ export KUBE_CERTIFICATE_AUTHORITY="https://raw.githubusercontent.com/UKHomeOffic
 
 cd kd || exit 1
 
-if [[ ${JUST_RESTART:-"false"} == "true" ]]; then
-  echo "JUST_RESTART environment variable set to true."
-  echo "Not deploying; merely restarting existing deployment"
-  echo
-  kd run rollout restart deployment hocs-info-service 
-  exit 0
-fi
-
 kd --timeout 10m \
     -f deployment.yaml \
     -f service.yaml \
