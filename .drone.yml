@@ -372,11 +372,8 @@ steps:
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
     commands:
       - cd kube-hocs-info-service
-      - ./deploy.sh
+      - ./restart.sh
     environment:
-      JUST_RESTART: true
-      VERSION: dummy
-      HOCS_INFO_SERVICE_DATA_VERSION: latest
       ENVIRONMENT: cs-dev
       KUBE_TOKEN:
         from_secret: hocs_info_service_cs_dev
@@ -391,11 +388,8 @@ steps:
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
     commands:
       - cd kube-hocs-info-service
-      - ./deploy.sh
+      - ./restart.sh
     environment:
-      JUST_RESTART: true
-      VERSION: dummy
-      HOCS_INFO_SERVICE_DATA_VERSION: latest
       ENVIRONMENT: wcs-dev
       KUBE_TOKEN:
         from_secret: hocs_info_service_wcs_dev
