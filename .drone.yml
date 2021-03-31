@@ -119,6 +119,9 @@ trigger:
     exclude:
       - pull_request
       - tag
+  target:
+    exclude:
+      - restart*
 
 services:
   - name: docker
@@ -183,6 +186,19 @@ steps:
 
   - name: generate & tag build
     image: quay.io/ukhomeofficedigital/hocs-version-bot
+    commands:
+      - >
+        /app/hocs-deploy
+        --dockerRepository=quay.io/ukhomeofficedigital
+        --environment=qa
+        --registryPassword=$${DOCKER_PASSWORD}
+        --registryUser=ukhomeofficedigital+hocs_quay_robot
+        --service=hocs-info-service
+        --serviceGitToken=$${GITHUB_TOKEN}
+        --sourceBuild=$${VERSION}
+        --version=$${SEMVER}
+        --versionRepo="https://gitlab.digital.homeoffice.gov.uk/hocs/hocs-versions.git"
+        --versionRepoServiceToken=$${GITLAB_TOKEN}
     environment:
       DOCKER_API_VERSION: 1.40
       DOCKER_PASSWORD:
@@ -191,19 +207,6 @@ steps:
         from_secret: GITLAB_TOKEN
       GITHUB_TOKEN:
         from_secret: GITHUB_TOKEN
-    commands:
-      - >
-        /app/hocs-deploy
-        --dockerRepository=quay.io/ukhomeofficedigital
-        --environment=qa
-        --gitRepo="https://gitlab.digital.homeoffice.gov.uk/hocs/hocs-versions.git"
-        --gitToken=$${GITHUB_PASSWORD}
-        --registryPassword=$${DOCKER_PASSWORD}
-        --registryUser=ukhomeofficedigital+hocs
-        --service=hocs-info-service
-        --serviceGitToken=$${GIT_PASSWORD}
-        --sourceBuild=$${VERSION}
-        --version=$${SEMVER}
     depends_on:
       - wait for docker
     when:
@@ -227,16 +230,17 @@ steps:
 
   - name: CS downstream build
     image: plugins/downstream
-    server: https://drone-gh.acp.homeoffice.gov.uk
-    fork: false
-    deploy: cs-qa
-    last_successful: true
-    token:
-      from_secret: DRONE_TOKEN
-    params:
-      - info-service-data-version.env
-    repositories:
-      - UKHomeOffice/hocs-data@main
+    settings:
+      server: https://drone-gh.acp.homeoffice.gov.uk
+      deploy: cs-qa
+      fork: false
+      last_successful: true
+      token:
+        from_secret: DRONE_TOKEN
+      params:
+        - info-service-data-version.env
+      repositories:
+        - UKHomeOffice/hocs-data@main
     depends_on:
       - generate & tag build
       - env-file
@@ -248,16 +252,17 @@ steps:
 
   - name: WCS downstream build
     image: plugins/downstream
-    server: https://drone-gh.acp.homeoffice.gov.uk
-    fork: false
-    deploy: wcs-qa
-    last_successful: true
-    token:
-      from_secret: DRONE_TOKEN
-    params:
-      - info-service-data-version.env
-    repositories:
-      - UKHomeOffice/hocs-data-wcs@main
+    settings:
+      server: https://drone-gh.acp.homeoffice.gov.uk
+      token:
+        from_secret: DRONE_TOKEN
+      fork: false
+      deploy: wcs-qa
+      last_successful: true
+      params:
+        - info-service-data-version.env
+      repositories:
+        - UKHomeOffice/hocs-data-wcs@main
     depends_on:
       - generate & tag build
       - env-file
@@ -350,7 +355,8 @@ trigger:
   event:
     - promote
   target:
-    - restart
+    include:
+      - restart*
 
 # This pipeline allows the downstream data repos to require a restart
 # on our dev environments to force info-service to repull :latest
@@ -366,28 +372,30 @@ steps:
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
     commands:
       - cd kube-hocs-info-service
-      - ./deploy.sh
+      - ./restart.sh
     environment:
-      JUST_RESTART: true
-      VERSION: dummy
-      HOCS_INFO_SERVICE_DATA_VERSION: latest
       ENVIRONMENT: cs-dev
       KUBE_TOKEN:
         from_secret: hocs_info_service_cs_dev
     depends_on:
       - clone kube repo
+    when:
+      target:
+        - restart
+        - restart-cs
 
   - name: restart wcs-dev
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
     commands:
       - cd kube-hocs-info-service
-      - ./deploy.sh
+      - ./restart.sh
     environment:
-      JUST_RESTART: true
-      VERSION: dummy
-      HOCS_INFO_SERVICE_DATA_VERSION: latest
       ENVIRONMENT: wcs-dev
       KUBE_TOKEN:
         from_secret: hocs_info_service_wcs_dev
     depends_on:
       - clone kube repo
+    when:
+      target:
+        - restart
+        - restart-wcs
