@@ -123,4 +123,4 @@ This project is authored by the Home Office.
 
 This project is licensed under the MIT license. For details please see [License](LICENSE) 
 
-This project Contains public sector information licensed under the Open Government Licence v3.0. (http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
+This project contains public sector information licensed under the Open Government Licence v3.0. (http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
