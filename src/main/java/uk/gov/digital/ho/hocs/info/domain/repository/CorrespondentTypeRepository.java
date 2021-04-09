@@ -16,5 +16,8 @@ public interface CorrespondentTypeRepository extends CrudRepository<Corresponden
     @Query(value = "SELECT cor.* FROM correspondent_type cor INNER JOIN case_type_correspondent_type ctct ON ctct.correspondent_type_uuid=cor.uuid INNER JOIN case_type cas ON cas.uuid = ctct.case_type_uuid WHERE cas.type = ?1 AND cas.active = TRUE", nativeQuery = true)
     Set<CorrespondentType> findAllByCaseType(String caseType);
 
+    @Query(value = "SELECT cor.* FROM correspondent_type cor INNER JOIN case_type_correspondent_type ctct ON ctct.correspondent_type_uuid=cor.uuid INNER JOIN case_type cas ON cas.uuid = ctct.case_type_uuid WHERE cas.type = ?1 AND cas.active = TRUE AND ctct.selectable = TRUE", nativeQuery = true)
+    Set<CorrespondentType> findAllSelectableByCaseType(String caseType);
+
     CorrespondentType findByUuid(UUID uuid);
 }
