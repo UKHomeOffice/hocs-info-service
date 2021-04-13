@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.application;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -12,15 +13,14 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
+@Slf4j
 @EnableSwagger2
 @Profile({"swagger"})
 public class SwaggerConfiguration implements WebMvcConfigurer{
 
     @Bean
     public Docket api() {
-
-        System.out.println("Swagger enabled in Info Service Application...");
-
+        log.info("Swagger enabled in Info Service Application...");
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(new ApiInfo("DECS Info Service API","Info Service Endpoints", "", "", "","",""))
                 .select()
