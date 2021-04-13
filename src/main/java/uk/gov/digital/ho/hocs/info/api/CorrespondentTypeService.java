@@ -38,6 +38,13 @@ public class CorrespondentTypeService {
         return correspondentTypes;
     }
 
+    Set<CorrespondentType> getSelectableCorrespondentTypesByCaseType(String caseType) {
+        log.debug("Getting all selectable correspondent types for Case Type {}", caseType);
+        Set<CorrespondentType> correspondentTypes = correspondentTypeRepository.findAllSelectableByCaseType(caseType);
+        log.info("Got {} correspondent types for Case Type {}", correspondentTypes.size(), caseType);
+        return correspondentTypes;
+    }
+
     public CorrespondentType createCorrespondentType(String displayName, String type) {
         log.debug("Creating Correspondent Type with Display name: {}", displayName);
         validateInput(displayName, type);
