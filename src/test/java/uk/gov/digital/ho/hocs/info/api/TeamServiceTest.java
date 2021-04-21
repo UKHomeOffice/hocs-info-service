@@ -117,14 +117,26 @@ public class TeamServiceTest {
 
     @Test
     public void shouldUpdateName() {
+        String newTeamName = "Test";
         Team team = mock(Team.class);
+        when(teamRepository.findByDisplayName(any())).thenReturn(null);
         when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
         when(team.getUuid()).thenReturn(team1UUID);
-        teamService.updateTeamName(team1UUID, "new team name");
+        teamService.updateTeamName(team1UUID, newTeamName);
 
+        verify(teamRepository, times(1)).findByDisplayName(newTeamName);
         verify(teamRepository, times(1)).findByUuid(team1UUID);
-        verify(team, times(1)).setDisplayName("new team name");
+        verify(team, times(1)).setDisplayName(newTeamName);
         verifyNoMoreInteractions(teamRepository);
+    }
+
+    @Test(expected = ApplicationExceptions.EntityAlreadyExistsException.class)
+    public void shouldUpdateName_throwWhenTeamWithNameExists() {
+        Team team = mock(Team.class);
+
+        when(teamRepository.findByDisplayName("Test")).thenReturn(team);
+
+        teamService.updateTeamName(team1UUID, "Test");
     }
 
     @Test
