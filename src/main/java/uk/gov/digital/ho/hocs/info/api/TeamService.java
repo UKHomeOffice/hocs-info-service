@@ -165,13 +165,23 @@ public class TeamService {
 
     }
 
+    @CacheEvict(value = "teams", allEntries = true)
     @Transactional
-    public void updateTeamName(UUID teamUUID, String newName) {
+    public void updateTeamName(UUID teamUUID, String displayName) {
         log.debug("Updating Team {} name", teamUUID);
+
+        Team teamWithName = teamRepository.findByDisplayName(displayName);
+        if (teamWithName != null) {
+            log.debug("Team {} already exists with name, not renaming team {}.", displayName, teamUUID);
+            throw new ApplicationExceptions.EntityAlreadyExistsException(
+                    String.format("Team with name %s already exists.", displayName)
+            );
+        }
+
         Team team = getTeam(teamUUID);
-        team.setDisplayName(newName);
+        team.setDisplayName(displayName);
         auditClient.renameTeamAudit(team);
-        log.info("Team with UUID {} name updated to {}", team.getUuid().toString(), newName, value(EVENT, TEAM_RENAMED));
+        log.info("Team with UUID {} name updated to {}.", team.getUuid().toString(), displayName, value(EVENT, TEAM_RENAMED));
     }
 
     @Transactional

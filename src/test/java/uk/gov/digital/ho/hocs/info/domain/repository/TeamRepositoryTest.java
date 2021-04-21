@@ -119,4 +119,12 @@ public class TeamRepositoryTest {
         assertThat(teams.size()).isEqualTo(1);
         assertThat(teams.iterator().next().getUuid()).isEqualTo(teamUUID);
     }
+
+    @Test()
+    public void shouldFindTeamByDisplayName() {
+        Team team = repository.findByDisplayName("a team");
+        assertThat(team.getUnit().getUuid()).isEqualTo(unitUUID);
+        assertThat(team.getUuid()).isEqualTo(team.getUuid());
+    }
+
 }
