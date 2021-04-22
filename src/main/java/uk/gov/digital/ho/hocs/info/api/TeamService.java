@@ -12,6 +12,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetTopicResponse;
+import uk.gov.digital.ho.hocs.info.client.notifyclient.NotifyClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
@@ -36,8 +37,16 @@ public class TeamService {
     private ParentTopicRepository parentTopicRepository;
     private AuditClient auditClient;
     private CaseworkClient caseworkClient;
+    private final NotifyClient notifyClient;
 
-    public TeamService(TeamRepository teamRepository, UnitRepository unitRepository, CaseTypeService caseTypeService, ParentTopicRepository parentTopicRepository, KeycloakService keycloakService, AuditClient auditClient, CaseworkClient caseworkClient) {
+    public TeamService(TeamRepository teamRepository,
+                       UnitRepository unitRepository,
+                       CaseTypeService caseTypeService,
+                       ParentTopicRepository parentTopicRepository,
+                       KeycloakService keycloakService,
+                       AuditClient auditClient,
+                       CaseworkClient caseworkClient,
+                       NotifyClient notifyClient) {
         this.teamRepository = teamRepository;
         this.keycloakService = keycloakService;
         this.unitRepository = unitRepository;
@@ -45,6 +54,7 @@ public class TeamService {
         this.parentTopicRepository = parentTopicRepository;
         this.auditClient = auditClient;
         this.caseworkClient = caseworkClient;
+        this.notifyClient = notifyClient;
     }
 
     public Set<Team> getTeamsForUnit(UUID unitUUID) {
@@ -179,8 +189,10 @@ public class TeamService {
         }
 
         Team team = getTeam(teamUUID);
+        String oldTeamName = team.getDisplayName();
         team.setDisplayName(displayName);
         auditClient.renameTeamAudit(team);
+        notifyClient.sendTeamRenameEmail(teamUUID, oldTeamName);
         log.info("Team with UUID {} name updated to {}.", team.getUuid().toString(), displayName, value(EVENT, TEAM_RENAMED));
     }
 
