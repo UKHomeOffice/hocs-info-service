@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
-import uk.gov.digital.ho.hocs.info.domain.model.Unit;
 
 import java.util.Collections;
 import java.util.Set;
@@ -126,6 +125,12 @@ public class TeamResource {
     ResponseEntity<Set<TeamDto>> getCaseTypes(@RequestParam("unit") String unitShortCode) {
         Set<Team> teams = teamService.getAllActiveTeamsByUnitShortCode(unitShortCode);
         return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
+    }
+
+    @GetMapping(value = "/teams/descendants/stage/{stageUUID}/case/{caseUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    ResponseEntity<Set<TeamDto>> getFirstDescendantTeamsFromCurrentTeam(@PathVariable UUID stageUUID, @PathVariable UUID caseUUID) { ;
+        Set<Team> firstDescendantTeams = teamService.getAllFirstDescendantTeamsFromCurrentTeam(caseUUID, stageUUID);
+        return ResponseEntity.ok(firstDescendantTeams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
     }
 
     @GetMapping(value = "/teams/drafters")
