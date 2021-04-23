@@ -46,4 +46,9 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
 
     @Query(value = "SELECT t.* FROM team t WHERE t.active=TRUE AND EXISTS (SELECT 1 FROM info.team_link tl WHERE tl.stage_type=?1 AND tl.responsible_team_uuid=t.uuid)", nativeQuery = true)
     Set<Team> findActiveByStageType(String stageType);
+
+    @Query(value = "SELECT t.* FROM team t " +
+            "WHERE t.parent_team = ?1 " +
+            "AND t.active = TRUE", nativeQuery = true)
+    Set<Team> findAllActiveFirstDescendantTeamsFromAscendant(UUID ascendantTeamUUID);
 }
