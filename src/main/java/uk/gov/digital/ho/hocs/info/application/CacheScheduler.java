@@ -15,15 +15,9 @@ import uk.gov.digital.ho.hocs.info.api.UserService;
 public class CacheScheduler {
 
     private UserService userService;
-    private TeamService teamService;
 
     @Scheduled(fixedDelayString = "${cache.user.refresh}000")
     public void refreshUserCache(){
         userService.refreshUserCache();
-    }
-
-    @Scheduled(fixedDelayString = "${cache.team.refresh}000")
-    public void refreshTeamCache(){
-        teamService.refreshTeamCache();
     }
 }
