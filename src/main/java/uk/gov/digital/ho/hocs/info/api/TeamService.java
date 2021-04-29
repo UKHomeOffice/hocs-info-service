@@ -1,9 +1,6 @@
 package uk.gov.digital.ho.hocs.info.api;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
@@ -64,22 +61,15 @@ public class TeamService {
         return teams;
     }
 
-    @Cacheable("teams")
     public Set<Team> getAllActiveTeams() {
         return getTeams();
     }
 
-    @Cacheable("teamsAll")
     public Set<Team> getAllTeams() {
         log.debug("Getting all Teams");
         Set<Team> allTeams = teamRepository.findAll();
         log.info("Got {} Teams", allTeams.size());
         return allTeams;
-    }
-
-    @CachePut("teams")
-    public Set<Team> refreshTeamCache() {
-        return getTeams();
     }
 
     private Set<Team> getTeams() {
@@ -175,7 +165,6 @@ public class TeamService {
 
     }
 
-    @CacheEvict(value = "teams", allEntries = true)
     @Transactional
     public void updateTeamName(UUID teamUUID, String displayName) {
         log.debug("Updating Team {} name", teamUUID);
@@ -205,7 +194,6 @@ public class TeamService {
         log.info("Team with UUID {} letter name updated to {}", team.getUuid().toString(), newLetterName, value(EVENT, TEAM_RENAMED));
     }
 
-    @CacheEvict(value = "teamMembers", key = "#teamUUID")
     public void addUserToTeam(UUID userUUID, UUID teamUUID) {
         log.debug("Adding User {} to Team {}", userUUID, teamUUID);
         Team team = getTeam(teamUUID);
@@ -281,7 +269,6 @@ public class TeamService {
     }
 
     @Transactional
-    @CacheEvict(value = "teamMembers", allEntries = true)
     public void removeUserFromTeam(UUID userUUID, UUID teamUUID) {
         log.debug("Removing User {} from Team {}", userUUID, teamUUID);
 

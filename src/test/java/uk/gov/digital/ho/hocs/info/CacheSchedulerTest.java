@@ -17,20 +17,10 @@ public class CacheSchedulerTest {
     @Mock
     UserService userService;
 
-    @Mock
-    TeamService teamService;
-
     @Test
     public void shouldCallUserServiceRefresh() {
-        service = new CacheScheduler(userService, teamService);
+        service = new CacheScheduler(userService);
         service.refreshUserCache();
         verify(userService, times(1)).refreshUserCache();
-    }
-
-    @Test
-    public void shouldCallTeamServiceRefresh() {
-        service = new CacheScheduler(userService, teamService);
-        service.refreshTeamCache();
-        verify(teamService, times(1)).refreshTeamCache();
     }
 }
