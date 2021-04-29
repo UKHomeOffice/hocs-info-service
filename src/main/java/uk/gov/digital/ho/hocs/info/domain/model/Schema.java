@@ -51,6 +51,15 @@ public class Schema implements Serializable {
     private List<FieldScreen> fieldScreens;
 
     @Getter
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "screen_validation",
+            joinColumns = @JoinColumn(name = "schema_uuid", referencedColumnName = "uuid"),
+            inverseJoinColumns = @JoinColumn(name = "validation_rule_uuid", referencedColumnName = "uuid")
+    )
+    private List<ValidationRule> validationRules;
+
+    @Getter
     @OneToMany
     @JoinTable(
             name = "secondary_action_screen",
@@ -63,7 +72,6 @@ public class Schema implements Serializable {
     @Getter
     @Column(name = "props")
     private String props;
-
 
     public List<Field> getFields() {
         return fieldScreens.stream()

@@ -34,6 +34,7 @@ public class SchemaService {
     Schema getSchemaByType(String type) {
         log.debug("Getting Schema for type {}", type);
         Schema schema = schemaRepository.findByType(type);
+
         if (schema != null) {
             log.info("Got Schema {} for type {}", schema.getUuid(), type);
             return schema;
