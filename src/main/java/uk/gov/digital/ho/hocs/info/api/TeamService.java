@@ -1,9 +1,6 @@
 package uk.gov.digital.ho.hocs.info.api;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
@@ -12,6 +9,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.dto.GetTopicResponse;
+import uk.gov.digital.ho.hocs.info.client.notifyclient.NotifyClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
@@ -36,8 +34,16 @@ public class TeamService {
     private ParentTopicRepository parentTopicRepository;
     private AuditClient auditClient;
     private CaseworkClient caseworkClient;
+    private final NotifyClient notifyClient;
 
-    public TeamService(TeamRepository teamRepository, UnitRepository unitRepository, CaseTypeService caseTypeService, ParentTopicRepository parentTopicRepository, KeycloakService keycloakService, AuditClient auditClient, CaseworkClient caseworkClient) {
+    public TeamService(TeamRepository teamRepository,
+                       UnitRepository unitRepository,
+                       CaseTypeService caseTypeService,
+                       ParentTopicRepository parentTopicRepository,
+                       KeycloakService keycloakService,
+                       AuditClient auditClient,
+                       CaseworkClient caseworkClient,
+                       NotifyClient notifyClient) {
         this.teamRepository = teamRepository;
         this.keycloakService = keycloakService;
         this.unitRepository = unitRepository;
@@ -45,6 +51,7 @@ public class TeamService {
         this.parentTopicRepository = parentTopicRepository;
         this.auditClient = auditClient;
         this.caseworkClient = caseworkClient;
+        this.notifyClient = notifyClient;
     }
 
     public Set<Team> getTeamsForUnit(UUID unitUUID) {
@@ -54,22 +61,15 @@ public class TeamService {
         return teams;
     }
 
-    @Cacheable("teams")
     public Set<Team> getAllActiveTeams() {
         return getTeams();
     }
 
-    @Cacheable("teamsAll")
     public Set<Team> getAllTeams() {
         log.debug("Getting all Teams");
         Set<Team> allTeams = teamRepository.findAll();
         log.info("Got {} Teams", allTeams.size());
         return allTeams;
-    }
-
-    @CachePut("teams")
-    public Set<Team> refreshTeamCache() {
-        return getTeams();
     }
 
     private Set<Team> getTeams() {
@@ -175,12 +175,23 @@ public class TeamService {
     }
 
     @Transactional
-    public void updateTeamName(UUID teamUUID, String newName) {
+    public void updateTeamName(UUID teamUUID, String displayName) {
         log.debug("Updating Team {} name", teamUUID);
+
+        Team teamWithName = teamRepository.findByDisplayName(displayName);
+        if (teamWithName != null) {
+            log.debug("Team {} already exists with name, not renaming team {}.", displayName, teamUUID);
+            throw new ApplicationExceptions.EntityAlreadyExistsException(
+                    String.format("Team with name %s already exists.", displayName)
+            );
+        }
+
         Team team = getTeam(teamUUID);
-        team.setDisplayName(newName);
+        String oldTeamName = team.getDisplayName();
+        team.setDisplayName(displayName);
         auditClient.renameTeamAudit(team);
-        log.info("Team with UUID {} name updated to {}", team.getUuid().toString(), newName, value(EVENT, TEAM_RENAMED));
+        notifyClient.sendTeamRenameEmail(teamUUID, oldTeamName);
+        log.info("Team with UUID {} name updated to {}.", team.getUuid().toString(), displayName, value(EVENT, TEAM_RENAMED));
     }
 
     @Transactional
@@ -192,7 +203,6 @@ public class TeamService {
         log.info("Team with UUID {} letter name updated to {}", team.getUuid().toString(), newLetterName, value(EVENT, TEAM_RENAMED));
     }
 
-    @CacheEvict(value = "teamMembers", key = "#teamUUID")
     public void addUserToTeam(UUID userUUID, UUID teamUUID) {
         log.debug("Adding User {} to Team {}", userUUID, teamUUID);
         Team team = getTeam(teamUUID);
@@ -268,7 +278,6 @@ public class TeamService {
     }
 
     @Transactional
-    @CacheEvict(value = "teamMembers", allEntries = true)
     public void removeUserFromTeam(UUID userUUID, UUID teamUUID) {
         log.debug("Removing User {} from Team {}", userUUID, teamUUID);
 

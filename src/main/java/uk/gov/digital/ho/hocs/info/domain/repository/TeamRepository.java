@@ -18,6 +18,8 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
 
     Team findByUuidOrDisplayName(UUID uuid, String displayName);
 
+    Team findByDisplayName(String displayName);
+
     Set<Team> findAll();
 
     Set<Team> findAllByActiveTrue();
