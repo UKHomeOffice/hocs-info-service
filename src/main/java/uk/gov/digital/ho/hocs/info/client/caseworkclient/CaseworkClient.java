@@ -25,6 +25,7 @@ public class CaseworkClient {
     public CaseworkClient(RestHelper restHelper,
                           @Value("${hocs.case-service}") String caseService) {
         this.restHelper = restHelper;
+
         this.serviceBaseURL = caseService;
     }
 
@@ -71,6 +72,21 @@ public class CaseworkClient {
             return response.getBody();
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("Could not get cases for User %s", userUUID, response.getStatusCodeValue());
+        }
+    }
+
+    public UUID getTeamUUIDFromCaseAndStage(UUID caseUUID, UUID stageUUID) {
+        ResponseEntity<UUID> response = restHelper
+                .get(serviceBaseURL, String.format("/case/%s/stage/%s/team", caseUUID, stageUUID), UUID.class);
+        if (response.getStatusCodeValue() == 200) {
+            log.info("Got teamUUID for stage: {} & case: {}", stageUUID, caseUUID);
+            return response.getBody();
+        } else {
+            throw new ApplicationExceptions.EntityNotFoundException(
+                    "Could not get teamUUID for stage: %s & case: %s",
+                    stageUUID,
+                    caseUUID,
+                    response.getStatusCodeValue());
         }
     }
 
