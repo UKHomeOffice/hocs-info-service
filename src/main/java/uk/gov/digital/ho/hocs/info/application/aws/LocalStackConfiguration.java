@@ -8,6 +8,8 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,22 @@ public class LocalStackConfiguration {
         String host = String.format("http://%s:4575/", awsHost);
         AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(host, "eu-west-2");
         return AmazonSNSClientBuilder.standard()
+                .withClientConfiguration(new ClientConfiguration().withProtocol(Protocol.HTTP))
+                .withCredentials(awsCredentialsProvider)
+                .withEndpointConfiguration(endpoint)
+                .build();
+    }
+
+    @Bean("notifySqsClient")
+    public AmazonSQS notifySqsClient() {
+        return sqsClient();
+    }
+
+    public AmazonSQS sqsClient() {
+        String host = String.format("http://%s:4576/", awsHost);
+
+        AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(host, "eu-west-2");
+        return AmazonSQSClientBuilder.standard()
                 .withClientConfiguration(new ClientConfiguration().withProtocol(Protocol.HTTP))
                 .withCredentials(awsCredentialsProvider)
                 .withEndpointConfiguration(endpoint)
