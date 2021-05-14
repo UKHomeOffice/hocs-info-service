@@ -56,6 +56,11 @@ public class EmailDomainValidatorTest {
     }
 
     @Test
+    public void whenPrefixedDomainEmailAddressIsValidButNotInList_ShouldReturnFalse(){
+        assertThat(emailDomainValidator.isValid("test@notexample.com", constraintValidatorContext))
+                .isFalse();
+    }
+    @Test
     public void whenEmailAddressIsNull_ShouldReturnFalse(){
         assertThat(emailDomainValidator.isValid(null, constraintValidatorContext))
                 .isFalse();
