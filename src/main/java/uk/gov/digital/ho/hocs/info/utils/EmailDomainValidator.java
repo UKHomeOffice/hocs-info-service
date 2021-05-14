@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,8 @@ public class EmailDomainValidator implements ConstraintValidator<EmailDomainWhit
     public boolean isValid(String emailAddress, ConstraintValidatorContext cxt) {
         return emailAddress != null
                 && !emailAddress.isBlank()
-                && whitelistedDomains.stream().anyMatch(domain -> emailAddress.endsWith(String.format("@%s", domain)));
+                && whitelistedDomains
+                    .stream()
+                    .anyMatch(domain -> emailAddress.toLowerCase().endsWith(String.format("@%s", domain)));
     }
 }

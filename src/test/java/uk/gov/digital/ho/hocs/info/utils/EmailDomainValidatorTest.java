@@ -30,7 +30,13 @@ public class EmailDomainValidatorTest {
 
         ReflectionTestUtils.setField(emailDomainValidator, "whitelistedDomains", List.of("example.com", "example.org"));
     }
-    
+
+    @Test
+    public void whenEmailAddressIsValidButUppercase_ShouldReturnTrue(){
+        assertThat(emailDomainValidator.isValid("test@EXAMPLE.COM", constraintValidatorContext))
+                .isTrue();
+    }
+
     @Test
     public void whenEmailAddressIsValidButSecondInList_ShouldReturnTrue(){
         assertThat(emailDomainValidator.isValid("test@example.org", constraintValidatorContext))
