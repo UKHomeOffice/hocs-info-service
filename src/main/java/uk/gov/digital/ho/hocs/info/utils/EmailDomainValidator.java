@@ -4,7 +4,6 @@ import static java.util.Arrays.asList;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Value;
