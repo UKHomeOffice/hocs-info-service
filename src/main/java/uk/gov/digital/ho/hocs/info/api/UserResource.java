@@ -55,14 +55,12 @@ public class UserResource {
     @PostMapping(value = "/user", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<CreateUserResponse> createUser(@Valid @RequestBody CreateUserDto createUserDto) {
         CreateUserResponse createUserResponse = userService.createUser(createUserDto);
-        userService.refreshUserCache();
         return ResponseEntity.ok().body(createUserResponse);
     }
 
     @PutMapping(value = "/user/{userUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity updateUser(@PathVariable UUID userUUID, @Valid @RequestBody UpdateUserDto updateUserDto) {
         userService.updateUser(userUUID, updateUserDto);
-        userService.refreshUserCache();
         return ResponseEntity.ok().build();
     }
 }

@@ -107,7 +107,6 @@ public class UserResourceTest {
         ResponseEntity<CreateUserResponse> response = userResource.createUser(createUserDto);
 
         //then
-        verify(userService).refreshUserCache();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(createUserResponse);
     }
@@ -124,7 +123,6 @@ public class UserResourceTest {
 
         //then
         verify(userService).updateUser(userUUID, updateUserDto);
-        verify(userService).refreshUserCache();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
