@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.api.data.SimpleMapItem;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
@@ -35,17 +34,19 @@ public class TeamResourceTest {
         teamResource = new TeamResource(teamService);
     }
 
-    private UUID userUUID = UUID.randomUUID();
+    private UUID userUUID1 = UUID.randomUUID();
+    private UUID userUUID2 = UUID.randomUUID();
     private UUID teamUUID = UUID.randomUUID();
     private UUID caseUUID = UUID.randomUUID();
 
     @Test
-    public void shouldAddUserToTeam() {
-        doNothing().when(teamService).addUserToTeam(userUUID, teamUUID);
+    public void shouldAddUsersToTeam() {
+        doNothing().when(teamService).addUsersToTeam(List.of(userUUID1, userUUID2), teamUUID);
 
-        ResponseEntity result = teamResource.addUserToGroup(userUUID.toString(), teamUUID.toString());
+        ResponseEntity result = teamResource.addUserToGroup(teamUUID.toString(),
+                List.of(userUUID1.toString(), userUUID2.toString()));
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(teamService).addUserToTeam(userUUID, teamUUID);
+        verify(teamService).addUsersToTeam(List.of(userUUID1, userUUID2), teamUUID);
         verifyNoMoreInteractions(teamService);
     }
 
