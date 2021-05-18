@@ -64,6 +64,9 @@ public class Schema implements Serializable {
     @Column(name = "props")
     private String props;
 
+    @Getter
+    @Column(name = "validation")
+    private String validation;
 
     public List<Field> getFields() {
         return fieldScreens.stream()
