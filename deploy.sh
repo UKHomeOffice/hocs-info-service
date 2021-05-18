@@ -24,6 +24,8 @@ then
 
     export MEMBER_REFRESH_HOUR="22"
 
+    export IS_PROD="true"
+
     export CLUSTER_NAME="acp-prod"
     export KUBE_SERVER="https://kube-api-prod.prod.acp.homeoffice.gov.uk"
 else
@@ -31,6 +33,8 @@ else
     export MAX_REPLICAS="2"
 
     export MEMBER_REFRESH_HOUR="17" # notprod turns off earlier than prod
+    
+    export IS_PROD=""
 
     export CLUSTER_NAME="acp-notprod"
     export KUBE_SERVER="https://kube-api-notprod.notprod.acp.homeoffice.gov.uk"
@@ -41,6 +45,7 @@ export KUBE_CERTIFICATE_AUTHORITY="https://raw.githubusercontent.com/UKHomeOffic
 cd kd || exit 1
 
 kd --timeout 10m \
+    -f accountSettingsConfigMap.yaml \
     -f deployment.yaml \
     -f service.yaml \
     -f refreshmembers.yaml \

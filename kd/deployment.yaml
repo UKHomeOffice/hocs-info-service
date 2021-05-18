@@ -357,6 +357,11 @@ spec:
                 secretKeyRef:
                   name: {{.KUBE_NAMESPACE}}-notify-sqs
                   key: secret_access_key
+            - name: ALLOWED_EMAIL_DOMAINS_FOR_USER_CREATION
+              valueFrom:
+                configMapKeyRef:
+                  name: account-settings
+                  key: ALLOWED_EMAIL_DOMAINS
           resources:
             limits:
               cpu: 1200m
