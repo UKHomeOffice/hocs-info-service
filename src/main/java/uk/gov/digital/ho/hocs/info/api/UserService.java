@@ -32,18 +32,11 @@ public class UserService {
         this.stageTypeService = stageTypeService;
     }
 
-    @Cacheable("users")
     public List<UserDto> getAllUsers() {
         log.info("Retrieving all users from Keycloak");
         List<UserDto> users = keycloakService.getAllUsers().stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
         log.info("Found {} users", users.size());
         return users;
-    }
-
-    @CachePut("users")
-    public List<UserDto> refreshUserCache() {
-        log.info("Refreshing User cache");
-        return keycloakService.getAllUsers().stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
     }
 
     public CreateUserResponse createUser(CreateUserDto createUserDto) {
@@ -58,7 +51,6 @@ public class UserService {
         return UserDto.from(keycloakService.getUserFromUUID(userUUID));
     }
 
-    @Cacheable(value = "teamMembers")
     public List<UserDto> getUsersForTeam(UUID teamUUID) {
         return keycloakService.getUsersForTeam(teamUUID).stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
     }

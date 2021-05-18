@@ -223,4 +223,8 @@ public class KeycloakService {
         userRepresentation.setEnabled(true);
         return userRepresentation;
     }
+
+    public void refreshCache() {
+        keycloakClient.realm(hocsRealmName).clearRealmCache();
+    }
 }
