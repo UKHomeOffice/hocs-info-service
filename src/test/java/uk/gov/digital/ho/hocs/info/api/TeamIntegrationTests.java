@@ -34,6 +34,7 @@ import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -144,10 +145,10 @@ public class TeamIntegrationTests {
 
         String teamId = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
         String base64TeamUUID = Base64UUID.uuidToBase64String(UUID.fromString(teamId));
-        HttpEntity httpEntity = new HttpEntity(headers);
+        HttpEntity httpEntity = new HttpEntity(List.of(userId),headers);
 
         ResponseEntity<String> result = testRestTemplate.exchange(
-                getBasePath() + "/users/" + userId + "/team/" + teamId
+                getBasePath() + "/users/team/" + teamId
                 , HttpMethod.POST, httpEntity, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
