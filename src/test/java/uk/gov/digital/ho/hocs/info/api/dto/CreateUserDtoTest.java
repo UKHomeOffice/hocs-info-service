@@ -30,63 +30,44 @@ public class CreateUserDtoTest {
     public void checkEmailMandatory() {
       CreateUserDto createUserDto = new CreateUserDto(null, "firstname", "lastname");
       Set<ConstraintViolation<CreateUserDto>> constraintViolations = validator.validate(createUserDto);
-      assertThat(constraintViolations).hasSize(1);
-      ConstraintViolation<CreateUserDto> cv = constraintViolations.iterator().next();
-      assertThat(cv.getMessage()).isEqualTo("Email is mandatory");
+      assertThat(constraintViolations.stream().anyMatch(x -> x.getMessage().equals("Email is mandatory"))).isTrue();
     }
 
   @Test
   public void checkEmailNotEmptyString() {
     CreateUserDto createUserDto = new CreateUserDto("", "firstname", "lastname");
     Set<ConstraintViolation<CreateUserDto>> constraintViolations = validator.validate(createUserDto);
-    assertThat(constraintViolations).hasSize(1);
-    ConstraintViolation<CreateUserDto> cv = constraintViolations.iterator().next();
-    assertThat(cv.getMessage()).isEqualTo("Email is mandatory");
-  }
-
-  @Test
-  public void checkEmailWithNonWhitelistedDomain() {
-    CreateUserDto createUserDto = new CreateUserDto("test@bbc.co.uk", "firstname", "lastname");
-    Set<ConstraintViolation<CreateUserDto>> constraintViolations = validator.validate(createUserDto);
-    assertThat(constraintViolations).hasSize(1);
-    ConstraintViolation<CreateUserDto> cv = constraintViolations.iterator().next();
-    assertThat(cv.getMessage()).isEqualTo("Email domain not supported");
+    assertThat(constraintViolations.stream().anyMatch(x -> x.getMessage().equals("Email is mandatory"))).isTrue();
   }
 
   @Test
   public void checkFirstNameMandatory() {
-    CreateUserDto createUserDto = new CreateUserDto("test@homeoffice.gov.uk", null, "lastname");
+    CreateUserDto createUserDto = new CreateUserDto("test@example.co.uk", null, "lastname");
     Set<ConstraintViolation<CreateUserDto>> constraintViolations = validator.validate(createUserDto);
-    assertThat(constraintViolations).hasSize(1);
-    ConstraintViolation<CreateUserDto> cv = constraintViolations.iterator().next();
-    assertThat(cv.getMessage()).isEqualTo("First Name is mandatory");
+    assertThat(constraintViolations.stream().anyMatch(x -> x.getMessage().equals("First Name is mandatory"))).isTrue();
   }
 
   @Test
   public void checkFirstNameNotEmptyString() {
-    CreateUserDto createUserDto = new CreateUserDto("test@homeoffice.gov.uk", "", "lastname");
+    CreateUserDto createUserDto = new CreateUserDto("test@example.co.uk", "", "lastname");
     Set<ConstraintViolation<CreateUserDto>> constraintViolations = validator.validate(createUserDto);
-    assertThat(constraintViolations).hasSize(1);
     ConstraintViolation<CreateUserDto> cv = constraintViolations.iterator().next();
-    assertThat(cv.getMessage()).isEqualTo("First Name is mandatory");
-  }
+
+    assertThat(constraintViolations.stream().anyMatch(x -> x.getMessage().equals("First Name is mandatory"))).isTrue();
+    }
 
   @Test
   public void checkLastNameMandatory() {
-    CreateUserDto createUserDto = new CreateUserDto("test@homeoffice.gov.uk", "firstname", null);
+    CreateUserDto createUserDto = new CreateUserDto("test@example.co.uk", "firstname", null);
     Set<ConstraintViolation<CreateUserDto>> constraintViolations = validator.validate(createUserDto);
-    assertThat(constraintViolations).hasSize(1);
-    ConstraintViolation<CreateUserDto> cv = constraintViolations.iterator().next();
-    assertThat(cv.getMessage()).isEqualTo("Last Name is mandatory");
+    assertThat(constraintViolations.stream().anyMatch(x -> x.getMessage().equals("Last Name is mandatory"))).isTrue();
   }
 
   @Test
   public void checkLastNameNotEmptyString() {
-    CreateUserDto createUserDto = new CreateUserDto("test@homeoffice.gov.uk", "firstname", "");
+    CreateUserDto createUserDto = new CreateUserDto("test@example.co.uk", "firstname", "");
     Set<ConstraintViolation<CreateUserDto>> constraintViolations = validator.validate(createUserDto);
-    assertThat(constraintViolations).hasSize(1);
-    ConstraintViolation<CreateUserDto> cv = constraintViolations.iterator().next();
-    assertThat(cv.getMessage()).isEqualTo("Last Name is mandatory");
+    assertThat(constraintViolations.stream().anyMatch(x -> x.getMessage().equals("Last Name is mandatory"))).isTrue();
   }
 
 }
