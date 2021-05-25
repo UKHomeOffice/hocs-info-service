@@ -5,6 +5,8 @@ metadata:
   name: hocs-info-service
   labels:
     version: {{.VERSION}}
+  annotations:
+    downscaler/uptime: {{.UPTIME_PERIOD}}
 spec:
   replicas: {{.MIN_REPLICAS}}
   selector:

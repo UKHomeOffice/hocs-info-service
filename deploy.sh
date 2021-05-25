@@ -22,9 +22,9 @@ then
     export MIN_REPLICAS="2"
     export MAX_REPLICAS="6"
 
-    export MEMBER_REFRESH_HOUR="22"
-
+    export MEMBER_REFRESH_HOUR="5"
     export IS_PROD="true"
+    export UPTIME_PERIOD="Mon-Sun 04:55-23:00 Europe/London"
 
     export CLUSTER_NAME="acp-prod"
     export KUBE_SERVER="https://kube-api-prod.prod.acp.homeoffice.gov.uk"
@@ -32,9 +32,9 @@ else
     export MIN_REPLICAS="1"
     export MAX_REPLICAS="2"
 
-    export MEMBER_REFRESH_HOUR="17" # notprod turns off earlier than prod
-    
+    export MEMBER_REFRESH_HOUR="8" # notprod starts later than prod.
     export IS_PROD=""
+    export UPTIME_PERIOD="Mon-Fri 07:55-18:00 Europe/London"
 
     export CLUSTER_NAME="acp-notprod"
     export KUBE_SERVER="https://kube-api-notprod.notprod.acp.homeoffice.gov.uk"
