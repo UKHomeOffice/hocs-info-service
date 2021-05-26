@@ -3,7 +3,6 @@ package uk.gov.digital.ho.hocs.info.api;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.keycloak.admin.client.Keycloak;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.PatchTeamDto;
@@ -30,7 +29,6 @@ import static org.mockito.Mockito.*;
 
 public class TeamServiceTest {
 
-    private static final String HOCS_REALM = "hocs";
     @Mock
     private TeamRepository teamRepository;
 
@@ -45,9 +43,6 @@ public class TeamServiceTest {
 
     @Mock
     private KeycloakService keycloakService;
-
-    @Mock
-    private Keycloak keycloakClient;
 
     @Mock
     private AuditClient auditClient;
