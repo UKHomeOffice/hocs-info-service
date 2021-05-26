@@ -3,7 +3,6 @@ package uk.gov.digital.ho.hocs.info.api;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.keycloak.admin.client.Keycloak;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
@@ -28,7 +27,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class TeamServiceTest {
 
-    private static final String HOCS_REALM = "hocs";
     @Mock
     private TeamRepository teamRepository;
 
@@ -43,9 +41,6 @@ public class TeamServiceTest {
 
     @Mock
     private KeycloakService keycloakService;
-
-    @Mock
-    private Keycloak keycloakClient;
 
     @Mock
     private AuditClient auditClient;
@@ -280,8 +275,9 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void shouldAddUserToTeam() {
-        UUID userUUID = UUID.randomUUID();
+    public void shouldAddUsersToTeam() {
+        UUID userUUID1 = UUID.randomUUID();
+        UUID userUUID2 = UUID.randomUUID();
 
         Set<Permission> permissions = new HashSet<>();
         Unit unit = new Unit("a unit", "UNIT", true);
@@ -293,9 +289,10 @@ public class TeamServiceTest {
         team.addPermissions(permissions);
 
         when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
-        teamService.addUserToTeam(userUUID, team.getUuid());
+        teamService.addUsersToTeam(List.of(userUUID1, userUUID2), team.getUuid());
         verify(keycloakService, times(1)).createTeamGroupIfNotExists(team.getUuid());
-        verify(keycloakService, times(1)).addUserToTeam(userUUID, team.getUuid());
+        verify(keycloakService, times(1)).addUserToTeam(userUUID1, team.getUuid());
+        verify(keycloakService, times(1)).addUserToTeam(userUUID2, team.getUuid());
     }
 
     @Test
@@ -459,7 +456,8 @@ public class TeamServiceTest {
 
     @Test
     public void ShouldAuditAddUserToTeam() {
-        UUID userUUID = UUID.randomUUID();
+        UUID userUUID1 = UUID.randomUUID();
+        UUID userUUID2 = UUID.randomUUID();
 
         Set<Permission> permissions = new HashSet<>();
         Unit unit = new Unit("a unit", "UNIT", true);
@@ -470,8 +468,8 @@ public class TeamServiceTest {
         team.setUnit(unit);
 
         when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
-        teamService.addUserToTeam(userUUID, team.getUuid());
-        verify(auditClient, times(1)).addUserToTeamAudit(userUUID, team);
+        teamService.addUsersToTeam(List.of(userUUID1, userUUID2), team.getUuid());
+        verify(auditClient, times(1)).addUsersToTeamAudit(userUUID1 + "," + userUUID2, team);
     }
 
     @Test

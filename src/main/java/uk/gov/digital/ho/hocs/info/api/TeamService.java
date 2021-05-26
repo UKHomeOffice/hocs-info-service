@@ -19,6 +19,7 @@ import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static net.logstash.logback.argument.StructuredArguments.value;
 import static uk.gov.digital.ho.hocs.info.application.LogEvent.*;
@@ -161,12 +162,13 @@ public class TeamService {
             unit.addTeam(team);
         } else {
             log.debug("Team {} exists, not creating.", newTeam.getDisplayName());
-            createKeyCloakMappings(team.getUuid(), Optional.empty());
+            keycloakService.createTeamGroupIfNotExists(team.getUuid());
+
             throw new ApplicationExceptions.EntityAlreadyExistsException(
                     "Team: " + newTeam.getDisplayName() + " already exists."
             );
         }
-        createKeyCloakMappings(team.getUuid(), Optional.empty());
+        keycloakService.createTeamGroupIfNotExists(team.getUuid());
         auditClient.createTeamAudit(team);
         log.info("Team with UUID {} created in Unit {}", team.getUuid().toString(), unit.getShortCode(), value(EVENT, TEAM_CREATED));
         return team;
@@ -203,12 +205,14 @@ public class TeamService {
         log.info("Team with UUID {} letter name updated to {}", team.getUuid().toString(), newLetterName, value(EVENT, TEAM_RENAMED));
     }
 
-    public void addUserToTeam(UUID userUUID, UUID teamUUID) {
-        log.debug("Adding User {} to Team {}", userUUID, teamUUID);
+    public void addUsersToTeam(List<UUID> userUUIDs, UUID teamUUID) {
+        String userUuidList = userUUIDs.stream().map(UUID::toString).collect(Collectors.joining(","));
+        log.debug("Adding Users {} to Team {}", userUuidList, teamUUID);
         Team team = getTeam(teamUUID);
-        createKeyCloakMappings(teamUUID, Optional.of(userUUID));
-        auditClient.addUserToTeamAudit(userUUID, team);
-        log.info("Added user with UUID {} to team with UUID {}", userUUID.toString(), team.getUuid().toString(), value(EVENT, USER_ADDED_TO_TEAM));
+        createKeyCloakMappings(teamUUID, userUUIDs);
+
+        auditClient.addUsersToTeamAudit(userUuidList, team);
+        log.info("Added users with UUIDs {} to team with UUID {}", userUuidList, team.getUuid().toString(), value(EVENT, USERS_ADDED_TO_TEAM));
     }
 
     @Transactional
@@ -230,7 +234,7 @@ public class TeamService {
         Team team = getTeam(teamUUID);
         Set<Permission> permissions = getPermissionsFromDto(permissionsDto, team);
         team.addPermissions(permissions);
-        createKeyCloakMappings(teamUUID, Optional.empty());
+        keycloakService.createTeamGroupIfNotExists(team.getUuid());
         auditClient.updateTeamPermissionsAudit(permissionsDto);
         log.info("Updated Permissions for team {}", teamUUID.toString(), value(EVENT, TEAM_PERMISSIONS_UPDATED));
     }
@@ -272,10 +276,13 @@ public class TeamService {
         return permissions;
     }
 
-    private void createKeyCloakMappings(UUID teamUUID, Optional<UUID> userUUID) {
+
+    private void createKeyCloakMappings(UUID teamUUID, List<UUID> userUUIDs) {
         keycloakService.createTeamGroupIfNotExists(teamUUID);
-        userUUID.ifPresent(uuid -> keycloakService.addUserToTeam(uuid, teamUUID));
+
+        userUUIDs.forEach(userUuid -> keycloakService.addUserToTeam(userUuid, teamUUID));
     }
+
 
     @Transactional
     public void removeUserFromTeam(UUID userUUID, UUID teamUUID) {

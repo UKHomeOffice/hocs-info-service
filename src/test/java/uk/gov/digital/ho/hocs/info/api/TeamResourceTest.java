@@ -39,17 +39,19 @@ public class TeamResourceTest {
         teamResource = new TeamResource(teamService);
     }
 
-    private UUID userUUID = UUID.randomUUID();
+    private UUID userUUID1 = UUID.randomUUID();
+    private UUID userUUID2 = UUID.randomUUID();
     private UUID teamUUID = UUID.randomUUID();
     private UUID caseUUID = UUID.randomUUID();
 
     @Test
-    public void shouldAddUserToTeam() {
-        doNothing().when(teamService).addUserToTeam(userUUID, teamUUID);
+    public void shouldAddUsersToTeam() {
+        doNothing().when(teamService).addUsersToTeam(List.of(userUUID1, userUUID2), teamUUID);
 
-        ResponseEntity result = teamResource.addUserToGroup(userUUID.toString(), teamUUID.toString());
+        ResponseEntity result = teamResource.addUserToGroup(teamUUID.toString(),
+                List.of(userUUID1.toString(), userUUID2.toString()));
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(teamService).addUserToTeam(userUUID, teamUUID);
+        verify(teamService).addUsersToTeam(List.of(userUUID1, userUUID2), teamUUID);
         verifyNoMoreInteractions(teamService);
     }
 
@@ -218,6 +220,68 @@ public class TeamResourceTest {
         verify(teamService).updateTeamName(teamUUID, request.getDisplayName());
         verifyNoMoreInteractions(teamService);
     }
+
+    @Test
+    public void shouldPatchTeam_UpdateNameWhenNewNameGiven() {
+        UUID teamUuid = UUID.randomUUID();
+        String newTeamName = "__new_team_name__";
+
+        PatchTeamDto request = new PatchTeamDto();
+        request.setDisplayName(newTeamName);
+
+        Team team = new Team("__old_team_name__", true);
+        when(teamService.getTeam(teamUuid)).thenReturn(team);
+
+        ResponseEntity result = teamResource.patchTeam(teamUuid, request);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        verify(teamService).getTeam(teamUuid);
+        verify(teamService).updateTeamName(teamUuid, request.getDisplayName());
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
+    public void shouldPatchTeam_UpdateUnitWhenNewNameGiven() {
+        UUID teamUuid = UUID.randomUUID();
+        UUID newUnitUuid = UUID.randomUUID();
+
+        PatchTeamDto request = new PatchTeamDto();
+        request.setUnitUuid(newUnitUuid);
+
+        Team team = new Team("__old_team_name__", true);
+        team.setUnit(new Unit("Unit", "Unit", true));
+        when(teamService.getTeam(teamUuid)).thenReturn(team);
+
+        ResponseEntity result = teamResource.patchTeam(teamUuid, request);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        verify(teamService).getTeam(teamUuid);
+        verify(teamService).moveToNewUnit(newUnitUuid, teamUuid);
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
+    public void shouldNotPatchTeam_WhenValuesUnchanged() {
+        UUID teamUuid = UUID.randomUUID();
+        String teamName = "__team_name__";
+        Unit teamUnit = new Unit("Unit", "Unit", true);
+
+        PatchTeamDto request = new PatchTeamDto();
+        request.setUnitUuid(teamUnit.getUuid());
+        request.setDisplayName(teamName);
+
+        Team team = new Team(teamName, true);
+        team.setUnit(teamUnit);
+        when(teamService.getTeam(teamUuid)).thenReturn(team);
+
+        ResponseEntity result = teamResource.patchTeam(teamUuid, request);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        verify(teamService).getTeam(teamUuid);
+        verifyNoMoreInteractions(teamService);
+    }
+
+
 
     @Test
     public void shouldUpdateTeamLetterName() {

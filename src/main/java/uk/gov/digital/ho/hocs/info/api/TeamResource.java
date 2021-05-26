@@ -1,18 +1,23 @@
 package uk.gov.digital.ho.hocs.info.api;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
+import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static net.logstash.logback.argument.StructuredArguments.value;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.*;
 
 @RestController
+@Slf4j
 public class TeamResource {
     private TeamService teamService;
 
@@ -20,16 +25,47 @@ public class TeamResource {
         this.teamService = teamService;
     }
 
-    @PostMapping(value = "/users/{userUUID}/team/{teamUUID}")
-    public ResponseEntity addUserToGroup(@PathVariable String userUUID, @PathVariable String teamUUID) {
-        teamService.addUserToTeam(UUID.fromString(userUUID), UUID.fromString(teamUUID));
+    @PostMapping(value = "/users/team/{teamUUID}")
+    public ResponseEntity addUserToGroup(@PathVariable String teamUUID, @RequestBody List<String> userUUIDs) {
+        List<UUID> convertedUserUuids = userUUIDs.stream().map(UUID::fromString).collect(Collectors.toList());
+        teamService.addUsersToTeam(convertedUserUuids, UUID.fromString(teamUUID));
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "/unit/{unitUUID}/teams")
     public ResponseEntity<TeamDto> createUpdateTeam(@PathVariable String unitUUID, @RequestBody TeamDto team) {
-        Team createdTeam = teamService.createTeam(team, UUID.fromString(unitUUID));
-        return ResponseEntity.ok(TeamDto.from(createdTeam));
+        try {
+            Team createdTeam = teamService.createTeam(team, UUID.fromString(unitUUID));
+            return ResponseEntity.ok(TeamDto.from(createdTeam));
+        } catch (ApplicationExceptions.EntityAlreadyExistsException entityAlreadyExistsException) {
+            log.error(entityAlreadyExistsException.getMessage(), value(EVENT, FAILED_TO_CREATE_TEAM));
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+
+    @PatchMapping(value = "/team/{teamUuid}")
+    @Transactional
+    public ResponseEntity patchTeam(@PathVariable UUID teamUuid, @RequestBody PatchTeamDto teamPatch) {
+        log.debug("Patching team {}", teamUuid);
+        Team team = teamService.getTeam(teamUuid);
+
+        if (displayNameHasChanged(team, teamPatch)) {
+            teamService.updateTeamName(teamUuid, teamPatch.getDisplayName());
+        }
+
+        if (unitUuidHasChanged(team, teamPatch)) {
+            teamService.moveToNewUnit(teamPatch.getUnitUuid(), teamUuid);
+        }
+
+        try {
+            return ResponseEntity.ok().build();
+        } catch (ApplicationExceptions.EntityAlreadyExistsException entityAlreadyExistsException) {
+            log.error(entityAlreadyExistsException.getMessage(), value(EVENT, FAILED_TO_PATCH_TEAM));
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (Exception e) {
+            log.error(e.getMessage(), value(EVENT, FAILED_TO_PATCH_TEAM));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping(value = "/unit/{unitUUID}/teams/{teamUUID}")
@@ -160,5 +196,21 @@ public class TeamResource {
     public ResponseEntity removeUserFromTeam(@PathVariable String userUUID, @PathVariable String teamUUID) {
         teamService.removeUserFromTeam(UUID.fromString(userUUID), UUID.fromString(teamUUID));
         return ResponseEntity.ok().build();
+    }
+
+    private static boolean displayNameHasChanged(Team team, PatchTeamDto patchTeamDto) {
+        if (!Objects.isNull(patchTeamDto.getDisplayName())
+                && !patchTeamDto.getDisplayName().equals(team.getDisplayName())) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean unitUuidHasChanged(Team team, PatchTeamDto patchTeamDto) {
+        if (!Objects.isNull(patchTeamDto.getUnitUuid()) &&
+                !team.getUnit().getUuid().equals(patchTeamDto.getUnitUuid())) {
+            return true;
+        }
+        return false;
     }
 }

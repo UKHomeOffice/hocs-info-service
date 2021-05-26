@@ -79,8 +79,8 @@ public class AuditClient {
         sendAuditMessage(request);
     }
 
-    public void addUserToTeamAudit(UUID userUUID, Team team) {
-        String auditPayload = Json.createObjectBuilder().add(TEAM_UUID, team.getUuid().toString()).add("userUUID", userUUID.toString()).build().toString();
+    public void addUsersToTeamAudit(String userUUIDs, Team team) {
+        String auditPayload = Json.createObjectBuilder().add(TEAM_UUID, team.getUuid().toString()).add("userUUIDs", userUUIDs).build().toString();
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.ADD_USER_TO_TEAM.toString());
         sendAuditMessage(request);
     }
