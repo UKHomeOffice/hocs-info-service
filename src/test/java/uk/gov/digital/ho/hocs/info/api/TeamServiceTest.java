@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.keycloak.admin.client.Keycloak;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.api.dto.PatchTeamDto;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
