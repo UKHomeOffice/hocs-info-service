@@ -3,7 +3,6 @@ package uk.gov.digital.ho.hocs.info.api;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.keycloak.admin.client.Keycloak;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
@@ -28,7 +27,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class TeamServiceTest {
 
-    private static final String HOCS_REALM = "hocs";
     @Mock
     private TeamRepository teamRepository;
 
@@ -43,9 +41,6 @@ public class TeamServiceTest {
 
     @Mock
     private KeycloakService keycloakService;
-
-    @Mock
-    private Keycloak keycloakClient;
 
     @Mock
     private AuditClient auditClient;
@@ -570,6 +565,24 @@ public class TeamServiceTest {
             // do nothing
         }
         verifyZeroInteractions(auditClient);
+    }
+
+    @Test
+    public void shouldGetAllFirstDescendantTeamsFromCurrentTeam() {
+        UUID caseUUID = UUID.randomUUID();
+        UUID stageUUID = UUID.randomUUID();
+        UUID currentTeamUUID = UUID.randomUUID();
+        Set<Team> teams = Set.of(new Team(UUID.randomUUID().toString(), true));
+
+        when(caseworkClient.getTeamUUIDFromCaseAndStage(caseUUID, stageUUID)).thenReturn(currentTeamUUID);
+        when(teamRepository.findAllActiveFirstDescendantTeamsFromAscendant(currentTeamUUID)).thenReturn(teams);
+
+        Set<Team> expectedTeams = teamService.getAllFirstDescendantTeamsFromCurrentTeam(caseUUID, stageUUID);
+
+        assertThat(expectedTeams.iterator().next().getUuid()).isEqualTo(teams.iterator().next().getUuid());
+        verify(caseworkClient).getTeamUUIDFromCaseAndStage(caseUUID, stageUUID);
+        verify(teamRepository).findAllActiveFirstDescendantTeamsFromAscendant(currentTeamUUID);
+        verifyZeroInteractions(caseworkClient, teamRepository);
     }
 
     private List<Team> getAllTeams() {

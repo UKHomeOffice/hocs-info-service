@@ -43,4 +43,9 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
 
     @Query(value = "SELECT t.* FROM team t INNER JOIN team_link tl ON tl.responsible_team_uuid=t.uuid INNER JOIN topic ON cast(topic.uuid as text)=tl.link_value WHERE tl.link_type='TOPIC' AND topic.uuid=?1 AND topic.active=TRUE AND t.active=TRUE", nativeQuery = true)
     Set<Team> findTeamsByTopicUuid(UUID topicUUID);
+
+    @Query(value = "SELECT t.* FROM team t " +
+            "WHERE t.parent_team = ?1 " +
+            "AND t.active = TRUE", nativeQuery = true)
+    Set<Team> findAllActiveFirstDescendantTeamsFromAscendant(UUID ascendantTeamUUID);
 }
