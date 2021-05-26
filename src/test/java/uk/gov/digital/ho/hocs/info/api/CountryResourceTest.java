@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.api.dto.GetMembersResponse;
 import uk.gov.digital.ho.hocs.info.domain.model.Country;
 
 import java.util.HashSet;
@@ -48,7 +47,7 @@ public class CountryResourceTest {
 
         doNothing().when(countryService).updateWebCountryList();
 
-        ResponseEntity<GetMembersResponse> response = countryResource.getFromApi();
+        ResponseEntity<String> response = countryResource.getFromApi();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(countryService, times(1)).updateWebCountryList();
