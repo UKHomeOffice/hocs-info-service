@@ -81,12 +81,4 @@ public class Team implements Serializable {
     public void deletePermissions(Set<Permission> newPermissions) {
         newPermissions.forEach(this::deletePermission);
     }
-
-    public Unit getUnit() {
-        return unit;
-    }
-
-    public void setUnit(Unit unit) {
-        this.unit = unit;
-    }
 }

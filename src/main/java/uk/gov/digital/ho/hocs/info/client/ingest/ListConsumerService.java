@@ -1,5 +1,7 @@
 package uk.gov.digital.ho.hocs.info.client.ingest;
 
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.Member;
 import uk.gov.digital.ho.hocs.info.domain.model.enums.HouseCodes;
 import uk.gov.digital.ho.hocs.info.domain.repository.HouseAddressRepository;
 
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,14 +27,14 @@ public class ListConsumerService {
 
     private static final String HOUSE_LORDS = "lords/";
     private static final String HOUSE_COMMONS = "commons/";
+    public static final String COUNTRY_NAME_PATH = "$.*.item[0].name";
 
     private final String apiUkParliament;
     private final String apiScottishParliament;
     private final String apiNorthernIrishAssembly;
     private final String apiWelshAssembly;
-    private final String apiCountryRegister;
-    private final String apiTerritoryRegister;
-
+    private final String countriesJsonFilename;
+    private final String territoriesJsonFilename;
     private final HouseAddressRepository houseAddressRepository;
     private final RestTemplate restTemplate;
 
@@ -40,16 +43,16 @@ public class ListConsumerService {
                                @Value("${api.scottish.parliament}") String apiScottishParliament,
                                @Value("${api.ni.assembly}") String apiNorthernIrishAssembly,
                                @Value("${api.welsh.assembly}") String apiWelshAssembly,
-                               @Value("${api.country.register}") String apiCountryRegister,
-                               @Value("${api.territory.register}") String apiTerritoryRegister,
+                               @Value("${country.json.filename}") String countriesJsonFilename,
+                               @Value("${territory.json.filename}") String territoriesJsonFilename,
                                HouseAddressRepository houseAddressRepository,
                                RestTemplate restTemplate) {
         this.apiUkParliament = apiUkParliament;
         this.apiScottishParliament = apiScottishParliament;
         this.apiNorthernIrishAssembly = apiNorthernIrishAssembly;
         this.apiWelshAssembly = apiWelshAssembly;
-        this.apiCountryRegister = apiCountryRegister;
-        this.apiTerritoryRegister = apiTerritoryRegister;
+        this.countriesJsonFilename = countriesJsonFilename;
+        this.territoriesJsonFilename = territoriesJsonFilename;
         this.houseAddressRepository = houseAddressRepository;
         this.restTemplate = restTemplate;
     }
@@ -164,16 +167,28 @@ public class ListConsumerService {
         }
     }
 
-    public Set<Country> createFromCountryRegisterAPI() {
-        log.info("Updating Countries");
-        HashMap<String, HashMap<String, ArrayList<HashMap<String, String>>>> hashMap = getDataFromAPI(apiCountryRegister, MediaType.APPLICATION_JSON, HashMap.class);
-        return hashMap.values().stream().map(c -> new Country(c.get("item").get(0).get("name"), false)).collect(Collectors.toSet());
+    public Set<Country> createFromCountryFile() {
+        log.info("Updating Countries from file");
+        return parseLocationJson(countriesJsonFilename, true);
     }
 
-    public Set<Country> createFromTerritoryRegisterAPI() {
-        log.info("Updating Territories");
-        HashMap<String, HashMap<String, ArrayList<HashMap<String, String>>>> hashMap = getDataFromAPI(apiTerritoryRegister, MediaType.APPLICATION_JSON, HashMap.class);
-        return hashMap.values().stream().map(c -> new Country(c.get("item").get(0).get("name"), true)).collect(Collectors.toSet());
+    public Set<Country> createFromTerritoryFile() {
+        log.info("Updating Territories from file");
+        return parseLocationJson(territoriesJsonFilename, false);
+    }
+
+    public Set<Country> parseLocationJson(String fileName, Boolean isCountry) {
+        InputStream jsonStream = inputStreamFromClasspath(fileName);
+        DocumentContext ctx = JsonPath.parse(jsonStream);
+        List<String> territoryStrings = ctx.read(COUNTRY_NAME_PATH);
+        return territoryStrings
+                .stream()
+                .map(name -> new Country(name, isCountry))
+                .collect(Collectors.toSet());
+    }
+
+    private static InputStream inputStreamFromClasspath(String path) {
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
     }
 
     private <T> T getDataFromAPI(String apiEndpoint, MediaType mediaType, Class<T> returnClass) {
