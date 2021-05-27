@@ -37,8 +37,8 @@ public class CountryService {
     public void updateWebCountryList() {
         log.info("Started Updating Countries/Territories List");
         countryRepository.deleteAll();
-        updateCountry(listConsumerService.createFromCountryRegisterAPI());
-        updateCountry(listConsumerService.createFromTerritoryRegisterAPI());
+        updateCountry(listConsumerService.createFromCountryFile());
+        updateCountry(listConsumerService.createFromTerritoryFile());
         List<Country> customEntries = List.of(
                 new Country("Unknown", true),
                 new Country("Netherlands Antilles", false));

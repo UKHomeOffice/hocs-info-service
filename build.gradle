@@ -75,6 +75,7 @@ dependencies {
 	compile('org.apache.commons:commons-csv:1.5')
 	compile('io.springfox:springfox-swagger2:2.9.2')
 	compile('io.springfox:springfox-swagger-ui:2.9.2')
+	compile('com.jayway.jsonpath:json-path:2.5.0')
 	
 	runtime('org.postgresql:postgresql')
 
