@@ -154,6 +154,30 @@ public class CaseTypeResourceTest {
 
     }
 
+    @Test
+    public void getCaseDeadline(){
+        String caseType = "caseTypeA";
+
+        String receivedDateString = "2020-08-03";
+        String expectedExtendedDateString = "2020-09-07";
+
+        LocalDate receivedDate = LocalDate.parse(receivedDateString);
+        LocalDate expectedExtendedDate = LocalDate.parse(expectedExtendedDateString);
+
+        when(caseTypeService.getDeadlineForCaseType(eq("caseTypeA"), eq(receivedDate), eq(10), eq(5)))
+                .thenReturn(expectedExtendedDate);
+
+        ResponseEntity<LocalDate> response =
+                caseTypeResource.getCaseDeadline(caseType, receivedDateString, 10, 5);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().toString()).isEqualTo(expectedExtendedDate.toString());
+
+        verify(caseTypeService).getDeadlineForCaseType(eq("caseTypeA"), eq(receivedDate), eq(10), eq(5));
+        verifyNoMoreInteractions(caseTypeService);
+    }
+
     private Set<CaseType> getMockCaseTypes() {
         UUID unitUUID1 = UUID.randomUUID();
         UUID unitUUID2 = UUID.randomUUID();
