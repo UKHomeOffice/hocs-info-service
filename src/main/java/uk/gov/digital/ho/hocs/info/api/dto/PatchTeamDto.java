@@ -15,6 +15,6 @@ public class PatchTeamDto {
     @JsonProperty("displayName")
     private String displayName;
 
-    @JsonProperty("unitUuid")
+    @JsonProperty("unitUUID")
     private UUID unitUuid;
 }
