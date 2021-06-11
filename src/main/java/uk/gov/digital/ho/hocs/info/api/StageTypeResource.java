@@ -15,6 +15,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.Team;
 
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -33,6 +34,22 @@ public class StageTypeResource {
     ResponseEntity<Set<StageTypeDto>> getAllStageTypes() {
         Set<StageTypeEntity> stageTypes = stageTypeService.getAllStageTypes();
         return ResponseEntity.ok(stageTypes.stream().map(StageTypeDto::from).collect(Collectors.toSet()));
+    }
+
+    /**
+     * Endpoint for retrieving the name for a Stage Type by using a given Stage Type UUID
+     * @param stageTypeUUID the UUID of the stage type name that should be retrieved
+     * @return a Stage Type entity corresponding to the given UUID
+     */
+    @GetMapping(value = "/stageType/{stageTypeUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    ResponseEntity<StageTypeDto> getStageTypeNameByUuid(String stageTypeUUID) {
+        Set<StageTypeEntity> stageTypes = stageTypeService.getAllStageTypes();
+        for (StageTypeEntity stageType : stageTypes){
+            if (stageType.getUuid() == UUID.fromString(stageTypeUUID)){
+                return ResponseEntity.ok(StageTypeDto.from(stageType));
+            }
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping(value = "/stageType/{stageType}/team", produces = APPLICATION_JSON_UTF8_VALUE)
