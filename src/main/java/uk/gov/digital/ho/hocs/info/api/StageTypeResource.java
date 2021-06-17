@@ -42,10 +42,10 @@ public class StageTypeResource {
      * @return a Stage Type entity corresponding to the given UUID
      */
     @GetMapping(value = "/stageType/{stageTypeUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<StageTypeDto> getStageTypeNameByUuid(String stageTypeUUID) {
+    ResponseEntity<StageTypeDto> getStageTypeByUuid(String stageTypeUUID) {
         Set<StageTypeEntity> stageTypes = stageTypeService.getAllStageTypes();
         for (StageTypeEntity stageType : stageTypes){
-            if (stageType.getUuid() == UUID.fromString(stageTypeUUID)){
+            if (stageType.getUuid().equals(UUID.fromString(stageTypeUUID))){
                 return ResponseEntity.ok(StageTypeDto.from(stageType));
             }
         }
