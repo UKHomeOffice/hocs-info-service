@@ -39,6 +39,7 @@ public class AuditClient {
     private final JsonArrayBuilder permissionArray;
     private static final String EVENT_TYPE_HEADER = "event_type";
     private static final String TOPIC = "topicUUID";
+    private static final String ACTIVE = "active";
     private static final String STAGE_TYPE = "stageType";
     private static final String TEAM_UUID = "teamUUID";
     private static final String CASE_TYPE = "caseType";
@@ -164,6 +165,17 @@ public class AuditClient {
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.REACTIVATE_PARENT_TOPIC.toString());
         sendAuditMessage(request);
     }
+
+
+    public void setTeamActivationFlag(Team team) {
+        String auditPayload = Json.createObjectBuilder()
+                .add(ACTIVE, team.isActive())
+                .add(TEAM_UUID, team.getUuid().toString()
+                ).build().toString();
+        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.SET_TEAM_ACTIVATION_FLAG.toString());
+        sendAuditMessage(request);
+    }
+
 
     public void updateTopicParentAudit(Topic topic) {
         String auditPayload = Json.createObjectBuilder()
