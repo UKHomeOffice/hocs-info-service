@@ -120,6 +120,15 @@ public class TeamRepositoryTest {
         assertThat(teams.iterator().next().getUuid()).isEqualTo(teamUUID);
     }
 
+    @Test
+    public void shouldFindActiveByStageType() {
+        Set<Team> teams = repository.findActiveByStageType("stageType");
+
+        assertThat(teams).isNotNull();
+        assertThat(teams.size()).isEqualTo(1);
+        assertThat(teams.iterator().next().getUuid()).isEqualTo(teamUUID);
+    }
+
     @Test()
     public void shouldFindTeamByDisplayName() {
         Team team = repository.findByDisplayName("a team");

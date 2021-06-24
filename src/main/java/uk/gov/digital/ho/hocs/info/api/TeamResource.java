@@ -162,12 +162,6 @@ public class TeamResource {
         return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
     }
 
-    @GetMapping(value = "/teams/drafters")
-    public ResponseEntity<Set<TeamDto>> getdraftingteams() {
-        Set<Team> teams = teamService.getAllActiveTeams();
-        return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
-    }
-
     @GetMapping(value = "/team/case/{caseUUID}/topic/{topicUUID}/stage/{stageType}")
     public ResponseEntity<TeamDto> getActiveTeams(@PathVariable UUID caseUUID, @PathVariable UUID topicUUID, @PathVariable String stageType) {
         Team team = teamService.getTeamByTopicAndStage(caseUUID, topicUUID, stageType);
@@ -184,6 +178,12 @@ public class TeamResource {
     public ResponseEntity<TeamDto> getActiveTeamsByLinkValue(@PathVariable String stageType, @PathVariable String text) {
         Team team = teamService.getTeamByStageAndText(stageType, text);
         return ResponseEntity.ok(TeamDto.from(team));
+    }
+
+    @GetMapping(value = "/team/stage/{stageType}")
+    public ResponseEntity<Set<TeamDto>> getActiveTeamsByStageType(@PathVariable String stageType) {
+        Set<Team> teams = teamService.getActiveTeamsByStageType(stageType);
+        return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
     }
 
     @DeleteMapping(value = "/users/{userUUID}/team/{teamUUID}")
