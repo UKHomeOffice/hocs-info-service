@@ -1,14 +1,10 @@
 package uk.gov.digital.ho.hocs.info.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 @AllArgsConstructor()
 @NoArgsConstructor()
@@ -16,6 +12,7 @@ import java.util.Map;
 @Entity
 @Table(name = "system_configuration")
 @EqualsAndHashCode(of = {"systemName"})
+@ToString
 public class Configuration implements Serializable {
 
     @Id
