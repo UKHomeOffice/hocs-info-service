@@ -26,11 +26,13 @@ public class ConfigurationService {
         if (configuration.getProfiles() == null) {
             String errorMessage = "Empty Profiles";
             log.error(errorMessage);
+            log.error(configuration.toString());
             throw new Exception(errorMessage);
         }
         if (configuration.getWorkstackTypes() == null) {
             String errorMessage = "Empty WorkstackTypes";
             log.error(errorMessage);
+            log.error(configuration.toString());
             throw new Exception(errorMessage);
         } else {
             configuration.getWorkstackTypes().forEach(
@@ -38,6 +40,7 @@ public class ConfigurationService {
                         if (wst.getWorkstackColumns() == null) {
                             String errorMessage = "Empty WorkstackColumns";
                             log.error(errorMessage);
+                            log.error(configuration.toString());
                             throw new RuntimeException(errorMessage);
                         }
                     }
