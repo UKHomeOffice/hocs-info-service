@@ -18,6 +18,11 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: dev
+  - name: anchore-submission-server
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+    pull: always
+    commands:
+      - /run.sh server
 
 steps:
   - name: wait for keycloak
@@ -68,6 +73,14 @@ steps:
 
   - name: sonar-scanner
     image: quay.io/ukhomeofficedigital/sonar-scanner:v3.0.2
+    depends_on:
+      - build project
+
+  - name: scan-image
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+    pull: always
+    environment:
+      IMAGE_NAME: hocs-info-service:${DRONE_COMMIT_SHA}
     depends_on:
       - build project
 
