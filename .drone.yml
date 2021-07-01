@@ -29,7 +29,9 @@ steps:
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission
     pull: always
     settings:
-      image_name: hocs-info-service:${DRONE_COMMIT_SHA}
+      IMAGE_NAME: hocs-info-service:${DRONE_COMMIT_SHA}
+      LOCAL_IMAGE: true
+      DOCKERFILE: Dockerfile
 
 trigger:
   event:
