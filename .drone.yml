@@ -3,21 +3,9 @@ kind: pipeline
 type: kubernetes
 name: build
 
-environment:
-  KEYCLOAK_SERVER_ROOT: http://keycloak:8080
-  KEYCLOAK_USER: admin
-  KEYCLOAK_PASSWORD: password1
-
 services:
-  - name: keycloak
-    image: jboss/keycloak
-    environment:
-      DB_VENDOR: h2
-  - name: postgres
-    image: quay.io/ukhomeofficedigital/postgres-alpine
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: dev
+  - name: docker
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind:latest
   - name: anchore-submission-server
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
     pull: always
@@ -25,41 +13,23 @@ services:
       - /run.sh server
 
 steps:
-  - name: wait for keycloak
-    image: quay.io/ukhomeofficedigital/hocs-docker-tools
+  - name: build project
+    image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
     commands:
-      - >
-        until
-          $(curl \
-          --output /dev/null \
-          --silent --head --fail \
-          $${KEYCLOAK_SERVER_ROOT}/auth/realms/master/.well-known/openid-configuration); 
-        do
-          echo "waiting for keycloak"
-          sleep 1
-        done
-      - >
-        export TKN=$(curl -X POST \
-          'http://keycloak:8080/auth/realms/master/protocol/openid-connect/token' \
-          -H "Content-Type: application/x-www-form-urlencoded" \
-          -d username=$${KEYCLOAK_USER} \
-          -d password=$${KEYCLOAK_PASSWORD} \
-          -d grant_type=password \
-          -d client_id=admin-cli \
-          | jq -r '.access_token')
-      - >
-        curl -vX POST http://keycloak:8080/auth/admin/realms \
-          -d @keycloak/local-realm.json \
-          -H "Authorization: Bearer $${TKN}" \
-          -H "Content-Type: application/json"
+      - ./gradlew assemble --no-daemon
+
+  - name: build docker image
+    pull: if-not-exists
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+    commands:
+      - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
+      - docker build -t hocs-info-service:$${DRONE_COMMIT_SHA} .
 
   - name: scan-image
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission
     pull: always
-    environment:
-      DOCKERFILE: Dockerfile
-      IMAGE_NAME: hocs-info-service:${DRONE_COMMIT_SHA}
-      LOCAL_IMAGE: true
+    settings:
+      image_name: hocs-info-service:${DRONE_COMMIT_SHA}
 
 trigger:
   event:
