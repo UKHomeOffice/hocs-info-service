@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.keycloak.admin.client.Keycloak;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.api.dto.PatchTeamDto;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
@@ -26,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
+
 public class TeamServiceTest {
 
     private static final String HOCS_REALM = "hocs";
@@ -502,6 +504,21 @@ public class TeamServiceTest {
     }
 
     @Test
+    public void ShouldSetActiveFlag() {
+        Team team = mock(Team.class);
+
+
+        when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
+        when(team.getUuid()).thenReturn(team1UUID);
+
+        teamService.setTeamActiveFlag(team1UUID, false);
+
+        verify(auditClient, times(1)).setTeamActivationFlag(team);
+
+    }
+
+
+    @Test
     public void ShouldAuditUpdateTeamPermissions() {
         Unit unit = new Unit("a unit", "UNIT", true);
         Team team = new Team("a team", true);
@@ -630,5 +647,165 @@ public class TeamServiceTest {
         verifyZeroInteractions(auditClient);
     }
 
+    @Test
+    public void shouldNotPatchTeam_WhenValuesUnchanged() {
+        String teamName = "__team_name__";
+        Unit teamUnit = new Unit("Unit", "Unit", true);
 
+        PatchTeamDto request = new PatchTeamDto();
+        request.setUnitUuid(teamUnit.getUuid());
+        request.setDisplayName(teamName);
+
+        Team team = new Team(teamName, true);
+        team.setUnit(teamUnit);
+        when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
+
+        teamService.patchTeam(team.getUuid(), request);
+
+        verify(teamRepository, times(1)).findByUuid(team.getUuid());
+
+        verifyNoMoreInteractions(auditClient);
+        verifyNoMoreInteractions(teamRepository);
+    }
+
+    @Test
+    public void shouldNotPatchTeam_WhenUnchangedActiveValueGiven() {
+        UUID teamUuid = UUID.randomUUID();
+        PatchTeamDto request = new PatchTeamDto();
+        request.setActive(true);
+
+        Team team = mock(Team.class);
+
+        when(team.isActive()).thenReturn(true);
+        when(teamRepository.findByUuid(teamUuid)).thenReturn(team);
+
+        teamService.patchTeam(teamUuid, request);
+
+        verify(teamRepository, times(1)).findByUuid(teamUuid);
+        verify(team, times(1)).isActive();
+
+        verifyNoMoreInteractions(auditClient);
+        verifyNoMoreInteractions(teamRepository);
+        verifyNoMoreInteractions(team);
+    }
+
+    @Test
+    public void shouldThrow_WhenAnNullActiveFlagProvided() {
+        UUID teamUuid = UUID.randomUUID();
+        PatchTeamDto request = new PatchTeamDto();
+        request.setActive(true);
+
+        Team team = mock(Team.class);
+
+        when(team.isActive()).thenReturn(true);
+        when(teamRepository.findByUuid(teamUuid)).thenReturn(team);
+
+        teamService.patchTeam(teamUuid, request);
+
+        verify(teamRepository, times(1)).findByUuid(teamUuid);
+
+        verify(team, times(1)).isActive();
+
+        verifyNoMoreInteractions(auditClient);
+        verifyNoMoreInteractions(teamRepository);
+        verifyNoMoreInteractions(team);
+    }
+
+    @Test
+    public void shouldPatchTeam_UpdateActiveFlagWhenNewActiveValueSet() {
+        UUID teamUuid = UUID.randomUUID();
+        PatchTeamDto request = new PatchTeamDto();
+        request.setActive(false);
+
+        Team team = mock(Team.class);
+
+        when(team.getUuid()).thenReturn(teamUuid);
+        when(team.isActive()).thenReturn(true);
+
+        when(teamRepository.findByUuid(teamUuid)).thenReturn(team);
+
+        teamService.patchTeam(teamUuid, request);
+
+        verify(teamRepository, times(2)).findByUuid(teamUuid);
+        verify(auditClient, times(1)).setTeamActivationFlag(team);
+
+        verify(team, times(1)).getUuid();
+        verify(team, times(1)).isActive();
+        verify(team, times(1)).setActive(false);
+
+        verifyNoMoreInteractions(auditClient);
+        verifyNoMoreInteractions(teamRepository);
+        verifyNoMoreInteractions(team);
+    }
+
+    @Test
+    public void shouldPatchTeam_UpdateNameWhenNewNameGiven() {
+        UUID teamUuid = UUID.randomUUID();
+        PatchTeamDto request = new PatchTeamDto();
+        String newTeamName = "__new_team_name__";
+        request.setDisplayName(newTeamName);
+
+        Team team = mock(Team.class);
+
+        when(team.getDisplayName()).thenReturn("__old_team_name__");
+        when(team.getUuid()).thenReturn(teamUuid);
+
+        when(teamRepository.findByUuid(teamUuid)).thenReturn(team);
+        when(teamRepository.findByDisplayName(newTeamName)).thenReturn(null);
+
+        teamService.patchTeam(teamUuid, request);
+
+        verify(teamRepository, times(2)).findByUuid(teamUuid);
+        verify(teamRepository, times(1)).findByDisplayName(newTeamName);
+        verify(auditClient, times(1)).renameTeamAudit(team);
+
+        verify(team, times(1)).getUuid();
+        verify(team, times(2)).getDisplayName();
+        verify(team, times(1)).setDisplayName(newTeamName);
+
+        verifyNoMoreInteractions(auditClient);
+        verifyNoMoreInteractions(teamRepository);
+        verifyNoMoreInteractions(team);
+    }
+
+    @Test
+    public void shouldPatchTeam_UpdateUnitWhenUnitGiven() {
+        UUID teamUuid = UUID.randomUUID();
+        UUID newUnitUuid = UUID.randomUUID();
+        UUID oldUnitUuid = UUID.randomUUID();
+
+        PatchTeamDto request = new PatchTeamDto();
+        request.setUnitUuid(newUnitUuid);
+
+        Team team = mock(Team.class);
+        Unit newUnit = mock(Unit.class);
+        Unit oldUnit = mock(Unit.class);
+
+        when(oldUnit.getUuid()).thenReturn(oldUnitUuid);
+        when(oldUnit.getShortCode()).thenReturn("UNIT1");
+        when(newUnit.getShortCode()).thenReturn("UNIT2");
+
+        when(team.getUnit()).thenReturn(oldUnit);
+
+        when(unitRepository.findByUuid(newUnitUuid)).thenReturn(newUnit);
+        when(unitRepository.findByUuid(oldUnitUuid)).thenReturn(oldUnit);
+
+        when(teamRepository.findByUuid(teamUuid)).thenReturn(team);
+
+        teamService.patchTeam(teamUuid, request);
+
+        verify(teamRepository, times(2)).findByUuid(teamUuid);
+        verify(auditClient, times(1))
+                .moveToNewUnitAudit(teamUuid.toString(), "UNIT1", "UNIT2");
+
+        verify(team, times(2)).getUnit();
+
+        verify(unitRepository, times(1)).findByUuid(newUnitUuid);
+        verify(unitRepository, times(1)).findByUuid(oldUnitUuid);
+
+        verify(newUnit, times(1)).addTeam(team);
+        verify(oldUnit, times(1)).removeTeam(teamUuid);
+
+        verifyNoMoreInteractions(auditClient, teamRepository, team);
+    }
 }
