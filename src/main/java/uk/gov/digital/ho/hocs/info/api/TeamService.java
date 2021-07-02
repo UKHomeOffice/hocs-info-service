@@ -142,6 +142,11 @@ public class TeamService {
         }
     }
 
+    Set<Team> getActiveTeamsByStageType(String stageType) {
+        log.debug("Getting active teams by stage type");
+        return teamRepository.findActiveByStageType(stageType);
+    }
+
     @Transactional
     public Team createTeam(TeamDto newTeam, UUID unitUUID) {
         log.debug("Creating Team {}", newTeam.getDisplayName());

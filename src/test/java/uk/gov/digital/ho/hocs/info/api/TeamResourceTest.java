@@ -294,6 +294,19 @@ public class TeamResourceTest {
     }
 
     @Test
+    public void shouldGetActiveTeamsByStageType() {
+        Set<Team> teams = Set.of(new Team(UUID.randomUUID().toString(), true));
+        when(teamService.getActiveTeamsByStageType("stageType")).thenReturn(teams);
+
+        ResponseEntity<Set<TeamDto>> response = teamResource.getActiveTeamsByStageType("stageType");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().iterator().next().getUuid()).isEqualTo(teams.iterator().next().getUuid());
+        verify(teamService).getActiveTeamsByStageType("stageType");
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
     public void shouldRemoveRequestedPermissionsFromATeam() {
         UUID teamUUID = UUID.randomUUID();
         Set<PermissionDto> permissionDtoSet = new HashSet<>();

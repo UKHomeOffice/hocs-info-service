@@ -250,6 +250,16 @@ public class TeamServiceTest {
     }
 
     @Test
+    public void shouldGetActiveTeamsByStageType() {
+        Set<Team> teams = Set.of(new Team(UUID.randomUUID().toString(), true));
+        when(teamRepository.findActiveByStageType("stageType")).thenReturn(teams);
+
+        Set<Team> result = teamService.getActiveTeamsByStageType("stageType");
+
+        assertThat(result).isEqualTo(teams);
+    }
+
+    @Test
     public void shouldGetTeamPermissions() {
         when(teamRepository.findByUuid(team1UUID)).thenReturn(getTeams().get(0));
         Team result = teamService.getTeam(team1UUID);
