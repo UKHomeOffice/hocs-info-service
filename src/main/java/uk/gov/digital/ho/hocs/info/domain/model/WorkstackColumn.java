@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.io.Serializable;
 @Table(name = "workstack_column")
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class WorkstackColumn implements Serializable {
 
     @Id

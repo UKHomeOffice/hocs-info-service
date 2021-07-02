@@ -32,7 +32,7 @@ public class ConfigurationResourceTest {
     }
 
     @Test
-    public void shouldReturnConfiguration() {
+    public void shouldReturnConfiguration() throws Exception {
         String systemName = "system";
         String systemDisplayName = "Test System Name";
 
@@ -76,4 +76,12 @@ public class ConfigurationResourceTest {
         verifyNoMoreInteractions(configurationService);
     }
 
+    @Test
+    public void shouldReturnNotFoundOnException() throws Exception {
+        when(configurationService.getConfiguration("system")).thenThrow(new RuntimeException());
+
+        ResponseEntity<ConfigurationDto> result = configurationResource.getConfiguration();
+
+        Assert.assertEquals("Status code incorrect", 500, result.getStatusCode().value());
+    }
 }

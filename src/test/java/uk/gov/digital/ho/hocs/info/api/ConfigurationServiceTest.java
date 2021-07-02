@@ -32,7 +32,7 @@ public class ConfigurationServiceTest {
     }
 
     @Test
-    public void shouldReturnConfiguration() {
+    public void shouldReturnConfiguration() throws Exception {
         String systemName = "profile";
         String systemDisplayName = "Test System Name";
         List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, "columnName1", "adapter", "renderer", "valueKey", true, "cssClass", "SortStrategy"));
