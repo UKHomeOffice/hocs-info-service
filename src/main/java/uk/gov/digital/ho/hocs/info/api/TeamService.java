@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.digital.ho.hocs.info.api.dto.PatchTeamDto;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDeleteActiveParentTopicsDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
@@ -193,6 +194,25 @@ public class TeamService {
     }
 
     @Transactional
+    public void setTeamActiveFlag(UUID teamUUID, Boolean active) {
+        log.debug("Updating Team {} activation", teamUUID);
+
+        if(teamUUID == null) {
+            throw new IllegalArgumentException("Parameter 'teamUuid' cannot be null");
+        }
+
+        if(active == null) {
+            throw new IllegalArgumentException("Parameter 'teamUuid' active be null");
+        }
+
+        Team team = getTeam(teamUUID);
+        team.setActive(active);
+        auditClient.setTeamActivationFlag(team);
+        log.info("Team with UUID {} active flag set to {}.",
+                team.getUuid().toString(), active, value(EVENT, TEAM_ACTIVE_FLAG_SET));
+    }
+
+    @Transactional
     public void updateTeamLetterName(UUID teamUUID, String newLetterName) {
         log.debug("Updating Team {} letter name", teamUUID);
         Team team = getTeam(teamUUID);
@@ -209,6 +229,24 @@ public class TeamService {
 
         auditClient.addUsersToTeamAudit(userUuidList, team);
         log.info("Added users with UUIDs {} to team with UUID {}", userUuidList, team.getUuid().toString(), value(EVENT, USERS_ADDED_TO_TEAM));
+    }
+
+    @Transactional
+    public void patchTeam(UUID teamUuid, PatchTeamDto teamPatch) {
+        log.debug("Patching team {}", teamUuid);
+        Team team = getTeam(teamUuid);
+
+        if (displayNameHasChanged(team, teamPatch)) {
+            updateTeamName(teamUuid, teamPatch.getDisplayName());
+        }
+
+        if (unitUuidHasChanged(team, teamPatch)) {
+            moveToNewUnit(teamPatch.getUnitUuid(), teamUuid);
+        }
+
+        if (teamActiveFlagHasChanged(team, teamPatch)) {
+            setTeamActiveFlag(teamUuid, teamPatch.getActive());
+        }
     }
 
     @Transactional
@@ -296,5 +334,29 @@ public class TeamService {
     Set<Team> findActiveTeamsByUnitUuid(UUID unitUUID) {
         log.debug("Getting active teams for Unit {}", unitUUID);
         return teamRepository.findActiveTeamsByUnitUuid(unitUUID);
+    }
+
+    private Boolean displayNameHasChanged(Team team, PatchTeamDto patchTeamDto) {
+        if (patchTeamDto.getDisplayName() != null
+                && !patchTeamDto.getDisplayName().equals(team.getDisplayName())) {
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean unitUuidHasChanged(Team team, PatchTeamDto patchTeamDto) {
+        if (patchTeamDto.getUnitUuid() != null &&
+                !team.getUnit().getUuid().equals(patchTeamDto.getUnitUuid())) {
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean teamActiveFlagHasChanged(Team team, PatchTeamDto patchTeamDto) {
+        if (patchTeamDto.getActive() != null &&
+                team.isActive() != patchTeamDto.getActive()) {
+            return true;
+        }
+        return false;
     }
 }

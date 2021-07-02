@@ -17,4 +17,7 @@ public class PatchTeamDto {
 
     @JsonProperty("unitUUID")
     private UUID unitUuid;
+
+    @JsonProperty("active")
+    private Boolean active;
 }
