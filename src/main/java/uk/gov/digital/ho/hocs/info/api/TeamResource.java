@@ -46,18 +46,9 @@ public class TeamResource {
     @PatchMapping(value = "/team/{teamUuid}")
     @Transactional
     public ResponseEntity patchTeam(@PathVariable UUID teamUuid, @RequestBody PatchTeamDto teamPatch) {
-        log.debug("Patching team {}", teamUuid);
-        Team team = teamService.getTeam(teamUuid);
-
-        if (displayNameHasChanged(team, teamPatch)) {
-            teamService.updateTeamName(teamUuid, teamPatch.getDisplayName());
-        }
-
-        if (unitUuidHasChanged(team, teamPatch)) {
-            teamService.moveToNewUnit(teamPatch.getUnitUuid(), teamUuid);
-        }
-
         try {
+            teamService.patchTeam(teamUuid, teamPatch);
+
             return ResponseEntity.ok().build();
         } catch (ApplicationExceptions.EntityAlreadyExistsException entityAlreadyExistsException) {
             log.error(entityAlreadyExistsException.getMessage(), value(EVENT, FAILED_TO_PATCH_TEAM));
@@ -162,12 +153,6 @@ public class TeamResource {
         return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
     }
 
-    @GetMapping(value = "/teams/drafters")
-    public ResponseEntity<Set<TeamDto>> getdraftingteams() {
-        Set<Team> teams = teamService.getAllActiveTeams();
-        return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
-    }
-
     @GetMapping(value = "/team/case/{caseUUID}/topic/{topicUUID}/stage/{stageType}")
     public ResponseEntity<TeamDto> getActiveTeams(@PathVariable UUID caseUUID, @PathVariable UUID topicUUID, @PathVariable String stageType) {
         Team team = teamService.getTeamByTopicAndStage(caseUUID, topicUUID, stageType);
@@ -186,25 +171,15 @@ public class TeamResource {
         return ResponseEntity.ok(TeamDto.from(team));
     }
 
+    @GetMapping(value = "/team/stage/{stageType}")
+    public ResponseEntity<Set<TeamDto>> getActiveTeamsByStageType(@PathVariable String stageType) {
+        Set<Team> teams = teamService.getActiveTeamsByStageType(stageType);
+        return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
+    }
+
     @DeleteMapping(value = "/users/{userUUID}/team/{teamUUID}")
     public ResponseEntity removeUserFromTeam(@PathVariable String userUUID, @PathVariable String teamUUID) {
         teamService.removeUserFromTeam(UUID.fromString(userUUID), UUID.fromString(teamUUID));
         return ResponseEntity.ok().build();
-    }
-
-    private static boolean displayNameHasChanged(Team team, PatchTeamDto patchTeamDto) {
-        if (!Objects.isNull(patchTeamDto.getDisplayName())
-                && !patchTeamDto.getDisplayName().equals(team.getDisplayName())) {
-            return true;
-        }
-        return false;
-    }
-
-    private static boolean unitUuidHasChanged(Team team, PatchTeamDto patchTeamDto) {
-        if (!Objects.isNull(patchTeamDto.getUnitUuid()) &&
-                !team.getUnit().getUuid().equals(patchTeamDto.getUnitUuid())) {
-            return true;
-        }
-        return false;
     }
 }
