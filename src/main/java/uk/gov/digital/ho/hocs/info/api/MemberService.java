@@ -44,7 +44,7 @@ public class MemberService {
 
     void updateWebMemberLists() {
         log.info("Started Updating Members Lists");
-        updateMember(listConsumerService.createFromWelshAssemblyAPI());
+        //updateMember(listConsumerService.createFromWelshAssemblyAPI());
         updateMember(listConsumerService.createFromScottishParliamentAPI());
         updateMember(listConsumerService.createCommonsFromUKParliamentAPI());
         updateMember(listConsumerService.createLordsFromUKParliamentAPI());
