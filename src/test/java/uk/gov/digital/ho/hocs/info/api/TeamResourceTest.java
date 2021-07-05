@@ -12,6 +12,7 @@ import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Unit;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
+import uk.gov.digital.ho.hocs.info.security.Base64UUID;
 
 import java.util.HashSet;
 import java.util.List;
@@ -189,6 +190,16 @@ public class TeamResourceTest {
         teamResource.getUnitByTeam(teamUUID);
     }
 
+    @Test
+    public void shouldGetTeamCodeForUUID() {
+        UUID teamUUID = UUID.randomUUID();
+        String teamCode = Base64UUID.uuidToBase64String(teamUUID);
+
+        ResponseEntity<String> result = teamResource.getTeamCode(teamUUID);
+
+        assertThat(result.getBody()).isEqualTo(teamCode);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 
     @Test
     public void shouldCreateNewTeam() {
