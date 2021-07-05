@@ -2,7 +2,6 @@ package uk.gov.digital.ho.hocs.info.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
@@ -129,7 +128,6 @@ public class CaseTypeService {
         }
     }
 
-    @Cacheable("calculateWorkingDaysElapsedForCaseType")
     public int calculateWorkingDaysElapsedForCaseType(String caseType, LocalDate fromDate) {
 
         LocalDate now = localDateWrapper.now();
