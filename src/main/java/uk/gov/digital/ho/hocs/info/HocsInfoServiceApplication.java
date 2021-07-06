@@ -18,7 +18,7 @@ public class HocsInfoServiceApplication {
 
     @PreDestroy
     public void stop() {
-        log.info("hocs-info-service stopping gracefully");
+        log.info("Stopping gracefully");
     }
 
 }
