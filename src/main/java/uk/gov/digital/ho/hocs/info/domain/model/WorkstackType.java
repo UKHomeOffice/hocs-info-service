@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.ListIndexBase;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 public class WorkstackType implements Serializable {
 
     @Id

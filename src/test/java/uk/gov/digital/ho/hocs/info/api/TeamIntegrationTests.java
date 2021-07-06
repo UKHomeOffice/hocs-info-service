@@ -167,7 +167,11 @@ public class TeamIntegrationTests {
 
         String teamId = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
         String base64TeamUUID = Base64UUID.uuidToBase64String(UUID.fromString(teamId));
-        HttpEntity httpEntity = new HttpEntity(headers);
+        HttpEntity httpEntity = new HttpEntity(List.of(userId),headers);
+
+        testRestTemplate.exchange(
+                getBasePath() + "/users/team/" + teamId
+                , HttpMethod.POST, httpEntity, String.class);
 
         setupCaseworkServiceWithNoCases();
 
@@ -194,7 +198,11 @@ public class TeamIntegrationTests {
 
         String teamId = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
         String base64TeamUUID = Base64UUID.uuidToBase64String(UUID.fromString(teamId));
-        HttpEntity httpEntity = new HttpEntity(headers);
+        HttpEntity httpEntity = new HttpEntity(List.of(userId),headers);
+
+        testRestTemplate.exchange(
+                getBasePath() + "/users/team/" + teamId
+                , HttpMethod.POST, httpEntity, String.class);
 
         setupCaseworkServiceWithCases();
 
