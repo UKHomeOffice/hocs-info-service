@@ -517,13 +517,13 @@ public class TeamServiceTest {
     public void ShouldSetActiveFlag() {
         Team team = mock(Team.class);
 
-
         when(teamRepository.findByUuid(team1UUID)).thenReturn(team);
         when(team.getUuid()).thenReturn(team1UUID);
 
         teamService.setTeamActiveFlag(team1UUID, false);
 
         verify(auditClient, times(1)).setTeamActivationFlag(team);
+        verify(notifyClient).sendTeamActiveStatusEmail(team1UUID, Boolean.FALSE);
 
     }
 
