@@ -7,11 +7,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.api.TopicResource;
-import uk.gov.digital.ho.hocs.info.api.TopicService;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
+import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,12 +24,14 @@ public class TopicResourceTest {
 
     @Mock
     private TopicService topicService;
+    @Mock
+    private ParentTopicRepository parentTopicRepository;
 
     private TopicResource topicResource;
 
     @Before
     public void setUp() {
-        topicResource = new TopicResource(topicService);
+        topicResource = new TopicResource(topicService, parentTopicRepository);
     }
 
     @Test
@@ -192,6 +193,23 @@ public class TopicResourceTest {
         verify(topicService).getFilteredChildTopicList(any());
         verifyNoMoreInteractions(topicService);
 
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+
+    @Test
+    public void shouldGetAllFOITopics() {
+
+        ParentTopic parentTopic = new ParentTopic("FOI Topics", true);
+        when(parentTopicRepository.findByDisplayName("FOI Topics")).thenReturn(parentTopic);
+        when(topicService.getAllTopicsForParentTopic(any())).thenReturn(getTopics());
+
+        ResponseEntity<Set<TopicDto>> response = topicResource.getAllFOITopics();
+
+        verify(parentTopicRepository, times(1)).findByDisplayName(any());
+        verify(topicService, times(1)).getAllTopicsForParentTopic(any());
+        verifyNoMoreInteractions(topicService);
+        verifyNoMoreInteractions(parentTopicRepository);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
