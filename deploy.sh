@@ -42,6 +42,14 @@ fi
 
 export KUBE_CERTIFICATE_AUTHORITY="https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/${CLUSTER_NAME}.crt"
 
+
+echo
+echo "Deploying hocs-info-service to ${ENVIRONMENT}"
+echo "Service version: ${VERSION}"
+echo "Data repo: ${HOCS_DATA_REPO}"
+echo "Data version: ${HOCS_INFO_SERVICE_DATA_VERSION}"
+echo 
+
 cd kd || exit 1
 
 kd --timeout 10m \
