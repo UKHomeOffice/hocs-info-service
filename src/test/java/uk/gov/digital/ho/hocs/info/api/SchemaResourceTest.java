@@ -32,7 +32,8 @@ public class SchemaResourceTest {
 
     @Test
     public void shouldGetAllSummaryFieldsForCaseType() {
-        Field field = new Field("component", "Field1", "label", "", "", true);
+        Field childField = new Field("component", "childField", "label", "", "", true, null);
+        Field field = new Field("component", "Field1", "label", "", "", true, childField);
         List<Field> fields = new ArrayList<>();
         fields.add(field);
         when(schemaService.getAllSummaryFieldsForCaseType("CASE_TYPE")).thenReturn(fields);
@@ -41,6 +42,7 @@ public class SchemaResourceTest {
         assertThat(result.getBody()).isNotNull();
         assertThat(result.getBody().size()).isEqualTo(1);
         assertThat(result.getBody().get(0).getName()).isEqualTo("Field1");
+        assertThat(result.getBody().get(0).getChild().getUuid()).isEqualTo(childField.getUuid());
 
     }
 

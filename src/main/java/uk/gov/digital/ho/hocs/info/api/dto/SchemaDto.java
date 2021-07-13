@@ -1,9 +1,7 @@
 package uk.gov.digital.ho.hocs.info.api.dto;
 
 import com.fasterxml.jackson.annotation.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 
 import java.util.List;

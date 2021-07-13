@@ -1,8 +1,8 @@
 package uk.gov.digital.ho.hocs.info.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,7 +38,21 @@ public class FieldDto {
     @JsonProperty("active")
     private boolean active;
 
-    public static FieldDto from(Field field) {
-        return new FieldDto(field.getUuid(), field.getComponent(), field.getValidation(), field.getName(), field.getLabel(), field.getProps(), field.isSummary(), field.isActive());
+    @JsonProperty("child")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private FieldDto child;
+
+    public static FieldDto from(final Field field) {
+        final FieldDto childField = field.getChild() != null ? FieldDto.from(field.getChild()) : null;
+
+        return new FieldDto(field.getUuid(),
+                field.getComponent(),
+                field.getValidation(),
+                field.getName(),
+                field.getLabel(),
+                field.getProps(),
+                field.isSummary(),
+                field.isActive(),
+                childField);
     }
 }

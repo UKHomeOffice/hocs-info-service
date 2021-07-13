@@ -33,7 +33,8 @@ public class SchemaResource {
     @GetMapping(value = "/schema/{type}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SchemaDto> getSchema(@PathVariable String type) {
         Schema schema = schemaService.getSchemaByType(type);
-        return ResponseEntity.ok(SchemaDto.from(schema));
+        final SchemaDto from = SchemaDto.from(schema);
+        return ResponseEntity.ok(from);
     }
 
     @GetMapping(value = "/schema/caseType/{caseType}", params = {"stages"}, produces = APPLICATION_JSON_UTF8_VALUE)

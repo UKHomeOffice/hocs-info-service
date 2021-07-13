@@ -28,7 +28,7 @@ public class SchemaServiceTest {
     private SchemaRepository schemaRepository;
 
     private SchemaService service;
-    private final Field field = new Field("", "Field1", "", "", "", true);
+    private final Field field = new Field("", "Field1", "", "", "", true, null);
 
     @Before
     public void setup() {
@@ -51,8 +51,8 @@ public class SchemaServiceTest {
     @Test
     public void getExtractOnlyFields() {
 
-        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true);
-        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true);
+        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true, null);
+        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true, null);
         UUID schemaUUID = UUID.randomUUID();
 
 
@@ -96,10 +96,10 @@ public class SchemaServiceTest {
     public void getAllReportingFieldsForCaseType() {
         String caseType = "TYPE1";
 
-        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true);
-        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true);
-        Field field3 = new Field(12L, UUID.randomUUID(), "component", "Field3", "label", "", "", false, true, true);
-        Field field4 = new Field(13L, UUID.randomUUID(), "component", "Field4", "label", "", "", false, false, true);
+        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true, null);
+        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true, null);
+        Field field3 = new Field(12L, UUID.randomUUID(), "component", "Field3", "label", "", "", false, true, true, null);
+        Field field4 = new Field(13L, UUID.randomUUID(), "component", "Field4", "label", "", "", false, false, true, null);
 
         UUID schema1UUID = UUID.randomUUID();
         UUID schema2UUID = UUID.randomUUID();

@@ -39,3 +39,13 @@ delete from unit where display_name in ('UNIT 2',
                                         'UNIT 6');
 
 delete from correspondent_type where type in ('TEST', 'TEST1', 'TEST2');
+
+--- clean up schema test
+DROP FUNCTION IF EXISTS get_field_id_from_uuid(field_uuid UUID);
+
+delete from field_screen where schema_uuid = 'f958f77d-b277-408d-bd6f-4a498d3f217f';
+
+delete from screen_schema where uuid = 'f958f77d-b277-408d-bd6f-4a498d3f217f';
+
+delete from field where uuid in ('782a75de-ce06-4d31-95eb-87e42234f396',
+                                 '932c2af5-55a1-430a-927a-56e7ef5f1743');
