@@ -44,6 +44,7 @@ public class NotifyClient {
         this.requestData = requestData;
     }
 
+    @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
     @Async
     public void sendTeamRenameEmail(UUID teamUUID, String oldDisplayName) {
         Assert.notNull(teamUUID, "teamUUID parameter must not be null");
@@ -52,6 +53,7 @@ public class NotifyClient {
         sendTeamCommand(new TeamRenameCommand(teamUUID, oldDisplayName));
     }
 
+    @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
     @Async
     public void sendTeamActiveStatusEmail(UUID teamUUID, Boolean currentActiveStatus) {
         Assert.notNull(teamUUID, "teamUUID parameter must not be null");
@@ -60,8 +62,7 @@ public class NotifyClient {
         sendTeamCommand(new TeamActiveCommand(teamUUID, currentActiveStatus));
     }
 
-    @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
-    private <T extends TeamCommand> void sendTeamCommand(T command){
+    private <T extends TeamCommand> void sendTeamCommand(T command) {
         try {
             producerTemplate.sendBodyAndHeaders(notifyQueue, objectMapper.writeValueAsString(command), getQueueHeaders());
             log.info("Sent notify event: {}, correlationID: {}, UserID: {}",
@@ -75,14 +76,15 @@ public class NotifyClient {
                     requestData.correlationId(),
                     requestData.userId(),
                     value(EVENT, command.getCommand()), value(EXCEPTION, e));
+            throw new RuntimeException(e);
         }
     }
 
     private Map<String, Object> getQueueHeaders() {
         return Map.of(
-        RequestData.CORRELATION_ID_HEADER, requestData.correlationId(),
-        RequestData.USER_ID_HEADER, requestData.userId(),
-        RequestData.USERNAME_HEADER, requestData.username(),
-        RequestData.GROUP_HEADER, requestData.groups());
+                RequestData.CORRELATION_ID_HEADER, requestData.correlationId(),
+                RequestData.USER_ID_HEADER, requestData.userId(),
+                RequestData.USERNAME_HEADER, requestData.username(),
+                RequestData.GROUP_HEADER, requestData.groups());
     }
 }
