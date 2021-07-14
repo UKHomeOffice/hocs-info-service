@@ -5,6 +5,18 @@ export KUBE_NAMESPACE=${ENVIRONMENT}
 export VERSION=${VERSION}
 export HOCS_INFO_SERVICE_DATA_VERSION=${HOCS_INFO_SERVICE_DATA_VERSION:-$VERSION}
 
+echo
+echo "Deploying hocs-info-service to ${ENVIRONMENT}"
+echo "Service version: ${VERSION}"
+echo "Data version: ${HOCS_INFO_SERVICE_DATA_VERSION}"
+
+if [[ ${KUBE_NAMESPACE} =~ w?cs-(qa|demo|prod) ]]; then
+    if ! [[ ${VERSION} == "${HOCS_INFO_SERVICE_DATA_VERSION}" ]]; then
+        echo "Service and data versions don't match for namespace: ${KUBE_NAMESPACE}" > /dev/stderr
+        exit 64
+    fi
+fi
+
 if [[ ${KUBE_NAMESPACE} == wcs-* ]]; then
     export HOCS_DATA_REPO=hocs-data-wcs
 else
@@ -16,6 +28,9 @@ else
       export HOCS_DATA_REPO=${HOCS_DATA_REPO:-hocs-data}
     fi
 fi
+
+echo "Data repo: ${HOCS_DATA_REPO}"
+echo
 
 if [[ ${KUBE_NAMESPACE} == *prod ]]
 then
@@ -41,14 +56,6 @@ else
 fi
 
 export KUBE_CERTIFICATE_AUTHORITY="https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/${CLUSTER_NAME}.crt"
-
-
-echo
-echo "Deploying hocs-info-service to ${ENVIRONMENT}"
-echo "Service version: ${VERSION}"
-echo "Data repo: ${HOCS_DATA_REPO}"
-echo "Data version: ${HOCS_INFO_SERVICE_DATA_VERSION}"
-echo 
 
 cd kd || exit 1
 
