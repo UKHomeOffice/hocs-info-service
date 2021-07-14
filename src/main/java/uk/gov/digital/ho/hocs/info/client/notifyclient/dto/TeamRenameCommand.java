@@ -7,15 +7,17 @@ import java.util.UUID;
 
 @java.lang.SuppressWarnings("squid:S1068")
 @Getter
-@NoArgsConstructor
-public class TeamRenameCommand {
-
-    private String command = "team_rename";
+public class TeamRenameCommand extends TeamCommand {
 
     private UUID teamUUID;
     private String oldDisplayName;
 
+    public TeamRenameCommand() {
+        super("team_rename");
+    }
+
     public TeamRenameCommand(UUID teamUUID, String oldDisplayName){
+        this();
         this.teamUUID = teamUUID;
         this.oldDisplayName = oldDisplayName;
     }

@@ -208,6 +208,7 @@ public class TeamService {
         Team team = getTeam(teamUUID);
         team.setActive(active);
         auditClient.setTeamActivationFlag(team);
+        notifyClient.sendTeamActiveStatusEmail(teamUUID, active);
         log.info("Team with UUID {} active flag set to {}.",
                 team.getUuid().toString(), active, value(EVENT, TEAM_ACTIVE_FLAG_SET));
     }

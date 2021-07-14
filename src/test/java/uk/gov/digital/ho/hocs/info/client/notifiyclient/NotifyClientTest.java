@@ -12,6 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.application.RequestData;
 import uk.gov.digital.ho.hocs.info.application.SpringConfiguration;
 import uk.gov.digital.ho.hocs.info.client.notifyclient.NotifyClient;
+import uk.gov.digital.ho.hocs.info.client.notifyclient.dto.TeamActiveCommand;
 import uk.gov.digital.ho.hocs.info.client.notifyclient.dto.TeamRenameCommand;
 
 import java.io.IOException;
@@ -69,6 +70,19 @@ public class NotifyClientTest {
 
         assertThat(request.getCommand()).isEqualTo(command);
         assertThat(request.getOldDisplayName()).isEqualTo(oldDisplayName);
+        assertThat(request.getTeamUUID()).isEqualTo(teamUUID);
+    }
+
+    @Test
+    public void shouldSendTeamActiveEmail() throws IOException {
+        UUID teamUUID = UUID.randomUUID();
+        notifyClient.sendTeamActiveStatusEmail(teamUUID, Boolean.FALSE);
+
+        verify(producerTemplate, times(1)).sendBodyAndHeaders(eq(notifyQueue), jsonCaptor.capture(), any());
+        TeamActiveCommand request = mapper.readValue((String)jsonCaptor.getValue(), TeamActiveCommand.class);
+
+        assertThat(request.getCommand()).isEqualTo("team_active");
+        assertThat(request.getCurrentActiveStatus()).isEqualTo(Boolean.FALSE);
         assertThat(request.getTeamUUID()).isEqualTo(teamUUID);
     }
 
