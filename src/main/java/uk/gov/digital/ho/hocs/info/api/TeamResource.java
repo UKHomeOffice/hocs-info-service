@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
+import uk.gov.digital.ho.hocs.info.security.Base64UUID;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 import static net.logstash.logback.argument.StructuredArguments.value;
 import static uk.gov.digital.ho.hocs.info.application.LogEvent.*;
 
@@ -126,6 +128,11 @@ public class TeamResource {
     public ResponseEntity<TeamDto> getTeam(@PathVariable UUID teamUUID) {
         Team team = teamService.getTeam(teamUUID);
         return ResponseEntity.ok(TeamDto.from(team));
+    }
+
+    @GetMapping(value = "/team/{teamUUID}/code", produces = TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getTeamCode(@PathVariable UUID teamUUID) {
+        return ResponseEntity.ok(Base64UUID.uuidToBase64String(teamUUID));
     }
 
     @GetMapping(value = "/team/{teamUUID}/unit", produces = APPLICATION_JSON_UTF8_VALUE)
