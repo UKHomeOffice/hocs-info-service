@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
+import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
 
 import java.util.List;
 import java.util.Set;
@@ -20,10 +21,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 public class TopicResource {
 
     private final TopicService topicService;
+    private final ParentTopicRepository parentTopicRepository;
 
     @Autowired
-    public TopicResource(TopicService topicService) {
+    public TopicResource(TopicService topicService, ParentTopicRepository parentTopicRepository) {
         this.topicService = topicService;
+        this.parentTopicRepository = parentTopicRepository;
     }
 
     @GetMapping(value = "/topics/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
@@ -38,6 +41,14 @@ public class TopicResource {
         List<ParentTopic> parentTopics = topicService.getTopicList(caseUUID);
         List<Topic> filteredChildTopics = topicService.getFilteredChildTopicList(caseUUID);
         return ResponseEntity.ok(GetAllTopicsResponse.fromTopicWithFilteredChildren(parentTopics, filteredChildTopics));
+    }
+
+    @GetMapping(value = "/case/foitopiclist", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Set<TopicDto>> getAllFOITopics() {
+        log.info("requesting all topics from FOI Topics list");
+        ParentTopic parentTopic = parentTopicRepository.findByDisplayName("FOI Topics");
+        List<Topic> topics = topicService.getAllTopicsForParentTopic(parentTopic.getUuid());
+        return ResponseEntity.ok(topics.stream().map(t->TopicDto.from(t)).collect(Collectors.toSet()));
     }
 
     @GetMapping(value = "/topic/parent/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
