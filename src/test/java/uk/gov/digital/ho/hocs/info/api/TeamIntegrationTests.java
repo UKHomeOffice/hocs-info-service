@@ -216,7 +216,6 @@ public class TeamIntegrationTests {
                 .anyMatch(g -> g.getId().equals(group.getId()))).isTrue();
     }
 
-
     @Test
     @Transactional
     public void shouldDeleteTeamPermission() {
