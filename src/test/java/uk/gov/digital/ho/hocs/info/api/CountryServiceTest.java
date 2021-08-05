@@ -48,10 +48,10 @@ public class CountryServiceTest {
 
         Set<Country> countrys = new HashSet<>();
         countrys.add(new Country(1L, "country", false, false));
-        when(listConsumerService.createFromCountryRegisterAPI()).thenReturn(countrys);
+        when(listConsumerService.createFromCountryFile()).thenReturn(countrys);
         Set<Country> territorys = new HashSet<>();
         territorys.add(new Country(1L, "territory", true, false));
-        when(listConsumerService.createFromTerritoryRegisterAPI()).thenReturn(territorys);
+        when(listConsumerService.createFromTerritoryFile()).thenReturn(territorys);
 
         countryService.updateWebCountryList();
 
@@ -70,7 +70,7 @@ public class CountryServiceTest {
         ArgumentCaptor<Country> argument = ArgumentCaptor.forClass(Country.class);
         Set<Country> countrys = new HashSet<>();
         countrys.add(new Country(1L, "country", false, false));
-        when(listConsumerService.createFromCountryRegisterAPI()).thenReturn(countrys);
+        when(listConsumerService.createFromCountryFile()).thenReturn(countrys);
 
         countryService.updateWebCountryList();
 
@@ -103,7 +103,7 @@ public class CountryServiceTest {
         ArgumentCaptor<Country> argument = ArgumentCaptor.forClass(Country.class);
         Set<Country> territorys = new HashSet<>();
         territorys.add(new Country(1L, "territory", true, false));
-        when(listConsumerService.createFromTerritoryRegisterAPI()).thenReturn(territorys);
+        when(listConsumerService.createFromTerritoryFile()).thenReturn(territorys);
 
         countryService.updateWebCountryList();
 
