@@ -134,4 +134,17 @@ public class EntityResourceTest {
         verifyNoMoreInteractions(entityService);
     }
 
+    @Test
+    public void deleteEntity(){
+        String uuid = UUID.randomUUID().toString();
+        String listName = "L1";
+
+        ResponseEntity<String> response = entityResource.deleteEntity(listName, uuid);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        verify(entityService).deleteEntity(listName, uuid);
+        verifyNoMoreInteractions(entityService);
+    }
+
 }
