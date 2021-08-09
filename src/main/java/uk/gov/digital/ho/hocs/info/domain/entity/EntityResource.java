@@ -10,7 +10,6 @@ import uk.gov.digital.ho.hocs.info.domain.entity.dto.GetCaseSummaryFieldsRespons
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
