@@ -50,8 +50,8 @@ public class ProfileResourceTest {
 
     @Test
     public void getProfileNameForUser() {
-        CaseType caseType1 = new CaseType(null, UUID.randomUUID(), "TEST1", "a1", "type1", UUID.randomUUID(), "TEST", true, true);
-        CaseType caseType2 = new CaseType(null, UUID.randomUUID(), "TEST2", "a2", "type2", UUID.randomUUID(), "TEST", true, true);
+        CaseType caseType1 = new CaseType(null, UUID.randomUUID(), "TEST1", "a1", "type1", UUID.randomUUID(), "TEST", true, true, null);
+        CaseType caseType2 = new CaseType(null, UUID.randomUUID(), "TEST2", "a2", "type2", UUID.randomUUID(), "TEST", true, true, null);
 
         List<String> expectedResult = new ArrayList<>(Arrays.asList("Profile1", "Profile2"));
         when(caseTypeService.getAllCaseTypesForUser(false)).thenReturn(Set.of(caseType1, caseType2));

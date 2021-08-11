@@ -11,7 +11,7 @@ public class CaseTypeDtoTest {
 
     @Test
     public void shouldBuildCaseTypeDtoFromCaseTypeObject() {
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(),"Name","a1", "MIN",UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(),"Name","a1", "MIN",UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null);
 
         CaseTypeDto caseTypeDto = CaseTypeDto.from(caseType);
 

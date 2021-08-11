@@ -144,7 +144,7 @@ public class CaseTypeServiceTest {
     @Test
     public void shouldCreateNewCaseTypeInRepository() {
 
-        CreateCaseTypeDto caseType = new CreateCaseTypeDto("New Case Type", "c1", "NEW",true,true,"STAGE_ONE");
+        CreateCaseTypeDto caseType = new CreateCaseTypeDto("New Case Type", "c1", "NEW",true,true,"STAGE_ONE", null);
 
         CaseType response = mock(CaseType.class);
         when(caseTypeRepository.save(any(CaseType.class))).thenReturn(response);
@@ -290,33 +290,33 @@ public class CaseTypeServiceTest {
     }
 
     private Set<CaseType> getDCUCaseType() {
-        return new HashSet<>(Arrays.asList(new CaseType(1L, UUID.randomUUID(), "DCU Ministerial","11", "MIN", unitUUID,"DCU_MIN_DISPATCH", true, true),
-                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","12", "TRO", unitUUID,"DCU_TRO_DISPATCH", true, true),
-                new CaseType(3L,UUID.randomUUID(), "DCU Number 10","13", "DTEN", unitUUID,"DCU_DTEN_DISPATCH",  true, true)));
+        return new HashSet<>(Arrays.asList(new CaseType(1L, UUID.randomUUID(), "DCU Ministerial","11", "MIN", unitUUID,"DCU_MIN_DISPATCH", true, true, null),
+                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","12", "TRO", unitUUID,"DCU_TRO_DISPATCH", true, true, null),
+                new CaseType(3L,UUID.randomUUID(), "DCU Number 10","13", "DTEN", unitUUID,"DCU_DTEN_DISPATCH",  true, true, null)));
     }
 
     private Set<CaseType> getDCUCaseTypeBulk() {
-        return new HashSet<>(Arrays.asList(new CaseType(1L, UUID.randomUUID(), "DCU Ministerial","21", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true),
-                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","22", "TRO", unitUUID,"DCU_MIN_DISPATCH",  true, true)));
+        return new HashSet<>(Arrays.asList(new CaseType(1L, UUID.randomUUID(), "DCU Ministerial","21", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true, null),
+                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","22", "TRO", unitUUID,"DCU_MIN_DISPATCH",  true, true, null)));
     }
 
     private HashSet<CaseType> getDCUAndUKVICaseType() {
         return new HashSet<>(Arrays.asList(
-                new CaseType(1L,UUID.randomUUID(), "DCU Ministerial","31", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true),
-                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","32", "TRO", unitUUID,"DCU_TRO_DISPATCH",  true, true),
-                new CaseType(3L,UUID.randomUUID(), "DCU Number 10","33", "DTEN", unitUUID,"DCU_DTEN_DISPATCH",  true, true),
-                new CaseType(1L,UUID.randomUUID(), "UKVI B REF","34", "IMCB", unitUUID,"DCU_IMCB_DISPATCH",  true, true),
-                new CaseType(2L,UUID.randomUUID(), "UKVI Ministerial REF","35", "IMCM", unitUUID,"DCU_IMCM_DISPATCH", true, true),
-                new CaseType(3L,UUID.randomUUID(), "UKVI Number 10","36",  "UTEN",unitUUID,"DCU_UTEN_DISPATCH",  true, true)));
+                new CaseType(1L,UUID.randomUUID(), "DCU Ministerial","31", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true, null),
+                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","32", "TRO", unitUUID,"DCU_TRO_DISPATCH",  true, true, null),
+                new CaseType(3L,UUID.randomUUID(), "DCU Number 10","33", "DTEN", unitUUID,"DCU_DTEN_DISPATCH",  true, true, null),
+                new CaseType(1L,UUID.randomUUID(), "UKVI B REF","34", "IMCB", unitUUID,"DCU_IMCB_DISPATCH",  true, true, null),
+                new CaseType(2L,UUID.randomUUID(), "UKVI Ministerial REF","35", "IMCM", unitUUID,"DCU_IMCM_DISPATCH", true, true, null),
+                new CaseType(3L,UUID.randomUUID(), "UKVI Number 10","36",  "UTEN",unitUUID,"DCU_UTEN_DISPATCH",  true, true, null)));
     }
 
     private HashSet<CaseType> getDCUAndUKVICaseTypeBulk() {
         return new HashSet<>(Arrays.asList(
-                new CaseType(1L,UUID.randomUUID(), "DCU Ministerial","41", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true),
-                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","42", "TRO", unitUUID,"DCU_TRO_DISPATCH",  true, true),
-                new CaseType(1L,UUID.randomUUID(), "UKVI B REF","43", "IMCB", unitUUID,"DCU_IMCB_DISPATCH",  true, true),
-                new CaseType(2L,UUID.randomUUID(), "UKVI Ministerial REF","44", "IMCM", unitUUID,"DCU_IMCM_DISPATCH",  true, true),
-                new CaseType(3L,UUID.randomUUID(), "UKVI Number 10","45", "UTEN", unitUUID, "DCU_UTEN_DISPATCH", true, true)));
+                new CaseType(1L,UUID.randomUUID(), "DCU Ministerial","41", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true, null),
+                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","42", "TRO", unitUUID,"DCU_TRO_DISPATCH",  true, true, null),
+                new CaseType(1L,UUID.randomUUID(), "UKVI B REF","43", "IMCB", unitUUID,"DCU_IMCB_DISPATCH",  true, true, null),
+                new CaseType(2L,UUID.randomUUID(), "UKVI Ministerial REF","44", "IMCM", unitUUID,"DCU_IMCM_DISPATCH",  true, true, null),
+                new CaseType(3L,UUID.randomUUID(), "UKVI Number 10","45", "UTEN", unitUUID, "DCU_UTEN_DISPATCH", true, true, null)));
     }
 
 }

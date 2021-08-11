@@ -33,7 +33,7 @@ public class DocumentTagRepositoryTest {
     public void setup() {
         Unit unit = new Unit("Unit 1", "UNIT_1",true);
         this.entityManager.persist(unit);
-        CaseType caseType = new CaseType("displayName","short","TEST",unit.getUuid(),"deadline",false,true);
+        CaseType caseType = new CaseType("displayName","short","TEST",unit.getUuid(),"deadline",false,true, null);
         this.entityManager.persist(caseType);
         DocumentTag documentTag;
         documentTag = new DocumentTag(null,UUID.randomUUID(),caseType.getUuid(),"tag3",(short)3);
