@@ -298,7 +298,7 @@ public class TeamServiceTest {
 
         Set<Permission> permissions = new HashSet<>();
         Unit unit = new Unit("a unit", "UNIT", true);
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null);
         Permission permission = new Permission(AccessLevel.OWNER, null, caseType);
         permissions.add(permission);
         Team team = new Team("a team", true);
@@ -347,7 +347,7 @@ public class TeamServiceTest {
         Team team = new Team("a team", true);
         team.setUnit(unit);
 
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null);
 
         when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
         when(caseTypeService.getCaseType(any())).thenReturn(caseType);
@@ -372,7 +372,7 @@ public class TeamServiceTest {
         Unit unit = new Unit("a unit", "UNIT", true);
         Team team = new Team("a team", true);
         team.setUnit(unit);
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null);
         permissions.add(new Permission(AccessLevel.READ, team, caseType));
         permissions.add(new Permission(AccessLevel.OWNER, team, caseType));
         team.addPermissions(permissions);
@@ -401,7 +401,7 @@ public class TeamServiceTest {
         Unit unit = new Unit("a unit", "UNIT", true);
         Team team = new Team("a team", true);
         team.setUnit(unit);
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null);
         permissions.add(new Permission(AccessLevel.READ, team, caseType));
         permissions.add(new Permission(AccessLevel.OWNER, team, caseType));
         team.addPermissions(permissions);
@@ -478,7 +478,7 @@ public class TeamServiceTest {
 
         Set<Permission> permissions = new HashSet<>();
         Unit unit = new Unit("a unit", "UNIT", true);
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null);
         Permission permission = new Permission(AccessLevel.OWNER, null, caseType);
         permissions.add(permission);
         Team team = new Team("a team", true);
@@ -534,7 +534,7 @@ public class TeamServiceTest {
         Team team = new Team("a team", true);
         team.setUnit(unit);
 
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null);
 
         when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
         when(caseTypeService.getCaseType(any())).thenReturn(caseType);
@@ -556,7 +556,7 @@ public class TeamServiceTest {
         Team team = new Team("a team", true);
         team.addPermissions(permissions);
         team.setUnit(unit);
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null);
         permissions.add(new Permission(AccessLevel.READ, team, caseType));
         permissions.add(new Permission(AccessLevel.OWNER, team, caseType));
 
@@ -600,7 +600,7 @@ public class TeamServiceTest {
     }
 
     private List<Team> getAllTeams() {
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null);
         Set<Permission> permissions = new HashSet<Permission>() {{
             add(new Permission(AccessLevel.OWNER, null, caseType));
             add(new Permission(AccessLevel.OWNER, null, caseType));
@@ -614,7 +614,7 @@ public class TeamServiceTest {
     }
 
     private List<Team> getTeams() {
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null);
         Set<Permission> permissions = new HashSet<Permission>() {{
             add(new Permission(AccessLevel.OWNER, null, caseType));
             add(new Permission(AccessLevel.OWNER, null, caseType));

@@ -33,7 +33,7 @@ public class TopicRepositoryTest {
         ParentTopic parentTopic = new ParentTopic("__ParentTopic__");
         Topic topic = new Topic("__Topic__", parentTopic.getUuid());
         Unit unit = new Unit("__UNIT__", "__U1__", true);
-        CaseType caseType = new CaseType("__CASETYPE__", "CT", "__CASETYPE__", unit.getUuid(), "__STAGETYPE__", false, true);
+        CaseType caseType = new CaseType("__CASETYPE__", "CT", "__CASETYPE__", unit.getUuid(), "__STAGETYPE__", false, true, null);
         Team team = new Team("__Team__", true);
         team.setUnit(unit);
         StageTypeEntity stageTypeEntity = new StageTypeEntity(UUID.randomUUID(), "__STAGETYPE__", "__STAGETYPE__", "__STAGETYPE__", caseType.getUuid(), 1,1,1,true, team);
@@ -66,7 +66,7 @@ public class TopicRepositoryTest {
         Topic childTopic5 = new Topic("ChildTopic5", parentTopic2.getUuid());
         childTopic5.setActive(false);
         Unit unit = new Unit("__UNIT1__", "__U1__", true);
-        CaseType caseType = new CaseType("__CASETYPE__", "CT", "__CASETYPE__", unit.getUuid(), "__STAGETYPE__", false, true);
+        CaseType caseType = new CaseType("__CASETYPE__", "CT", "__CASETYPE__", unit.getUuid(), "__STAGETYPE__", false, true, null);
         Team team = new Team("__Team1__", true);
         team.setUnit(unit);
         StageTypeEntity stageTypeEntity = new StageTypeEntity(UUID.randomUUID(), "__STAGETYPE__", "__STAGETYPE__", "__STAGETYPE__", caseType.getUuid(), 1,1,1,true, team);
@@ -108,7 +108,7 @@ public class TopicRepositoryTest {
         childTopic2.setActive(false);
         
         Unit unit = new Unit("__UNIT1__", "__U1__", true);
-        CaseType caseType = new CaseType("__CASETYPE__", "CT", "__CASETYPE__", unit.getUuid(), "__STAGETYPE__", false, true);
+        CaseType caseType = new CaseType("__CASETYPE__", "CT", "__CASETYPE__", unit.getUuid(), "__STAGETYPE__", false, true, null);
         Team team = new Team("__Team1__", true);
         team.setUnit(unit);
         
