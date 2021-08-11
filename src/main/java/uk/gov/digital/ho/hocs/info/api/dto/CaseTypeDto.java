@@ -26,6 +26,8 @@ public class CaseTypeDto {
     @JsonProperty("type")
     private String type;
 
+    @JsonProperty("previousCaseType")
+    private String previousCaseType;
 
     public static CaseTypeDto from(CaseType caseType) {
 
@@ -34,7 +36,8 @@ public class CaseTypeDto {
                 caseType.getType(),
                 caseType.getDisplayName(),
                 caseType.getShortCode(),
-                caseType.getType());
+                caseType.getType(),
+                caseType.getPreviousCaseType());
     }
 
 }
