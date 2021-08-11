@@ -50,7 +50,10 @@ public class CaseType implements Serializable {
     @Column(name = "active")
     private boolean active;
 
-    public CaseType(String displayName, String shortCode, String type, UUID unitUUID, String deadlineStage, boolean bulk, boolean active) {
+    @Column(name = "previous_case_type")
+    private String previousCaseType;
+
+    public CaseType(String displayName, String shortCode, String type, UUID unitUUID, String deadlineStage, boolean bulk, boolean active, String previousCaseType) {
         this.uuid = UUID.randomUUID();
         this.displayName = displayName;
         this.shortCode = shortCode;
@@ -59,8 +62,10 @@ public class CaseType implements Serializable {
         this.deadlineStage = deadlineStage;
         this.bulk = bulk;
         this.active = active;
+        this.previousCaseType = previousCaseType;
     }
-    public CaseType(String displayName, String shortCode, String type, String deadlineStage, boolean bulk, boolean active) {
+    public CaseType(String displayName, String shortCode, String type, String deadlineStage, boolean bulk, boolean active, String previousCaseType) {
+        this.previousCaseType = previousCaseType;
         this.uuid = UUID.randomUUID();
         this.displayName = displayName;
         this.shortCode = shortCode;

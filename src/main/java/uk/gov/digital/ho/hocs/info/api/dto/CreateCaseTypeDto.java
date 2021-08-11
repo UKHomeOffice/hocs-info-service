@@ -26,4 +26,6 @@ public class CreateCaseTypeDto {
     @JsonProperty("deadlineStage")
     private String deadlineStage;
 
+    @JsonProperty("previousCaseType")
+    private String previousCaseType;
 }

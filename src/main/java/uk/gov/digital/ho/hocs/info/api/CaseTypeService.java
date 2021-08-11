@@ -158,8 +158,7 @@ public class CaseTypeService {
                 caseType.getType(),
                 caseType.getDeadlineStage(),
                 caseType.isBulk(),
-                caseType.isActive()));
-
-
+                caseType.isActive(),
+                caseType.getPreviousCaseType()));
     }
 }
