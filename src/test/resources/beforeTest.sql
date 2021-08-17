@@ -155,3 +155,18 @@ VALUES ('782a75de-ce06-4d31-95eb-87e42234f396',
 INSERT INTO info.field_screen(schema_uuid, field_uuid) VALUES
     ('f958f77d-b277-408d-bd6f-4a498d3f217f', '782a75de-ce06-4d31-95eb-87e42234f396'),
     ('f958f77d-b277-408d-bd6f-4a498d3f217f', '932c2af5-55a1-430a-927a-56e7ef5f1743');
+
+-- Test for Active team retrieval
+
+INSERT INTO info.unit ("uuid","display_name","short_code","active") VALUES
+('5d153f3b-865d-49d9-a493-baedd241db19', 'UNIT_100', 'UNIT_100','true'),
+('a95a4e2b-102b-4300-939b-1bb6c69e9989', 'UNIT_101', 'UNIT_101','true')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO info.team ("unit_uuid","uuid","display_name","active") VALUES
+('5d153f3b-865d-49d9-a493-baedd241db19','caf9f218-b914-4d98-b2a8-cff8df7a3bf1', 'TEAM_100', true),
+('5d153f3b-865d-49d9-a493-baedd241db19','78714f46-57b9-42ff-af07-2dce5dc22f34', 'TEAM_101', true),
+('5d153f3b-865d-49d9-a493-baedd241db19','4cd3ad27-6fc2-4d57-a928-a57971f381ba', 'TEAM_102', false),
+('a95a4e2b-102b-4300-939b-1bb6c69e9989','84ef4756-f933-48a8-9aa6-59e6b04d141f', 'TEAM_103', true),
+('a95a4e2b-102b-4300-939b-1bb6c69e9989','ca2b48e9-567d-49d2-a0f0-8061bb47e02d', 'TEAM_104', true)
+ON CONFLICT DO NOTHING;
