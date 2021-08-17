@@ -4,7 +4,6 @@ import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.utils.DateUtils;
 
 import java.io.Serializable;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,15 +22,23 @@ public class Deadline implements Serializable {
         if (sla == -2 && caseDeadline != null){
             return caseDeadline;
         }
+
         Set<LocalDate> holidayDates = holidays.stream().map(ExemptionDate::getDate).collect(Collectors.toSet());
+
+        // Start deadline from the next first working day.
+        while (DateUtils.isDateNonWorkingDay(deadline, holidayDates)) {
+            deadline = deadline.plusDays(1);
+        }
+
         int i = 1;
         while (i <= sla) {
             deadline = deadline.plusDays(1);
             // Only increment Mon-Fri and non-holidays
-            if (!(DateUtils.isWeekend(deadline) || holidayDates.contains(deadline))) {
+            if (!(DateUtils.isDateNonWorkingDay(deadline, holidayDates))) {
                 ++i;
             }
         }
         return deadline;
     }
+
 }
