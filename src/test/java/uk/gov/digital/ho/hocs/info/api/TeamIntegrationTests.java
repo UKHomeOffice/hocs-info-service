@@ -311,6 +311,33 @@ public class TeamIntegrationTests {
         assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).isActive()).isTrue();
     }
 
+    @Test
+    public void shouldReturnOnlyActiveTeamsForShortCode() {
+        String unitShortCode = "UNIT_100";
+
+        HttpEntity<?> httpEntity = new HttpEntity<>(headers);
+        ResponseEntity<Set<TeamDto>> result = testRestTemplate.exchange(
+                getBasePath() + "/teams?unit=" + unitShortCode,
+                HttpMethod.GET,
+                httpEntity,
+                new ParameterizedTypeReference<Set<TeamDto>>() {}
+        );
+
+        Set<TeamDto> teamDtos = result.getBody();
+
+        assertThat(teamDtos.size()).isEqualTo(2);
+        assertThat(teamDtos.stream().map(TeamDto::getDisplayName)).noneMatch(el -> el.equals("TEAM_103")
+                        || el.equals("TEAM_104")
+                        || el.equals("TEAM_102")
+        );
+        assertThat(teamDtos.stream().map(TeamDto::getDisplayName)).allMatch(el -> el.equals("TEAM_101")
+                || el.equals("TEAM_100")
+        );
+    }
+
+    /**********************
+     * Helper Methods
+     **********************/
 
     private String getBasePath() {
         return "http://localhost:" + port;
