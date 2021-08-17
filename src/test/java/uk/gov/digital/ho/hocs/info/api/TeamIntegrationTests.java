@@ -333,10 +333,7 @@ public class TeamIntegrationTests {
         assertThat(teamDtos.stream().map(TeamDto::getDisplayName)).allMatch(el -> el.equals("TEAM_101")
                 || el.equals("TEAM_100")
         );
-
-
     }
-
 
     /**********************
      * Helper Methods
