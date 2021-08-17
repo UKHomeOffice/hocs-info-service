@@ -23,6 +23,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
@@ -33,10 +34,10 @@ import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.net.URI;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
@@ -311,6 +312,36 @@ public class TeamIntegrationTests {
         assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).isActive()).isTrue();
     }
 
+    @Test
+    public void shouldReturnOnlyActiveTeamsForShortCode() {
+        String unitShortCode = "UNIT_100";
+
+        HttpEntity<?> httpEntity = new HttpEntity<>(headers);
+        ResponseEntity<Set<TeamDto>> result = testRestTemplate.exchange(
+                getBasePath() + "/teams?unit=" + unitShortCode,
+                HttpMethod.GET,
+                httpEntity,
+                new ParameterizedTypeReference<Set<TeamDto>>() {}
+        );
+
+        Set<TeamDto> teamDtos = result.getBody();
+
+        assertThat(teamDtos.size()).isEqualTo(2);
+        assertThat(teamDtos.stream().map(TeamDto::getDisplayName)).noneMatch(el -> el.equals("TEAM_103")
+                        || el.equals("TEAM_104")
+                        || el.equals("TEAM_102")
+        );
+        assertThat(teamDtos.stream().map(TeamDto::getDisplayName)).allMatch(el -> el.equals("TEAM_101")
+                || el.equals("TEAM_100")
+        );
+
+
+    }
+
+
+    /**********************
+     * Helper Methods
+     **********************/
 
     private String getBasePath() {
         return "http://localhost:" + port;
