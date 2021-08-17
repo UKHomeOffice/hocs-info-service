@@ -136,11 +136,11 @@ public class CaseTypeService {
         if (fromDate == null || now.isBefore(fromDate) || now.isEqual(fromDate)) {
             return 0;
         }
-        List<LocalDate> exemptions = holidayDateRepository.findAllByCaseType(caseType).stream().map(ExemptionDate::getDate).collect(Collectors.toList());
+        Set<LocalDate> exemptions = holidayDateRepository.findAllByCaseType(caseType).stream().map(ExemptionDate::getDate).collect(Collectors.toSet());
         LocalDate date = fromDate;
         int workingDays = 0;
         while (date.isBefore(now)) {
-            if (!DateUtils.isWeekend(date) && !exemptions.contains(date)) {
+            if (!DateUtils.isDateNonWorkingDay(date, exemptions)) {
                 workingDays++;
             }
 
