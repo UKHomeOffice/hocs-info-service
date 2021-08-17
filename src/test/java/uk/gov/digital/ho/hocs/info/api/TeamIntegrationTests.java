@@ -23,7 +23,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
@@ -34,10 +33,10 @@ import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.util.*;
-import java.util.stream.Collectors;
-
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
