@@ -74,7 +74,17 @@ public class EntityService {
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("Entity %s not found for entity list: %s, cannot update! ", entityDto.getUuid(), listName);
         }
+    }
 
+    public void deleteEntity(String listName, String entityUUID){
+        String entityListUUID = entityRepository.findEntityListUUIDBySimpleName(listName);
 
+        Entity entity = entityRepository.findByUuid(UUID.fromString(entityUUID));
+
+        if (StringUtils.isNotEmpty(entityListUUID) && entity.getEntityListUUID().equals(UUID.fromString(entityListUUID))) {
+            entityRepository.delete(entity);
+        } else {
+            throw new ApplicationExceptions.EntityNotFoundException("Entity %s not found for entity list: %s, cannot delete! ", entityUUID, listName);
+        }
     }
 }

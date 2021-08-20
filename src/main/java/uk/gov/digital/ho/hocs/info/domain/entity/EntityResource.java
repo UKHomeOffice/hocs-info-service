@@ -32,7 +32,7 @@ class EntityResource {
     }
 
     @GetMapping(value = "/entity/list/{name}", produces = APPLICATION_JSON_UTF8_VALUE)
-    @Cacheable(value = "getEntitiesForListName", unless = "#result == null || #name == 'MPAM_CAMPAIGNS'", key = "#name")
+    @Cacheable(value = "getEntitiesForListName", unless = "#result == null || #name == 'MPAM_CAMPAIGNS' || #name == 'EXGRATIA_BUS_REPS'", key = "#name")
     public ResponseEntity<List<EntityDto>> getEntitiesForListName(@PathVariable String name) {
         List<Entity> entities = entityService.getByEntityListName(name);
         return ResponseEntity.ok(entities.stream().map(EntityDto::from).collect(Collectors.toList()));
@@ -56,5 +56,10 @@ class EntityResource {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping(value="/entity/list/{listName}")
+    public ResponseEntity deleteEntity(@PathVariable String listName, @RequestBody String entityUUID){
+        entityService.deleteEntity(listName, entityUUID);
+        return ResponseEntity.ok().build();
+    }
 
 }
