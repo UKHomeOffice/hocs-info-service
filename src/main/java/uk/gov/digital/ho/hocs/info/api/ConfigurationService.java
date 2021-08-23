@@ -19,7 +19,7 @@ public class ConfigurationService {
         this.configurationRepository = configurationRepository;
     }
 
-    @Cacheable("configuration")
+    //@Cacheable("configuration")
     public Configuration getConfiguration(String systemName) throws Exception {
         log.debug("Getting Configuration for {}", systemName);
         Configuration configuration = configurationRepository.findBySystemName(systemName);
