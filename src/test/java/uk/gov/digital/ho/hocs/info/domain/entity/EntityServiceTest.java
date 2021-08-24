@@ -41,7 +41,7 @@ public class EntityServiceTest {
         String data = "{ title: 'Title 321' }";
         UUID uuid = UUID.randomUUID();
         UUID listUuid = UUID.randomUUID();
-        Set<Entity> entitiesToReturn = Set.of(new Entity(1L, uuid, simpleName, data, listUuid, true));
+        Set<Entity> entitiesToReturn = Set.of(new Entity(1L, uuid, simpleName, data, listUuid, true, 10));
 
         when(entityRepository.findBySimpleName(owner, ownerType, list)).thenReturn(entitiesToReturn);
 
@@ -85,8 +85,8 @@ public class EntityServiceTest {
         String data1 = "{ title: 'Title One' }";
         String simpleName2 = "nameTwo";
         String data2 = "{ title: 'Title Two' }";
-        Entity entity1 = new Entity(1L, UUID.randomUUID(), simpleName1, data1, UUID.randomUUID(), true);
-        Entity entity2 = new Entity(2L, UUID.randomUUID(), simpleName2, data2, UUID.randomUUID(), true);
+        Entity entity1 = new Entity(1L, UUID.randomUUID(), simpleName1, data1, UUID.randomUUID(), true, 10);
+        Entity entity2 = new Entity(2L, UUID.randomUUID(), simpleName2, data2, UUID.randomUUID(), true, 10);
         List<Entity> entitiesToReturn = List.of(entity1, entity2);
 
         when(entityRepository.findByEntityListSimpleName(listName)).thenReturn(entitiesToReturn);
