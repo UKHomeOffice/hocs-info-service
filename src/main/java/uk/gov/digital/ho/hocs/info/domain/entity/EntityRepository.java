@@ -27,7 +27,7 @@ public interface EntityRepository extends CrudRepository<Entity, Long> {
             "                  join entity_list el on el.uuid = e.entity_list_uuid\n" +
             " where el.simple_name = ?1" +
             " and e.active = TRUE" +
-            " order by e.id", nativeQuery = true)
+            " order by e.sort_order", nativeQuery = true)
     List<Entity> findByEntityListSimpleName(String listSimpleName);
 
     @Query(value = "select Cast(el.uuid as varchar) id from entity_list el where el.simple_name = ?1", nativeQuery = true)

@@ -21,12 +21,11 @@ public class EntityTest {
 
     @Before
     public void before(){
-        this.entity = new Entity(id, uuid, simpleName, data, listUuid, active);
+        this.entity = new Entity(id, uuid, simpleName, data, listUuid, active, 10);
     }
 
     @Test
     public void updateShouldOnlyAmendData(){
-
         String newSimpleName = "name";
         String newUuid = UUID.randomUUID().toString();
         String newData = "data";
@@ -39,6 +38,5 @@ public class EntityTest {
         assertThat(entity.getEntityListUUID()).isEqualTo(listUuid);
         assertThat(entity.isActive()).isEqualTo(active);
         assertThat(entity.getData()).isEqualTo(newData);
-
     }
 }

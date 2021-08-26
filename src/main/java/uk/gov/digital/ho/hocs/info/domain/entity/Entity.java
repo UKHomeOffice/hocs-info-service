@@ -40,6 +40,19 @@ public class Entity {
     @Column(name = "active")
     private boolean active;
 
+    @Getter
+    @Column(name = "sort_order")
+    private int sortOrder;
+
+    public Entity(UUID uuid, String simpleName, String data, UUID entityListUUID, boolean active, int sortOrder) {
+        this.uuid = uuid;
+        this.simpleName = simpleName;
+        this.data = data;
+        this.entityListUUID = entityListUUID;
+        this.active = active;
+        this.sortOrder = sortOrder;
+    }
+
     public void update(EntityDto entityDto) {
         this.data = entityDto.getData();
     }

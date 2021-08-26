@@ -53,7 +53,7 @@ public class EntityService {
             throw new ApplicationExceptions.EntityNotFoundException("EntityList not found for: %s ", listName);
         }
 
-        Entity newEntity = new Entity(null, UUID.randomUUID(), entityDto.getSimpleName(), entityDto.getData(), UUID.fromString(entityListUUID), true);
+        Entity newEntity = new Entity(null, UUID.randomUUID(), entityDto.getSimpleName(), entityDto.getData(), UUID.fromString(entityListUUID), true, 10);
 
         entityRepository.save(newEntity);
 
