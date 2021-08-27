@@ -65,7 +65,6 @@ public class CaseType implements Serializable {
         this.previousCaseType = previousCaseType;
     }
     public CaseType(String displayName, String shortCode, String type, String deadlineStage, boolean bulk, boolean active, String previousCaseType) {
-        this.previousCaseType = previousCaseType;
         this.uuid = UUID.randomUUID();
         this.displayName = displayName;
         this.shortCode = shortCode;
@@ -74,5 +73,6 @@ public class CaseType implements Serializable {
         this.deadlineStage = deadlineStage;
         this.bulk = bulk;
         this.active = active;
+        this.previousCaseType = previousCaseType;
     }
 }

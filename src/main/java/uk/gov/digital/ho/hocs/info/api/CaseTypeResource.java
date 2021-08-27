@@ -35,7 +35,7 @@ public class CaseTypeResource {
 
     @GetMapping(value = "/caseType", params = {"bulkOnly"}, produces = APPLICATION_JSON_UTF8_VALUE)
     ResponseEntity<Set<CaseTypeDto>> getCaseTypes(@RequestParam("bulkOnly") boolean bulkOnly) {
-        Set<CaseType> caseTypes = caseTypeService.getAllCaseTypesForUser(bulkOnly);
+        Set<CaseType> caseTypes = caseTypeService.getAllCaseTypesForUser(bulkOnly, false);
         return ResponseEntity.ok(caseTypes.stream().map(CaseTypeDto::from).collect(Collectors.toSet()));
     }
 
@@ -83,7 +83,7 @@ public class CaseTypeResource {
         return ResponseEntity.ok(caseTypeService.calculateWorkingDaysElapsedForCaseType(caseType, fromDate));
     }
 
-    public ResponseEntity createCaseType(CreateCaseTypeDto caseType) {
+    public ResponseEntity<Void> createCaseType(CreateCaseTypeDto caseType) {
         caseTypeService.createCaseType(caseType);
         return ResponseEntity.ok().build();
     }

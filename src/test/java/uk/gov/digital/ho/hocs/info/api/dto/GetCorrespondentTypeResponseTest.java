@@ -29,4 +29,9 @@ public class GetCorrespondentTypeResponseTest {
         assertThat(result3).isNotNull();
         assertThat(result3.getDisplayName()).isEqualTo("Member");
     }
+
+    @Test
+    public void shouldConvertCaseTypeCorrectly() {
+
+    }
 }
