@@ -20,7 +20,7 @@ delete from team_contact where team_uuid in ('08612f06-bae2-4d2f-90d2-2254a68414
 delete from correspondent_type where uuid in ('fe1e8854-72ef-4141-a675-fb06760264fd',
                                               'c2155e6c-7ecd-450d-86e3-884e48c8c6c7');
 
-delete from permission where case_type in ('CT1', 'CT2', 'CT3' );
+delete from permission where case_type in ('CT1', 'CT2', 'CT3', 'CT4' );
 
 delete from stage_type where type in ('ST1', 'ST2' );
 
@@ -30,7 +30,7 @@ delete from team where unit_uuid in ('09221c48-b916-47df-9aa0-a0194f86f6dd',
                                  'c875dca8-8679-47e7-a589-7cea64b2e13c',
                                  '66547972-56c6-4a8c-9bf5-b3debec1344a');
 
-delete from case_type where type in ('CT1', 'CT2', 'CT3' );
+delete from case_type where type in ('CT1', 'CT2', 'CT3', 'CT4' );
 
 delete from unit where display_name in ('UNIT 2',
                                         'UNIT 3',
@@ -47,10 +47,11 @@ VALUES ('UNIT 2', '09221c48-b916-47df-9aa0-a0194f86f6dd', 'UNIT2', TRUE),
        ('UNIT 5', 'c875dca8-8679-47e7-a589-7cea64b2e13c', 'UNIT5', TRUE),
        ('UNIT 6', '66547972-56c6-4a8c-9bf5-b3debec1344a', 'UNIT6', TRUE);
 
-Insert INTO case_type (uuid, display_name, short_code, type, owning_unit_uuid, deadline_stage, active, bulk)
-VALUES ('f62834a0-d231-44c9-bfa1-55dd93fc0aa0','Test Case Type 1', 'z9', 'CT1', '09221c48-b916-47df-9aa0-a0194f86f6dd', 'DISPATCH', true, true),
-       ('056cf0eb-becd-49fa-86eb-ba4b7678a515','Test Case Type 2', 'za', 'CT2', '09221c48-b916-47df-9aa0-a0194f86f6dd', 'DISPATCH', true, true),
-       ('692283fe-accd-40a5-9b6d-703e1aed7ebd','Test Case Type 3', 'zb', 'CT3', '09221c48-b916-47df-9aa0-a0194f86f6dd', 'DISPATCH', true, true);
+Insert INTO case_type (uuid, display_name, short_code, type, owning_unit_uuid, deadline_stage, active, bulk, previous_case_type)
+VALUES ('f62834a0-d231-44c9-bfa1-55dd93fc0aa0','Test Case Type 1', 'z9', 'CT1', '09221c48-b916-47df-9aa0-a0194f86f6dd', 'DISPATCH', true, true, null),
+       ('056cf0eb-becd-49fa-86eb-ba4b7678a515','Test Case Type 2', 'za', 'CT2', '09221c48-b916-47df-9aa0-a0194f86f6dd', 'DISPATCH', true, true, null),
+       ('692283fe-accd-40a5-9b6d-703e1aed7ebd','Test Case Type 3', 'zb', 'CT3', '09221c48-b916-47df-9aa0-a0194f86f6dd', 'DISPATCH', true, true, null),
+       ('d8a65dd9-1048-40ef-b5da-d6862e94a17e','Test Case Type 4', 'zc', 'CT4', '09221c48-b916-47df-9aa0-a0194f86f6dd', 'DISPATCH', true, true, 'CT3');
 
 INSERT INTO team (display_name, letter_name, uuid, unit_uuid, active)
 VALUES ('TEAM 4',null, '08612f06-bae2-4d2f-90d2-2254a68414b8', '09221c48-b916-47df-9aa0-a0194f86f6dd', TRUE),
@@ -72,7 +73,8 @@ VALUES ('08612f06-bae2-4d2f-90d2-2254a68414b8', 'CT1', 'OWNER'),
        ('911adabe-5ab7-4470-8395-6b584a61462d', 'CT1', 'WRITE'),
        ('434a4e33-437f-4e6d-8f04-14ea40fdbfa2', 'CT2', 'WRITE'),
        ('8b3b4366-a37c-48b6-b274-4c50f8083843', 'CT3', 'WRITE'),
-       ('8b3b4366-a37c-48b6-b274-4c50f8083843', 'CT3', 'READ');
+       ('8b3b4366-a37c-48b6-b274-4c50f8083843', 'CT3', 'READ'),
+       ('8b3b4366-a37c-48b6-b274-4c50f8083843', 'CT4', 'READ');
 
 
 INSERT INTO parent_topic (display_name, UUID, active)

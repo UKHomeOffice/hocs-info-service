@@ -32,12 +32,12 @@ public class CaseTypeResourceTest {
 
     @Test
     public void shouldReturnCaseTypesForSingleCase() {
-        when(caseTypeService.getAllCaseTypesForUser(false)).thenReturn(getMockCaseTypes());
+        when(caseTypeService.getAllCaseTypesForUser(false, false)).thenReturn(getMockCaseTypes());
 
         ResponseEntity<Set<CaseTypeDto>> response =
                 caseTypeResource.getCaseTypes(false);
 
-        verify(caseTypeService, times(1)).getAllCaseTypesForUser(false);
+        verify(caseTypeService, times(1)).getAllCaseTypesForUser(false, false);
 
         List<CaseTypeDto> responseEntityAsList = new ArrayList<>(response.getBody());
 
@@ -65,12 +65,12 @@ public class CaseTypeResourceTest {
 
     @Test
     public void shouldReturnCaseTypesForBulkCaseExcludingDTENCaseType() {
-        when(caseTypeService.getAllCaseTypesForUser(true)).thenReturn(getMockCaseTypesBulk());
+        when(caseTypeService.getAllCaseTypesForUser(true, false)).thenReturn(getMockCaseTypesBulk());
 
         ResponseEntity<Set<CaseTypeDto>> response =
                 caseTypeResource.getCaseTypes(true);
 
-        verify(caseTypeService, times(1)).getAllCaseTypesForUser(true);
+        verify(caseTypeService, times(1)).getAllCaseTypesForUser(true, false);
 
         List<CaseTypeDto> responseEntityAsList = new ArrayList<>(response.getBody());
 
@@ -100,7 +100,7 @@ public class CaseTypeResourceTest {
         CreateCaseTypeDto caseType = new CreateCaseTypeDto("New Case Type", "c1", "NEW",true,true,"STAGE_ONE", null);
         doNothing().when(caseTypeService).createCaseType(caseType);
 
-        ResponseEntity response =
+        ResponseEntity<Void> response =
                 caseTypeResource.createCaseType(caseType);
 
         assertThat(response).isNotNull();
@@ -179,5 +179,21 @@ public class CaseTypeResourceTest {
         caseTypesSet.add(new CaseType(5L,UUID.randomUUID(), "UKVI Ministerial REF","a4", "IMCM",unitUUID2,"DCU_IMCM_DISPATCH",  true, true, null));
         caseTypesSet.add(new CaseType(6L,UUID.randomUUID(), "UKVI Number 10","a5", "UTEN",unitUUID2, "DCU_UTEN_DISPATCH", true, true, null));
         return caseTypesSet;
+    }
+
+    @org.junit.jupiter.api.Test
+    void getAllCaseTypes() {
+    }
+
+    @org.junit.jupiter.api.Test
+    void getCaseTypes() {
+    }
+
+    @org.junit.jupiter.api.Test
+    void getCaseType() {
+    }
+
+    @org.junit.jupiter.api.Test
+    void getCaseTypeByShortCode() {
     }
 }

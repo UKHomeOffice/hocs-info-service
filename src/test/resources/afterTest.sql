@@ -20,7 +20,7 @@ delete from team_contact where team_uuid in ('08612f06-bae2-4d2f-90d2-2254a68414
 delete from correspondent_type where uuid in ('fe1e8854-72ef-4141-a675-fb06760264fd',
                                               'c2155e6c-7ecd-450d-86e3-884e48c8c6c7');
 
-delete from permission where case_type in ('CT1', 'CT2', 'CT3' );
+delete from permission where case_type in ('CT1', 'CT2', 'CT3', 'CT4' );
 
 delete from stage_type where type in ('ST1', 'ST2' );
 
@@ -30,7 +30,7 @@ delete from team where unit_uuid in ('09221c48-b916-47df-9aa0-a0194f86f6dd',
                                  'c875dca8-8679-47e7-a589-7cea64b2e13c',
                                  '66547972-56c6-4a8c-9bf5-b3debec1344a');
 
-delete from case_type where type in ('CT1', 'CT2', 'CT3' );
+delete from case_type where type in ('CT1', 'CT2', 'CT3', 'CT4' );
 
 delete from unit where display_name in ('UNIT 2',
                                         'UNIT 3',
