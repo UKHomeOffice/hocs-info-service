@@ -76,6 +76,24 @@ public interface ApplicationExceptions {
         }
     }
 
+    class StandardLineNotFoundException extends RuntimeException {
+        private final LogEvent event;
+
+        public StandardLineNotFoundException(String msg, LogEvent event, Object... args) {
+            super(String.format(msg, args));
+            this.event = event;
+        }
+
+        public StandardLineNotFoundException(String msg, Object... args) {
+            super(String.format(msg, args));
+            this.event = LogEvent.STANDARD_LINE_NOT_FOUND;
+        }
+
+        public LogEvent getEvent() {
+            return event;
+        }
+    }
+
     class ResourceException extends RuntimeException {
         private final LogEvent event;
 
