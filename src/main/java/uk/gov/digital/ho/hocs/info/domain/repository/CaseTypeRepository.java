@@ -18,9 +18,19 @@ public interface CaseTypeRepository extends CrudRepository<CaseType, String> {
     @Query(value = "SELECT ct.* FROM case_type ct JOIN permission ON ct.type = permission.case_type WHERE permission.team_uuid IN ?1 AND ct.active AND ct.bulk AND (ct.previous_case_type IS NULL OR (ct.previous_case_type IS NOT NULL) = ?2)", nativeQuery = true)
     Set<CaseType> findAllBulkCaseTypesByTeam(Set<String> team, boolean includePreviousCaseType);
 
-    Set<CaseType> findByPreviousCaseTypeIsNull();
-
-    Set<CaseType> findAll();
+    @Query(value = "select ct.id, " +
+            "ct.uuid, " +
+            "ct.display_name, " +
+            "ct.short_code, " +
+            "ct.type, " +
+            "ct.owning_unit_uuid, " +
+            "ct.deadline_stage," +
+            "ct.bulk," +
+            "ct.active," +
+            "ct.previous_case_type " +
+            "from case_type ct " +
+            "where (ct.previous_case_type IS NULL OR (ct.previous_case_type IS NOT NULL) = ?1)", nativeQuery=true)
+    Set<CaseType> findByIncludePreviousCaseType(Boolean addCaseTypeWithPreviousCase);
 
     CaseType findByShortCode(String shortCode);
 

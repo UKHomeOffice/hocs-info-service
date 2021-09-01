@@ -40,10 +40,9 @@ public class CaseTypeService {
         this.localDateWrapper = localDateWrapper;
     }
 
-    Set<CaseType> getAllCaseTypes() {
-        log.debug("Getting all CaseTypes");
-        Set<CaseType> caseTypes = caseTypeRepository.findAll();
-//        Set<CaseType> caseTypes = caseTypeRepository.findByPreviousCaseTypeIsNull();
+    Set<CaseType> getAllCaseTypes(Boolean addCaseTypeWithPreviousType) {
+        log.debug("Getting all CaseTypes with addCaseTypeWithPreviousType:{}", addCaseTypeWithPreviousType);
+        Set<CaseType> caseTypes = caseTypeRepository.findByIncludePreviousCaseType(addCaseTypeWithPreviousType != null && addCaseTypeWithPreviousType);
         log.info("Got {} CaseTypes", caseTypes.size());
         return caseTypes;
     }
