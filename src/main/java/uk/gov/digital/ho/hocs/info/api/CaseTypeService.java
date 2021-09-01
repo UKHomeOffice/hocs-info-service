@@ -42,7 +42,8 @@ public class CaseTypeService {
 
     Set<CaseType> getAllCaseTypes() {
         log.debug("Getting all CaseTypes");
-        Set<CaseType> caseTypes = caseTypeRepository.findByPreviousCaseTypeIsNull();
+        Set<CaseType> caseTypes = caseTypeRepository.findAll();
+//        Set<CaseType> caseTypes = caseTypeRepository.findByPreviousCaseTypeIsNull();
         log.info("Got {} CaseTypes", caseTypes.size());
         return caseTypes;
     }

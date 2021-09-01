@@ -20,6 +20,8 @@ public interface CaseTypeRepository extends CrudRepository<CaseType, String> {
 
     Set<CaseType> findByPreviousCaseTypeIsNull();
 
+    Set<CaseType> findAll();
+
     CaseType findByShortCode(String shortCode);
 
     CaseType findByType(String type);
