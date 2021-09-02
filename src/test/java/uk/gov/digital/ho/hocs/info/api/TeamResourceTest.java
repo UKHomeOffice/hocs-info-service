@@ -7,9 +7,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import uk.gov.digital.ho.hocs.info.api.data.SimpleMapItem;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
@@ -21,11 +18,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TeamResourceTest {
@@ -374,19 +369,18 @@ public class TeamResourceTest {
     }
 
     @Test
-    public void testGetAllFirstDescendantTeamsFromCurrentTeam() {
-        UUID caseUUID = UUID.randomUUID();
-        UUID stageUUID = UUID.randomUUID();
+    public void testGetAllFirstDescendant() {
+        UUID teamUuid = UUID.randomUUID();
 
         Set<Team> teams = Set.of(new Team(UUID.randomUUID().toString(), true));
-        when(teamService.getAllFirstDescendantTeamsFromCurrentTeam(caseUUID, stageUUID)).thenReturn(teams);
+        when(teamService.getAllFirstDescendantTeams(teamUuid)).thenReturn(teams);
 
         ResponseEntity<Set<TeamDto>> response = teamResource
-                .getFirstDescendantTeamsFromCurrentTeam(stageUUID, caseUUID);
+                .getAllFirstDescendantTeams(teamUuid);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().iterator().next().getUuid()).isEqualTo(teams.iterator().next().getUuid());
-        verify(teamService).getAllFirstDescendantTeamsFromCurrentTeam(caseUUID, stageUUID);
+        verify(teamService).getAllFirstDescendantTeams(teamUuid);
         verifyNoMoreInteractions(teamService);
     }
 
