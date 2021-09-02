@@ -106,6 +106,28 @@ public class CaseTypeIntegrationTest {
     }
 
     @Test
+    public void shouldRetrieveAllCaseTypesWithPreviousCaseType() {
+
+        // given
+        // setup done in before.sql
+        HttpEntity httpEntity = new HttpEntity(headers);
+
+        // when
+        ResponseEntity<Set<CaseTypeDto>> getCaseTypesRequest = restTemplate.exchange(
+                getBasePath() + "/caseType?addCasesWithPreviousType=true", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
+                });
+
+        // then
+        assertThat(getCaseTypesRequest).isNotNull();
+        assertThat(getCaseTypesRequest.getStatusCodeValue()).isEqualTo(200);
+
+        Set<CaseTypeDto> caseTypeDtos = getCaseTypesRequest.getBody();
+        assertThat(caseTypeDtos).isNotNull();
+        assertThat(caseTypeDtos.size()).isEqualTo(4);
+
+    }
+
+    @Test
     public void shouldRetrieveNonBulkCasesWithoutPreviousCaseType() {
         // given
         headers.add("X-Auth-Groups", "/CGEvBrriTS-Q0iJUpoQUuA,/kRravlq3RHCDlWtYSmFGLQ,/Q0pOM0N_Tm2PBBTqQP2_og,/iztDZqN8SLaydExQ-Ag4Qw,/XVhBKWbqTpeSd3V2qx0ywA,/fDPIeJQET2ebvMpS3_KFyg,/0J8URIfsQZeOxfKPVI0Rvg");
