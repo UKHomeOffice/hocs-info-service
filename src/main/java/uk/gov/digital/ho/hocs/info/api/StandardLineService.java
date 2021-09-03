@@ -91,7 +91,7 @@ public class StandardLineService {
             log.info("Got Standard Line {} for Topic {} ", standardLine.getDisplayName(), topicUUID);
             return standardLine;
         } else {
-            throw new ApplicationExceptions.EntityNotFoundException("Standard Line for Topic: %s, not found!", topicUUID);
+            throw new ApplicationExceptions.StandardLineNotFoundException("Standard Line for Topic: %s, not found!", topicUUID);
         }
     }
     

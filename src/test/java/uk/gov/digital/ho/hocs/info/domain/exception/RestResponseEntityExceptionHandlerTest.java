@@ -63,6 +63,18 @@ public class RestResponseEntityExceptionHandlerTest {
     }
 
     @Test
+    public void handleStandardLineNotFoundException(){
+        String msg = "Test Error msg";
+        ApplicationExceptions.StandardLineNotFoundException exception = new ApplicationExceptions.StandardLineNotFoundException(msg);
+
+        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+
+        assertEquals("Http code should be 404", 404, result.getStatusCode().value());
+        assertEquals("Error msg incorrect", msg, result.getBody());
+
+    }
+
+    @Test
     public void handleResourceServerException(){
         String msg = "Test Error msg";
         ApplicationExceptions.ResourceServerException exception = new ApplicationExceptions.ResourceServerException(msg, null);
