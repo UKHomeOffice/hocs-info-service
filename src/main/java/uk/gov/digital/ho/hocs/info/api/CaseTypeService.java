@@ -40,14 +40,14 @@ public class CaseTypeService {
         this.localDateWrapper = localDateWrapper;
     }
 
-    Set<CaseType> getAllCaseTypes() {
-        log.debug("Getting all CaseTypes");
-        Set<CaseType> caseTypes = caseTypeRepository.findAll();
+    Set<CaseType> getAllCaseTypes(Boolean addCaseTypeWithPreviousType) {
+        log.debug("Getting all CaseTypes with addCaseTypeWithPreviousType:{}", addCaseTypeWithPreviousType);
+        Set<CaseType> caseTypes = caseTypeRepository.findByIncludePreviousCaseType(addCaseTypeWithPreviousType != null && addCaseTypeWithPreviousType);
         log.info("Got {} CaseTypes", caseTypes.size());
         return caseTypes;
     }
 
-    Set<CaseType> getAllCaseTypesForUser(boolean bulkOnly) {
+    Set<CaseType> getAllCaseTypesForUser(boolean bulkOnly, boolean includeWithPreviousCaseType) {
         log.debug("Getting case types by User, bulkOnly = {}", bulkOnly);
         Set<UUID> userTeams = userPermissionsService.getUserTeams();
         Set<String> teams = userTeams.stream().map(UUID::toString).collect(Collectors.toSet());
@@ -58,9 +58,9 @@ public class CaseTypeService {
         } else {
             Set<CaseType> caseTypes;
             if (bulkOnly) {
-                caseTypes = caseTypeRepository.findAllBulkCaseTypesByTeam(teams);
+                caseTypes = caseTypeRepository.findAllBulkCaseTypesByTeam(teams, includeWithPreviousCaseType);
             } else {
-                caseTypes = caseTypeRepository.findAllCaseTypesByTeam(teams);
+                caseTypes = caseTypeRepository.findAllCaseTypesByTeam(teams, includeWithPreviousCaseType);
             }
             log.info("Got {} CaseTypes (bulkOnly = {})", caseTypes.size(), bulkOnly);
             return caseTypes;
@@ -158,8 +158,7 @@ public class CaseTypeService {
                 caseType.getType(),
                 caseType.getDeadlineStage(),
                 caseType.isBulk(),
-                caseType.isActive()));
-
-
+                caseType.isActive(),
+                caseType.getPreviousCaseType()));
     }
 }

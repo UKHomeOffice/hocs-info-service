@@ -28,7 +28,7 @@ steps:
           $(curl \
           --output /dev/null \
           --silent --head --fail \
-          $${KEYCLOAK_SERVER_ROOT}/auth/realms/master/.well-known/openid-configuration); 
+          $${KEYCLOAK_SERVER_ROOT}/auth/realms/master/.well-known/openid-configuration);
         do
           echo "waiting for keycloak"
           sleep 1

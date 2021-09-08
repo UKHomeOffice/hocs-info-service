@@ -15,9 +15,9 @@ public class GetCaseTypesResponseTest {
         UUID unitUUID = UUID.randomUUID();
 
         Set<CaseType> caseTypeSet = new HashSet<>();
-        caseTypeSet.add(new CaseType(1L, UUID.randomUUID(), "DCU Ministerial","a1","MIN",unitUUID, "DCU_MIN_DISPATCH", true, true));
-        caseTypeSet.add(new CaseType(2L, UUID.randomUUID(), "DCU Treat Official","a2","TRO",unitUUID, "DCU_TRO_DISPATCH", true, true));
-        caseTypeSet.add(new CaseType(3L, UUID.randomUUID(), "DCU Number 10","a3","DTEN",unitUUID, "DCU_DTEN_DISPATCH", true, true));
+        caseTypeSet.add(new CaseType(1L, UUID.randomUUID(), "DCU Ministerial","a1","MIN",unitUUID, "DCU_MIN_DISPATCH", true, true, null));
+        caseTypeSet.add(new CaseType(2L, UUID.randomUUID(), "DCU Treat Official","a2","TRO",unitUUID, "DCU_TRO_DISPATCH", true, true, null));
+        caseTypeSet.add(new CaseType(3L, UUID.randomUUID(), "DCU Number 10","a3","DTEN",unitUUID, "DCU_DTEN_DISPATCH", true, true, null));
 
         Set<CaseTypeDto> getCaseTypesResponse = caseTypeSet.stream().map(CaseTypeDto::from).collect(Collectors.toSet());
 

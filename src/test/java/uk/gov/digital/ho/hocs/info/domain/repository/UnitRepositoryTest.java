@@ -66,7 +66,7 @@ public class UnitRepositoryTest {
     public void shouldAddTeamWithPermissionsToUnit() {
 
         Unit unit = repository.findByUuid(unitUUID);
-        CaseType caseType = new CaseType(null,UUID.randomUUID(),"TEST","TEST","a1", unitUUID,"TEST", true,true);
+        CaseType caseType = new CaseType(null,UUID.randomUUID(),"TEST","TEST","a1", unitUUID,"TEST", true,true, null);
         entityManager.persistAndFlush(caseType);
 
 
