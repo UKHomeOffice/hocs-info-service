@@ -32,7 +32,7 @@ class EntityResource {
     }
 
     @GetMapping(value = "/entity/list/{name}", produces = APPLICATION_JSON_UTF8_VALUE)
-    @Cacheable(value = "getEntitiesForListName", unless = "#result == null || #name == 'MPAM_CAMPAIGNS' || #name == 'EXGRATIA_BUS_REPS'", key = "#name")
+    @Cacheable(value = "getEntitiesForListName", unless = "#result == null || #name == 'MPAM_CAMPAIGNS' || #name == 'EXGRATIA_BUS_REPS' || #name == 'MPAM_BUS_UNITS_1' || #name == 'MPAM_BUS_UNITS_2' || #name == 'MPAM_BUS_UNITS_3' || #name == 'MPAM_BUS_UNITS_4' || #name == 'MPAM_BUS_UNITS_5' || #name == 'MPAM_BUS_UNITS_6' || #name == 'MPAM_BUS_UNITS_7'", key = "#name")
     public ResponseEntity<List<EntityDto>> getEntitiesForListName(@PathVariable String name) {
         List<Entity> entities = entityService.getByEntityListName(name);
         return ResponseEntity.ok(entities.stream().map(EntityDto::from).collect(Collectors.toList()));
