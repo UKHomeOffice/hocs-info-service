@@ -88,12 +88,10 @@ public class TeamService {
         return activeTeams;
     }
 
-    public Set<Team> getAllFirstDescendantTeamsFromCurrentTeam(UUID caseUUID, UUID stageUUID) {
-        log.debug("Getting teamUUID from caseUUID {}, and stageUUID {}", caseUUID, stageUUID);
-        UUID ascendantTeamUUID = caseworkClient.getTeamUUIDFromCaseAndStage(caseUUID, stageUUID);
-        log.debug("Getting first active descendants of team {}", ascendantTeamUUID);
-        Set<Team> activeTeams = teamRepository.findAllActiveFirstDescendantTeamsFromAscendant(ascendantTeamUUID);
-        log.info("Got {} active descendant unit Teams by team UUID {}", activeTeams.size(), ascendantTeamUUID);
+    public Set<Team> getAllFirstDescendantTeams(UUID teamUUID) {
+        log.debug("Getting first active descendants of team {}", teamUUID);
+        Set<Team> activeTeams = teamRepository.findAllActiveFirstDescendantTeamsFromAscendant(teamUUID);
+        log.info("Got {} active descendant unit Teams by team UUID {}", activeTeams.size(), teamUUID);
         return activeTeams;
     }
 

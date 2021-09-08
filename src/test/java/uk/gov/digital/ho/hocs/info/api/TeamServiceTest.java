@@ -596,19 +596,15 @@ public class TeamServiceTest {
 
     @Test
     public void shouldGetAllFirstDescendantTeamsFromCurrentTeam() {
-        UUID caseUUID = UUID.randomUUID();
-        UUID stageUUID = UUID.randomUUID();
-        UUID currentTeamUUID = UUID.randomUUID();
+        UUID teamUuid = UUID.randomUUID();
         Set<Team> teams = Set.of(new Team(UUID.randomUUID().toString(), true));
 
-        when(caseworkClient.getTeamUUIDFromCaseAndStage(caseUUID, stageUUID)).thenReturn(currentTeamUUID);
-        when(teamRepository.findAllActiveFirstDescendantTeamsFromAscendant(currentTeamUUID)).thenReturn(teams);
+        when(teamRepository.findAllActiveFirstDescendantTeamsFromAscendant(teamUuid)).thenReturn(teams);
 
-        Set<Team> expectedTeams = teamService.getAllFirstDescendantTeamsFromCurrentTeam(caseUUID, stageUUID);
+        Set<Team> expectedTeams = teamService.getAllFirstDescendantTeams(teamUuid);
 
         assertThat(expectedTeams.iterator().next().getUuid()).isEqualTo(teams.iterator().next().getUuid());
-        verify(caseworkClient).getTeamUUIDFromCaseAndStage(caseUUID, stageUUID);
-        verify(teamRepository).findAllActiveFirstDescendantTeamsFromAscendant(currentTeamUUID);
+        verify(teamRepository).findAllActiveFirstDescendantTeamsFromAscendant(teamUuid);
         verifyZeroInteractions(caseworkClient, teamRepository);
     }
 
