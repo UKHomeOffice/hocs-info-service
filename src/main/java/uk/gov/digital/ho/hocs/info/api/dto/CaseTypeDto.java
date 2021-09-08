@@ -3,8 +3,10 @@ package uk.gov.digital.ho.hocs.info.api.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class CaseTypeDto {
@@ -26,6 +28,8 @@ public class CaseTypeDto {
     @JsonProperty("type")
     private String type;
 
+    @JsonProperty("previousCaseType")
+    private String previousCaseType;
 
     public static CaseTypeDto from(CaseType caseType) {
 
@@ -34,7 +38,8 @@ public class CaseTypeDto {
                 caseType.getType(),
                 caseType.getDisplayName(),
                 caseType.getShortCode(),
-                caseType.getType());
+                caseType.getType(),
+                caseType.getPreviousCaseType());
     }
 
 }

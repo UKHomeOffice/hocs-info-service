@@ -11,12 +11,13 @@ public class CaseTypeDtoTest {
 
     @Test
     public void shouldBuildCaseTypeDtoFromCaseTypeObject() {
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(),"Name","a1", "MIN",UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(),"Name","a1", "MIN",UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, "PREV");
 
         CaseTypeDto caseTypeDto = CaseTypeDto.from(caseType);
 
         assertThat(caseTypeDto.getDisplayName()).isEqualTo("Name");
         assertThat(caseTypeDto.getType()).isEqualTo("MIN");
 
+        assertThat(caseTypeDto.getPreviousCaseType()).isEqualTo("PREV");
     }
 }
