@@ -35,7 +35,7 @@ public class CaseTypeResourceTest {
         when(caseTypeService.getAllCaseTypesForUser(false, false)).thenReturn(getMockCaseTypes());
 
         ResponseEntity<Set<CaseTypeDto>> response =
-                caseTypeResource.getCaseTypes(false);
+                caseTypeResource.getCaseTypes(false, false);
 
         verify(caseTypeService, times(1)).getAllCaseTypesForUser(false, false);
 
@@ -68,7 +68,7 @@ public class CaseTypeResourceTest {
         when(caseTypeService.getAllCaseTypesForUser(true, false)).thenReturn(getMockCaseTypesBulk());
 
         ResponseEntity<Set<CaseTypeDto>> response =
-                caseTypeResource.getCaseTypes(true);
+                caseTypeResource.getCaseTypes(true, false);
 
         verify(caseTypeService, times(1)).getAllCaseTypesForUser(true, false);
 

@@ -31,7 +31,7 @@ public class ProfileResource {
 
     @GetMapping(value = "/profileNames", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<String>> getProfileNameForUser() {
-        List<String> userCaseTypes = caseTypeService.getAllCaseTypesForUser(false, false).stream().map(CaseType::getType).collect(Collectors.toList());
+        List<String> userCaseTypes = caseTypeService.getAllCaseTypesForUser(false, true).stream().map(CaseType::getType).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(userCaseTypes)) {
             return ResponseEntity.ok(List.of());
