@@ -153,6 +153,18 @@ public class TeamResource {
         return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
     }
 
+    @GetMapping(value = "/teams/descendants/stage/{stageUUID}/case/{caseUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    ResponseEntity<Set<TeamDto>> getFirstDescendantTeamsFromCurrentTeam(@PathVariable UUID stageUUID, @PathVariable UUID caseUUID) { ;
+        Set<Team> firstDescendantTeams = teamService.getAllFirstDescendantTeamsFromCurrentTeam(caseUUID, stageUUID);
+        return ResponseEntity.ok(firstDescendantTeams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
+    }
+
+    @GetMapping(value = "/teams/drafters")
+    public ResponseEntity<Set<TeamDto>> getdraftingteams() {
+        Set<Team> teams = teamService.getAllActiveTeams();
+        return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
+    }
+    
     @GetMapping(value = "/team/case/{caseUUID}/topic/{topicUUID}/stage/{stageType}")
     public ResponseEntity<TeamDto> getActiveTeams(@PathVariable UUID caseUUID, @PathVariable UUID topicUUID, @PathVariable String stageType) {
         Team team = teamService.getTeamByTopicAndStage(caseUUID, topicUUID, stageType);
