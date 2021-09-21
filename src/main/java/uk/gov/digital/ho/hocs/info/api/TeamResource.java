@@ -194,4 +194,20 @@ public class TeamResource {
         teamService.removeUserFromTeam(UUID.fromString(userUUID), UUID.fromString(teamUUID));
         return ResponseEntity.ok().build();
     }
+
+    private static boolean displayNameHasChanged(Team team, PatchTeamDto patchTeamDto) {
+        if (!Objects.isNull(patchTeamDto.getDisplayName())
+                && !patchTeamDto.getDisplayName().equals(team.getDisplayName())) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean unitUuidHasChanged(Team team, PatchTeamDto patchTeamDto) {
+        if (!Objects.isNull(patchTeamDto.getUnitUuid()) &&
+                !team.getUnit().getUuid().equals(patchTeamDto.getUnitUuid())) {
+            return true;
+        }
+        return false;
+    }
 }
