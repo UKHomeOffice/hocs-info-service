@@ -3,7 +3,6 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -57,7 +56,12 @@ public class Field implements Serializable {
     @Column(name = "active")
     private boolean active = true;
 
-    public Field(String component, String name, String label, String validation, String props, boolean summary) {
+    @Getter
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "child_field_id")
+    private Field child = null;
+
+    public Field(String component, String name, String label, String validation, String props, boolean summary, Field child) {
         this.uuid = UUID.randomUUID();
         this.component = component;
         this.name = name;
@@ -65,6 +69,7 @@ public class Field implements Serializable {
         this.validation = validation;
         this.props = props;
         this.summary = summary;
+        this.child = child;
     }
 
 }
