@@ -47,7 +47,7 @@ public class CaseTypeService {
         return caseTypes;
     }
 
-    Set<CaseType> getAllCaseTypesForUser(boolean bulkOnly, boolean includeWithPreviousCaseType) {
+    Set<CaseType> getAllCaseTypesForUser(boolean bulkOnly, boolean initialCaseType) {
         log.debug("Getting case types by User, bulkOnly = {}", bulkOnly);
         Set<UUID> userTeams = userPermissionsService.getUserTeams();
         Set<String> teams = userTeams.stream().map(UUID::toString).collect(Collectors.toSet());
@@ -58,9 +58,9 @@ public class CaseTypeService {
         } else {
             Set<CaseType> caseTypes;
             if (bulkOnly) {
-                caseTypes = caseTypeRepository.findAllBulkCaseTypesByTeam(teams, includeWithPreviousCaseType);
+                caseTypes = caseTypeRepository.findAllBulkCaseTypesByTeam(teams, initialCaseType);
             } else {
-                caseTypes = caseTypeRepository.findAllCaseTypesByTeam(teams, includeWithPreviousCaseType);
+                caseTypes = caseTypeRepository.findAllCaseTypesByTeam(teams, initialCaseType);
             }
             log.info("Got {} CaseTypes (bulkOnly = {})", caseTypes.size(), bulkOnly);
             return caseTypes;

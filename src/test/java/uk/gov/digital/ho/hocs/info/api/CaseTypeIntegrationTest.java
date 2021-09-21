@@ -80,7 +80,7 @@ public class CaseTypeIntegrationTest {
     }
 
     @Test
-    public void shouldRetrieveAllCaseTypesWithoutPreviousCaseType() {
+    public void shouldRetrieveAllInitialCaseTypes() {
 
         // given
         // setup done in before.sql
@@ -88,7 +88,7 @@ public class CaseTypeIntegrationTest {
 
         // when
         ResponseEntity<Set<CaseTypeDto>> getCaseTypesRequest = restTemplate.exchange(
-                getBasePath() + "/caseType", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
+                getBasePath() + "/caseType?initialCaseType=true", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
                 });
 
         // then
@@ -106,7 +106,7 @@ public class CaseTypeIntegrationTest {
     }
 
     @Test
-    public void shouldRetrieveAllCaseTypesWithPreviousCaseType() {
+    public void shouldRetrieveAllCaseTypes() {
 
         // given
         // setup done in before.sql
