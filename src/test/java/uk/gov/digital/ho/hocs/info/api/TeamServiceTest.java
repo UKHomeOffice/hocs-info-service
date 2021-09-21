@@ -599,6 +599,24 @@ public class TeamServiceTest {
         verifyZeroInteractions(auditClient);
     }
 
+    @Test
+    public void shouldGetAllFirstDescendantTeamsFromCurrentTeam() {
+        UUID caseUUID = UUID.randomUUID();
+        UUID stageUUID = UUID.randomUUID();
+        UUID currentTeamUUID = UUID.randomUUID();
+        Set<Team> teams = Set.of(new Team(UUID.randomUUID().toString(), true));
+
+        when(caseworkClient.getTeamUUIDFromCaseAndStage(caseUUID, stageUUID)).thenReturn(currentTeamUUID);
+        when(teamRepository.findAllActiveFirstDescendantTeamsFromAscendant(currentTeamUUID)).thenReturn(teams);
+
+        Set<Team> expectedTeams = teamService.getAllFirstDescendantTeamsFromCurrentTeam(caseUUID, stageUUID);
+
+        assertThat(expectedTeams.iterator().next().getUuid()).isEqualTo(teams.iterator().next().getUuid());
+        verify(caseworkClient).getTeamUUIDFromCaseAndStage(caseUUID, stageUUID);
+        verify(teamRepository).findAllActiveFirstDescendantTeamsFromAscendant(currentTeamUUID);
+        verifyZeroInteractions(caseworkClient, teamRepository);
+    }
+
     private List<Team> getAllTeams() {
         CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null);
         Set<Permission> permissions = new HashSet<Permission>() {{

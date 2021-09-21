@@ -321,6 +321,23 @@ public class TeamResourceTest {
         verifyNoMoreInteractions(teamService);
     }
 
+    @Test
+    public void testGetAllFirstDescendantTeamsFromCurrentTeam() {
+        UUID caseUUID = UUID.randomUUID();
+        UUID stageUUID = UUID.randomUUID();
+
+        Set<Team> teams = Set.of(new Team(UUID.randomUUID().toString(), true));
+        when(teamService.getAllFirstDescendantTeamsFromCurrentTeam(caseUUID, stageUUID)).thenReturn(teams);
+
+        ResponseEntity<Set<TeamDto>> response = teamResource
+                .getFirstDescendantTeamsFromCurrentTeam(stageUUID, caseUUID);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().iterator().next().getUuid()).isEqualTo(teams.iterator().next().getUuid());
+        verify(teamService).getAllFirstDescendantTeamsFromCurrentTeam(caseUUID, stageUUID);
+        verifyNoMoreInteractions(teamService);
+    }
+
     private Set<Team> getTeams() {
         return new HashSet<Team>() {{
             add(new Team("Team1", true));
