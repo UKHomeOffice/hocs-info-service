@@ -184,10 +184,10 @@ steps:
       KUBE_TOKEN:
         from_secret: hocs_info_service_hocs_gamma
       VERSION: build_${DRONE_BUILD_NUMBER}
-      HOCS_INFO_SERVICE_DATA_VERSION: branch-feature/HOCS-3578-foi-mvp-rebase-main
+      HOCS_INFO_SERVICE_DATA_VERSION: branch-foi-mvp-rebase-main
     when:
       branch:
-        - feature/HOCS-3578-foi-mvp-rebase-main
+        - foi-mvp-rebase-main
       event:
         - push
     depends_on:
