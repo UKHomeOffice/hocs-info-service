@@ -41,15 +41,16 @@ public class EntityService {
 
     public void createEntity(String listName, EntityDto entityDto) {
 
-        Optional<Entity> existingEntity = entityRepository.findBySimpleName(entityDto.getSimpleName());
-
-        if (existingEntity.isPresent()) {
-            throw new ApplicationExceptions.EntityAlreadyExistsException("entity with this simple name already exists!");
-        }
-
         String entityListUUID = entityRepository.findEntityListUUIDBySimpleName(listName);
 
-        if (entityListUUID == null) {
+        if (entityListUUID != null) {
+            Optional<Entity> existingEntity = entityRepository.findBySimpleNameAndEntityListUUID(
+                    entityDto.getSimpleName(), UUID.fromString(entityListUUID));
+
+            if (existingEntity.isPresent()) {
+                throw new ApplicationExceptions.EntityAlreadyExistsException("entity with this simple name already exists!");
+            }
+        } else {
             throw new ApplicationExceptions.EntityNotFoundException("EntityList not found for: %s ", listName);
         }
 

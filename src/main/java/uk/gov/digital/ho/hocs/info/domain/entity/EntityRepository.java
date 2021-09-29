@@ -37,4 +37,5 @@ public interface EntityRepository extends CrudRepository<Entity, Long> {
 
     Entity findByUuid(UUID uuid);
 
+    Optional<Entity> findBySimpleNameAndEntityListUUID(String simpleName, UUID entityListUuid);
 }
