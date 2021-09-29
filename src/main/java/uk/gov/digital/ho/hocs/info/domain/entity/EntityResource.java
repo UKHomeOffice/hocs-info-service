@@ -32,7 +32,13 @@ class EntityResource {
     }
 
     @GetMapping(value = "/entity/list/{name}", produces = APPLICATION_JSON_UTF8_VALUE)
-    @Cacheable(value = "getEntitiesForListName", unless = "#result == null || #name == 'MPAM_CAMPAIGNS' || #name == 'EXGRATIA_BUS_REPS' || #name == 'MPAM_BUS_UNITS_1' || #name == 'MPAM_BUS_UNITS_2' || #name == 'MPAM_BUS_UNITS_3' || #name == 'MPAM_BUS_UNITS_4' || #name == 'MPAM_BUS_UNITS_5' || #name == 'MPAM_BUS_UNITS_6' || #name == 'MPAM_BUS_UNITS_7'", key = "#name")
+    @Cacheable(value = "getEntitiesForListName", unless = "#result == null || " +
+            "#name == 'MPAM_CAMPAIGNS' || #name == 'EXGRATIA_BUS_REPS' || #name == 'MPAM_BUS_UNITS_1' || " +
+            "#name == 'MPAM_BUS_UNITS_2' || #name == 'MPAM_BUS_UNITS_3' || #name == 'MPAM_BUS_UNITS_4' || " +
+            "#name == 'MPAM_BUS_UNITS_5' || #name == 'MPAM_BUS_UNITS_6' || #name == 'MPAM_BUS_UNITS_7' || " +
+            "#name == 'MPAM_ENQUIRY_REASONS_PER' || #name == 'MPAM_ENQUIRY_REASONS_GUI' || #name == 'MPAM_ENQUIRY_REASONS_DOC' || " +
+            "#name == 'MPAM_ENQUIRY_REASONS_TECH' || #name == 'MPAM_ENQUIRY_REASONS_DET' || #name == 'MPAM_ENQUIRY_REASONS_HMPO' ||" +
+            "#name == 'MPAM_ENQUIRY_REASONS_OTHER'", key = "#name")
     public ResponseEntity<List<EntityDto>> getEntitiesForListName(@PathVariable String name) {
         List<Entity> entities = entityService.getByEntityListName(name);
         return ResponseEntity.ok(entities.stream().map(EntityDto::from).collect(Collectors.toList()));
