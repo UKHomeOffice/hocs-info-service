@@ -121,14 +121,13 @@ public class EntityServiceTest {
         EntityDto entityDto = new EntityDto(simpleName, uuid, data);
         ArgumentCaptor<Entity> argumentCaptor = ArgumentCaptor.forClass(Entity.class);
 
-        when(entityRepository.findBySimpleName(simpleName)).thenReturn(Optional.empty());
         when(entityRepository.findEntityListUUIDBySimpleName(listName)).thenReturn(listUUID);
 
         entityService.createEntity(listName, entityDto);
 
         verify(entityRepository).save(argumentCaptor.capture());
-        verify(entityRepository).findBySimpleName(simpleName);
         verify(entityRepository).findEntityListUUIDBySimpleName(listName);
+        verify(entityRepository).findBySimpleNameAndEntityListUUID(simpleName, UUID.fromString(listUUID));
         verifyNoMoreInteractions(entityRepository);
 
         Entity capturedEntity = argumentCaptor.getValue();
@@ -147,8 +146,13 @@ public class EntityServiceTest {
         String uuid = UUID.randomUUID().toString();
         String data = "data";
         EntityDto entityDto = new EntityDto(simpleName, uuid, data);
+        UUID listUUID = UUID.randomUUID();
 
-        when(entityRepository.findBySimpleName(simpleName)).thenReturn(Optional.of(new Entity()));
+        when(entityRepository.findEntityListUUIDBySimpleName(listName))
+                .thenReturn(listUUID.toString());
+
+        when(entityRepository.findBySimpleNameAndEntityListUUID(simpleName, listUUID))
+               .thenReturn(Optional.of(new Entity()));
 
         entityService.createEntity(listName, entityDto);
 
@@ -162,7 +166,6 @@ public class EntityServiceTest {
         String data = "data";
         EntityDto entityDto = new EntityDto(simpleName, uuid, data);
 
-        when(entityRepository.findBySimpleName(simpleName)).thenReturn(Optional.empty());
         when(entityRepository.findEntityListUUIDBySimpleName(listName)).thenReturn(null);
 
         entityService.createEntity(listName, entityDto);
