@@ -8,7 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.UUID;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "somu_type")
 @NoArgsConstructor
 @AllArgsConstructor

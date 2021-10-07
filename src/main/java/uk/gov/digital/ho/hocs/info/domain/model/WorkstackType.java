@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "workstack_type")
 @NoArgsConstructor
 @AllArgsConstructor

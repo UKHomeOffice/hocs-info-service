@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "parent_topic")
 @AllArgsConstructor
 @NoArgsConstructor

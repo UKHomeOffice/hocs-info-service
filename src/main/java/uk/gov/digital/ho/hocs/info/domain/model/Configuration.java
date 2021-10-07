@@ -9,8 +9,7 @@ import java.util.List;
 @AllArgsConstructor()
 @NoArgsConstructor()
 @Getter
-@Entity
-@Table(name = "system_configuration")
+@javax.persistence.Entity@Table(name = "system_configuration")
 @EqualsAndHashCode(of = {"systemName"})
 @ToString
 public class Configuration implements Serializable {

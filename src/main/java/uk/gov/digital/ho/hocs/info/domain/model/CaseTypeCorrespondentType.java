@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "case_type_correspondent_type")
 @NoArgsConstructor
 @AllArgsConstructor

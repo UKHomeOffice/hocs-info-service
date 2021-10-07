@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Entity
+@javax.persistence.Entity
 @Table(name = "export_view")
 public class ExportView implements Serializable {
 
