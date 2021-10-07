@@ -57,6 +57,25 @@ public class SomuTypeResourceTest {
     }
 
     @Test
+    public void getAllSomuTypesForCaseType() {
+        // Given
+        SomuType somuType = new SomuType(1L, somuUuid, "CaseType", "Type", "{}", true);
+        Set<SomuType> somuTypes = new HashSet<SomuType>() {{
+            add(somuType);
+        }};
+
+        when(somuTypeService.getAllSomuTypesForCaseType("CaseType")).thenReturn(somuTypes);
+
+        // When
+        final Set<SomuType> result = somuTypeService.getAllSomuTypesForCaseType("CaseType");
+
+        // Then
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result).isEqualTo(somuTypes);
+
+    }
+
+    @Test
     public void getSomuTypeForCaseTypeAndType() {
         SomuType somuType = new SomuType(1L, somuUuid, "CaseType", "Type", "{}", true);
         when(somuTypeService.getSomuTypeForCaseTypeAndType("CaseType", "Type")).thenReturn(somuType);
