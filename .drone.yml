@@ -84,6 +84,10 @@ steps:
         - build_${DRONE_BUILD_NUMBER}
         - ${DRONE_COMMIT_SHA}
         - branch-${DRONE_COMMIT_BRANCH/\//_}
+    when:
+      branch:
+        exclude:
+          - main
     depends_on:
       - test project
 
@@ -97,6 +101,9 @@ steps:
       registry: quay.io
       repo: quay.io/ukhomeofficedigital/hocs-info-service
       tags:
+        - build_${DRONE_BUILD_NUMBER}
+        - ${DRONE_COMMIT_SHA}
+        - branch-${DRONE_COMMIT_BRANCH/\//_}
         - latest
     when:
       branch:

@@ -24,7 +24,7 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
 
     Set<Team> findAllByActiveTrue();
 
-    @Query(value = "SELECT t.* FROM team t JOIN unit u on u.uuid = t.unit_uuid WHERE u.short_code = ?1", nativeQuery = true)
+    @Query(value = "SELECT t.* FROM team t JOIN unit u on u.uuid = t.unit_uuid WHERE u.short_code = ?1 and t.active = true", nativeQuery = true)
     Set<Team> findAllByActiveTrueAndUnitShortCodeEquals(String shortCode);
 
     Set<Team> findTeamsByUnitUuid(UUID unitUUID);
@@ -46,4 +46,9 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
 
     @Query(value = "SELECT t.* FROM team t WHERE t.active=TRUE AND EXISTS (SELECT 1 FROM info.team_link tl WHERE tl.stage_type=?1 AND tl.responsible_team_uuid=t.uuid)", nativeQuery = true)
     Set<Team> findActiveByStageType(String stageType);
+
+    @Query(value = "SELECT t.* FROM team t " +
+            "WHERE t.parent_team = ?1 " +
+            "AND t.active = TRUE", nativeQuery = true)
+    Set<Team> findAllActiveFirstDescendantTeamsFromAscendant(UUID ascendantTeamUUID);
 }

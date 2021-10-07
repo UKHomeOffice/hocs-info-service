@@ -28,7 +28,12 @@ delete from team where unit_uuid in ('09221c48-b916-47df-9aa0-a0194f86f6dd',
                                  '65996106-91a5-44bf-bc92-a6c2f691f062',
                                  '10d5b353-a8ed-4530-bcc0-3edab0397d2f',
                                  'c875dca8-8679-47e7-a589-7cea64b2e13c',
-                                 '66547972-56c6-4a8c-9bf5-b3debec1344a');
+                                 '66547972-56c6-4a8c-9bf5-b3debec1344a',
+                                 '5d153f3b-865d-49d9-a493-baedd241db19',
+                                 '5d153f3b-865d-49d9-a493-baedd241db19',
+                                 '5d153f3b-865d-49d9-a493-baedd241db19',
+                                 'a95a4e2b-102b-4300-939b-1bb6c69e9989',
+                                 'a95a4e2b-102b-4300-939b-1bb6c69e9989');
 
 delete from case_type where type in ('CT1', 'CT2', 'CT3', 'CT4' );
 
@@ -36,6 +41,19 @@ delete from unit where display_name in ('UNIT 2',
                                         'UNIT 3',
                                         'UNIT 4',
                                         'UNIT 5',
-                                        'UNIT 6');
+                                        'UNIT 6',
+                                        'UNIT_101',
+                                        'UNIT_100'
+                                       );
 
 delete from correspondent_type where type in ('TEST', 'TEST1', 'TEST2');
+
+--- clean up schema test
+DROP FUNCTION IF EXISTS get_field_id_from_uuid(field_uuid UUID);
+
+delete from field_screen where schema_uuid = 'f958f77d-b277-408d-bd6f-4a498d3f217f';
+
+delete from screen_schema where uuid = 'f958f77d-b277-408d-bd6f-4a498d3f217f';
+
+delete from field where uuid in ('782a75de-ce06-4d31-95eb-87e42234f396',
+                                 '932c2af5-55a1-430a-927a-56e7ef5f1743');

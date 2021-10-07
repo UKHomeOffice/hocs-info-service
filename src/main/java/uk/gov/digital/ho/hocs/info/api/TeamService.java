@@ -88,6 +88,13 @@ public class TeamService {
         return activeTeams;
     }
 
+    public Set<Team> getAllFirstDescendantTeams(UUID teamUUID) {
+        log.debug("Getting first active descendants of team {}", teamUUID);
+        Set<Team> activeTeams = teamRepository.findAllActiveFirstDescendantTeamsFromAscendant(teamUUID);
+        log.info("Got {} active descendant unit Teams by team UUID {}", activeTeams.size(), teamUUID);
+        return activeTeams;
+    }
+
     public Team getTeam(UUID teamUUID) {
         log.debug("Getting Team {}", teamUUID);
         Team team = teamRepository.findByUuid(teamUUID);

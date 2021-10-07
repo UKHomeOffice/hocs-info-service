@@ -12,6 +12,7 @@ import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Unit;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
+import uk.gov.digital.ho.hocs.info.security.Base64UUID;
 
 import java.util.HashSet;
 import java.util.List;
@@ -189,6 +190,16 @@ public class TeamResourceTest {
         teamResource.getUnitByTeam(teamUUID);
     }
 
+    @Test
+    public void shouldGetTeamCodeForUUID() {
+        UUID teamUUID = UUID.randomUUID();
+        String teamCode = Base64UUID.uuidToBase64String(teamUUID);
+
+        ResponseEntity<String> result = teamResource.getTeamCode(teamUUID);
+
+        assertThat(result.getBody()).isEqualTo(teamCode);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 
     @Test
     public void shouldCreateNewTeam() {
@@ -226,9 +237,8 @@ public class TeamResourceTest {
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         verify(teamService).patchTeam(teamUuid, patchTeamDto);
-        verifyNoMoreInteractions(teamService);
     }
-
+    
     @Test
     public void shouldUpdateTeamLetterName() {
         UUID teamUUID = UUID.randomUUID();
@@ -318,6 +328,22 @@ public class TeamResourceTest {
         ResponseEntity result = teamResource.deleteTeamPermissions(teamUUID.toString(), request);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(teamService).deleteTeamPermissions(teamUUID, permissionDtoSet);
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
+    public void testGetAllFirstDescendant() {
+        UUID teamUuid = UUID.randomUUID();
+
+        Set<Team> teams = Set.of(new Team(UUID.randomUUID().toString(), true));
+        when(teamService.getAllFirstDescendantTeams(teamUuid)).thenReturn(teams);
+
+        ResponseEntity<Set<TeamDto>> response = teamResource
+                .getAllFirstDescendantTeams(teamUuid);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().iterator().next().getUuid()).isEqualTo(teams.iterator().next().getUuid());
+        verify(teamService).getAllFirstDescendantTeams(teamUuid);
         verifyNoMoreInteractions(teamService);
     }
 

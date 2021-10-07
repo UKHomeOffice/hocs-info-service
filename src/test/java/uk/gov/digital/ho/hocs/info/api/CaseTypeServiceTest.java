@@ -187,6 +187,24 @@ public class CaseTypeServiceTest {
     }
 
     @Test
+    public void shouldGetCaseDeadline(){
+        CaseType caseType = new CaseType();
+
+        String receivedDateString = "2020-08-03";
+        String expectedExtendedDateString = "2020-09-07";
+
+        LocalDate receivedDate = LocalDate.parse(receivedDateString);
+        LocalDate expectedExtendedDate = LocalDate.parse(expectedExtendedDateString);
+
+
+        when(caseTypeRepository.findByType(CASE_TYPE)).thenReturn(caseType);
+
+        LocalDate response = caseTypeService.getDeadlineForCaseType(CASE_TYPE, receivedDate, 10, 15);
+
+        assertThat(response).isEqualTo(expectedExtendedDate);
+    }
+
+    @Test
     public void shouldGetDocumentTagsForCaseType(){
         List<DocumentTag> documentTags = new ArrayList<>();
         documentTags.add((new DocumentTag(null,null,null,"First",(short)1)));
@@ -270,7 +288,6 @@ public class CaseTypeServiceTest {
         verify(localDateWrapper).now();
         checkNoMoreInteractions();
     }
-
 
     private void checkNoMoreInteractions(){
         verifyNoMoreInteractions(caseTypeRepository, documentTagRepository, holidayDateRepository, stageTypeService, userPermissionsService, localDateWrapper);
