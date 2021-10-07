@@ -1,12 +1,13 @@
-package uk.gov.digital.ho.hocs.info.domain.entity;
+package uk.gov.digital.ho.hocs.info.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uk.gov.digital.ho.hocs.info.domain.entity.dto.EntityDto;
-import uk.gov.digital.ho.hocs.info.domain.entity.dto.GetCaseSummaryFieldsResponse;
+import uk.gov.digital.ho.hocs.info.api.dto.EntityDto;
+import uk.gov.digital.ho.hocs.info.api.dto.GetCaseSummaryFieldsResponse;
+import uk.gov.digital.ho.hocs.info.domain.model.Entity;
 
 import java.util.List;
 import java.util.Set;
@@ -32,7 +33,13 @@ class EntityResource {
     }
 
     @GetMapping(value = "/entity/list/{name}", produces = APPLICATION_JSON_UTF8_VALUE)
-    @Cacheable(value = "getEntitiesForListName", unless = "#result == null || #name == 'MPAM_CAMPAIGNS' || #name == 'EXGRATIA_BUS_REPS' || #name == 'MPAM_BUS_UNITS_1' || #name == 'MPAM_BUS_UNITS_2' || #name == 'MPAM_BUS_UNITS_3' || #name == 'MPAM_BUS_UNITS_4' || #name == 'MPAM_BUS_UNITS_5' || #name == 'MPAM_BUS_UNITS_6' || #name == 'MPAM_BUS_UNITS_7'", key = "#name")
+    @Cacheable(value = "getEntitiesForListName", unless = "#result == null || " +
+            "#name == 'MPAM_CAMPAIGNS' || #name == 'EXGRATIA_BUS_REPS' || #name == 'MPAM_BUS_UNITS_1' || " +
+            "#name == 'MPAM_BUS_UNITS_2' || #name == 'MPAM_BUS_UNITS_3' || #name == 'MPAM_BUS_UNITS_4' || " +
+            "#name == 'MPAM_BUS_UNITS_5' || #name == 'MPAM_BUS_UNITS_6' || #name == 'MPAM_BUS_UNITS_7' || " +
+            "#name == 'MPAM_ENQUIRY_REASONS_PER' || #name == 'MPAM_ENQUIRY_REASONS_GUI' || #name == 'MPAM_ENQUIRY_REASONS_DOC' || " +
+            "#name == 'MPAM_ENQUIRY_REASONS_TECH' || #name == 'MPAM_ENQUIRY_REASONS_DET' || #name == 'MPAM_ENQUIRY_REASONS_HMPO' ||" +
+            "#name == 'MPAM_ENQUIRY_REASONS_OTHER'", key = "#name")
     public ResponseEntity<List<EntityDto>> getEntitiesForListName(@PathVariable String name) {
         List<Entity> entities = entityService.getByEntityListName(name);
         return ResponseEntity.ok(entities.stream().map(EntityDto::from).collect(Collectors.toList()));

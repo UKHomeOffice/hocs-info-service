@@ -8,7 +8,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "workstack_column")
 @NoArgsConstructor
 @AllArgsConstructor

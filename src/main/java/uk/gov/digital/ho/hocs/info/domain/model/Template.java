@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "template")
 @NoArgsConstructor
 @AllArgsConstructor

@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "member")
 @AllArgsConstructor
 @NoArgsConstructor

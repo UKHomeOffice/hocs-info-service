@@ -8,8 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 
-@Entity
-@Table(name = "case_type_schema")
+@javax.persistence.Entity@Table(name = "case_type_schema")
 @NoArgsConstructor
 @Getter
 @EqualsAndHashCode(of = {"id"})

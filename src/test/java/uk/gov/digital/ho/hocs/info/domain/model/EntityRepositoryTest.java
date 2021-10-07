@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.domain.entity;
+package uk.gov.digital.ho.hocs.info.domain.model;
 
 import org.junit.After;
 import org.junit.Before;
@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import uk.gov.digital.ho.hocs.info.domain.repository.EntityRepository;
 
 import java.util.Comparator;
 import java.util.List;

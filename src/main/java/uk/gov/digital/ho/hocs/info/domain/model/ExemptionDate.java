@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "exemption_date")
 @NoArgsConstructor
 @AllArgsConstructor

@@ -1,10 +1,12 @@
-package uk.gov.digital.ho.hocs.info.domain.entity;
+package uk.gov.digital.ho.hocs.info.api;
 
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.info.domain.entity.dto.EntityDto;
+import uk.gov.digital.ho.hocs.info.api.dto.EntityDto;
+import uk.gov.digital.ho.hocs.info.domain.model.Entity;
+import uk.gov.digital.ho.hocs.info.domain.repository.EntityRepository;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 
 import java.util.List;
@@ -41,15 +43,16 @@ public class EntityService {
 
     public void createEntity(String listName, EntityDto entityDto) {
 
-        Optional<Entity> existingEntity = entityRepository.findBySimpleName(entityDto.getSimpleName());
-
-        if (existingEntity.isPresent()) {
-            throw new ApplicationExceptions.EntityAlreadyExistsException("entity with this simple name already exists!");
-        }
-
         String entityListUUID = entityRepository.findEntityListUUIDBySimpleName(listName);
 
-        if (entityListUUID == null) {
+        if (entityListUUID != null) {
+            Optional<Entity> existingEntity = entityRepository.findBySimpleNameAndEntityListUUID(
+                    entityDto.getSimpleName(), UUID.fromString(entityListUUID));
+
+            if (existingEntity.isPresent()) {
+                throw new ApplicationExceptions.EntityAlreadyExistsException("entity with this simple name already exists!");
+            }
+        } else {
             throw new ApplicationExceptions.EntityNotFoundException("EntityList not found for: %s ", listName);
         }
 

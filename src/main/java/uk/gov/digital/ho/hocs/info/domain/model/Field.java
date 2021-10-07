@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "field")
 @NoArgsConstructor
 @AllArgsConstructor

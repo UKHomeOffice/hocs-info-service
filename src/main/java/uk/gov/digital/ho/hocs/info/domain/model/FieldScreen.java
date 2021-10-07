@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 
-@Entity
+@javax.persistence.Entity
 @IdClass(FieldScreen.class)
 @Table(name = "field_screen")
 @NoArgsConstructor

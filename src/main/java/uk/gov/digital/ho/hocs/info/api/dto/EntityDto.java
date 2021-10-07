@@ -1,10 +1,10 @@
-package uk.gov.digital.ho.hocs.info.domain.entity.dto;
+package uk.gov.digital.ho.hocs.info.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import uk.gov.digital.ho.hocs.info.domain.entity.Entity;
+import uk.gov.digital.ho.hocs.info.domain.model.Entity;
 
 
 @NoArgsConstructor

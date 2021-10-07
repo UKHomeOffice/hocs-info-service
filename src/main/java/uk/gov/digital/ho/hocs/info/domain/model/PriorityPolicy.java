@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@javax.persistence.Entity
 @Getter
 @Table(name = "priority_policy")
 public class PriorityPolicy {
