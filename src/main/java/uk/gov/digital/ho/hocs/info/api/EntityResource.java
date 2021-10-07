@@ -1,12 +1,13 @@
-package uk.gov.digital.ho.hocs.info.domain.entity;
+package uk.gov.digital.ho.hocs.info.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uk.gov.digital.ho.hocs.info.domain.entity.dto.EntityDto;
-import uk.gov.digital.ho.hocs.info.domain.entity.dto.GetCaseSummaryFieldsResponse;
+import uk.gov.digital.ho.hocs.info.api.dto.EntityDto;
+import uk.gov.digital.ho.hocs.info.api.dto.GetCaseSummaryFieldsResponse;
+import uk.gov.digital.ho.hocs.info.domain.model.Entity;
 
 import java.util.List;
 import java.util.Set;

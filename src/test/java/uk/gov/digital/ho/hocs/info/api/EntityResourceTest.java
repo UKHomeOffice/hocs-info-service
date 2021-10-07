@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.domain.entity;
+package uk.gov.digital.ho.hocs.info.api;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,8 +7,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.domain.entity.dto.EntityDto;
-import uk.gov.digital.ho.hocs.info.domain.entity.dto.GetCaseSummaryFieldsResponse;
+import uk.gov.digital.ho.hocs.info.domain.model.Entity;
+import uk.gov.digital.ho.hocs.info.api.dto.EntityDto;
+import uk.gov.digital.ho.hocs.info.api.dto.GetCaseSummaryFieldsResponse;
 
 import java.util.List;
 import java.util.Set;
