@@ -33,7 +33,7 @@ public class WorkstackType implements Serializable {
     @JoinTable(
             name = "workstack_column_type",
             joinColumns = @JoinColumn(name = "workstack_type_type", referencedColumnName = "type"),
-            inverseJoinColumns = @JoinColumn(name = "workstack_column_id", referencedColumnName = "id")
+            inverseJoinColumns = @JoinColumn(name = "workstack_column_uuid", referencedColumnName = "uuid")
     )
     @OrderColumn(name = "workstack_column_order")
     @ListIndexBase(value = 1)
