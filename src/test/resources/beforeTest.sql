@@ -170,3 +170,9 @@ INSERT INTO info.team ("unit_uuid","uuid","display_name","active") VALUES
 ('a95a4e2b-102b-4300-939b-1bb6c69e9989','84ef4756-f933-48a8-9aa6-59e6b04d141f', 'TEAM_103', true),
 ('a95a4e2b-102b-4300-939b-1bb6c69e9989','ca2b48e9-567d-49d2-a0f0-8061bb47e02d', 'TEAM_104', true)
 ON CONFLICT DO NOTHING;
+
+
+INSERT INTO info.case_action_type (uuid, case_type_uuid, case_type_type, action_type,active, sort_order, supplementary_data)
+VALUES ('dd84d047-853b-428a-9ed7-94601623f345', '406a142c-c519-4fd3-9723-e61b6e3e395e','CT1', 'SUSPENSION', FALSE,10, '{}'::jsonb),
+       ('dd84d047-853b-428a-9ed7-94601623f344', '406a142c-c519-4fd3-9723-e61b6e3e395d','CT1', 'EXTENSION', TRUE,10, '{}'::jsonb),
+       ('f2b625c9-7250-4293-9e68-c8f515e3043d', '406a142c-c519-4fd3-9723-e61b6e3e395f','CT1', 'APPEAL', TRUE,20, '{}'::jsonb);
