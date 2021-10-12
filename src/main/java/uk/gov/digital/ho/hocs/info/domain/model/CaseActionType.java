@@ -24,10 +24,6 @@ import java.util.UUID;
 public class CaseActionType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Column(name = "uuid")
     private UUID uuid;
 

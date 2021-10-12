@@ -16,8 +16,7 @@ $$ language 'plpgsql';
 
 CREATE TABLE case_action_type
 (
-    id                          BIGSERIAL PRIMARY KEY,
-    uuid                        UUID NOT NULL,
+    uuid                        UUID PRIMARY KEY NOT NULL,
     case_type_uuid              UUID NOT NULL,
     case_type_type              TEXT NOT NULL,
     action_type                 TEXT NOT NULL,

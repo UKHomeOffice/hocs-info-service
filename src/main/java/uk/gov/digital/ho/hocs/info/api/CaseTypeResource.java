@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseActionTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 
@@ -91,5 +92,11 @@ public class CaseTypeResource {
     public ResponseEntity<Void> createCaseType(CreateCaseTypeDto caseType) {
         caseTypeService.createCaseType(caseType);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/caseType/{caseType}/actions")
+    public ResponseEntity<List<CaseActionTypeDto>> getCaseActionsByType(@PathVariable String caseType) {
+        List<CaseActionTypeDto> caseActions = caseTypeService.getCaseActionsByCaseType(caseType);
+        return ResponseEntity.ok(caseActions);
     }
 }

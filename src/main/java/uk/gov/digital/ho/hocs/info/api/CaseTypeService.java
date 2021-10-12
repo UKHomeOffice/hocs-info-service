@@ -4,9 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseActionTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
+import uk.gov.digital.ho.hocs.info.domain.repository.CaseActionTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
@@ -24,17 +26,19 @@ public class CaseTypeService {
     private final CaseTypeRepository caseTypeRepository;
     private final DocumentTagRepository documentTagRepository;
     private final HolidayDateRepository holidayDateRepository;
+    private final CaseActionTypeRepository caseActionTypeRepository;
     private final StageTypeService stageTypeService;
     private final UserPermissionsService userPermissionsService;
     private final LocalDateWrapper localDateWrapper;
 
     @Autowired
     public CaseTypeService(CaseTypeRepository caseTypeRepository, DocumentTagRepository documentTagRepository,
-                           HolidayDateRepository holidayDateRepository, StageTypeService stageTypeService,
+                           HolidayDateRepository holidayDateRepository, CaseActionTypeRepository caseActionTypeRepository, StageTypeService stageTypeService,
                            UserPermissionsService userPermissionsService, LocalDateWrapper localDateWrapper) {
         this.caseTypeRepository = caseTypeRepository;
         this.documentTagRepository = documentTagRepository;
         this.holidayDateRepository = holidayDateRepository;
+        this.caseActionTypeRepository = caseActionTypeRepository;
         this.stageTypeService = stageTypeService;
         this.userPermissionsService = userPermissionsService;
         this.localDateWrapper = localDateWrapper;
@@ -163,5 +167,12 @@ public class CaseTypeService {
                 caseType.isBulk(),
                 caseType.isActive(),
                 caseType.getPreviousCaseType()));
+    }
+
+    public List<CaseActionTypeDto> getCaseActionsByCaseType(String caseType) {
+        log.debug("Received request for case actions with caseType {}", caseType);
+        List<CaseActionType> caseActionEntities = caseActionTypeRepository.findAllByCaseTypeAndActiveIsTrue(caseType);
+        log.info("Found {} case actions for caseType {}", caseActionEntities.size(), caseType);
+        return caseActionEntities.stream().map(CaseActionTypeDto::from).collect(Collectors.toList());
     }
 }

@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseActionTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
@@ -15,6 +16,8 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -176,6 +179,19 @@ public class CaseTypeResourceTest {
 
         verify(caseTypeService).getDeadlineForCaseType(eq("caseTypeA"), eq(receivedDate), eq(10), eq(5));
         verifyNoMoreInteractions(caseTypeService);
+    }
+
+    @Test
+    public void getCaseActionsByType() {
+
+        String caseType = "CASE_TYPE";
+
+        when(caseTypeService.getCaseActionsByCaseType(caseType)).thenReturn(List.of());
+
+        ResponseEntity<List<CaseActionTypeDto>> output = caseTypeResource.getCaseActionsByType(caseType);
+
+        assertEquals(output.getStatusCode(), HttpStatus.OK);
+        assertNotNull(output.getBody());
     }
 
     private Set<CaseType> getMockCaseTypes() {

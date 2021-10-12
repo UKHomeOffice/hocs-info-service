@@ -14,20 +14,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseActionTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -171,6 +171,43 @@ public class CaseTypeIntegrationTest {
         keycloakClient.realm(HOCS_REALM).partialImport(importRealm);
     }
 
+    @Test
+    public void shouldGetAllCaseActionsForCaseType() {
+
+        String caseTypeString = "CT1";
+
+        ParameterizedTypeReference<List<CaseActionTypeDto>> typeReference = new ParameterizedTypeReference<>() {};
+
+        HttpEntity httpEntity = new HttpEntity(headers);
+        ResponseEntity<List<CaseActionTypeDto>> response = restTemplate.exchange(
+                getBasePath()  + "/caseType/" + caseTypeString + "/actions",
+                HttpMethod.GET,
+                httpEntity,
+                typeReference
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(Objects.requireNonNull(response.getBody()).size()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldReturnEmptyArrayWhenNoActionsForCaseType() {
+
+        String caseTypeString = "CASE_NON_EXISTENT";
+
+        ParameterizedTypeReference<List<CaseActionTypeDto>> typeReference = new ParameterizedTypeReference<>() {};
+
+        HttpEntity httpEntity = new HttpEntity(headers);
+        ResponseEntity<List<CaseActionTypeDto>> response = restTemplate.exchange(
+                getBasePath() + "/caseType/" + caseTypeString + "/actions",
+                HttpMethod.GET,
+                httpEntity,
+                typeReference
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(Objects.requireNonNull(response.getBody()).size()).isEqualTo(0);
+    }
 }
 
 

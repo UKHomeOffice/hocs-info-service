@@ -5,21 +5,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseActionTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
-import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
-import uk.gov.digital.ho.hocs.info.domain.model.DocumentTag;
-import uk.gov.digital.ho.hocs.info.domain.model.ExemptionDate;
-import uk.gov.digital.ho.hocs.info.domain.model.StageTypeEntity;
+import uk.gov.digital.ho.hocs.info.domain.model.*;
+import uk.gov.digital.ho.hocs.info.domain.repository.CaseActionTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.security.UserPermissionsService;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -44,6 +45,9 @@ public class CaseTypeServiceTest {
     @Mock
     private LocalDateWrapper localDateWrapper;
 
+    @Mock
+    private CaseActionTypeRepository caseActionTypeRepository;
+
     private CaseTypeService caseTypeService;
     private Set<UUID> team = new HashSet<UUID>() {{  add(UUID.fromString("74c79583-1375-494c-9883-f574e7e36541"));}};
     Set<String> teamString = team.stream().map(uuid -> uuid.toString()).collect(Collectors.toSet());
@@ -56,7 +60,7 @@ public class CaseTypeServiceTest {
 
     @Before
     public void setUp() {
-        this.caseTypeService = new CaseTypeService(caseTypeRepository,documentTagRepository,holidayDateRepository,stageTypeService,userPermissionsService, localDateWrapper);
+        this.caseTypeService = new CaseTypeService(caseTypeRepository,documentTagRepository,holidayDateRepository, caseActionTypeRepository, stageTypeService,userPermissionsService, localDateWrapper);
     }
 
     @Test
@@ -333,6 +337,53 @@ public class CaseTypeServiceTest {
                 new CaseType(1L,UUID.randomUUID(), "UKVI B REF","43", "IMCB", unitUUID,"DCU_IMCB_DISPATCH",  true, true, null),
                 new CaseType(2L,UUID.randomUUID(), "UKVI Ministerial REF","44", "IMCM", unitUUID,"DCU_IMCM_DISPATCH",  true, true, null),
                 new CaseType(3L,UUID.randomUUID(), "UKVI Number 10","45", "UTEN", unitUUID, "DCU_UTEN_DISPATCH", true, true, null)));
+    }
+
+    @Test
+    public void getCaseActionsByType_returnsActions() {
+
+        // GIVEN
+        UUID rand1 = UUID.randomUUID();
+        UUID rand2 = UUID.randomUUID();
+        UUID rand3 = UUID.randomUUID();
+        UUID rand4 = UUID.randomUUID();
+
+        CaseActionType mockCaseActionType1 = new CaseActionType(
+                rand1,
+                rand2,
+                "CaseType1",
+                "ACTION_2",
+                true,
+                "{}",
+                10,
+                OffsetDateTime.MIN,
+                OffsetDateTime.MIN
+        );
+
+        CaseActionType mockCaseActionType2 = new CaseActionType(
+                rand3,
+                rand4,
+                "CaseType1",
+                "ACTION_2",
+                true,
+                "{}",
+                20,
+                OffsetDateTime.MIN,
+                OffsetDateTime.MIN
+        );
+
+        CaseActionTypeDto expectedCaseTypeDto1 = CaseActionTypeDto.from(mockCaseActionType1);
+        CaseActionTypeDto expectedCaseTypeDto2 = CaseActionTypeDto.from(mockCaseActionType2);
+
+        when(caseActionTypeRepository.findAllByCaseTypeAndActiveIsTrue(CASE_TYPE)).thenReturn(List.of(mockCaseActionType1, mockCaseActionType2));
+
+        // WHEN
+        List<CaseActionTypeDto> output = caseTypeService.getCaseActionsByCaseType(CASE_TYPE);
+
+        // THEN
+        assertEquals(expectedCaseTypeDto1.getActionType(), output.get(0).getActionType());
+        assertEquals(expectedCaseTypeDto2.getActionType(), output.get(1).getActionType());
+        verify(caseActionTypeRepository, times(1)).findAllByCaseTypeAndActiveIsTrue(any());
     }
 
 }

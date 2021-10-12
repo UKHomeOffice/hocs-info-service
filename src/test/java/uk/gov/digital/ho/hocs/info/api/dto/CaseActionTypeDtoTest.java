@@ -14,7 +14,6 @@ public class CaseActionTypeDtoTest {
     private static final UUID rand2 = UUID.randomUUID();
 
     private static final CaseActionType MOCK_ENTITY = new CaseActionType(
-            1L,
             rand1,
             rand2,
             "TYPE_1",
