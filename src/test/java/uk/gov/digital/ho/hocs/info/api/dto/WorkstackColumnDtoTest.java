@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import uk.gov.digital.ho.hocs.info.domain.model.WorkstackColumn;
 
+import java.util.UUID;
+
 
 public class WorkstackColumnDtoTest {
 
@@ -16,7 +18,7 @@ public class WorkstackColumnDtoTest {
         Boolean filterable = true;
         String headerClassName = "some css header name";
         String sortStrategy = "TestSortStrategy";
-        WorkstackColumn workstackColumn = new WorkstackColumn(10L, displayName, dataAdapter, renderer, dataValueKey, filterable, headerClassName, sortStrategy);
+        WorkstackColumn workstackColumn = new WorkstackColumn(UUID.randomUUID(), displayName, dataAdapter, renderer, dataValueKey, filterable, headerClassName, sortStrategy);
 
         WorkstackColumnDto dto = WorkstackColumnDto.from(workstackColumn);
 

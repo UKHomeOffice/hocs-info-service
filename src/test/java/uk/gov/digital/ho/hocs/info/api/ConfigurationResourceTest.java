@@ -14,6 +14,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 
@@ -36,7 +37,7 @@ public class ConfigurationResourceTest {
         String systemName = "system";
         String systemDisplayName = "Test System Name";
 
-        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, "columnName1", "adapter", "renderer", "valueKey", true, "cssClass", "SortStrategy"));
+        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(UUID.randomUUID(), "columnName1", "adapter", "renderer", "valueKey", true, "cssClass", "SortStrategy"));
         List<WorkstackType> workstackTypes = Arrays.asList(new WorkstackType(10L, systemName, "some_type", workstackColumns));
 
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, "system", "name", "component", "validationRules", "properties"));
