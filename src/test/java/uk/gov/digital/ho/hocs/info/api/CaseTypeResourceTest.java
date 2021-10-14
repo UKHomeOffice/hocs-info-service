@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.api.dto.CaseActionTypeDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
@@ -188,7 +188,7 @@ public class CaseTypeResourceTest {
 
         when(caseTypeService.getCaseActionsByCaseType(caseType)).thenReturn(List.of());
 
-        ResponseEntity<List<CaseActionTypeDto>> output = caseTypeResource.getCaseActionsByType(caseType);
+        ResponseEntity<List<CaseTypeActionDto>> output = caseTypeResource.getCaseActionsByType(caseType);
 
         assertEquals(output.getStatusCode(), HttpStatus.OK);
         assertNotNull(output.getBody());

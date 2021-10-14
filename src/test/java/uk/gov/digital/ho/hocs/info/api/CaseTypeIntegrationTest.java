@@ -19,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.digital.ho.hocs.info.api.dto.CaseActionTypeDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
@@ -176,10 +176,10 @@ public class CaseTypeIntegrationTest {
 
         String caseTypeString = "CT1";
 
-        ParameterizedTypeReference<List<CaseActionTypeDto>> typeReference = new ParameterizedTypeReference<>() {};
+        ParameterizedTypeReference<List<CaseTypeActionDto>> typeReference = new ParameterizedTypeReference<>() {};
 
         HttpEntity httpEntity = new HttpEntity(headers);
-        ResponseEntity<List<CaseActionTypeDto>> response = restTemplate.exchange(
+        ResponseEntity<List<CaseTypeActionDto>> response = restTemplate.exchange(
                 getBasePath()  + "/caseType/" + caseTypeString + "/actions",
                 HttpMethod.GET,
                 httpEntity,
@@ -195,10 +195,10 @@ public class CaseTypeIntegrationTest {
 
         String caseTypeString = "CASE_NON_EXISTENT";
 
-        ParameterizedTypeReference<List<CaseActionTypeDto>> typeReference = new ParameterizedTypeReference<>() {};
+        ParameterizedTypeReference<List<CaseTypeActionDto>> typeReference = new ParameterizedTypeReference<>() {};
 
         HttpEntity httpEntity = new HttpEntity(headers);
-        ResponseEntity<List<CaseActionTypeDto>> response = restTemplate.exchange(
+        ResponseEntity<List<CaseTypeActionDto>> response = restTemplate.exchange(
                 getBasePath() + "/caseType/" + caseTypeString + "/actions",
                 HttpMethod.GET,
                 httpEntity,

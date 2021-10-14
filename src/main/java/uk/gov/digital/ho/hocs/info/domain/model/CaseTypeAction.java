@@ -12,16 +12,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "case_action_type")
+@Table(name = "case_type_action")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CaseActionType {
+public class CaseTypeAction {
 
     @Id
     @Column(name = "uuid")
@@ -36,6 +37,9 @@ public class CaseActionType {
     @Column(name = "action_type")
     private String actionType;
 
+    @Column(name = "action_label")
+    private String actionLabel;
+
     @Column(name = "active")
     private boolean active;
 
@@ -46,8 +50,8 @@ public class CaseActionType {
     private int sortOrder;
 
     @Column(name = "created_timestamp")
-    private OffsetDateTime createdTimestamp;
+    private LocalDateTime createdTimestamp;
 
     @Column(name = "last_updated_timestamp")
-    private OffsetDateTime lastUpdatedTimestamp;
+    private LocalDateTime lastUpdatedTimestamp;
 }

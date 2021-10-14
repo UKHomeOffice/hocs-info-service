@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.api.dto.CaseActionTypeDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseActionTypeRepository;
@@ -15,6 +15,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.security.UserPermissionsService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -348,37 +349,39 @@ public class CaseTypeServiceTest {
         UUID rand3 = UUID.randomUUID();
         UUID rand4 = UUID.randomUUID();
 
-        CaseActionType mockCaseActionType1 = new CaseActionType(
+        CaseTypeAction mockCaseActionType1 = new CaseTypeAction(
                 rand1,
                 rand2,
                 "CaseType1",
                 "ACTION_2",
+                "ACTION_LABEL",
                 true,
                 "{}",
                 10,
-                OffsetDateTime.MIN,
-                OffsetDateTime.MIN
+                LocalDateTime.MIN,
+                LocalDateTime.MIN
         );
 
-        CaseActionType mockCaseActionType2 = new CaseActionType(
+        CaseTypeAction mockCaseActionType2 = new CaseTypeAction(
                 rand3,
                 rand4,
                 "CaseType1",
                 "ACTION_2",
+                "ACTION_LABEL",
                 true,
                 "{}",
                 20,
-                OffsetDateTime.MIN,
-                OffsetDateTime.MIN
+                LocalDateTime.MIN,
+                LocalDateTime.MIN
         );
 
-        CaseActionTypeDto expectedCaseTypeDto1 = CaseActionTypeDto.from(mockCaseActionType1);
-        CaseActionTypeDto expectedCaseTypeDto2 = CaseActionTypeDto.from(mockCaseActionType2);
+        CaseTypeActionDto expectedCaseTypeDto1 = CaseTypeActionDto.from(mockCaseActionType1);
+        CaseTypeActionDto expectedCaseTypeDto2 = CaseTypeActionDto.from(mockCaseActionType2);
 
         when(caseActionTypeRepository.findAllByCaseTypeAndActiveIsTrue(CASE_TYPE)).thenReturn(List.of(mockCaseActionType1, mockCaseActionType2));
 
         // WHEN
-        List<CaseActionTypeDto> output = caseTypeService.getCaseActionsByCaseType(CASE_TYPE);
+        List<CaseTypeActionDto> output = caseTypeService.getCaseActionsByCaseType(CASE_TYPE);
 
         // THEN
         assertEquals(expectedCaseTypeDto1.getActionType(), output.get(0).getActionType());

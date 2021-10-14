@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.info.api.dto.CaseActionTypeDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
@@ -169,10 +169,10 @@ public class CaseTypeService {
                 caseType.getPreviousCaseType()));
     }
 
-    public List<CaseActionTypeDto> getCaseActionsByCaseType(String caseType) {
+    public List<CaseTypeActionDto> getCaseActionsByCaseType(String caseType) {
         log.debug("Received request for case actions with caseType {}", caseType);
-        List<CaseActionType> caseActionEntities = caseActionTypeRepository.findAllByCaseTypeAndActiveIsTrue(caseType);
+        List<CaseTypeAction> caseActionEntities = caseActionTypeRepository.findAllByCaseTypeAndActiveIsTrue(caseType);
         log.info("Found {} case actions for caseType {}", caseActionEntities.size(), caseType);
-        return caseActionEntities.stream().map(CaseActionTypeDto::from).collect(Collectors.toList());
+        return caseActionEntities.stream().map(CaseTypeActionDto::from).collect(Collectors.toList());
     }
 }
