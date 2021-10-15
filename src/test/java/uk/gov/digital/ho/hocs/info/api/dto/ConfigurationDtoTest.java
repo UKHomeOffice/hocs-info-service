@@ -6,6 +6,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 
 public class ConfigurationDtoTest {
@@ -32,7 +33,7 @@ public class ConfigurationDtoTest {
 
         String workstackType = "SomeType";
 
-        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, columnDisplayName, columnDataAdapter, columnRenderer, columnDataValueKey, columnFilterable, columnHeaderClassName, columnSortStrategy));
+        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(UUID.randomUUID(), columnDisplayName, columnDataAdapter, columnRenderer, columnDataValueKey, columnFilterable, columnHeaderClassName, columnSortStrategy));
 
         List<WorkstackType> workstackTypes = Arrays.asList(new WorkstackType(10L, systemName, workstackType, workstackColumns));
 

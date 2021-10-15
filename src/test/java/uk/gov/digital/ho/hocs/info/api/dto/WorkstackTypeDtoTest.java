@@ -7,6 +7,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.WorkstackType;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 
 public class WorkstackTypeDtoTest {
@@ -22,7 +23,7 @@ public class WorkstackTypeDtoTest {
         String cssClass = "some_css_class";
         String sortStrategy = "TestSortStrategy";
 
-        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, displayName, dataAdapter, renderer, dataValueKey, isFilterable, cssClass, sortStrategy));
+        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(UUID.randomUUID(), displayName, dataAdapter, renderer, dataValueKey, isFilterable, cssClass, sortStrategy));
         WorkstackType workstackType = new WorkstackType(10L, "system", "some_type", workstackColumns);
 
 
