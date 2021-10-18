@@ -43,8 +43,8 @@ public class CaseTypeAction {
     @Column(name = "active")
     private boolean active;
 
-    @Column(name = "supplementary_data")
-    private String supplementaryData;
+    @Column(name = "props")
+    private String props;
 
     @Column(name = "sort_order")
     private int sortOrder;

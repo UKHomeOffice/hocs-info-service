@@ -1,10 +1,6 @@
 package uk.gov.digital.ho.hocs.info.api.dto;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseTypeAction;
 
 import java.util.UUID;
@@ -13,6 +9,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Getter
+@ToString
 public class CaseTypeActionDto {
 
     private UUID uuid;
@@ -22,7 +19,7 @@ public class CaseTypeActionDto {
     private String actionLabel;
     private int sortOrder;
     private boolean active;
-    private String supplementaryData;
+    private String props;
 
     public static CaseTypeActionDto from(CaseTypeAction caseTypeAction) {
         return CaseTypeActionDto.builder()
@@ -33,7 +30,7 @@ public class CaseTypeActionDto {
                 .actionLabel(caseTypeAction.getActionLabel())
                 .sortOrder(caseTypeAction.getSortOrder())
                 .active(caseTypeAction.isActive())
-                .supplementaryData(caseTypeAction.getSupplementaryData())
+                .props(caseTypeAction.getProps())
                 .build();
     }
 }

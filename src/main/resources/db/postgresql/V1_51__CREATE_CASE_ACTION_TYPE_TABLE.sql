@@ -21,7 +21,7 @@ CREATE TABLE case_type_action
     case_type_type              TEXT NOT NULL,
     action_type                 TEXT NOT NULL,
     action_label                TEXT NOT NULL,
-    supplementary_data          jsonb,
+    props                       jsonb,
     sort_order                  INTEGER,
     active                      BOOLEAN DEFAULT FALSE,
     created_timestamp           TIMESTAMP WITHOUT TIME ZONE DEFAULT now(),

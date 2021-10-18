@@ -175,4 +175,15 @@ public class CaseTypeService {
         log.info("Found {} case actions for caseType {}", caseActionEntities.size(), caseType);
         return caseActionEntities.stream().map(CaseTypeActionDto::from).collect(Collectors.toList());
     }
+
+    public CaseTypeActionDto getCaseTypeActionById(UUID actionId) {
+        log.debug("Request received for case type action id: {}", actionId);
+        CaseTypeAction action = caseActionTypeRepository.findByUuid(actionId);
+        if (action != null) {
+            CaseTypeActionDto actionDto = CaseTypeActionDto.from(action);
+            log.info("Found case type action {}", actionDto.toString());
+            return actionDto;
+        }
+        throw new ApplicationExceptions.EntityNotFoundException(String.format("Case Type Action with id: %s, does not exist", actionId));
+    }
 }

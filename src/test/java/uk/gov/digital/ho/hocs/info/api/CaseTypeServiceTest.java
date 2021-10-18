@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
+import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseActionTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -389,4 +391,41 @@ public class CaseTypeServiceTest {
         verify(caseActionTypeRepository, times(1)).findAllByCaseTypeAndActiveIsTrue(any());
     }
 
+    @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
+    public void shouldThrowErrorIfActionDoesNotExistForId() {
+
+        UUID caseTypeActionUuid = UUID.randomUUID();
+
+        when(caseActionTypeRepository.findByUuid(caseTypeActionUuid)).thenReturn(null);
+
+        CaseTypeActionDto actionDto = caseTypeService.getCaseTypeActionById(caseTypeActionUuid);
+    }
+
+    @Test
+    public void shouldReturnActionForProvidedActionId() {
+
+        UUID requestedActionId = UUID.randomUUID();
+        UUID rand2 = UUID.randomUUID();
+
+        CaseTypeAction mockCaseActionType1 = new CaseTypeAction(
+                requestedActionId,
+                rand2,
+                "CaseType1",
+                "ACTION_2",
+                "ACTION_LABEL",
+                true,
+                "{}",
+                10,
+                LocalDateTime.MIN,
+                LocalDateTime.MIN
+        );
+
+        when(caseActionTypeRepository.findByUuid(requestedActionId)).thenReturn(mockCaseActionType1);
+
+        CaseTypeActionDto actionDto = caseTypeService.getCaseTypeActionById(requestedActionId);
+
+        assertNotNull(actionDto);
+        assertEquals(CaseTypeActionDto.class, actionDto.getClass());
+    }
 }
+

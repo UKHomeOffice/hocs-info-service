@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
@@ -98,5 +99,11 @@ public class CaseTypeResource {
     public ResponseEntity<List<CaseTypeActionDto>> getCaseActionsByType(@PathVariable String caseType) {
         List<CaseTypeActionDto> caseActions = caseTypeService.getCaseActionsByCaseType(caseType);
         return ResponseEntity.ok(caseActions);
+    }
+
+    @GetMapping("/caseType/{caseType}/actions/{actionId}")
+    public ResponseEntity<CaseTypeActionDto> getCaseActionById(@PathVariable UUID actionId) {
+        CaseTypeActionDto actionDto = caseTypeService.getCaseTypeActionById(actionId);
+        return ResponseEntity.ok(actionDto);
     }
 }

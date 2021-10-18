@@ -21,16 +21,16 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
+import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
 
@@ -158,19 +158,6 @@ public class CaseTypeIntegrationTest {
 
     }
 
-    private String getBasePath() {
-        return "http://localhost:" + port;
-    }
-
-    private void setupKeycloakRealm() throws IOException {
-        RealmResource hocsRealm = keycloakClient.realm(HOCS_REALM);
-
-        PartialImportRepresentation importRealm = mapper.readValue(new File("./keycloak/local-realm.json"), PartialImportRepresentation.class);
-        hocsRealm.groups().groups().stream().forEach(e -> hocsRealm.groups().group(e.getId()).remove());
-        importRealm.setIfResourceExists(PartialImportRepresentation.Policy.OVERWRITE.toString());
-        keycloakClient.realm(HOCS_REALM).partialImport(importRealm);
-    }
-
     @Test
     public void shouldGetAllCaseActionsForCaseType() {
 
@@ -207,6 +194,61 @@ public class CaseTypeIntegrationTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(Objects.requireNonNull(response.getBody()).size()).isEqualTo(0);
+    }
+
+    @Test
+    public void shouldReturnExceptionWhenActionIdNotExist() {
+
+        String caseTypeString = "CT1";
+        UUID nonExistentActionID = UUID.randomUUID();
+
+        ParameterizedTypeReference<List<CaseTypeActionDto>> typeReference = new ParameterizedTypeReference<>() {};
+
+        HttpEntity httpEntity = new HttpEntity(headers);
+        ResponseEntity<List<CaseTypeActionDto>> response = restTemplate.exchange(
+                getBasePath() + "/caseType/" + caseTypeString + "/actions/" + nonExistentActionID ,
+                HttpMethod.GET,
+                httpEntity,
+                typeReference
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+    }
+
+    public void shouldReturnRequestedActionById() {
+
+        String caseTypeString = "CT1";
+
+        String actionID = "dd84d047-853b-428a-9ed7-94601623f344";
+
+        ParameterizedTypeReference<CaseTypeActionDto> typeReference = new ParameterizedTypeReference<>() {};
+
+        HttpEntity httpEntity = new HttpEntity(headers);
+        ResponseEntity<CaseTypeActionDto> response = restTemplate.exchange(
+                getBasePath() + "/caseType/" + caseTypeString + "/action/" + actionID,
+                HttpMethod.GET,
+                httpEntity,
+                typeReference
+        );
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("APPEAL 1", Objects.requireNonNull(response.getBody()).getActionLabel());
+
+    }
+
+    private String getBasePath() {
+        return "http://localhost:" + port;
+    }
+
+    private void setupKeycloakRealm() throws IOException {
+        RealmResource hocsRealm = keycloakClient.realm(HOCS_REALM);
+
+        PartialImportRepresentation importRealm = mapper.readValue(new File("./keycloak/local-realm.json"), PartialImportRepresentation.class);
+        hocsRealm.groups().groups().stream().forEach(e -> hocsRealm.groups().group(e.getId()).remove());
+        importRealm.setIfResourceExists(PartialImportRepresentation.Policy.OVERWRITE.toString());
+        keycloakClient.realm(HOCS_REALM).partialImport(importRealm);
     }
 }
 

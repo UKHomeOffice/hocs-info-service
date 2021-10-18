@@ -36,7 +36,7 @@ public class CaseTypeActionDtoTest {
         assertEquals(MOCK_ENTITY.getCaseType(), caseTypeActionDto.getCaseType());
         assertEquals(MOCK_ENTITY.getActionType(), caseTypeActionDto.getActionType());
         assertEquals(MOCK_ENTITY.getActionLabel(), caseTypeActionDto.getActionLabel());
-        assertEquals(MOCK_ENTITY.getSupplementaryData(), caseTypeActionDto.getSupplementaryData());
+        assertEquals(MOCK_ENTITY.getProps(), caseTypeActionDto.getProps());
         assertEquals(MOCK_ENTITY.isActive(), caseTypeActionDto.isActive());
     }
 }
