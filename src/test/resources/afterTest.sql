@@ -58,4 +58,4 @@ delete from screen_schema where uuid = 'f958f77d-b277-408d-bd6f-4a498d3f217f';
 delete from field where uuid in ('782a75de-ce06-4d31-95eb-87e42234f396',
                                  '932c2af5-55a1-430a-927a-56e7ef5f1743');
 
-delete from info.case_action_type;
+delete from info.case_type_action;

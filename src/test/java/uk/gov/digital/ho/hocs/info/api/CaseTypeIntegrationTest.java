@@ -21,7 +21,6 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
-import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
 import java.io.File;
@@ -136,7 +135,7 @@ public class CaseTypeIntegrationTest {
 
         Map<Boolean, Long> bulkValues = Map.of(Boolean.FALSE, 3L, Boolean.TRUE, 3L);
 
-        for (Map.Entry bulkValue : bulkValues.entrySet()) {
+        for (Map.Entry<Boolean, Long> bulkValue : bulkValues.entrySet()) {
             // when
             ResponseEntity<Set<CaseTypeDto>> getCaseTypesRequest = restTemplate.exchange(
                     getBasePath() + "/caseType?bulkOnly=" + bulkValue.getKey(), HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
@@ -204,12 +203,11 @@ public class CaseTypeIntegrationTest {
 
         ParameterizedTypeReference<List<CaseTypeActionDto>> typeReference = new ParameterizedTypeReference<>() {};
 
-        HttpEntity httpEntity = new HttpEntity(headers);
-        ResponseEntity<List<CaseTypeActionDto>> response = restTemplate.exchange(
+        ResponseEntity<Void> response = restTemplate.exchange(
                 getBasePath() + "/caseType/" + caseTypeString + "/actions/" + nonExistentActionID ,
                 HttpMethod.GET,
-                httpEntity,
-                typeReference
+                new HttpEntity<>(headers),
+                Void.class
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
