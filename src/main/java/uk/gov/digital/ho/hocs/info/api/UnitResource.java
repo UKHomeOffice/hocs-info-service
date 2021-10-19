@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
@@ -26,6 +27,12 @@ public class UnitResource {
     public ResponseEntity<Set<UnitDto>> getAllUnits() {
         Set<UnitDto> units = unitService.getAllUnits();
         return ResponseEntity.ok(units);
+    }
+
+    @GetMapping(value = "/unit/team/{teamUuid}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<UnitDto> getUnitByTeam(@PathVariable UUID teamUuid) {
+        UnitDto unit = UnitDto.from(unitService.getUnitForTeam(teamUuid));
+        return ResponseEntity.ok(unit);
     }
 
     @PostMapping(value = "/unit", produces= APPLICATION_JSON_UTF8_VALUE)

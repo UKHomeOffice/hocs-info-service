@@ -57,6 +57,20 @@ public class UnitService {
         }
     }
 
+    Unit getUnitForTeam(UUID teamUuid){
+        log.debug("Getting Unit for team: {}", teamUuid);
+        Team team = teamService.getTeam(teamUuid);
+
+        if (team == null){
+            log.info("Team with UUID {} not found", teamUuid, value(EVENT, TEAM_NOT_FOUND));
+            throw new ApplicationExceptions.EntityNotFoundException("Team with UUID {} not found", teamUuid);
+        } else {
+            log.info("Retrieved unit for team with UUID {}", teamUuid, value(EVENT, UNIT_RETRIEVED));
+            return team.getUnit();
+        }
+    }
+
+
     public void deleteUnit(UUID unitUUID) {
         log.debug("Deleting Unit: {}", unitUUID);
         Set<Team> teams = teamService.findActiveTeamsByUnitUuid(unitUUID);
