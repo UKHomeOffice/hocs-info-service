@@ -21,6 +21,7 @@ CREATE TABLE case_type_action
     case_type_type              TEXT NOT NULL,
     action_type                 TEXT NOT NULL,
     action_label                TEXT NOT NULL,
+    max_concurrent_events       INTEGER,
     props                       jsonb,
     sort_order                  INTEGER,
     active                      BOOLEAN DEFAULT FALSE,

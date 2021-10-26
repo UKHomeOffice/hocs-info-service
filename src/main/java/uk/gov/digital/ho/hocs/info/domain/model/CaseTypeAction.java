@@ -43,6 +43,9 @@ public class CaseTypeAction {
     @Column(name = "active")
     private boolean active;
 
+    @Column(name = "max_concurrent_events")
+    private int maxConcurrentEvents;
+
     @Column(name = "props")
     private String props;
 
