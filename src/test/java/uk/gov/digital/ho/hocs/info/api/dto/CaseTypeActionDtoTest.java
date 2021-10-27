@@ -20,6 +20,7 @@ public class CaseTypeActionDtoTest {
             "ACTION_2",
             "ACTION_LABEL",
             true,
+            1,
             "{}",
             10,
             LocalDateTime.MIN,
