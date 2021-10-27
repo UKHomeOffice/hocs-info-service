@@ -82,4 +82,13 @@ public class StageTypeResource {
         }
     }
 
+    @GetMapping(value = "/stageType/{stageType}/contributions", produces = APPLICATION_JSON_UTF8_VALUE)
+    ResponseEntity<Boolean> getContributionsByType(@PathVariable String stageType) {
+        try {
+            Boolean contributions = stageTypeService.getContributionsForStageType(stageType);
+            return ResponseEntity.ok(contributions);
+        } catch (ApplicationExceptions.EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 }
