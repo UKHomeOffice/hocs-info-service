@@ -1,1 +1,1 @@
-ALTER TABLE stage_type ADD COLUMN contributions boolean DEFAULT false;
+ALTER TABLE stage_type ADD COLUMN can_display_contributions boolean DEFAULT false;

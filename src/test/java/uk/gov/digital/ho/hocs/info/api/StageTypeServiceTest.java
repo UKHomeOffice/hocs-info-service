@@ -13,7 +13,6 @@ import uk.gov.digital.ho.hocs.info.domain.repository.StageTypeRepository;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -67,7 +66,7 @@ public class StageTypeServiceTest {
 
         when(stageTypeRepository.findByType("STAGE_TYPE")).thenReturn(stage);
 
-        Boolean result = service.getContributionsForStageType("STAGE_TYPE");
+        Boolean result = service.getCanDisplayContributionsForStageType("STAGE_TYPE");
         assertThat(result).isEqualTo(true);
     }
 
