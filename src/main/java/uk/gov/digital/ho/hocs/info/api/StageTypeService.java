@@ -45,7 +45,7 @@ public class StageTypeService {
 
     Boolean getCanDisplayContributionsForStageType(String type) {
         log.debug("Getting Can Display Contributions for StageType type {}", type);
-        Boolean canDisplayContributions = stageTypeRepository.findByType(type).isContributions();
+        Boolean canDisplayContributions = stageTypeRepository.findByType(type).isCanDisplayContributions();
         log.info("Got Can Display Contributions as {} for stageType {}", canDisplayContributions, type);
         return canDisplayContributions;
     }
