@@ -24,7 +24,8 @@ public class StageTypeEntityTest {
                 2,
                 1,
                 true,
-                team1
+                team1,
+                false
         );
 
         assertThat(stageTypeEntity.getUuid()).isEqualTo(uuid);

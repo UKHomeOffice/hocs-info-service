@@ -180,8 +180,8 @@ public class CaseTypeServiceTest {
         CaseType caseType = new CaseType();
         when(caseTypeRepository.findByType(CASE_TYPE)).thenReturn(caseType);
         Set<StageTypeEntity> stageTypes = new HashSet<>();
-        stageTypes.add(new StageTypeEntity(1L, UUID.randomUUID(), "stage 8", "111","STAGE_TYPE_8", UUID.randomUUID(),8,8,8,true,null));
-        stageTypes.add(new StageTypeEntity(1L, UUID.randomUUID(), "stage 2", "111","STAGE_TYPE_2", UUID.randomUUID(),2,2,2,true,null));
+        stageTypes.add(new StageTypeEntity(1L, UUID.randomUUID(), "stage 8", "111","STAGE_TYPE_8", UUID.randomUUID(),8,8,8,true,null, false));
+        stageTypes.add(new StageTypeEntity(1L, UUID.randomUUID(), "stage 2", "111","STAGE_TYPE_2", UUID.randomUUID(),2,2,2,true,null, false));
         when(stageTypeService.getAllStageTypesByCaseType(caseType.getUuid())).thenReturn(stageTypes);
 
         Map<String, LocalDate> response = caseTypeService.getAllStageDeadlinesForCaseType(CASE_TYPE, LocalDate.now());

@@ -43,6 +43,13 @@ public class StageTypeService {
         return team;
     }
 
+    Boolean getCanDisplayContributionsForStageType(String type) {
+        log.debug("Getting Can Display Contributions for StageType type {}", type);
+        Boolean canDisplayContributions = stageTypeRepository.findByType(type).isCanDisplayContributions();
+        log.info("Got Can Display Contributions as {} for stageType {}", canDisplayContributions, type);
+        return canDisplayContributions;
+    }
+
     LocalDate getDeadlineForStageType(String stageType, LocalDate receivedDate, LocalDate caseDeadline) {
         log.debug("Getting deadline for stageType {} with received date of {} ", stageType, receivedDate);
         Set<ExemptionDate> holidays = holidayDateRepository.findAllByStageType(stageType);

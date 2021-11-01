@@ -13,7 +13,6 @@ import uk.gov.digital.ho.hocs.info.domain.repository.StageTypeRepository;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,7 +38,7 @@ public class StageTypeServiceTest {
 
     @Test
     public void shouldGetAllStageTypes() {
-        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true, team);
+        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true, team, false);
         Set<StageTypeEntity> stages = new HashSet<StageTypeEntity>() {{
             add(stage);
         }};
@@ -52,7 +51,7 @@ public class StageTypeServiceTest {
 
     @Test
     public void shouldGetTeamForStageType() {
-        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true,team);
+        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true,team, false);
 
         when(stageTypeRepository.findByType("STAGE_TYPE")).thenReturn(stage);
 
@@ -62,8 +61,18 @@ public class StageTypeServiceTest {
     }
 
     @Test
+    public void shouldGetContributionsForStageType() {
+        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true,team, true);
+
+        when(stageTypeRepository.findByType("STAGE_TYPE")).thenReturn(stage);
+
+        Boolean result = service.getCanDisplayContributionsForStageType("STAGE_TYPE");
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
     public void shouldGetDeadlineWarningForStageType() {
-        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),9,1,1,true,team);
+        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),9,1,1,true,team, false);
         when(stageTypeRepository.findByType("STAGE_TYPE")).thenReturn(stage);
         Set<ExemptionDate> exemptions = Set.of(new ExemptionDate(1L, LocalDate.parse("2020-05-11")), new ExemptionDate(1L, LocalDate.parse("2020-05-12")));
         when(holidayDateRepository.findAllByStageType("STAGE_TYPE")).thenReturn(exemptions);

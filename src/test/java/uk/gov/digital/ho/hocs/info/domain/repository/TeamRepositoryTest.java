@@ -46,7 +46,7 @@ public class TeamRepositoryTest {
         team.setActive(true);
         unit.addTeam(team);
         this.entityManager.persist(unit);
-        StageTypeEntity stage = new StageTypeEntity(UUID.randomUUID(),"Stage","c","stageType",caseType.getUuid(),1,1,1,true,team);
+        StageTypeEntity stage = new StageTypeEntity(UUID.randomUUID(),"Stage","c","stageType",caseType.getUuid(),1,1,1,true,team,false);
         entityManager.persistAndFlush(stage);
         TeamLink teamLink = new TeamLink("linkValue", "TEXT", team.getUuid(), "TEST", "stageType");
         entityManager.persistAndFlush(teamLink);
