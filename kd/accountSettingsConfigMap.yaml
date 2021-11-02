@@ -3,8 +3,4 @@ kind: ConfigMap
 metadata:
   name: account-settings
 data:
-  {{ if .IS_PROD }}
-  ALLOWED_EMAIL_DOMAINS: "homeoffice.gov.uk,hmpo.gov.uk,cluster2security.gov.uk"
-  {{ else }}
-  ALLOWED_EMAIL_DOMAINS: "digital.homeoffice.gov.uk,homeoffice.gov.uk,hmpo.gov.uk,cluster2security.gov.uk"
-  {{ end }}
+  ALLOWED_EMAIL_DOMAINS: {{ .ALLOWED_EMAIL_DOMAINS }}
