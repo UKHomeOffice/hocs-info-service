@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
@@ -48,6 +49,12 @@ class EntityResource {
     @GetMapping(value = "/entity/{uuid}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<EntityDto> getEntity(@PathVariable String uuid) {
         Entity entity = entityService.getEntity(uuid);
+        return ResponseEntity.ok(EntityDto.from(entity));
+    }
+
+    @GetMapping(value = "/entity/simpleName/{simpleName}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<EntityDto> getEntityBySimpleName(@PathVariable String simpleName) throws Exception {
+        Entity entity = entityService.getEntityBySimpleName(simpleName);
         return ResponseEntity.ok(EntityDto.from(entity));
     }
 

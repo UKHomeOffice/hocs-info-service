@@ -66,6 +66,12 @@ public class EntityService {
         return entityRepository.findByUuid(UUID.fromString(uuid));
     }
 
+    public Entity getEntityBySimpleName(String simpleName) throws Exception {
+        return entityRepository.findBySimpleName(simpleName)
+                .orElseThrow(() -> new ApplicationExceptions.EntityNotFoundException
+                        ("Entity with simpleName " + simpleName + " not found."));
+    }
+
     public void updateEntity(String listName, EntityDto entityDto) {
         String entityListUUID = entityRepository.findEntityListUUIDBySimpleName(listName);
 
