@@ -383,7 +383,7 @@ spec:
                 - name: X-probe
                   value: kubelet
             periodSeconds: 2
-          readinesSProbe:
+          readinesProbe:
             httpGet:
               path: /actuator/health/readiness
               port: http
