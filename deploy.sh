@@ -40,7 +40,7 @@ then
     export MEMBER_REFRESH_HOUR="5"
     export UPTIME_PERIOD="Mon-Sun 04:55-23:00 Europe/London"
 
-    export ALLOWED_EMAIL_DOMAINS ="homeoffice.gov.uk,hmpo.gov.uk,cluster2security.gov.uk"
+    export ALLOWED_EMAIL_DOMAINS="homeoffice.gov.uk,hmpo.gov.uk,cluster2security.gov.uk"
 
     export CLUSTER_NAME="acp-prod"
     export KUBE_SERVER="https://kube-api-prod.prod.acp.homeoffice.gov.uk"
