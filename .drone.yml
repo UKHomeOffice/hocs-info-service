@@ -103,11 +103,11 @@ steps:
       tags:
         - build_${DRONE_BUILD_NUMBER}
         - ${DRONE_COMMIT_SHA}
-        - branch-${DRONE_COMMIT_BRANCH/\//_}
         - latest
     when:
       branch:
-        - main
+        include:
+          - main
     depends_on:
       - test project
 
