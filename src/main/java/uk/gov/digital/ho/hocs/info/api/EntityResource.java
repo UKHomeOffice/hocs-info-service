@@ -39,7 +39,7 @@ class EntityResource {
             "#name == 'MPAM_BUS_UNITS_5' || #name == 'MPAM_BUS_UNITS_6' || #name == 'MPAM_BUS_UNITS_7' || " +
             "#name == 'MPAM_ENQUIRY_REASONS_PER' || #name == 'MPAM_ENQUIRY_REASONS_GUI' || #name == 'MPAM_ENQUIRY_REASONS_DOC' || " +
             "#name == 'MPAM_ENQUIRY_REASONS_TECH' || #name == 'MPAM_ENQUIRY_REASONS_DET' || #name == 'MPAM_ENQUIRY_REASONS_HMPO' ||" +
-            "#name == 'MPAM_ENQUIRY_REASONS_OTHER'", key = "#name")
+            "#name == 'MPAM_ENQUIRY_REASONS_OTHER' || #name == 'FOI_ACCOUNT_MANAGERS'", key = "#name")
     public ResponseEntity<List<EntityDto>> getEntitiesForListName(@PathVariable String name) {
         List<Entity> entities = entityService.getByEntityListName(name);
         return ResponseEntity.ok(entities.stream().map(EntityDto::from).collect(Collectors.toList()));
