@@ -74,8 +74,7 @@ dependencies {
 	implementation('org.jboss.resteasy:resteasy-jackson2-provider:3.9.1.Final')
 
 	implementation('org.apache.commons:commons-csv:1.5')
-	implementation('io.springfox:springfox-swagger2:2.9.2')
-	implementation('io.springfox:springfox-swagger-ui:2.9.2')
+	implementation("io.springfox:springfox-boot-starter:3.0.0")
 	implementation('com.jayway.jsonpath:json-path:2.5.0')
 	implementation('javax.json:javax.json-api:1.0')
 
@@ -83,6 +82,7 @@ dependencies {
 
 	compileOnly('org.projectlombok:lombok:1.18.6')
 	annotationProcessor('org.projectlombok:lombok:1.18.6')
+	annotationProcessor "org.springframework:spring-context-indexer:5.3.12"
 
 	testImplementation("org.apache.camel:camel-test-spring:${camelVersion}")
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
