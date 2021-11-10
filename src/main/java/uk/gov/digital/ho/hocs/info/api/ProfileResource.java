@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.digital.ho.hocs.info.api.dto.ProfileDto;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
@@ -30,8 +31,8 @@ public class ProfileResource {
     }
 
     @GetMapping(value = "/profileNames", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<List<String>> getProfileNameForUser() {
-        List<String> userCaseTypes = caseTypeService.getAllCaseTypesForUser(false, true).stream().map(CaseType::getType).collect(Collectors.toList());
+    public ResponseEntity<List<String>> getProfileNameForUser(@RequestParam(required = false, name = "initialCaseType", defaultValue = "true") Boolean initialCaseType ) {
+        List<String> userCaseTypes = caseTypeService.getAllCaseTypesForUser(false, initialCaseType).stream().map(CaseType::getType).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(userCaseTypes)) {
             return ResponseEntity.ok(List.of());
