@@ -66,7 +66,7 @@ public class EntityIntegrationTest {
     }
 
     @Test
-    public void shouldReturnExceptionWhenActionIdNotExist() {
+    public void shouldReturn404WhenWhenActionIdNotExist() {
         ResponseEntity<Void> response = restTemplate.exchange(
                 getBasePath() + "/entity/simpleName/NON_EXISTANT_ENTITY" ,
                 HttpMethod.GET,
