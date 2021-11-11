@@ -219,7 +219,7 @@ public class CaseTypeIntegrationTest {
 
         String caseTypeString = "CT1";
 
-        String actionID = "dd84d047-853b-428a-9ed7-94601623f344";
+        String actionID = "f2b625c9-7250-4293-9e68-c8f515e3043d";
 
         ParameterizedTypeReference<CaseTypeActionDto> typeReference = new ParameterizedTypeReference<>() {};
 
