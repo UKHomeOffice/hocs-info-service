@@ -10,9 +10,11 @@ import uk.gov.digital.ho.hocs.info.domain.repository.EntityRepository;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -72,6 +74,18 @@ public class EntityService {
         Entity entity = entityRepository.findByUuid(UUID.fromString(entityDto.getUuid()));
 
         if (StringUtils.isNotEmpty(entityListUUID) && entity.getEntityListUUID().equals(UUID.fromString(entityListUUID))) {
+            List<Entity> existingEntities = entityRepository.findByDataAndEntityListUUID(
+                    entityDto.getData(), UUID.fromString(entityListUUID));
+
+            existingEntities = existingEntities
+                    .stream()
+                    .filter(e -> !Objects.equals(e.getUuid(), UUID.fromString(entityDto.getUuid())))
+                    .collect(Collectors.toList());
+
+            if (!existingEntities.isEmpty()) {
+                throw new ApplicationExceptions.EntityAlreadyExistsException("entity with this simple name already exists!");
+            }
+
             entity.update(entityDto);
             entityRepository.save(entity);
         } else {
