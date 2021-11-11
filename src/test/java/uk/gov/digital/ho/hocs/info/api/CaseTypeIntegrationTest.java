@@ -214,6 +214,7 @@ public class CaseTypeIntegrationTest {
 
     }
 
+    @Test
     public void shouldReturnRequestedActionById() {
 
         String caseTypeString = "CT1";
@@ -233,6 +234,24 @@ public class CaseTypeIntegrationTest {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("APPEAL 1", Objects.requireNonNull(response.getBody()).getActionLabel());
+
+    }
+
+    @Test
+    public void shouldReturnAllCaseTypeActions() {
+
+        ParameterizedTypeReference<List<CaseTypeActionDto>> typeReference = new ParameterizedTypeReference<>() {};
+
+        HttpEntity httpEntity = new HttpEntity(headers);
+        ResponseEntity<List<CaseTypeActionDto>> response = restTemplate.exchange(
+                getBasePath()  + "/caseType/actions",
+                HttpMethod.GET,
+                httpEntity,
+                typeReference
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(Objects.requireNonNull(response.getBody()).size()).isEqualTo(4);
 
     }
 
