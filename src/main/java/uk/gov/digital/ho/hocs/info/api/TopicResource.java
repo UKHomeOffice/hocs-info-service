@@ -43,6 +43,7 @@ public class TopicResource {
         return ResponseEntity.ok(GetAllTopicsResponse.fromTopicWithFilteredChildren(parentTopics, filteredChildTopics));
     }
 
+    // todo: remove
     @GetMapping(value = "/case/foitopiclist", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Set<TopicDto>> getAllFOITopics() {
         log.info("requesting all topics from FOI Topics list");
