@@ -120,6 +120,29 @@ public class EntityResourceTest {
     }
 
     @Test
+    public void getEntityBySimpleName() throws Exception {
+        String testUUID = UUID.randomUUID().toString();
+
+        String simpleName = "name123";
+        String data = "{ title: 'Title 321' }";
+        UUID uuid = UUID.randomUUID();
+        UUID listUuid = UUID.randomUUID();
+        Entity entity = new Entity(1L, uuid, simpleName, data, listUuid, true, 10);
+        when(entityService.getEntityBySimpleName(simpleName)).thenReturn(entity);
+
+        ResponseEntity<EntityDto> response = entityResource.getEntityBySimpleName(simpleName);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getUuid()).isEqualTo(uuid.toString());
+        assertThat(response.getBody().getSimpleName()).isEqualTo(simpleName);
+        assertThat(response.getBody().getData()).isEqualTo(data);
+
+        verify(entityService).getEntityBySimpleName(simpleName);
+        verifyNoMoreInteractions(entityService);
+    }
+
+    @Test
     public void updateEntity() {
         String listName = "L1";
         String simpleName = "name";
@@ -147,5 +170,4 @@ public class EntityResourceTest {
         verify(entityService).deleteEntity(listName, uuid);
         verifyNoMoreInteractions(entityService);
     }
-
 }
