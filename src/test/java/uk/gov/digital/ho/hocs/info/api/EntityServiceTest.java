@@ -61,6 +61,32 @@ public class EntityServiceTest {
         verifyNoMoreInteractions(entityRepository);
     }
 
+    @Test
+    public void getEntityBySimpleName() throws Exception {
+        // given
+        String simpleName = "TEST_ENTITY";
+
+        Entity expectedEntity = new Entity(
+                UUID.randomUUID(),
+                simpleName,
+                "{}",
+                UUID.randomUUID(),
+                true,
+                0);
+
+
+        when(entityRepository.findBySimpleName(simpleName)).thenReturn(Optional.of(expectedEntity));
+
+        // when
+        final Entity result = entityService.getEntityBySimpleName(simpleName);
+
+        // then
+        assertThat(result).isEqualTo(expectedEntity);
+
+        verify(entityRepository).findBySimpleName(simpleName);
+        verifyNoMoreInteractions(entityRepository);
+    }
+
     @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
     public void getBySimpleName_nullOwner() {
         entityService.getBySimpleName(null, "test", "test");

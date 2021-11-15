@@ -41,4 +41,21 @@ public class Deadline implements Serializable {
         return deadline;
     }
 
+    public static int calculateRemainingWorkingDays(LocalDate deadline, Set<ExemptionDate> holidays) {
+
+        LocalDate day = LocalDate.now();
+        int daysRemaining = 0;
+
+        Set<LocalDate> holidayDates = holidays.stream().map(ExemptionDate::getDate).collect(Collectors.toSet());
+
+        while(day.isBefore(deadline)) {
+            if (!DateUtils.isDateNonWorkingDay(day, holidayDates)) {
+                daysRemaining++;
+            }
+            day = day.plusDays(1);
+        }
+
+        return daysRemaining;
+    }
+
 }
