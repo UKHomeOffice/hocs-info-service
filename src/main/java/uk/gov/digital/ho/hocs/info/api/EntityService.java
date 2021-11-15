@@ -83,7 +83,8 @@ public class EntityService {
                     .collect(Collectors.toList());
 
             if (!existingEntities.isEmpty()) {
-                throw new ApplicationExceptions.EntityAlreadyExistsException("entity with this simple name already exists!");
+                throw new ApplicationExceptions.EntityAlreadyExistsException(
+                        String.format("entity with simple name: %s already exists", existingEntities.get(0).getSimpleName()));
             }
 
             entity.update(entityDto);
