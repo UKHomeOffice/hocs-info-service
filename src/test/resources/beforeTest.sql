@@ -187,3 +187,4 @@ VALUES  ('9fda236f-6cd4-4016-b4af-307c424eaa50','5abc65d9-3964-4c25-b570-46e203d
          'TEST_ENTITY_1', '{ "title" : "One"}'::jsonb, 1),
         ('9fda236f-6cd4-4016-b4af-307c424eaa50','8761bda1-8e26-4189-9133-aab3651aa584',
          'TEST_ENTITY_2', '{ "title" : "Two"}'::jsonb, 2);
+
