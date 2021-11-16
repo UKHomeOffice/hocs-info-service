@@ -225,7 +225,7 @@ public class CaseTypeIntegrationTest {
 
         HttpEntity httpEntity = new HttpEntity(headers);
         ResponseEntity<CaseTypeActionDto> response = restTemplate.exchange(
-                getBasePath() + "/caseType/" + caseTypeString + "/action/" + actionID,
+                getBasePath() + "/caseType/" + caseTypeString + "/actions/" + actionID,
                 HttpMethod.GET,
                 httpEntity,
                 typeReference
