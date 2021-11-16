@@ -43,14 +43,6 @@ public class TopicResource {
         return ResponseEntity.ok(GetAllTopicsResponse.fromTopicWithFilteredChildren(parentTopics, filteredChildTopics));
     }
 
-    @GetMapping(value = "/case/foitopiclist", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Set<TopicDto>> getAllFOITopics() {
-        log.info("requesting all topics from FOI Topics list");
-        ParentTopic parentTopic = parentTopicRepository.findByDisplayName("FOI Topics");
-        List<Topic> topics = topicService.getAllTopicsForParentTopic(parentTopic.getUuid());
-        return ResponseEntity.ok(topics.stream().map(t->TopicDto.from(t)).collect(Collectors.toSet()));
-    }
-
     @GetMapping(value = "/topic/parent/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetParentTopicsResponse> getAllParentTopicsByCaseType(@PathVariable String caseType) {
         log.info("requesting all Parent topics for case type {}", caseType);

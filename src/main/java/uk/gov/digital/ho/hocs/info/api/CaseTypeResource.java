@@ -95,6 +95,12 @@ public class CaseTypeResource {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/caseType/actions")
+    public ResponseEntity<List<CaseTypeActionDto>> getAllCaseTypeActions() {
+        List<CaseTypeActionDto> caseActions = caseTypeService.getAllCaseActions();
+        return ResponseEntity.ok(caseActions);
+    }
+
     @GetMapping("/caseType/{caseType}/actions")
     public ResponseEntity<List<CaseTypeActionDto>> getCaseActionsByType(@PathVariable String caseType) {
         List<CaseTypeActionDto> caseActions = caseTypeService.getCaseActionsByCaseType(caseType);

@@ -195,22 +195,5 @@ public class TopicResourceTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-
-
-    @Test
-    public void shouldGetAllFOITopics() {
-
-        ParentTopic parentTopic = new ParentTopic("FOI Topics", true);
-        when(parentTopicRepository.findByDisplayName("FOI Topics")).thenReturn(parentTopic);
-        when(topicService.getAllTopicsForParentTopic(any())).thenReturn(getTopics());
-
-        ResponseEntity<Set<TopicDto>> response = topicResource.getAllFOITopics();
-
-        verify(parentTopicRepository, times(1)).findByDisplayName(any());
-        verify(topicService, times(1)).getAllTopicsForParentTopic(any());
-        verifyNoMoreInteractions(topicService);
-        verifyNoMoreInteractions(parentTopicRepository);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
 }
+

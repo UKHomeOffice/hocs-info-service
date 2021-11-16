@@ -186,4 +186,13 @@ public class CaseTypeService {
         }
         throw new ApplicationExceptions.EntityNotFoundException(String.format("Case Type Action with id: %s, does not exist", actionId));
     }
+
+    public List<CaseTypeActionDto> getAllCaseActions() {
+        log.debug("Request received for all case type actions.");
+        List<CaseTypeAction> caseTypeActionList = new LinkedList<>();
+        Iterable<CaseTypeAction> caseTypeActionsItr = caseActionTypeRepository.findAll();
+        caseTypeActionsItr.forEach(caseTypeActionList::add);
+        log.info("Return list of {} case type actions.", caseTypeActionList.size());
+        return caseTypeActionList.stream().map(CaseTypeActionDto::from).collect(Collectors.toList());
+    }
 }

@@ -430,5 +430,55 @@ public class CaseTypeServiceTest {
         assertNotNull(actionDto);
         assertEquals(CaseTypeActionDto.class, actionDto.getClass());
     }
+
+    @Test
+    public void shouldReturnListOfAllCaseTypeActions() {
+        CaseTypeAction mockCaseActionType1 = new CaseTypeAction(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                "CaseType1",
+                "ACTION_1",
+                "ACTION_LABEL_1",
+                true,
+                1,
+                "{}",
+                10,
+                LocalDateTime.MIN,
+                LocalDateTime.MIN
+        );
+        CaseTypeAction mockCaseActionType2 = new CaseTypeAction(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                "CaseType2",
+                "ACTION_2",
+                "ACTION_LABEL_2",
+                true,
+                1,
+                "{}",
+                10,
+                LocalDateTime.MIN,
+                LocalDateTime.MIN
+        );
+
+        List<CaseTypeAction> caseTypeActionList = new LinkedList<>();
+        caseTypeActionList.add(mockCaseActionType1);
+        caseTypeActionList.add(mockCaseActionType2);
+
+        when(caseActionTypeRepository.findAll()).thenReturn(caseTypeActionList);
+        List<CaseTypeActionDto> output  = caseTypeService.getAllCaseActions();
+
+        assertThat(output.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldReturnEmptyListOfAllCaseTypeActions() {
+
+        List<CaseTypeAction> caseTypeActionList = new LinkedList<>();
+
+        when(caseActionTypeRepository.findAll()).thenReturn(caseTypeActionList);
+        List<CaseTypeActionDto> output  = caseTypeService.getAllCaseActions();
+
+        assertThat(output.size()).isEqualTo(0);
+    }
 }
 
