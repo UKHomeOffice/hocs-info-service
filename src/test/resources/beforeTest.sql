@@ -173,6 +173,18 @@ ON CONFLICT DO NOTHING;
 
 
 INSERT INTO info.case_type_action (uuid, case_type_uuid, case_type_type, action_type, action_label, active, max_concurrent_events, sort_order, props)
-VALUES ('dd84d047-853b-428a-9ed7-94601623f345', '406a142c-c519-4fd3-9723-e61b6e3e395e','CT1', 'SUSPENSION','SUS 1', FALSE,1,10, '{}'::jsonb),
-       ('dd84d047-853b-428a-9ed7-94601623f344', '406a142c-c519-4fd3-9723-e61b6e3e395d','CT1', 'EXTENSION','EXT 1', TRUE,1,10, '{}'::jsonb),
-       ('f2b625c9-7250-4293-9e68-c8f515e3043d', '406a142c-c519-4fd3-9723-e61b6e3e395f','CT1', 'APPEAL', 'APPEAL 1', TRUE,1,10, '{}'::jsonb);
+VALUES ('dd84d047-853b-428a-9ed7-94601623f345', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0','CT1', 'SUSPENSION','SUS 1', FALSE,1,10, '{}'::jsonb),
+       ('dd84d047-853b-428a-9ed7-94601623f344', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0','CT1', 'EXTENSION','EXT 1', TRUE,1,10, '{}'::jsonb),
+       ('dd84d047-853b-428a-9ed7-94601623f343', '056cf0eb-becd-49fa-86eb-ba4b7678a515','CT2', 'EXTENSION','EXT 1', TRUE,1,10, '{}'::jsonb),
+       ('f2b625c9-7250-4293-9e68-c8f515e3043d', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0','CT1', 'APPEAL', 'APPEAL 1', TRUE,1,10, '{}'::jsonb);
+
+INSERT INTO entity_list (uuid, display_name, simple_name)
+VALUES ('9fda236f-6cd4-4016-b4af-307c424eaa50', 'Test entity list', 'TEST_ENTITIES')
+    ON CONFLICT DO NOTHING;
+
+INSERT INTO entity (entity_list_UUID, uuid, simple_name, data, sort_order)
+VALUES  ('9fda236f-6cd4-4016-b4af-307c424eaa50','5abc65d9-3964-4c25-b570-46e203d5474b',
+         'TEST_ENTITY_1', '{ "title" : "One"}'::jsonb, 1),
+        ('9fda236f-6cd4-4016-b4af-307c424eaa50','8761bda1-8e26-4189-9133-aab3651aa584',
+         'TEST_ENTITY_2', '{ "title" : "Two"}'::jsonb, 2);
+

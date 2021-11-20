@@ -36,7 +36,7 @@ public class ProfileResourceTest {
     public void getProfileNameForUser_noCaseTypes() {
         when(caseTypeService.getAllCaseTypesForUser(false, true)).thenReturn(Set.of());
 
-        ResponseEntity<List<String>> response = profileResource.getProfileNameForUser();
+        ResponseEntity<List<String>> response = profileResource.getProfileNameForUser(true);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCodeValue()).isEqualTo(200);
@@ -57,7 +57,7 @@ public class ProfileResourceTest {
         when(caseTypeService.getAllCaseTypesForUser(false, true)).thenReturn(Set.of(caseType1, caseType2));
         when(profileRepository.findAllProfileNamesByCaseTypesAndSystemName(anyList(), eq("system"))).thenReturn(expectedResult);
 
-        ResponseEntity<List<String>> response = profileResource.getProfileNameForUser();
+        ResponseEntity<List<String>> response = profileResource.getProfileNameForUser(true);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCodeValue()).isEqualTo(200);

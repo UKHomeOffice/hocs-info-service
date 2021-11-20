@@ -59,3 +59,8 @@ delete from field where uuid in ('782a75de-ce06-4d31-95eb-87e42234f396',
                                  '932c2af5-55a1-430a-927a-56e7ef5f1743');
 
 delete from info.case_type_action;
+
+delete from info.entity where uuid in ('5abc65d9-3964-4c25-b570-46e203d5474b',
+                                         '8761bda1-8e26-4189-9133-aab3651aa584');
+
+delete from info.entity_list where uuid = '9fda236f-6cd4-4016-b4af-307c424eaa50';

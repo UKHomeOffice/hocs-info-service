@@ -39,4 +39,7 @@ public interface EntityRepository extends CrudRepository<Entity, Long> {
     Entity findByUuid(UUID uuid);
 
     Optional<Entity> findBySimpleNameAndEntityListUUID(String simpleName, UUID entityListUuid);
+
+    @Query(value = "select e.* from entity e where e.data = ?1 and e.entity_list_uuid = ?2", nativeQuery = true)
+    List<Entity> findByDataAndEntityListUUID(String data, UUID entityListUuid);
 }
