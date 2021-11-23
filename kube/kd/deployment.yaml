@@ -357,7 +357,7 @@ spec:
                   key: ALLOWED_EMAIL_DOMAINS
           resources:
             limits:
-              cpu: 1600m
+              cpu: 2000m
               memory: 1024Mi
             requests:
               cpu: 350m
@@ -372,9 +372,9 @@ spec:
               httpHeaders:
                 - name: X-probe
                   value: kubelet
-            initialDelaySeconds: 20
-            periodSeconds: 5
-            failureThreshold: 6
+            initialDelaySeconds: 6
+            periodSeconds: 2
+            failureThreshold: 22
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
