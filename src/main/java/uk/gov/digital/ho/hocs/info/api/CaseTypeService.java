@@ -195,4 +195,8 @@ public class CaseTypeService {
         log.info("Return list of {} case type actions.", caseTypeActionList.size());
         return caseTypeActionList.stream().map(CaseTypeActionDto::from).collect(Collectors.toList());
     }
+
+    public Integer calculateRemainingDaysToDeadline(String caseType, LocalDate deadlineDate) {
+        return Deadline.calculateRemainingWorkingDays(LocalDate.now(), deadlineDate, new HashSet<>(holidayDateRepository.findAllByCaseType(caseType)));
+    }
 }
