@@ -51,4 +51,42 @@ public class DeadlineTest {
                 .isEqualTo(LocalDate.parse("2020-01-10"));
     }
 
+    @Test
+    public void calculateRemainingWorkingDays_overWeekend() {
+
+        LocalDate dateOfCheck = LocalDate.parse("2021-11-19"); // Fri
+        LocalDate deadline = LocalDate.parse("2021-11-22"); // Mon
+
+        assertThat(Deadline.calculateRemainingWorkingDays(dateOfCheck, deadline, Set.of())).isEqualTo(2);
+    }
+
+    @Test
+    public void calculateRemainingWorkingDays_overBankHolidayWeekend() {
+
+        LocalDate dateOfCheck = LocalDate.parse("2021-04-30"); // Fri
+        LocalDate deadline = LocalDate.parse("2021-05-07"); // Mon
+        LocalDate bankHolidayDay = LocalDate.parse("2021-05-03");
+
+        assertThat(Deadline.calculateRemainingWorkingDays(dateOfCheck, deadline, Set.of(new ExemptionDate(1L, bankHolidayDay)))).isEqualTo(5);
+    }
+
+    @Test
+    public void calculateRemainingWorkingDays_deadLineDayShouldReturn1() {
+
+        LocalDate dateOfCheck = LocalDate.parse("2021-04-30");
+        LocalDate deadline = LocalDate.parse("2021-04-30");
+        LocalDate bankHolidayDay = LocalDate.parse("2021-05-03");
+
+        assertThat(Deadline.calculateRemainingWorkingDays(dateOfCheck, deadline, Set.of(new ExemptionDate(1L, bankHolidayDay)))).isEqualTo(1);
+    }
+
+    @Test
+    public void calculateRemainingWorkingDays_deadLinePastShouldReturn0() {
+
+        LocalDate dateOfCheck = LocalDate.parse("2021-04-30");
+        LocalDate deadline = LocalDate.parse("2021-04-29");
+        LocalDate bankHolidayDay = LocalDate.parse("2021-05-03");
+
+        assertThat(Deadline.calculateRemainingWorkingDays(dateOfCheck, deadline, Set.of(new ExemptionDate(1L, bankHolidayDay)))).isEqualTo(0);
+    }
 }

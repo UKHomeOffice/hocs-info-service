@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.info.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -88,6 +89,11 @@ public class CaseTypeResource {
     @GetMapping(value = "/caseType/{caseType}/workingDays/{fromDate}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Integer> getWorkingDaysElapsedForCaseType(@PathVariable String caseType, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate) {
         return ResponseEntity.ok(caseTypeService.calculateWorkingDaysElapsedForCaseType(caseType, fromDate));
+    }
+
+    @GetMapping(value = "/caseType/{caseType}/deadline/{deadlineDate}/remainingDays")
+    public ResponseEntity<Integer> getDaysRemainingToDeadline(@PathVariable String caseType, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate deadlineDate) {
+        return ResponseEntity.ok(caseTypeService.calculateRemainingDaysToDeadline(caseType, deadlineDate));
     }
 
     public ResponseEntity<Void> createCaseType(CreateCaseTypeDto caseType) {
