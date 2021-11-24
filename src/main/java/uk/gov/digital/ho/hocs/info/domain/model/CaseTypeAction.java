@@ -37,6 +37,9 @@ public class CaseTypeAction {
     @Column(name = "action_type")
     private String actionType;
 
+    @Column(name = "action_subtype")
+    private String actionSubtype;
+
     @Column(name = "action_label")
     private String actionLabel;
 
