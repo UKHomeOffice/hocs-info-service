@@ -16,6 +16,7 @@ public class CaseTypeActionDto {
     private UUID caseTypeUuid;
     private String caseType;
     private String actionType;
+    private String actionSubtype;
     private String actionLabel;
     private int maxConcurrentEvents;
     private int sortOrder;
@@ -28,6 +29,7 @@ public class CaseTypeActionDto {
                 .caseTypeUuid(caseTypeAction.getCaseTypeUuid())
                 .caseType(caseTypeAction.getCaseType())
                 .actionType(caseTypeAction.getActionType())
+                .actionSubtype(caseTypeAction.getActionSubtype())
                 .actionLabel(caseTypeAction.getActionLabel())
                 .maxConcurrentEvents(caseTypeAction.getMaxConcurrentEvents())
                 .sortOrder(caseTypeAction.getSortOrder())
