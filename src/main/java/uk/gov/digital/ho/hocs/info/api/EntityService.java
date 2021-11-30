@@ -60,6 +60,7 @@ public class EntityService {
 
         Entity newEntity = new Entity(null, UUID.randomUUID(), entityDto.getSimpleName(), entityDto.getData(), UUID.fromString(entityListUUID), true, 10);
 
+        log.info("Creating entity {} with data: {}, simpleName: {}", newEntity.getUuid(), newEntity.getData(), newEntity.getSimpleName());
         entityRepository.save(newEntity);
 
     }
@@ -93,6 +94,7 @@ public class EntityService {
                         String.format("entity with simple name: %s already exists", existingEntities.get(0).getSimpleName()));
             }
 
+            log.info("Updating entity {} with values data: {}", entity.getUuid(), entityDto.getData());
             entity.update(entityDto);
             entityRepository.save(entity);
         } else {
