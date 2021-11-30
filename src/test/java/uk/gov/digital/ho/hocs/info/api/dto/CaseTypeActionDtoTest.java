@@ -18,6 +18,7 @@ public class CaseTypeActionDtoTest {
             rand2,
             "TYPE_1",
             "ACTION_2",
+            "ACTION_SUBTYPE",
             "ACTION_LABEL",
             true,
             1,
