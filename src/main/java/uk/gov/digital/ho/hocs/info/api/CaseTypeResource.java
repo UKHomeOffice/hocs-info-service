@@ -1,9 +1,11 @@
 package uk.gov.digital.ho.hocs.info.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 
@@ -11,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
@@ -28,14 +31,16 @@ public class CaseTypeResource {
     }
 
     @GetMapping(value = "/caseType", produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<Set<CaseTypeDto>> getAllCaseTypes(@RequestParam(required = false, name = "addCasesWithPreviousType") Boolean addCasesWithPreviousType) {
+    ResponseEntity<Set<CaseTypeDto>> getAllCaseTypes(@RequestParam(required = false, name = "addCasesWithPreviousType", defaultValue = "true") Boolean addCasesWithPreviousType) {
         Set<CaseType> caseTypes = caseTypeService.getAllCaseTypes(addCasesWithPreviousType);
         return ResponseEntity.ok(caseTypes.stream().map(CaseTypeDto::from).collect(Collectors.toSet()));
     }
 
     @GetMapping(value = "/caseType", params = {"bulkOnly"}, produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<Set<CaseTypeDto>> getCaseTypes(@RequestParam("bulkOnly") boolean bulkOnly) {
-        Set<CaseType> caseTypes = caseTypeService.getAllCaseTypesForUser(bulkOnly, false);
+    ResponseEntity<Set<CaseTypeDto>> getCaseTypes(
+            @RequestParam("bulkOnly") boolean bulkOnly,
+            @RequestParam(required = false, name = "initialCaseType", defaultValue = "true") Boolean initialCaseType) {
+        Set<CaseType> caseTypes = caseTypeService.getAllCaseTypesForUser(bulkOnly, initialCaseType);
         return ResponseEntity.ok(caseTypes.stream().map(CaseTypeDto::from).collect(Collectors.toSet()));
     }
 
@@ -52,9 +57,12 @@ public class CaseTypeResource {
     }
 
     @GetMapping(value = "/caseType/{caseType}/deadline", params = {"received","days"}, produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<LocalDate> getCaseDeadline(@PathVariable String caseType, @RequestParam String received, @RequestParam int days) {
+    ResponseEntity<LocalDate> getCaseDeadline(@PathVariable String caseType,
+                                              @RequestParam String received,
+                                              @RequestParam int days,
+                                              @RequestParam(required = false, defaultValue = "0") int extensionDays) {
         LocalDate receivedDate = LocalDate.parse(received);
-        LocalDate deadline = caseTypeService.getDeadlineForCaseType(caseType,receivedDate,days);
+        LocalDate deadline = caseTypeService.getDeadlineForCaseType(caseType,receivedDate,days,extensionDays);
         return ResponseEntity.ok(deadline);
     }
 
@@ -83,8 +91,31 @@ public class CaseTypeResource {
         return ResponseEntity.ok(caseTypeService.calculateWorkingDaysElapsedForCaseType(caseType, fromDate));
     }
 
+    @GetMapping(value = "/caseType/{caseType}/deadline/{deadlineDate}/remainingDays")
+    public ResponseEntity<Integer> getDaysRemainingToDeadline(@PathVariable String caseType, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate deadlineDate) {
+        return ResponseEntity.ok(caseTypeService.calculateRemainingDaysToDeadline(caseType, deadlineDate));
+    }
+
     public ResponseEntity<Void> createCaseType(CreateCaseTypeDto caseType) {
         caseTypeService.createCaseType(caseType);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/caseType/actions")
+    public ResponseEntity<List<CaseTypeActionDto>> getAllCaseTypeActions() {
+        List<CaseTypeActionDto> caseActions = caseTypeService.getAllCaseActions();
+        return ResponseEntity.ok(caseActions);
+    }
+
+    @GetMapping("/caseType/{caseType}/actions")
+    public ResponseEntity<List<CaseTypeActionDto>> getCaseActionsByType(@PathVariable String caseType) {
+        List<CaseTypeActionDto> caseActions = caseTypeService.getCaseActionsByCaseType(caseType);
+        return ResponseEntity.ok(caseActions);
+    }
+
+    @GetMapping("/caseType/{caseType}/actions/{actionId}")
+    public ResponseEntity<CaseTypeActionDto> getCaseActionById(@PathVariable UUID actionId) {
+        CaseTypeActionDto actionDto = caseTypeService.getCaseTypeActionById(actionId);
+        return ResponseEntity.ok(actionDto);
     }
 }

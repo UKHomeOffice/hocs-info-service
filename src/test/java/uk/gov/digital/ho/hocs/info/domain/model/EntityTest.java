@@ -1,8 +1,8 @@
-package uk.gov.digital.ho.hocs.info.domain.entity;
+package uk.gov.digital.ho.hocs.info.domain.model;
 
 import org.junit.Before;
 import org.junit.Test;
-import uk.gov.digital.ho.hocs.info.domain.entity.dto.EntityDto;
+import uk.gov.digital.ho.hocs.info.api.dto.EntityDto;
 
 import java.util.UUID;
 

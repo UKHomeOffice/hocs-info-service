@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
+import uk.gov.digital.ho.hocs.info.security.Base64UUID;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 import static net.logstash.logback.argument.StructuredArguments.value;
 import static uk.gov.digital.ho.hocs.info.application.LogEvent.*;
 
@@ -119,6 +121,11 @@ public class TeamResource {
         return ResponseEntity.ok(TeamDto.from(team));
     }
 
+    @GetMapping(value = "/team/{teamUUID}/code", produces = TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getTeamCode(@PathVariable UUID teamUUID) {
+        return ResponseEntity.ok(Base64UUID.uuidToBase64String(teamUUID));
+    }
+
     @GetMapping(value = "/team/{teamUUID}/unit", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<UnitDto> getUnitByTeam(@PathVariable UUID teamUUID) {
         Team team = teamService.getTeam(teamUUID);
@@ -153,6 +160,18 @@ public class TeamResource {
         return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
     }
 
+    @GetMapping(value = "/teams/descendants/{teamUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    ResponseEntity<Set<TeamDto>> getAllFirstDescendantTeams(@PathVariable UUID teamUUID) { ;
+        Set<Team> firstDescendantTeams = teamService.getAllFirstDescendantTeams(teamUUID);
+        return ResponseEntity.ok(firstDescendantTeams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
+    }
+
+    @GetMapping(value = "/teams/drafters")
+    public ResponseEntity<Set<TeamDto>> getdraftingteams() {
+        Set<Team> teams = teamService.getAllActiveTeams();
+        return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
+    }
+    
     @GetMapping(value = "/team/case/{caseUUID}/topic/{topicUUID}/stage/{stageType}")
     public ResponseEntity<TeamDto> getActiveTeams(@PathVariable UUID caseUUID, @PathVariable UUID topicUUID, @PathVariable String stageType) {
         Team team = teamService.getTeamByTopicAndStage(caseUUID, topicUUID, stageType);
@@ -181,5 +200,21 @@ public class TeamResource {
     public ResponseEntity removeUserFromTeam(@PathVariable String userUUID, @PathVariable String teamUUID) {
         teamService.removeUserFromTeam(UUID.fromString(userUUID), UUID.fromString(teamUUID));
         return ResponseEntity.ok().build();
+    }
+
+    private static boolean displayNameHasChanged(Team team, PatchTeamDto patchTeamDto) {
+        if (!Objects.isNull(patchTeamDto.getDisplayName())
+                && !patchTeamDto.getDisplayName().equals(team.getDisplayName())) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean unitUuidHasChanged(Team team, PatchTeamDto patchTeamDto) {
+        if (!Objects.isNull(patchTeamDto.getUnitUuid()) &&
+                !team.getUnit().getUuid().equals(patchTeamDto.getUnitUuid())) {
+            return true;
+        }
+        return false;
     }
 }

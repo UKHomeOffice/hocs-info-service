@@ -7,11 +7,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.api.TopicResource;
-import uk.gov.digital.ho.hocs.info.api.TopicService;
 import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
+import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,12 +24,14 @@ public class TopicResourceTest {
 
     @Mock
     private TopicService topicService;
+    @Mock
+    private ParentTopicRepository parentTopicRepository;
 
     private TopicResource topicResource;
 
     @Before
     public void setUp() {
-        topicResource = new TopicResource(topicService);
+        topicResource = new TopicResource(topicService, parentTopicRepository);
     }
 
     @Test
@@ -194,5 +195,5 @@ public class TopicResourceTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-
 }
+

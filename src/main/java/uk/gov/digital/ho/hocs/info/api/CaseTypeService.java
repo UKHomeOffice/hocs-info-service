@@ -4,9 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
+import uk.gov.digital.ho.hocs.info.domain.repository.CaseActionTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
@@ -24,17 +26,19 @@ public class CaseTypeService {
     private final CaseTypeRepository caseTypeRepository;
     private final DocumentTagRepository documentTagRepository;
     private final HolidayDateRepository holidayDateRepository;
+    private final CaseActionTypeRepository caseActionTypeRepository;
     private final StageTypeService stageTypeService;
     private final UserPermissionsService userPermissionsService;
     private final LocalDateWrapper localDateWrapper;
 
     @Autowired
     public CaseTypeService(CaseTypeRepository caseTypeRepository, DocumentTagRepository documentTagRepository,
-                           HolidayDateRepository holidayDateRepository, StageTypeService stageTypeService,
+                           HolidayDateRepository holidayDateRepository, CaseActionTypeRepository caseActionTypeRepository, StageTypeService stageTypeService,
                            UserPermissionsService userPermissionsService, LocalDateWrapper localDateWrapper) {
         this.caseTypeRepository = caseTypeRepository;
         this.documentTagRepository = documentTagRepository;
         this.holidayDateRepository = holidayDateRepository;
+        this.caseActionTypeRepository = caseActionTypeRepository;
         this.stageTypeService = stageTypeService;
         this.userPermissionsService = userPermissionsService;
         this.localDateWrapper = localDateWrapper;
@@ -47,7 +51,7 @@ public class CaseTypeService {
         return caseTypes;
     }
 
-    Set<CaseType> getAllCaseTypesForUser(boolean bulkOnly, boolean includeWithPreviousCaseType) {
+    Set<CaseType> getAllCaseTypesForUser(boolean bulkOnly, boolean initialCaseType) {
         log.debug("Getting case types by User, bulkOnly = {}", bulkOnly);
         Set<UUID> userTeams = userPermissionsService.getUserTeams();
         Set<String> teams = userTeams.stream().map(UUID::toString).collect(Collectors.toSet());
@@ -58,9 +62,9 @@ public class CaseTypeService {
         } else {
             Set<CaseType> caseTypes;
             if (bulkOnly) {
-                caseTypes = caseTypeRepository.findAllBulkCaseTypesByTeam(teams, includeWithPreviousCaseType);
+                caseTypes = caseTypeRepository.findAllBulkCaseTypesByTeam(teams, initialCaseType);
             } else {
-                caseTypes = caseTypeRepository.findAllCaseTypesByTeam(teams, includeWithPreviousCaseType);
+                caseTypes = caseTypeRepository.findAllCaseTypesByTeam(teams, initialCaseType);
             }
             log.info("Got {} CaseTypes (bulkOnly = {})", caseTypes.size(), bulkOnly);
             return caseTypes;
@@ -78,10 +82,13 @@ public class CaseTypeService {
         }
     }
 
-    LocalDate getDeadlineForCaseType(String type, LocalDate receivedDate, int days) {
+    LocalDate getDeadlineForCaseType(String type, LocalDate receivedDate, int days, int extensionDays) {
         log.debug("Getting deadline for caseType {} with received date of {} and Days of {}", type, receivedDate, days);
         CaseType caseType = getCaseType(type);
         int sla = (days > 0) ? days : stageTypeService.getStageType(caseType.getDeadlineStage()).getDeadline();
+
+        sla += extensionDays;
+
         Set<ExemptionDate> exemptions = holidayDateRepository.findAllByCaseType(caseType.getUuid());
         LocalDate deadline = Deadline.calculateDeadline(receivedDate, null, sla, exemptions);
         log.info("Got deadline ({}) for caseType {} with received date of {} ", deadline, type, receivedDate);
@@ -160,5 +167,36 @@ public class CaseTypeService {
                 caseType.isBulk(),
                 caseType.isActive(),
                 caseType.getPreviousCaseType()));
+    }
+
+    public List<CaseTypeActionDto> getCaseActionsByCaseType(String caseType) {
+        log.debug("Received request for case actions with caseType {}", caseType);
+        List<CaseTypeAction> caseActionEntities = caseActionTypeRepository.findAllByCaseTypeAndActiveIsTrue(caseType);
+        log.info("Found {} case actions for caseType {}", caseActionEntities.size(), caseType);
+        return caseActionEntities.stream().map(CaseTypeActionDto::from).collect(Collectors.toList());
+    }
+
+    public CaseTypeActionDto getCaseTypeActionById(UUID actionId) {
+        log.debug("Request received for case type action id: {}", actionId);
+        CaseTypeAction action = caseActionTypeRepository.findByUuid(actionId);
+        if (action != null) {
+            CaseTypeActionDto actionDto = CaseTypeActionDto.from(action);
+            log.info("Found case type action {}", actionDto.toString());
+            return actionDto;
+        }
+        throw new ApplicationExceptions.EntityNotFoundException(String.format("Case Type Action with id: %s, does not exist", actionId));
+    }
+
+    public List<CaseTypeActionDto> getAllCaseActions() {
+        log.debug("Request received for all case type actions.");
+        List<CaseTypeAction> caseTypeActionList = new LinkedList<>();
+        Iterable<CaseTypeAction> caseTypeActionsItr = caseActionTypeRepository.findAll();
+        caseTypeActionsItr.forEach(caseTypeActionList::add);
+        log.info("Return list of {} case type actions.", caseTypeActionList.size());
+        return caseTypeActionList.stream().map(CaseTypeActionDto::from).collect(Collectors.toList());
+    }
+
+    public Integer calculateRemainingDaysToDeadline(String caseType, LocalDate deadlineDate) {
+        return Deadline.calculateRemainingWorkingDays(LocalDate.now(), deadlineDate, new HashSet<>(holidayDateRepository.findAllByCaseType(caseType)));
     }
 }

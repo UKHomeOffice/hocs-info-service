@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-@Entity
+@javax.persistence.Entity
 @Table(name = "permission")
 @EqualsAndHashCode(of = {"accessLevel", "caseType"})
 public class Permission implements Serializable {

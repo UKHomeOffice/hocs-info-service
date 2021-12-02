@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.domain.entity;
+package uk.gov.digital.ho.hocs.info.api;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -6,7 +6,9 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.digital.ho.hocs.info.domain.entity.dto.EntityDto;
+import uk.gov.digital.ho.hocs.info.domain.model.Entity;
+import uk.gov.digital.ho.hocs.info.domain.repository.EntityRepository;
+import uk.gov.digital.ho.hocs.info.api.dto.EntityDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 
 import java.util.List;
@@ -56,6 +58,32 @@ public class EntityServiceTest {
         assertThat(result.iterator().next().isActive()).isEqualTo(true);
 
         verify(entityRepository).findBySimpleName(owner, ownerType, list);
+        verifyNoMoreInteractions(entityRepository);
+    }
+
+    @Test
+    public void getEntityBySimpleName() throws Exception {
+        // given
+        String simpleName = "TEST_ENTITY";
+
+        Entity expectedEntity = new Entity(
+                UUID.randomUUID(),
+                simpleName,
+                "{}",
+                UUID.randomUUID(),
+                true,
+                0);
+
+
+        when(entityRepository.findBySimpleName(simpleName)).thenReturn(Optional.of(expectedEntity));
+
+        // when
+        final Entity result = entityService.getEntityBySimpleName(simpleName);
+
+        // then
+        assertThat(result).isEqualTo(expectedEntity);
+
+        verify(entityRepository).findBySimpleName(simpleName);
         verifyNoMoreInteractions(entityRepository);
     }
 
@@ -121,14 +149,13 @@ public class EntityServiceTest {
         EntityDto entityDto = new EntityDto(simpleName, uuid, data);
         ArgumentCaptor<Entity> argumentCaptor = ArgumentCaptor.forClass(Entity.class);
 
-        when(entityRepository.findBySimpleName(simpleName)).thenReturn(Optional.empty());
         when(entityRepository.findEntityListUUIDBySimpleName(listName)).thenReturn(listUUID);
 
         entityService.createEntity(listName, entityDto);
 
         verify(entityRepository).save(argumentCaptor.capture());
-        verify(entityRepository).findBySimpleName(simpleName);
         verify(entityRepository).findEntityListUUIDBySimpleName(listName);
+        verify(entityRepository).findBySimpleNameAndEntityListUUID(simpleName, UUID.fromString(listUUID));
         verifyNoMoreInteractions(entityRepository);
 
         Entity capturedEntity = argumentCaptor.getValue();
@@ -147,8 +174,13 @@ public class EntityServiceTest {
         String uuid = UUID.randomUUID().toString();
         String data = "data";
         EntityDto entityDto = new EntityDto(simpleName, uuid, data);
+        UUID listUUID = UUID.randomUUID();
 
-        when(entityRepository.findBySimpleName(simpleName)).thenReturn(Optional.of(new Entity()));
+        when(entityRepository.findEntityListUUIDBySimpleName(listName))
+                .thenReturn(listUUID.toString());
+
+        when(entityRepository.findBySimpleNameAndEntityListUUID(simpleName, listUUID))
+               .thenReturn(Optional.of(new Entity()));
 
         entityService.createEntity(listName, entityDto);
 
@@ -162,7 +194,6 @@ public class EntityServiceTest {
         String data = "data";
         EntityDto entityDto = new EntityDto(simpleName, uuid, data);
 
-        when(entityRepository.findBySimpleName(simpleName)).thenReturn(Optional.empty());
         when(entityRepository.findEntityListUUIDBySimpleName(listName)).thenReturn(null);
 
         entityService.createEntity(listName, entityDto);
@@ -201,6 +232,7 @@ public class EntityServiceTest {
         verify(entityRepository).save(mockEntity);
         verify(entityRepository).findByUuid(uuid);
         verify(entityRepository).findEntityListUUIDBySimpleName(listName);
+        verify(entityRepository).findByDataAndEntityListUUID(data, listUUID);
         verifyNoMoreInteractions(entityRepository);
 
     }
@@ -222,6 +254,32 @@ public class EntityServiceTest {
 
         entityService.updateEntity(listName, entityDto);
 
+
+    }
+
+    @Test(expected = ApplicationExceptions.EntityAlreadyExistsException.class)
+    public void updateEntity_duplicate() {
+        String listName = "L1";
+        String simpleName1 = "nameOne";
+        String simpleName2 = "nameTwo";
+        UUID uuid1 = UUID.randomUUID();
+        UUID uuid2 = UUID.randomUUID();
+        String data = "{ title: 'Title' }";
+        UUID listUUID = UUID.randomUUID();
+
+        EntityDto entity1Dto = new EntityDto(simpleName1, uuid1.toString(), data);
+        Entity entity2 = new Entity(2L, uuid2, simpleName2, data, listUUID, true, 10);
+
+        List<Entity> entitiesToReturn = List.of(entity2);
+
+        Entity mockEntity = mock(Entity.class);
+
+        when(mockEntity.getEntityListUUID()).thenReturn(listUUID);
+        when(entityRepository.findByUuid(uuid1)).thenReturn(mockEntity);
+        when(entityRepository.findEntityListUUIDBySimpleName(listName)).thenReturn(listUUID.toString());
+        when(entityRepository.findByDataAndEntityListUUID(data, listUUID)).thenReturn(entitiesToReturn);
+
+        entityService.updateEntity(listName, entity1Dto);
 
     }
 

@@ -1,8 +1,9 @@
-package uk.gov.digital.ho.hocs.info.domain.entity;
+package uk.gov.digital.ho.hocs.info.domain.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import uk.gov.digital.ho.hocs.info.domain.model.Entity;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,4 +38,8 @@ public interface EntityRepository extends CrudRepository<Entity, Long> {
 
     Entity findByUuid(UUID uuid);
 
+    Optional<Entity> findBySimpleNameAndEntityListUUID(String simpleName, UUID entityListUuid);
+
+    @Query(value = "select e.* from entity e where e.data = ?1 and e.entity_list_uuid = ?2", nativeQuery = true)
+    List<Entity> findByDataAndEntityListUUID(String data, UUID entityListUuid);
 }

@@ -12,6 +12,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.ConfigurationRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 
@@ -35,7 +36,7 @@ public class ConfigurationServiceTest {
     public void shouldReturnConfiguration() throws Exception {
         String systemName = "profile";
         String systemDisplayName = "Test System Name";
-        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(10L, "columnName1", "adapter", "renderer", "valueKey", true, "cssClass", "SortStrategy"));
+        List<WorkstackColumn> workstackColumns = Arrays.asList(new WorkstackColumn(UUID.randomUUID(), "columnName1", "adapter", "renderer", "valueKey", true, "cssClass", "SortStrategy"));
         List<WorkstackType> workstackTypes = Arrays.asList(new WorkstackType(10L, systemName, "some_type", workstackColumns));
         List<SearchField> searchFields = Arrays.asList(new SearchField(10L, "profile", "name", "component", "validationRules", "properties"));
         List<Profile> profiles =  Arrays.asList(new Profile("testProfile", "system", true, searchFields));

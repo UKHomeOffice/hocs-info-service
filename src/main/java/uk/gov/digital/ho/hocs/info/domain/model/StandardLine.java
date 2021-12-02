@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "standard_line")
 @NoArgsConstructor
 public class StandardLine implements Serializable {

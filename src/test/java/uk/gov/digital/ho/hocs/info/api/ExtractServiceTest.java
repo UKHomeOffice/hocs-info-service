@@ -24,8 +24,6 @@ public class ExtractServiceTest {
     private SchemaService schemaService;
 
     private ExtractService service;
-    private final Field field = new Field("", "Field1", "", "", "", true);
-
 
     private static final String CASE_TYPE = "CASE_TYPE";
     private static final String FIELD_EXT_ONLY_1 = "FieldExt1";
@@ -145,7 +143,7 @@ public class ExtractServiceTest {
     }
 
     private Field buildTestField(Long id, String fieldName) {
-        return new Field(id, null, "", fieldName, "", "", "", true, true, true);
+        return new Field(id, null, "", fieldName, "", "", "", true, true, true, null);
     }
 
     private ExtractFieldSortOrder buildSortOrder(String fieldName, Long sortOrder) {

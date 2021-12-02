@@ -7,8 +7,9 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.UUID;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "workstack_column")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,9 +17,8 @@ import java.io.Serializable;
 public class WorkstackColumn implements Serializable {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "uuid")
+    private UUID id;
 
     @Getter
     @Column(name = "display_name")

@@ -14,23 +14,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
 
@@ -80,7 +79,7 @@ public class CaseTypeIntegrationTest {
     }
 
     @Test
-    public void shouldRetrieveAllCaseTypesWithoutPreviousCaseType() {
+    public void shouldRetrieveAllInitialCaseTypes() {
 
         // given
         // setup done in before.sql
@@ -88,7 +87,7 @@ public class CaseTypeIntegrationTest {
 
         // when
         ResponseEntity<Set<CaseTypeDto>> getCaseTypesRequest = restTemplate.exchange(
-                getBasePath() + "/caseType", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
+                getBasePath() + "/caseType?initialCaseType=true", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
                 });
 
         // then
@@ -106,7 +105,7 @@ public class CaseTypeIntegrationTest {
     }
 
     @Test
-    public void shouldRetrieveAllCaseTypesWithPreviousCaseType() {
+    public void shouldRetrieveAllCaseTypes() {
 
         // given
         // setup done in before.sql
@@ -136,7 +135,7 @@ public class CaseTypeIntegrationTest {
 
         Map<Boolean, Long> bulkValues = Map.of(Boolean.FALSE, 3L, Boolean.TRUE, 3L);
 
-        for (Map.Entry bulkValue : bulkValues.entrySet()) {
+        for (Map.Entry<Boolean, Long> bulkValue : bulkValues.entrySet()) {
             // when
             ResponseEntity<Set<CaseTypeDto>> getCaseTypesRequest = restTemplate.exchange(
                     getBasePath() + "/caseType?bulkOnly=" + bulkValue.getKey(), HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
@@ -158,6 +157,104 @@ public class CaseTypeIntegrationTest {
 
     }
 
+    @Test
+    public void shouldGetAllCaseActionsForCaseType() {
+
+        String caseTypeString = "CT1";
+
+        ParameterizedTypeReference<List<CaseTypeActionDto>> typeReference = new ParameterizedTypeReference<>() {};
+
+        HttpEntity httpEntity = new HttpEntity(headers);
+        ResponseEntity<List<CaseTypeActionDto>> response = restTemplate.exchange(
+                getBasePath()  + "/caseType/" + caseTypeString + "/actions",
+                HttpMethod.GET,
+                httpEntity,
+                typeReference
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(Objects.requireNonNull(response.getBody()).size()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldReturnEmptyArrayWhenNoActionsForCaseType() {
+
+        String caseTypeString = "CASE_NON_EXISTENT";
+
+        ParameterizedTypeReference<List<CaseTypeActionDto>> typeReference = new ParameterizedTypeReference<>() {};
+
+        HttpEntity httpEntity = new HttpEntity(headers);
+        ResponseEntity<List<CaseTypeActionDto>> response = restTemplate.exchange(
+                getBasePath() + "/caseType/" + caseTypeString + "/actions",
+                HttpMethod.GET,
+                httpEntity,
+                typeReference
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(Objects.requireNonNull(response.getBody()).size()).isEqualTo(0);
+    }
+
+    @Test
+    public void shouldReturnExceptionWhenActionIdNotExist() {
+
+        String caseTypeString = "CT1";
+        UUID nonExistentActionID = UUID.randomUUID();
+
+        ParameterizedTypeReference<List<CaseTypeActionDto>> typeReference = new ParameterizedTypeReference<>() {};
+
+        ResponseEntity<Void> response = restTemplate.exchange(
+                getBasePath() + "/caseType/" + caseTypeString + "/actions/" + nonExistentActionID ,
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                Void.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+    }
+
+    @Test
+    public void shouldReturnRequestedActionById() {
+
+        String caseTypeString = "CT1";
+
+        String actionID = "f2b625c9-7250-4293-9e68-c8f515e3043d";
+
+        ParameterizedTypeReference<CaseTypeActionDto> typeReference = new ParameterizedTypeReference<>() {};
+
+        HttpEntity httpEntity = new HttpEntity(headers);
+        ResponseEntity<CaseTypeActionDto> response = restTemplate.exchange(
+                getBasePath() + "/caseType/" + caseTypeString + "/actions/" + actionID,
+                HttpMethod.GET,
+                httpEntity,
+                typeReference
+        );
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("APPEAL 1", Objects.requireNonNull(response.getBody()).getActionLabel());
+
+    }
+
+    @Test
+    public void shouldReturnAllCaseTypeActions() {
+
+        ParameterizedTypeReference<List<CaseTypeActionDto>> typeReference = new ParameterizedTypeReference<>() {};
+
+        HttpEntity httpEntity = new HttpEntity(headers);
+        ResponseEntity<List<CaseTypeActionDto>> response = restTemplate.exchange(
+                getBasePath()  + "/caseType/actions",
+                HttpMethod.GET,
+                httpEntity,
+                typeReference
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(Objects.requireNonNull(response.getBody()).size()).isEqualTo(4);
+
+    }
+
     private String getBasePath() {
         return "http://localhost:" + port;
     }
@@ -170,7 +267,6 @@ public class CaseTypeIntegrationTest {
         importRealm.setIfResourceExists(PartialImportRepresentation.Policy.OVERWRITE.toString());
         keycloakClient.realm(HOCS_REALM).partialImport(importRealm);
     }
-
 }
 
 

@@ -1,16 +1,20 @@
-package uk.gov.digital.ho.hocs.info.domain.entity;
+package uk.gov.digital.ho.hocs.info.api;
 
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.info.domain.entity.dto.EntityDto;
+import uk.gov.digital.ho.hocs.info.api.dto.EntityDto;
+import uk.gov.digital.ho.hocs.info.domain.model.Entity;
+import uk.gov.digital.ho.hocs.info.domain.repository.EntityRepository;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -41,20 +45,22 @@ public class EntityService {
 
     public void createEntity(String listName, EntityDto entityDto) {
 
-        Optional<Entity> existingEntity = entityRepository.findBySimpleName(entityDto.getSimpleName());
-
-        if (existingEntity.isPresent()) {
-            throw new ApplicationExceptions.EntityAlreadyExistsException("entity with this simple name already exists!");
-        }
-
         String entityListUUID = entityRepository.findEntityListUUIDBySimpleName(listName);
 
-        if (entityListUUID == null) {
+        if (entityListUUID != null) {
+            Optional<Entity> existingEntity = entityRepository.findBySimpleNameAndEntityListUUID(
+                    entityDto.getSimpleName(), UUID.fromString(entityListUUID));
+
+            if (existingEntity.isPresent()) {
+                throw new ApplicationExceptions.EntityAlreadyExistsException("entity with this simple name already exists!");
+            }
+        } else {
             throw new ApplicationExceptions.EntityNotFoundException("EntityList not found for: %s ", listName);
         }
 
         Entity newEntity = new Entity(null, UUID.randomUUID(), entityDto.getSimpleName(), entityDto.getData(), UUID.fromString(entityListUUID), true, 10);
 
+        log.info("Creating entity {} with data: {}, simpleName: {}", newEntity.getUuid(), newEntity.getData(), newEntity.getSimpleName());
         entityRepository.save(newEntity);
 
     }
@@ -63,12 +69,32 @@ public class EntityService {
         return entityRepository.findByUuid(UUID.fromString(uuid));
     }
 
+    public Entity getEntityBySimpleName(String simpleName) throws Exception {
+        return entityRepository.findBySimpleName(simpleName)
+                .orElseThrow(() -> new ApplicationExceptions.EntityNotFoundException
+                        ("Entity with simpleName " + simpleName + " not found."));
+    }
+
     public void updateEntity(String listName, EntityDto entityDto) {
         String entityListUUID = entityRepository.findEntityListUUIDBySimpleName(listName);
 
         Entity entity = entityRepository.findByUuid(UUID.fromString(entityDto.getUuid()));
 
         if (StringUtils.isNotEmpty(entityListUUID) && entity.getEntityListUUID().equals(UUID.fromString(entityListUUID))) {
+            List<Entity> existingEntities = entityRepository.findByDataAndEntityListUUID(
+                    entityDto.getData(), UUID.fromString(entityListUUID));
+
+            existingEntities = existingEntities
+                    .stream()
+                    .filter(e -> !Objects.equals(e.getUuid(), UUID.fromString(entityDto.getUuid())))
+                    .collect(Collectors.toList());
+
+            if (!existingEntities.isEmpty()) {
+                throw new ApplicationExceptions.EntityAlreadyExistsException(
+                        String.format("entity with simple name: %s already exists", existingEntities.get(0).getSimpleName()));
+            }
+
+            log.info("Updating entity {} with values data: {}", entity.getUuid(), entityDto.getData());
             entity.update(entityDto);
             entityRepository.save(entity);
         } else {

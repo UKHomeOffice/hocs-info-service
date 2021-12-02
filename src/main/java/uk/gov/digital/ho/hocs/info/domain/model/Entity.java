@@ -1,9 +1,9 @@
-package uk.gov.digital.ho.hocs.info.domain.entity;
+package uk.gov.digital.ho.hocs.info.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import uk.gov.digital.ho.hocs.info.domain.entity.dto.EntityDto;
+import uk.gov.digital.ho.hocs.info.api.dto.EntityDto;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -54,6 +54,13 @@ public class Entity {
     }
 
     public void update(EntityDto entityDto) {
+        /*
+          We only update the title in the data here, but retain the simpleName value.
+          Reason is the value of simple name is stored in the case data blob and we have to
+          retain it to support old cases. Simple names are used in the display.
+
+          @TODO Investigate switching how entity list management is performed and potential to use UUIDs instead
+         */
         this.data = entityDto.getData();
     }
 }

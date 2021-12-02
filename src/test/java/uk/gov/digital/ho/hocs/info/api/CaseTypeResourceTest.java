@@ -7,14 +7,18 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -35,7 +39,7 @@ public class CaseTypeResourceTest {
         when(caseTypeService.getAllCaseTypesForUser(false, false)).thenReturn(getMockCaseTypes());
 
         ResponseEntity<Set<CaseTypeDto>> response =
-                caseTypeResource.getCaseTypes(false);
+                caseTypeResource.getCaseTypes(false, false);
 
         verify(caseTypeService, times(1)).getAllCaseTypesForUser(false, false);
 
@@ -68,7 +72,7 @@ public class CaseTypeResourceTest {
         when(caseTypeService.getAllCaseTypesForUser(true, false)).thenReturn(getMockCaseTypesBulk());
 
         ResponseEntity<Set<CaseTypeDto>> response =
-                caseTypeResource.getCaseTypes(true);
+                caseTypeResource.getCaseTypes(true, false);
 
         verify(caseTypeService, times(1)).getAllCaseTypesForUser(true, false);
 
@@ -152,6 +156,43 @@ public class CaseTypeResourceTest {
         verify(caseTypeService).calculateWorkingDaysElapsedForCaseType(caseType, fromDate);
         verifyNoMoreInteractions(caseTypeService);
 
+    }
+
+    @Test
+    public void getCaseDeadline(){
+        String caseType = "caseTypeA";
+
+        String receivedDateString = "2020-08-03";
+        String expectedExtendedDateString = "2020-09-07";
+
+        LocalDate receivedDate = LocalDate.parse(receivedDateString);
+        LocalDate expectedExtendedDate = LocalDate.parse(expectedExtendedDateString);
+
+        when(caseTypeService.getDeadlineForCaseType(eq("caseTypeA"), eq(receivedDate), eq(10), eq(5)))
+                .thenReturn(expectedExtendedDate);
+
+        ResponseEntity<LocalDate> response =
+                caseTypeResource.getCaseDeadline(caseType, receivedDateString, 10, 5);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().toString()).isEqualTo(expectedExtendedDate.toString());
+
+        verify(caseTypeService).getDeadlineForCaseType(eq("caseTypeA"), eq(receivedDate), eq(10), eq(5));
+        verifyNoMoreInteractions(caseTypeService);
+    }
+
+    @Test
+    public void getCaseActionsByType() {
+
+        String caseType = "CASE_TYPE";
+
+        when(caseTypeService.getCaseActionsByCaseType(caseType)).thenReturn(List.of());
+
+        ResponseEntity<List<CaseTypeActionDto>> output = caseTypeResource.getCaseActionsByType(caseType);
+
+        assertEquals(output.getStatusCode(), HttpStatus.OK);
+        assertNotNull(output.getBody());
     }
 
     private Set<CaseType> getMockCaseTypes() {

@@ -35,7 +35,7 @@ public class StageTypeResourceTest {
 
     @Test
     public void shouldGetStageTypes() {
-        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true,team);
+        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true,team, false);
         Set<StageTypeEntity> stages = new HashSet<StageTypeEntity>() {{
             add(stage);
         }};
@@ -45,6 +45,25 @@ public class StageTypeResourceTest {
 
         assertThat(result.getBody().size()).isEqualTo(1);
         StageTypeDto stageTypeDto = (StageTypeDto) result.getBody().toArray()[0];
+        assertThat(stageTypeDto.getType()).isEqualTo("STAGE_TYPE");
+        assertThat(stageTypeDto.getDisplayName()).isEqualTo("stage name");
+        assertThat(stageTypeDto.getShortCode()).isEqualTo("111");
+        assertThat(stageTypeDto.getType()).isEqualTo("STAGE_TYPE");
+
+    }
+
+    @Test
+    public void shouldGetStageTypeName() {
+        UUID stageUuid = UUID.randomUUID();
+        StageTypeEntity stage = new StageTypeEntity(1L, stageUuid, "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true,team, false);
+        Set<StageTypeEntity> stages = new HashSet<>() {{
+            add(stage);
+        }};
+        when(stageTypeService.getAllStageTypes()).thenReturn(stages);
+
+        ResponseEntity<StageTypeDto> result = service.getStageTypeByUuid(stageUuid.toString());
+
+        StageTypeDto stageTypeDto = result.getBody();
         assertThat(stageTypeDto.getType()).isEqualTo("STAGE_TYPE");
         assertThat(stageTypeDto.getDisplayName()).isEqualTo("stage name");
         assertThat(stageTypeDto.getShortCode()).isEqualTo("111");

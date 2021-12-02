@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.info.domain.entity;
+package uk.gov.digital.ho.hocs.info.api;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,8 +7,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.info.domain.entity.dto.EntityDto;
-import uk.gov.digital.ho.hocs.info.domain.entity.dto.GetCaseSummaryFieldsResponse;
+import uk.gov.digital.ho.hocs.info.domain.model.Entity;
+import uk.gov.digital.ho.hocs.info.api.dto.EntityDto;
+import uk.gov.digital.ho.hocs.info.api.dto.GetCaseSummaryFieldsResponse;
 
 import java.util.List;
 import java.util.Set;
@@ -119,6 +120,29 @@ public class EntityResourceTest {
     }
 
     @Test
+    public void getEntityBySimpleName() throws Exception {
+        String testUUID = UUID.randomUUID().toString();
+
+        String simpleName = "name123";
+        String data = "{ title: 'Title 321' }";
+        UUID uuid = UUID.randomUUID();
+        UUID listUuid = UUID.randomUUID();
+        Entity entity = new Entity(1L, uuid, simpleName, data, listUuid, true, 10);
+        when(entityService.getEntityBySimpleName(simpleName)).thenReturn(entity);
+
+        ResponseEntity<EntityDto> response = entityResource.getEntityBySimpleName(simpleName);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getUuid()).isEqualTo(uuid.toString());
+        assertThat(response.getBody().getSimpleName()).isEqualTo(simpleName);
+        assertThat(response.getBody().getData()).isEqualTo(data);
+
+        verify(entityService).getEntityBySimpleName(simpleName);
+        verifyNoMoreInteractions(entityService);
+    }
+
+    @Test
     public void updateEntity() {
         String listName = "L1";
         String simpleName = "name";
@@ -146,5 +170,4 @@ public class EntityResourceTest {
         verify(entityService).deleteEntity(listName, uuid);
         verifyNoMoreInteractions(entityService);
     }
-
 }

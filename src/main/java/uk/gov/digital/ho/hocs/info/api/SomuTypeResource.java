@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 public class SomuTypeResource {
@@ -32,6 +33,12 @@ public class SomuTypeResource {
     ResponseEntity<SomuTypeDto> getSomuTypeForCaseTypeAndType(@PathVariable String caseType, @PathVariable String type) {
         SomuType somuType = somuTypeService.getSomuTypeForCaseTypeAndType(caseType, type);
         return ResponseEntity.ok(SomuTypeDto.from(somuType));
+    }
+
+    @GetMapping(value = "/somuType/{caseType}", produces = APPLICATION_JSON_VALUE)
+    ResponseEntity<Set<SomuTypeDto>> getAllSomuTypesForCaseType(@PathVariable String caseType) {
+        Set<SomuType> somuTypes = somuTypeService.getAllSomuTypesForCaseType(caseType);
+        return ResponseEntity.ok(somuTypes.stream().map(SomuTypeDto::from).collect(Collectors.toSet()));
     }
 
     @PostMapping(value = "/somuType", produces = APPLICATION_JSON_UTF8_VALUE)

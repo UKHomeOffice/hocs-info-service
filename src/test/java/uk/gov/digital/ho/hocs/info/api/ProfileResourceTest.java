@@ -34,15 +34,15 @@ public class ProfileResourceTest {
 
     @Test
     public void getProfileNameForUser_noCaseTypes() {
-        when(caseTypeService.getAllCaseTypesForUser(false, false)).thenReturn(Set.of());
+        when(caseTypeService.getAllCaseTypesForUser(false, true)).thenReturn(Set.of());
 
-        ResponseEntity<List<String>> response = profileResource.getProfileNameForUser();
+        ResponseEntity<List<String>> response = profileResource.getProfileNameForUser(true);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCodeValue()).isEqualTo(200);
         assertThat(response.getBody()).isEqualTo(List.of());
 
-        verify(caseTypeService).getAllCaseTypesForUser(false, false);
+        verify(caseTypeService).getAllCaseTypesForUser(false, true);
         verifyNoMoreInteractions(caseTypeService, profileRepository);
 
 
@@ -54,16 +54,16 @@ public class ProfileResourceTest {
         CaseType caseType2 = new CaseType(null, UUID.randomUUID(), "TEST2", "a2", "type2", UUID.randomUUID(), "TEST", true, true, null);
 
         List<String> expectedResult = new ArrayList<>(Arrays.asList("Profile1", "Profile2"));
-        when(caseTypeService.getAllCaseTypesForUser(false, false)).thenReturn(Set.of(caseType1, caseType2));
+        when(caseTypeService.getAllCaseTypesForUser(false, true)).thenReturn(Set.of(caseType1, caseType2));
         when(profileRepository.findAllProfileNamesByCaseTypesAndSystemName(anyList(), eq("system"))).thenReturn(expectedResult);
 
-        ResponseEntity<List<String>> response = profileResource.getProfileNameForUser();
+        ResponseEntity<List<String>> response = profileResource.getProfileNameForUser(true);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCodeValue()).isEqualTo(200);
         assertThat(response.getBody()).isEqualTo(expectedResult);
 
-        verify(caseTypeService).getAllCaseTypesForUser(false, false);
+        verify(caseTypeService).getAllCaseTypesForUser(false, true);
         verify(profileRepository).findAllProfileNamesByCaseTypesAndSystemName(anyList(), eq("system"));
         verifyNoMoreInteractions(caseTypeService, profileRepository);
 

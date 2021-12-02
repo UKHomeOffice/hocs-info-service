@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Entity
+@javax.persistence.Entity
 @Table(name = "team")
 @EqualsAndHashCode(of = {"uuid"})
 public class Team implements Serializable {

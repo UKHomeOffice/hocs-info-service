@@ -3,7 +3,6 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.SomuType;
 import uk.gov.digital.ho.hocs.info.domain.repository.SomuTypeRepository;
 
@@ -24,6 +23,13 @@ public class SomuTypeService {
         log.debug("Getting all SomuTypes");
         Set<SomuType> somuTypes = somuTypeRepository.findAll();
         log.info("Got all {} SomuTypes", somuTypes.size());
+        return somuTypes;
+    }
+
+    Set<SomuType> getAllSomuTypesForCaseType(String caseType) {
+        log.debug("Getting all SomuTypes for case type: {}", caseType);
+        Set<SomuType> somuTypes = somuTypeRepository.findAllByCaseType(caseType);
+        log.info("Got all {} SomuTypes for case type: {}", somuTypes.size(), caseType);
         return somuTypes;
     }
 

@@ -5,21 +5,25 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
-import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
-import uk.gov.digital.ho.hocs.info.domain.model.DocumentTag;
-import uk.gov.digital.ho.hocs.info.domain.model.ExemptionDate;
-import uk.gov.digital.ho.hocs.info.domain.model.StageTypeEntity;
+import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
+import uk.gov.digital.ho.hocs.info.domain.model.*;
+import uk.gov.digital.ho.hocs.info.domain.repository.CaseActionTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.security.UserPermissionsService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -44,6 +48,9 @@ public class CaseTypeServiceTest {
     @Mock
     private LocalDateWrapper localDateWrapper;
 
+    @Mock
+    private CaseActionTypeRepository caseActionTypeRepository;
+
     private CaseTypeService caseTypeService;
     private Set<UUID> team = new HashSet<UUID>() {{  add(UUID.fromString("74c79583-1375-494c-9883-f574e7e36541"));}};
     Set<String> teamString = team.stream().map(uuid -> uuid.toString()).collect(Collectors.toSet());
@@ -56,7 +63,7 @@ public class CaseTypeServiceTest {
 
     @Before
     public void setUp() {
-        this.caseTypeService = new CaseTypeService(caseTypeRepository,documentTagRepository,holidayDateRepository,stageTypeService,userPermissionsService, localDateWrapper);
+        this.caseTypeService = new CaseTypeService(caseTypeRepository,documentTagRepository,holidayDateRepository, caseActionTypeRepository, stageTypeService,userPermissionsService, localDateWrapper);
     }
 
     @Test
@@ -173,8 +180,8 @@ public class CaseTypeServiceTest {
         CaseType caseType = new CaseType();
         when(caseTypeRepository.findByType(CASE_TYPE)).thenReturn(caseType);
         Set<StageTypeEntity> stageTypes = new HashSet<>();
-        stageTypes.add(new StageTypeEntity(1L, UUID.randomUUID(), "stage 8", "111","STAGE_TYPE_8", UUID.randomUUID(),8,8,8,true,null));
-        stageTypes.add(new StageTypeEntity(1L, UUID.randomUUID(), "stage 2", "111","STAGE_TYPE_2", UUID.randomUUID(),2,2,2,true,null));
+        stageTypes.add(new StageTypeEntity(1L, UUID.randomUUID(), "stage 8", "111","STAGE_TYPE_8", UUID.randomUUID(),8,8,8,true,null, false));
+        stageTypes.add(new StageTypeEntity(1L, UUID.randomUUID(), "stage 2", "111","STAGE_TYPE_2", UUID.randomUUID(),2,2,2,true,null, false));
         when(stageTypeService.getAllStageTypesByCaseType(caseType.getUuid())).thenReturn(stageTypes);
 
         Map<String, LocalDate> response = caseTypeService.getAllStageDeadlinesForCaseType(CASE_TYPE, LocalDate.now());
@@ -184,6 +191,24 @@ public class CaseTypeServiceTest {
         Map.Entry<String, LocalDate> first = iterator.next();
         Map.Entry<String, LocalDate> second = iterator.next();
         assertThat(first.getValue()).isBefore(second.getValue());
+    }
+
+    @Test
+    public void shouldGetCaseDeadline(){
+        CaseType caseType = new CaseType();
+
+        String receivedDateString = "2020-08-03";
+        String expectedExtendedDateString = "2020-09-07";
+
+        LocalDate receivedDate = LocalDate.parse(receivedDateString);
+        LocalDate expectedExtendedDate = LocalDate.parse(expectedExtendedDateString);
+
+
+        when(caseTypeRepository.findByType(CASE_TYPE)).thenReturn(caseType);
+
+        LocalDate response = caseTypeService.getDeadlineForCaseType(CASE_TYPE, receivedDate, 10, 15);
+
+        assertThat(response).isEqualTo(expectedExtendedDate);
     }
 
     @Test
@@ -271,7 +296,6 @@ public class CaseTypeServiceTest {
         checkNoMoreInteractions();
     }
 
-
     private void checkNoMoreInteractions(){
         verifyNoMoreInteractions(caseTypeRepository, documentTagRepository, holidayDateRepository, stageTypeService, userPermissionsService, localDateWrapper);
     }
@@ -318,4 +342,148 @@ public class CaseTypeServiceTest {
                 new CaseType(3L,UUID.randomUUID(), "UKVI Number 10","45", "UTEN", unitUUID, "DCU_UTEN_DISPATCH", true, true, null)));
     }
 
+    @Test
+    public void getCaseActionsByType_returnsActions() {
+
+        // GIVEN
+        UUID rand1 = UUID.randomUUID();
+        UUID rand2 = UUID.randomUUID();
+        UUID rand3 = UUID.randomUUID();
+        UUID rand4 = UUID.randomUUID();
+
+        CaseTypeAction mockCaseActionType1 = new CaseTypeAction(
+                rand1,
+                rand2,
+                "CaseType1",
+                "ACTION_2",
+                "ACTION_SUBTYPE",
+                "ACTION_LABEL",
+                true,
+                1,
+                "{}",
+                10,
+                LocalDateTime.MIN,
+                LocalDateTime.MIN
+        );
+
+        CaseTypeAction mockCaseActionType2 = new CaseTypeAction(
+                rand3,
+                rand4,
+                "CaseType1",
+                "ACTION_2",
+                "ACTION_SUBTYPE",
+                "ACTION_LABEL",
+                true,
+                1,
+                "{}",
+                20,
+                LocalDateTime.MIN,
+                LocalDateTime.MIN
+        );
+
+        CaseTypeActionDto expectedCaseTypeDto1 = CaseTypeActionDto.from(mockCaseActionType1);
+        CaseTypeActionDto expectedCaseTypeDto2 = CaseTypeActionDto.from(mockCaseActionType2);
+
+        when(caseActionTypeRepository.findAllByCaseTypeAndActiveIsTrue(CASE_TYPE)).thenReturn(List.of(mockCaseActionType1, mockCaseActionType2));
+
+        // WHEN
+        List<CaseTypeActionDto> output = caseTypeService.getCaseActionsByCaseType(CASE_TYPE);
+
+        // THEN
+        assertEquals(expectedCaseTypeDto1.getActionType(), output.get(0).getActionType());
+        assertEquals(expectedCaseTypeDto2.getActionType(), output.get(1).getActionType());
+        verify(caseActionTypeRepository, times(1)).findAllByCaseTypeAndActiveIsTrue(any());
+    }
+
+    @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
+    public void shouldThrowErrorIfActionDoesNotExistForId() {
+
+        UUID caseTypeActionUuid = UUID.randomUUID();
+
+        when(caseActionTypeRepository.findByUuid(caseTypeActionUuid)).thenReturn(null);
+
+        CaseTypeActionDto actionDto = caseTypeService.getCaseTypeActionById(caseTypeActionUuid);
+    }
+
+    @Test
+    public void shouldReturnActionForProvidedActionId() {
+
+        UUID requestedActionId = UUID.randomUUID();
+        UUID rand2 = UUID.randomUUID();
+
+        CaseTypeAction mockCaseActionType1 = new CaseTypeAction(
+                requestedActionId,
+                rand2,
+                "CaseType1",
+                "ACTION_2",
+                "ACTION_SUBTYPE",
+                "ACTION_LABEL",
+                true,
+                1,
+                "{}",
+                10,
+                LocalDateTime.MIN,
+                LocalDateTime.MIN
+        );
+
+        when(caseActionTypeRepository.findByUuid(requestedActionId)).thenReturn(mockCaseActionType1);
+
+        CaseTypeActionDto actionDto = caseTypeService.getCaseTypeActionById(requestedActionId);
+
+        assertNotNull(actionDto);
+        assertEquals(CaseTypeActionDto.class, actionDto.getClass());
+    }
+
+    @Test
+    public void shouldReturnListOfAllCaseTypeActions() {
+        CaseTypeAction mockCaseActionType1 = new CaseTypeAction(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                "CaseType1",
+                "ACTION_1",
+                "ACTION_SUBTYPE",
+                "ACTION_LABEL_1",
+                true,
+                1,
+                "{}",
+                10,
+                LocalDateTime.MIN,
+                LocalDateTime.MIN
+        );
+        CaseTypeAction mockCaseActionType2 = new CaseTypeAction(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                "CaseType2",
+                "ACTION_2",
+                "ACTION_SUBTYPE",
+                "ACTION_LABEL_2",
+                true,
+                1,
+                "{}",
+                10,
+                LocalDateTime.MIN,
+                LocalDateTime.MIN
+        );
+
+        List<CaseTypeAction> caseTypeActionList = new LinkedList<>();
+        caseTypeActionList.add(mockCaseActionType1);
+        caseTypeActionList.add(mockCaseActionType2);
+
+        when(caseActionTypeRepository.findAll()).thenReturn(caseTypeActionList);
+        List<CaseTypeActionDto> output  = caseTypeService.getAllCaseActions();
+
+        assertThat(output.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldReturnEmptyListOfAllCaseTypeActions() {
+
+        List<CaseTypeAction> caseTypeActionList = new LinkedList<>();
+
+        when(caseActionTypeRepository.findAll()).thenReturn(caseTypeActionList);
+        List<CaseTypeActionDto> output  = caseTypeService.getAllCaseActions();
+
+        assertThat(output.size()).isEqualTo(0);
+    }
 }
+
