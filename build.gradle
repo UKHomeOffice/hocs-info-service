@@ -27,6 +27,25 @@ task copyLombok(type: Copy) {
 	from configurations.compileClasspath
 }
 
+plugins.withType(JacocoPlugin) {
+	tasks["test"].finalizedBy 'jacocoTestReport'
+}
+
+test {
+	finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+jacocoTestReport {
+	dependsOn test // tests are required to run before generating the report
+	reports {
+		xml.required = true
+		html.required = false
+		csv.required = false
+		//for XML
+		xml.destination file("${buildDir}/reports/jacoco.xml")
+	}
+}
+
 build.dependsOn(copyLombok)
 
 group = 'uk.gov.digital.ho.hocs'
