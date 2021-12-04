@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
@@ -33,19 +32,16 @@ public class RestHelper {
         this.requestData = requestData;
     }
 
-    @Retryable
     public <T,R> ResponseEntity<R> post(String serviceBaseURL, String url, T request, Class<R> responseType) {
         return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.POST, new HttpEntity<>(request, createAuthHeaders()), responseType);
     }
 
-    @Retryable
     public <R> ResponseEntity<R> get(String serviceBaseURL, String url, Class<R> responseType) {
         ResponseEntity<R> response = restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.GET, new HttpEntity<>(null, createAuthHeaders()), responseType);
         validateResponse(response);
         return response;
     }
 
-    @Retryable
     public <R> ResponseEntity<R> delete(String serviceBaseURL, String url, Class<R> responseType) {
         return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.DELETE, new HttpEntity<>(null, createAuthHeaders()), responseType);
     }

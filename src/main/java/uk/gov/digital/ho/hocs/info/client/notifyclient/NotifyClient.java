@@ -7,9 +7,6 @@ import org.apache.camel.CamelExecutionException;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import uk.gov.digital.ho.hocs.info.client.notifyclient.dto.TeamActiveCommand;
@@ -44,8 +41,6 @@ public class NotifyClient {
         this.requestData = requestData;
     }
 
-    @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
-    @Async
     public void sendTeamRenameEmail(UUID teamUUID, String oldDisplayName) {
         Assert.notNull(teamUUID, "teamUUID parameter must not be null");
         Assert.notNull(oldDisplayName, "oldDisplayName parameter must not be null");
@@ -53,8 +48,6 @@ public class NotifyClient {
         sendTeamCommand(new TeamRenameCommand(teamUUID, oldDisplayName));
     }
 
-    @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
-    @Async
     public void sendTeamActiveStatusEmail(UUID teamUUID, Boolean currentActiveStatus) {
         Assert.notNull(teamUUID, "teamUUID parameter must not be null");
         Assert.notNull(currentActiveStatus, "currentActiveStatus parameter must not be null");
