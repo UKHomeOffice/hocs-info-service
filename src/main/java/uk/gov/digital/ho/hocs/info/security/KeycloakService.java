@@ -24,8 +24,6 @@ import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.util.JsonSerialization;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserResponse;
@@ -133,7 +131,6 @@ public class KeycloakService {
         }
     }
 
-    @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
     public Set<UUID> getGroupsForUser(UUID userUUID) {
         try {
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
@@ -150,7 +147,6 @@ public class KeycloakService {
     }
 
 
-    @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
     public List<UserRepresentation> getAllUsers() {
         log.info("Get users from Keycloak realm {}", hocsRealmName);
         UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
@@ -166,12 +162,10 @@ public class KeycloakService {
         return users;
     }
 
-    @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
     public UserRepresentation getUserFromUUID(UUID userUUID) {
         return keycloakClient.realm(hocsRealmName).users().get(userUUID.toString()).toRepresentation();
     }
 
-    @Retryable(maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.delay}"))
     public Set<UserRepresentation> getUsersForTeam(UUID teamUUID) {
         String encodedTeamPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
         HashSet<UserRepresentation> groupUsers = new HashSet<>();
