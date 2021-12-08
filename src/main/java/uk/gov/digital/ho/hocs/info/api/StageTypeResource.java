@@ -58,24 +58,34 @@ public class StageTypeResource {
         return ResponseEntity.ok(TeamDto.fromWithoutPermissions(team));
     }
 
-    @GetMapping(value = "/stageType/{stageType}/deadline", params = {"received","caseDeadline"}, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<LocalDate> getDeadlineByStage(@PathVariable String stageType, @RequestParam String received, @RequestParam String caseDeadline) {
+    @GetMapping(value = "/stageType/{stageType}/deadline", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<LocalDate> getDeadlineByStage(@PathVariable String stageType, @RequestParam String received, @RequestParam String caseDeadline, @RequestParam(required = false, defaultValue = "false") boolean overrideSla) {
         try {
             LocalDate receivedDate = LocalDate.parse(received);
             LocalDate caseDeadlineDate = LocalDate.parse(caseDeadline);
-            LocalDate deadline = stageTypeService.getDeadlineForStageType(stageType, receivedDate, caseDeadlineDate);
+            LocalDate deadline;
+            if (!overrideSla) {
+                deadline = stageTypeService.getDeadlineForStageType(stageType, receivedDate, caseDeadlineDate);
+            } else {
+                deadline = stageTypeService.getDeadlineForStageTypeOverrideSla(stageType, receivedDate, caseDeadlineDate);
+            }
             return ResponseEntity.ok(deadline);
         } catch (ApplicationExceptions.EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
-    @GetMapping(value = "/stageType/{stageType}/deadlineWarning", params = {"received","caseDeadlineWarning"}, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<LocalDate> getDeadlineWarningByStage(@PathVariable String stageType, @RequestParam String received, @RequestParam String caseDeadlineWarning) {
+    @GetMapping(value = "/stageType/{stageType}/deadlineWarning", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<LocalDate> getDeadlineWarningByStage(@PathVariable String stageType, @RequestParam String received, @RequestParam String caseDeadlineWarning, @RequestParam(required = false, defaultValue = "false") boolean overrideSla) {
         try {
             LocalDate receivedDate = LocalDate.parse(received);
             LocalDate caseDeadlineWarningDate = LocalDate.parse(caseDeadlineWarning);
-            LocalDate deadline = stageTypeService.getDeadlineWarningForStageType(stageType, receivedDate, caseDeadlineWarningDate);
+            LocalDate deadline;
+            if (!overrideSla) {
+                deadline = stageTypeService.getDeadlineWarningForStageType(stageType, receivedDate, caseDeadlineWarningDate);
+            } else {
+                deadline = stageTypeService.getDeadlineWarningForStageTypeOverrideSla(stageType, receivedDate, caseDeadlineWarningDate);
+            }
             return ResponseEntity.ok(deadline);
         } catch (ApplicationExceptions.EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

@@ -50,12 +50,28 @@ public class StageTypeService {
         return canDisplayContributions;
     }
 
+    LocalDate getDeadlineForStageTypeOverrideSla(String stageType, LocalDate receivedDate, LocalDate caseDeadline) {
+        log.debug("Getting deadline overriding SLA for stageType {} with received date of {} ", stageType, receivedDate);
+        Set<ExemptionDate> holidays = holidayDateRepository.findAllByStageType(stageType);
+        Deadline deadline = new Deadline(receivedDate, caseDeadline, -2, holidays);
+        log.info("Got deadline overriding SLA ({}) for stageType {} with received date of {} ", deadline.getDate(), stageType, receivedDate);
+        return deadline.getDate();
+    }
+
     LocalDate getDeadlineForStageType(String stageType, LocalDate receivedDate, LocalDate caseDeadline) {
         log.debug("Getting deadline for stageType {} with received date of {} ", stageType, receivedDate);
         Set<ExemptionDate> holidays = holidayDateRepository.findAllByStageType(stageType);
         int sla = getStageType(stageType).getDeadline();
         Deadline deadline = new Deadline(receivedDate, caseDeadline, sla, holidays);
         log.info("Got deadline ({}) for stageType {} with received date of {} ", deadline.getDate(), stageType, receivedDate);
+        return deadline.getDate();
+    }
+
+    public LocalDate getDeadlineWarningForStageTypeOverrideSla(String stageType, LocalDate receivedDate, LocalDate caseDeadlineWarning) {
+        log.debug("Getting deadline warning overriding SLA for stageType {} with received date of {} ", stageType, receivedDate);
+        Set<ExemptionDate> holidays = holidayDateRepository.findAllByStageType(stageType);
+        Deadline deadline = new Deadline(receivedDate, caseDeadlineWarning, -2, holidays);
+        log.info("Got deadline warning overriding SLA ({}) for stageType {} with received date of {} ", deadline.getDate(), stageType, receivedDate);
         return deadline.getDate();
     }
 
