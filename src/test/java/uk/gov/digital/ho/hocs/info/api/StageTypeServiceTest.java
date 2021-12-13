@@ -85,4 +85,30 @@ public class StageTypeServiceTest {
         verify(holidayDateRepository).findAllByStageType("STAGE_TYPE");
         verifyNoMoreInteractions(holidayDateRepository);
     }
+
+    @Test
+    public void shouldGetDeadlineOverridingSla() {
+
+        Set<ExemptionDate> exemptions = Set.of(new ExemptionDate(1L, LocalDate.parse("2020-05-11")), new ExemptionDate(1L, LocalDate.parse("2020-05-12")));
+        when(holidayDateRepository.findAllByStageType("STAGE_TYPE")).thenReturn(exemptions);
+
+        LocalDate result = service.getDeadlineForStageTypeOverrideSla("STAGE_TYPE", LocalDate.of(2020,5,8),LocalDate.of(2020,5,9));
+
+        assertThat(result).isEqualTo(LocalDate.of(2020,5,9));
+        verify(stageTypeRepository, times(0)).findByType("STAGE_TYPE");
+        verify(holidayDateRepository, times(1)).findAllByStageType("STAGE_TYPE");
+    }
+
+    @Test
+    public void shouldGetDeadlineWarningOverridingSla() {
+
+        Set<ExemptionDate> exemptions = Set.of(new ExemptionDate(1L, LocalDate.parse("2020-05-11")), new ExemptionDate(1L, LocalDate.parse("2020-05-12")));
+        when(holidayDateRepository.findAllByStageType("STAGE_TYPE")).thenReturn(exemptions);
+
+        LocalDate result = service.getDeadlineWarningForStageTypeOverrideSla("STAGE_TYPE", LocalDate.of(2020,5,8),LocalDate.of(2020,5,9));
+
+        assertThat(result).isEqualTo(LocalDate.of(2020,5,9));
+        verify(stageTypeRepository, times(0)).findByType("STAGE_TYPE");
+        verify(holidayDateRepository, times(1)).findAllByStageType("STAGE_TYPE");
+    }
 }
