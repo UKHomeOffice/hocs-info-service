@@ -2,14 +2,11 @@ package uk.gov.digital.ho.hocs.info.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.info.api.dto.GetStandardLineResponse;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateStandardLineDto;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.documentclient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.client.documentclient.model.ManagedDocumentType;
-import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.StandardLine;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
@@ -19,7 +16,10 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
