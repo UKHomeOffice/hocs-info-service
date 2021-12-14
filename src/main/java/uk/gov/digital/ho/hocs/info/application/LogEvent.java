@@ -24,7 +24,6 @@ public enum LogEvent {
     REST_HELPER_MALFORMED_RESPONSE,
     AUDIT_EVENT_CREATED,
     AUDIT_FAILED,
-    STANDARD_LINE_NOT_FOUND,
     USER_REMOVED_FROM_TEAM;
     public static final String EVENT = "event_id";
     public static final String EXCEPTION = "exception";
