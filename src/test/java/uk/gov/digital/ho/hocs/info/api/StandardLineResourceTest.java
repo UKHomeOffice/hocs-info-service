@@ -67,6 +67,22 @@ public class StandardLineResourceTest {
     }
 
     @Test
+    public void testShouldReturnNullWhenNoStandardLineExistsForTopic() {
+        // GIVEN
+
+        when(standardLineService.getStandardLineForTopic(uuid)).thenReturn(null);
+
+        // WHEN
+        ResponseEntity<GetStandardLineResponse> response = standardLineResource.getStandardLinesForPrimaryTopic(uuid);
+
+        // THEN
+        verify(standardLineService).getStandardLineForTopic(uuid);
+        verifyNoMoreInteractions(standardLineService);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
     public void shouldCreateStandardLineForTopic() {
         CreateStandardLineDocumentDto standardLineDocumentDto = new CreateStandardLineDocumentDto();
 

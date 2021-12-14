@@ -14,6 +14,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 public class StandardLineResource {
@@ -41,10 +42,13 @@ public class StandardLineResource {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping(value = "/topic/{topicUUID}/standardLine", produces = APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/topic/{topicUUID}/standardLine", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<GetStandardLineResponse> getStandardLinesForPrimaryTopic(@PathVariable UUID topicUUID) {
         StandardLine standardLine = standardLineService.getStandardLineForTopic(topicUUID);
-        return ResponseEntity.ok(GetStandardLineResponse.from(standardLine));
+        if (standardLine != null) {
+            return ResponseEntity.ok(GetStandardLineResponse.from(standardLine));
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping(value = "/user/{userUUID}/standardLine", produces = APPLICATION_JSON_UTF8_VALUE)

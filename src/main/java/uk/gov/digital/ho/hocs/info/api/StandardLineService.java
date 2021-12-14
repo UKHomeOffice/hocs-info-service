@@ -2,7 +2,9 @@ package uk.gov.digital.ho.hocs.info.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.api.dto.GetStandardLineResponse;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateStandardLineDto;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.documentclient.DocumentClient;
@@ -17,10 +19,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -91,7 +90,8 @@ public class StandardLineService {
             log.info("Got Standard Line {} for Topic {} ", standardLine.getDisplayName(), topicUUID);
             return standardLine;
         } else {
-            throw new ApplicationExceptions.StandardLineNotFoundException("Standard Line for Topic: %s, not found!", topicUUID);
+            log.warn("Standard Line for Topic: {}, not found!", topicUUID);
+            return null;
         }
     }
     
