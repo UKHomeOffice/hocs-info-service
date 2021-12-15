@@ -113,6 +113,7 @@ public class CaseTypeResource {
         return ResponseEntity.ok(caseActions);
     }
 
+    @Deprecated // the only resource accessed is the case_type_action, so use "/actions/{actionId}"
     @GetMapping("/caseType/{caseType}/actions/{actionId}")
     public ResponseEntity<CaseTypeActionDto> getCaseActionById(@PathVariable UUID actionId) {
         CaseTypeActionDto actionDto = caseTypeService.getCaseTypeActionById(actionId);
