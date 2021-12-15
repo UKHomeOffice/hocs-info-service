@@ -52,12 +52,6 @@ public class RestResponseEntityExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), NOT_FOUND);
     }
 
-    @ExceptionHandler(ApplicationExceptions.StandardLineNotFoundException.class)
-    public ResponseEntity handle(ApplicationExceptions.StandardLineNotFoundException e) {
-        log.error("ApplicationExceptions.StandardLineNotFoundException: {}, Event: {}", e.getMessage(), value(EVENT, e.getEvent()));
-        return new ResponseEntity<>(e.getMessage(), NOT_FOUND);
-    }
-
     @ExceptionHandler(ApplicationExceptions.ResourceServerException.class)
     public ResponseEntity handle(ApplicationExceptions.ResourceServerException e) {
         log.error("ApplicationExceptions.ResourceServerException: {}, Event: {}", e.getMessage(), value(EVENT, e.getEvent()));

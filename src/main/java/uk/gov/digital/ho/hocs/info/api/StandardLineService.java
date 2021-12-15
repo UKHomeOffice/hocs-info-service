@@ -7,7 +7,6 @@ import uk.gov.digital.ho.hocs.info.api.dto.UpdateStandardLineDto;
 import uk.gov.digital.ho.hocs.info.client.caseworkclient.CaseworkClient;
 import uk.gov.digital.ho.hocs.info.client.documentclient.DocumentClient;
 import uk.gov.digital.ho.hocs.info.client.documentclient.model.ManagedDocumentType;
-import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.StandardLine;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
@@ -91,7 +90,8 @@ public class StandardLineService {
             log.info("Got Standard Line {} for Topic {} ", standardLine.getDisplayName(), topicUUID);
             return standardLine;
         } else {
-            throw new ApplicationExceptions.StandardLineNotFoundException("Standard Line for Topic: %s, not found!", topicUUID);
+            log.warn("Standard Line for Topic: {}, not found!", topicUUID);
+            return null;
         }
     }
     
