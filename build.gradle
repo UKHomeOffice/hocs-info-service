@@ -45,7 +45,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-json'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 
 
 	implementation "org.apache.camel:camel-spring-boot:${camelVersion}"
