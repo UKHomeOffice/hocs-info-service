@@ -61,7 +61,7 @@ dependencies {
 		exclude module: "slf4j-log4j12"
 	}
 	implementation 'org.jboss.resteasy:resteasy-jaxrs:3.9.1.Final'
-	implementation 'org.jboss.resteasy:resteasy-client:3.9.1.Final'
+	implementation 'org.jboss.resteasy:resteasy-client:5.0.1.Final'
 	implementation 'org.jboss.resteasy:resteasy-jackson2-provider:3.9.1.Final'
 
 	implementation 'org.apache.commons:commons-csv:1.5'
