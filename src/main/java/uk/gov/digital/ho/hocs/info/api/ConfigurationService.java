@@ -2,8 +2,6 @@ package uk.gov.digital.ho.hocs.info.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.domain.model.Configuration;
 import uk.gov.digital.ho.hocs.info.domain.repository.ConfigurationRepository;
@@ -19,7 +17,6 @@ public class ConfigurationService {
         this.configurationRepository = configurationRepository;
     }
 
-    //@Cacheable("configuration")
     public Configuration getConfiguration(String systemName) throws Exception {
         log.debug("Getting Configuration for {}", systemName);
         Configuration configuration = configurationRepository.findBySystemName(systemName);
