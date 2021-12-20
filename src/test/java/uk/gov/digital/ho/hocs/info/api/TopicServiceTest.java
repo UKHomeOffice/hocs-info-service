@@ -158,7 +158,7 @@ public class TopicServiceTest {
 
         topicService.createTopic(request, UUID.randomUUID());
 
-        verifyZeroInteractions(topicRepository);
+        verifyNoMoreInteractions(topicRepository);
     }
 
     @Test (expected = ApplicationExceptions.TopicCreationException.class)
@@ -171,7 +171,7 @@ public class TopicServiceTest {
 
         topicService.createTopic(request, UUID.randomUUID());
 
-        verifyZeroInteractions(topicRepository);
+        verifyNoMoreInteractions(topicRepository);
     }
 
 
