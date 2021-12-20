@@ -332,7 +332,7 @@ public class TeamServiceTest {
 
         teamService.removeUserFromTeam(userUUID, teamUUID);
 
-        verifyZeroInteractions(keycloakService);
+        verifyNoMoreInteractions(keycloakService);
     }
 
     @Test
@@ -591,7 +591,7 @@ public class TeamServiceTest {
         } catch (ApplicationExceptions.TeamDeleteException e) {
             // do nothing
         }
-        verifyZeroInteractions(auditClient);
+        verifyNoMoreInteractions(auditClient);
     }
 
     @Test
@@ -605,7 +605,7 @@ public class TeamServiceTest {
 
         assertThat(expectedTeams.iterator().next().getUuid()).isEqualTo(teams.iterator().next().getUuid());
         verify(teamRepository).findAllActiveFirstDescendantTeamsFromAscendant(teamUuid);
-        verifyZeroInteractions(caseworkClient, teamRepository);
+        verifyNoMoreInteractions(caseworkClient, teamRepository);
     }
 
     private List<Team> getAllTeams() {
@@ -663,7 +663,7 @@ public class TeamServiceTest {
             //Do nothing
         }
 
-        verifyZeroInteractions(auditClient);
+        verifyNoMoreInteractions(auditClient);
     }
 
     @Test

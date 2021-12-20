@@ -135,7 +135,7 @@ public class TopicTeamServiceTest {
             // Do nothing.
         }
 
-        verifyZeroInteractions(teamLinkRepository);
+        verifyNoMoreInteractions(teamLinkRepository);
     }
 
     @Test(expected = ApplicationExceptions.TopicUpdateException.class)
@@ -169,7 +169,7 @@ public class TopicTeamServiceTest {
             // Do nothing.
         }
 
-        verifyZeroInteractions(teamLinkRepository);
+        verifyNoMoreInteractions(teamLinkRepository);
     }
 
     @Test(expected = ApplicationExceptions.TopicUpdateException.class)
@@ -195,7 +195,7 @@ public class TopicTeamServiceTest {
             // Do nothing.
         }
 
-        verifyZeroInteractions(teamLinkRepository);
+        verifyNoMoreInteractions(teamLinkRepository);
     }
 
     @Test(expected = ApplicationExceptions.TopicUpdateException.class)
@@ -225,7 +225,7 @@ public class TopicTeamServiceTest {
             // Do nothing.
         }
 
-        verifyZeroInteractions(teamLinkRepository);
+        verifyNoMoreInteractions(teamLinkRepository);
     }
 
     @Test(expected = ApplicationExceptions.TopicUpdateException.class)
@@ -252,7 +252,7 @@ public class TopicTeamServiceTest {
             // Do nothing.
         }
 
-        verifyZeroInteractions(teamLinkRepository);
+        verifyNoMoreInteractions(teamLinkRepository);
     }
 
     @Test
