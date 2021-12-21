@@ -22,7 +22,7 @@ delete from correspondent_type where uuid in ('fe1e8854-72ef-4141-a675-fb0676026
 
 delete from permission where case_type in ('CT1', 'CT2', 'CT3', 'CT4' );
 
-delete from stage_type where type in ('ST1', 'ST2' );
+delete from stage_type where type in ('ST1', 'ST2', 'DISPATCH' );
 
 delete from team where unit_uuid in ('09221c48-b916-47df-9aa0-a0194f86f6dd',
                                  '65996106-91a5-44bf-bc92-a6c2f691f062',
@@ -64,3 +64,5 @@ delete from info.entity where uuid in ('5abc65d9-3964-4c25-b570-46e203d5474b',
                                          '8761bda1-8e26-4189-9133-aab3651aa584');
 
 delete from info.entity_list where uuid = '9fda236f-6cd4-4016-b4af-307c424eaa50';
+
+delete from info.case_type_bank_holiday_region;

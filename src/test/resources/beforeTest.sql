@@ -67,6 +67,8 @@ INSERT INTO stage_type (uuid, display_name, short_code, type, case_type_uuid, ac
 VALUES ('a4f3226a-4845-4f41-b1d5-8d4d5146935e', 'stage type 1', 'x1', 'ST1', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0',
         'd09f1444-87ec-4197-8ec5-f28f548d11be', 5, 1, true),
        ('b4f3226a-4845-4f41-b1d5-8d4d5146935e', 'stage type 2', 'x2', 'ST2', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0',
+        'd09f1444-87ec-4197-8ec5-f28f548d11be', 5, 2, true),
+       ('0905343c-a262-431d-b71a-45504ee9f3be', 'stage type 3', 'x3', 'DISPATCH', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0',
         'd09f1444-87ec-4197-8ec5-f28f548d11be', 5, 2, true);
 
 
@@ -188,3 +190,6 @@ VALUES  ('9fda236f-6cd4-4016-b4af-307c424eaa50','5abc65d9-3964-4c25-b570-46e203d
         ('9fda236f-6cd4-4016-b4af-307c424eaa50','8761bda1-8e26-4189-9133-aab3651aa584',
          'TEST_ENTITY_2', '{ "title" : "Two"}'::jsonb, 2);
 
+INSERT INTO case_type_bank_holiday_region (case_type_uuid, region) VALUES
+      ('f62834a0-d231-44c9-bfa1-55dd93fc0aa0', 'ENGLAND_AND_WALES'),
+      ('f62834a0-d231-44c9-bfa1-55dd93fc0aa0', 'SCOTLAND');

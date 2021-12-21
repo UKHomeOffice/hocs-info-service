@@ -21,9 +21,9 @@ public class UnitDtoTest {
 
         Set<Permission> permissions = new HashSet<Permission>(){{
             add(new Permission(AccessLevel.OWNER, null,
-                    new CaseType(1L,UUID.randomUUID(), "MIN", "type","a1", UUID.randomUUID(), "DCU_MIN_DISPATCH", true,  true, null)));
+                    new CaseType(1L,UUID.randomUUID(), "MIN", "type","a1", UUID.randomUUID(), "DCU_MIN_DISPATCH", true,  true, null, null)));
             add(new Permission(AccessLevel.OWNER, null,
-                    new CaseType(1L,UUID.randomUUID(), "MIN", "type", "a1",UUID.randomUUID(),"DCU_MIN_DISPATCH", true,  true, null)));
+                    new CaseType(1L,UUID.randomUUID(), "MIN", "type", "a1",UUID.randomUUID(),"DCU_MIN_DISPATCH", true,  true, null, null)));
         }};
         Team team = new Team("Team 1",  permissions);
         Unit unit = new Unit("Unit 1", "TEST", true);
@@ -41,9 +41,9 @@ public class UnitDtoTest {
 
         Set<Permission> permissions = new HashSet<Permission>(){{
             add(new Permission(AccessLevel.OWNER, null,
-                    new CaseType(1L,UUID.randomUUID(), "MIN", "type","a1", UUID.randomUUID(),"DCU_MIN_DISPATCH", true,  true, null)));
+                    new CaseType(1L,UUID.randomUUID(), "MIN", "type","a1", UUID.randomUUID(),"DCU_MIN_DISPATCH", true,  true, null, null)));
             add(new Permission(AccessLevel.OWNER, null,
-                    new CaseType(1L, UUID.randomUUID(), "MIN", "type","a1", UUID.randomUUID(),"DCU_MIN_DISPATCH", true,  true, null)));
+                    new CaseType(1L, UUID.randomUUID(), "MIN", "type","a1", UUID.randomUUID(),"DCU_MIN_DISPATCH", true,  true, null, null)));
         }};
         Team team = new Team("Team 1", permissions);
         Unit unit = new Unit("Unit 1", "TEST", true);

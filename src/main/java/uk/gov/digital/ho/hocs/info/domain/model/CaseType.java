@@ -4,12 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import javax.persistence.Column;
+
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -52,6 +49,10 @@ public class CaseType implements Serializable {
 
     @Column(name = "previous_case_type")
     private String previousCaseType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deadline_stage", referencedColumnName = "type", insertable=false, updatable=false)
+    private StageTypeEntity deadlineStageEntity;
 
     public CaseType(String displayName, String shortCode, String type, UUID unitUUID, String deadlineStage, boolean bulk, boolean active, String previousCaseType) {
         this.uuid = UUID.randomUUID();

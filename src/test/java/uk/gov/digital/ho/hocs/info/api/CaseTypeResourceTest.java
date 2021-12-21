@@ -11,6 +11,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
+import uk.gov.digital.ho.hocs.info.domain.model.StageTypeEntity;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -114,21 +115,6 @@ public class CaseTypeResourceTest {
     }
 
     @Test
-    public void shouldGetCaseDeadlineWarning(){
-        LocalDate receivedDate = LocalDate.of(2020,2,1);
-        LocalDate warningDate = LocalDate.of(2020,2,3);
-        when(caseTypeService.getDeadlineWarningForCaseType("TEST",receivedDate,1)).thenReturn(warningDate);
-
-        ResponseEntity<LocalDate> response = caseTypeResource.getCaseDeadlineWarning("TEST",receivedDate.toString(),1);
-
-        assertThat(response).isNotNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isSameAs(warningDate);
-        verify(caseTypeService).getDeadlineWarningForCaseType("TEST",receivedDate,1);
-        verifyNoMoreInteractions(caseTypeService);
-    }
-
-    @Test
     public void shouldGetDocumentTags(){
         List<String> docTags = new ArrayList<String>();
         when(caseTypeService.getDocumentTagsForCaseType("TEST")).thenReturn(docTags);
@@ -139,46 +125,6 @@ public class CaseTypeResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isSameAs(docTags);
         verify(caseTypeService).getDocumentTagsForCaseType("TEST");
-        verifyNoMoreInteractions(caseTypeService);
-    }
-
-    @Test
-    public void getWorkingDaysElapsedForCaseType(){
-        String caseType = "caseTypeA";
-        LocalDate fromDate = LocalDate.parse("2020-04-03");
-        when(caseTypeService.calculateWorkingDaysElapsedForCaseType(caseType, fromDate)).thenReturn(27);
-
-        ResponseEntity<Integer> response = caseTypeResource.getWorkingDaysElapsedForCaseType(caseType, fromDate);
-
-        assertThat(response).isNotNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(27);
-        verify(caseTypeService).calculateWorkingDaysElapsedForCaseType(caseType, fromDate);
-        verifyNoMoreInteractions(caseTypeService);
-
-    }
-
-    @Test
-    public void getCaseDeadline(){
-        String caseType = "caseTypeA";
-
-        String receivedDateString = "2020-08-03";
-        String expectedExtendedDateString = "2020-09-07";
-
-        LocalDate receivedDate = LocalDate.parse(receivedDateString);
-        LocalDate expectedExtendedDate = LocalDate.parse(expectedExtendedDateString);
-
-        when(caseTypeService.getDeadlineForCaseType(eq("caseTypeA"), eq(receivedDate), eq(10), eq(5)))
-                .thenReturn(expectedExtendedDate);
-
-        ResponseEntity<LocalDate> response =
-                caseTypeResource.getCaseDeadline(caseType, receivedDateString, 10, 5);
-
-        assertThat(response).isNotNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().toString()).isEqualTo(expectedExtendedDate.toString());
-
-        verify(caseTypeService).getDeadlineForCaseType(eq("caseTypeA"), eq(receivedDate), eq(10), eq(5));
         verifyNoMoreInteractions(caseTypeService);
     }
 
@@ -200,12 +146,14 @@ public class CaseTypeResourceTest {
         UUID unitUUID2 = UUID.randomUUID();
 
         Set<CaseType> caseTypesSet = new HashSet<>();
-        caseTypesSet.add(new CaseType(1L,UUID.randomUUID(),"DCU Ministerial","a1", "MIN",unitUUID1,"DCU_MIN_DISPATCH",  true, true, null));
-        caseTypesSet.add(new CaseType(2L,UUID.randomUUID(),"DCU Treat Official", "a2", "TRO",unitUUID1,"DCU_TRO_DISPATCH",  true, true, null));
-        caseTypesSet.add(new CaseType(3L,UUID.randomUUID(),"DCU Number 10","a3", "DTEN",unitUUID1, "DCU_DTEN_DISPATCH", true, true, null));
-        caseTypesSet.add(new CaseType(4L,UUID.randomUUID(), "UKVI B REF", "a4", "IMCB",unitUUID2, "DCU_IMCB_DISPATCH", true, true, null));
-        caseTypesSet.add(new CaseType(5L,UUID.randomUUID(), "UKVI Ministerial REF","a5", "IMCM",unitUUID2,"DCU_IMCM_DISPATCH",  true, true, null));
-        caseTypesSet.add(new CaseType(6L,UUID.randomUUID(), "UKVI Number 10","a6", "UTEN",unitUUID2, "DCU_UTEN_DISPATCH", true, true, null));
+        StageTypeEntity stageTypeEntity = new StageTypeEntity();
+
+        caseTypesSet.add(new CaseType(1L,UUID.randomUUID(),"DCU Ministerial","a1", "MIN",unitUUID1,"DCU_MIN_DISPATCH",  true, true, null, stageTypeEntity));
+        caseTypesSet.add(new CaseType(2L,UUID.randomUUID(),"DCU Treat Official", "a2", "TRO",unitUUID1,"DCU_TRO_DISPATCH",  true, true, null, stageTypeEntity));
+        caseTypesSet.add(new CaseType(3L,UUID.randomUUID(),"DCU Number 10","a3", "DTEN",unitUUID1, "DCU_DTEN_DISPATCH", true, true, null, stageTypeEntity));
+        caseTypesSet.add(new CaseType(4L,UUID.randomUUID(), "UKVI B REF", "a4", "IMCB",unitUUID2, "DCU_IMCB_DISPATCH", true, true, null, stageTypeEntity));
+        caseTypesSet.add(new CaseType(5L,UUID.randomUUID(), "UKVI Ministerial REF","a5", "IMCM",unitUUID2,"DCU_IMCM_DISPATCH",  true, true, null, stageTypeEntity));
+        caseTypesSet.add(new CaseType(6L,UUID.randomUUID(), "UKVI Number 10","a6", "UTEN",unitUUID2, "DCU_UTEN_DISPATCH", true, true, null, stageTypeEntity));
         return caseTypesSet;
     }
 
@@ -214,11 +162,13 @@ public class CaseTypeResourceTest {
         UUID unitUUID2 = UUID.randomUUID();
 
         Set<CaseType> caseTypesSet = new HashSet<>();
-        caseTypesSet.add(new CaseType(1L,UUID.randomUUID(),"DCU Ministerial","a1", "MIN",unitUUID1, "DCU_MIN_DISPATCH", true, true, null));
-        caseTypesSet.add(new CaseType(2L,UUID.randomUUID(),"DCU Treat Official","a2", "TRO",unitUUID1,"DCU_TRO_DISPATCH",  true, true, null));
-        caseTypesSet.add(new CaseType(4L,UUID.randomUUID(), "UKVI B REF","a3", "IMCB",unitUUID2,"DCU_IMCB_DISPATCH",  true, true, null));
-        caseTypesSet.add(new CaseType(5L,UUID.randomUUID(), "UKVI Ministerial REF","a4", "IMCM",unitUUID2,"DCU_IMCM_DISPATCH",  true, true, null));
-        caseTypesSet.add(new CaseType(6L,UUID.randomUUID(), "UKVI Number 10","a5", "UTEN",unitUUID2, "DCU_UTEN_DISPATCH", true, true, null));
+        StageTypeEntity stageTypeEntity = new StageTypeEntity();
+
+        caseTypesSet.add(new CaseType(1L,UUID.randomUUID(),"DCU Ministerial","a1", "MIN",unitUUID1, "DCU_MIN_DISPATCH", true, true, null, stageTypeEntity));
+        caseTypesSet.add(new CaseType(2L,UUID.randomUUID(),"DCU Treat Official","a2", "TRO",unitUUID1,"DCU_TRO_DISPATCH",  true, true, null, stageTypeEntity));
+        caseTypesSet.add(new CaseType(4L,UUID.randomUUID(), "UKVI B REF","a3", "IMCB",unitUUID2,"DCU_IMCB_DISPATCH",  true, true, null, stageTypeEntity));
+        caseTypesSet.add(new CaseType(5L,UUID.randomUUID(), "UKVI Ministerial REF","a4", "IMCM",unitUUID2,"DCU_IMCM_DISPATCH",  true, true, null, stageTypeEntity));
+        caseTypesSet.add(new CaseType(6L,UUID.randomUUID(), "UKVI Number 10","a5", "UTEN",unitUUID2, "DCU_UTEN_DISPATCH", true, true, null, stageTypeEntity));
         return caseTypesSet;
     }
 

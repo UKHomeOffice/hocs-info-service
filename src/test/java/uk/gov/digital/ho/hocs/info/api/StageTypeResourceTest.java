@@ -26,12 +26,15 @@ public class StageTypeResourceTest {
     @Mock
     StageTypeService stageTypeService;
 
+    @Mock
+    CaseTypeService caseTypeService;
+
     StageTypeResource service;
     Team team = new Team( "Team1" , new HashSet<>());
 
     @Before
     public void setup() {
-        service = new StageTypeResource(stageTypeService);
+        service = new StageTypeResource(stageTypeService, caseTypeService);
     }
 
     @Test
@@ -80,59 +83,5 @@ public class StageTypeResourceTest {
         ResponseEntity<TeamDto> result = service.getTeamForStageType("STAGE_TYPE");
         assertThat(result.getBody().getUuid()).isEqualTo(team.getUuid());
         assertThat(result.getBody().getDisplayName()).isEqualTo("Team1");
-    }
-
-    @Test
-    public void shouldGetDeadlineByStage() {
-        LocalDate receivedDate = LocalDate.of(2020,6,5);
-        LocalDate caseDeadlineDate = LocalDate.of(2020,6,7);
-        LocalDate deadline = LocalDate.of(2020,6,9);
-        when(stageTypeService.getDeadlineForStageType("STAGE_TYPE",receivedDate,caseDeadlineDate)).thenReturn(deadline);
-
-        ResponseEntity<LocalDate> response = service.getDeadlineByStage("STAGE_TYPE",receivedDate.toString(),caseDeadlineDate.toString(), false);
-
-        verify(stageTypeService, times(0)).getDeadlineForStageTypeOverrideSla(any(), any(), any());
-        assertThat(response).isNotNull();
-        assertThat(response.getBody()).isEqualTo(deadline);
-    }
-
-    @Test
-    public void shouldGetDeadlineByStageOverridingSLA() {
-        LocalDate receivedDate = LocalDate.of(2020,6,5);
-        LocalDate caseDeadlineDate = LocalDate.of(2020,6,7);
-        when(stageTypeService.getDeadlineForStageTypeOverrideSla("STAGE_TYPE",receivedDate,caseDeadlineDate)).thenReturn(caseDeadlineDate);
-
-        ResponseEntity<LocalDate> response = service.getDeadlineByStage("STAGE_TYPE",receivedDate.toString(),caseDeadlineDate.toString(), true);
-
-        verify(stageTypeService, times(0)).getDeadlineForStageType(any(), any(), any());
-        assertThat(response).isNotNull();
-        assertThat(response.getBody()).isEqualTo(caseDeadlineDate.toString());
-    }
-
-    @Test
-    public void shouldGetDeadlineWarningByStage() {
-        LocalDate receivedDate = LocalDate.of(2020,6,5);
-        LocalDate caseDeadlineWarningDate = LocalDate.of(2020,6,7);
-        LocalDate deadline = LocalDate.of(2020,6,9);
-        when(stageTypeService.getDeadlineWarningForStageType("STAGE_TYPE",receivedDate,caseDeadlineWarningDate)).thenReturn(deadline);
-
-        ResponseEntity<LocalDate> response = service.getDeadlineWarningByStage("STAGE_TYPE",receivedDate.toString(),caseDeadlineWarningDate.toString(), false);
-
-        verify(stageTypeService, times(0)).getDeadlineWarningForStageTypeOverrideSla(any(), any(), any());
-        assertThat(response).isNotNull();
-        assertThat(response.getBody()).isEqualTo(deadline);
-    }
-
-    @Test
-    public void shouldGetDeadlineWarningByStageOverridingSLA() {
-        LocalDate receivedDate = LocalDate.of(2020,6,5);
-        LocalDate caseDeadlineWarningDate = LocalDate.of(2020,6,7);
-        when(stageTypeService.getDeadlineWarningForStageTypeOverrideSla("STAGE_TYPE",receivedDate,caseDeadlineWarningDate)).thenReturn(caseDeadlineWarningDate);
-
-        ResponseEntity<LocalDate> response = service.getDeadlineWarningByStage("STAGE_TYPE",receivedDate.toString(),caseDeadlineWarningDate.toString(), true);
-
-        verify(stageTypeService, times(0)).getDeadlineWarningForStageType(any(), any(), any());
-        assertThat(response).isNotNull();
-        assertThat(response.getBody()).isEqualTo(caseDeadlineWarningDate.toString());
     }
 }

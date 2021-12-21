@@ -34,7 +34,7 @@ public class CorrespondentTypeRepositoryTest {
     @Before
     public void setup() {
         Unit unit = new Unit("Unit 1", "UNIT_1",true);
-        CaseType caseType = new CaseType(null,UUID.randomUUID(),"TEST","a5","CASE_TYPE",unit.getUuid(),"TEST", true, true, null);
+        CaseType caseType = new CaseType(null,UUID.randomUUID(),"TEST","a5","CASE_TYPE",unit.getUuid(),"TEST", true, true, null, null);
         entityManager.persistAndFlush(unit);
         entityManager.persistAndFlush(caseType);
         CorrespondentType correspondentType = new CorrespondentType(null, UUID.randomUUID(), "Test", "TEST");

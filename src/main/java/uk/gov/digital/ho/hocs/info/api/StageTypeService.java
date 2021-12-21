@@ -4,13 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
 
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
-import uk.gov.digital.ho.hocs.info.domain.model.Deadline;
-import uk.gov.digital.ho.hocs.info.domain.model.ExemptionDate;
 import uk.gov.digital.ho.hocs.info.domain.model.StageTypeEntity;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
@@ -50,39 +47,6 @@ public class StageTypeService {
         return canDisplayContributions;
     }
 
-    LocalDate getDeadlineForStageTypeOverrideSla(String stageType, LocalDate receivedDate, LocalDate caseDeadline) {
-        log.debug("Getting deadline overriding SLA for stageType {} with received date of {} ", stageType, receivedDate);
-        Set<ExemptionDate> holidays = holidayDateRepository.findAllByStageType(stageType);
-        Deadline deadline = new Deadline(receivedDate, caseDeadline, -2, holidays);
-        log.info("Got deadline overriding SLA ({}) for stageType {} with received date of {} ", deadline.getDate(), stageType, receivedDate);
-        return deadline.getDate();
-    }
-
-    LocalDate getDeadlineForStageType(String stageType, LocalDate receivedDate, LocalDate caseDeadline) {
-        log.debug("Getting deadline for stageType {} with received date of {} ", stageType, receivedDate);
-        Set<ExemptionDate> holidays = holidayDateRepository.findAllByStageType(stageType);
-        int sla = getStageType(stageType).getDeadline();
-        Deadline deadline = new Deadline(receivedDate, caseDeadline, sla, holidays);
-        log.info("Got deadline ({}) for stageType {} with received date of {} ", deadline.getDate(), stageType, receivedDate);
-        return deadline.getDate();
-    }
-
-    public LocalDate getDeadlineWarningForStageTypeOverrideSla(String stageType, LocalDate receivedDate, LocalDate caseDeadlineWarning) {
-        log.debug("Getting deadline warning overriding SLA for stageType {} with received date of {} ", stageType, receivedDate);
-        Set<ExemptionDate> holidays = holidayDateRepository.findAllByStageType(stageType);
-        Deadline deadline = new Deadline(receivedDate, caseDeadlineWarning, -2, holidays);
-        log.info("Got deadline warning overriding SLA ({}) for stageType {} with received date of {} ", deadline.getDate(), stageType, receivedDate);
-        return deadline.getDate();
-    }
-
-    LocalDate getDeadlineWarningForStageType(String stageType, LocalDate receivedDate, LocalDate caseDeadlineWarning) {
-        log.debug("Getting deadline warning for stageType {} with received date of {} ", stageType, receivedDate);
-        Set<ExemptionDate> holidays = holidayDateRepository.findAllByStageType(stageType);
-        int sla = getStageType(stageType).getDeadlineWarning();
-        Deadline deadline = new Deadline(receivedDate, caseDeadlineWarning, sla, holidays);
-        log.info("Got deadline warning ({}) for stageType {} with received date of {} ", deadline.getDate(), stageType, receivedDate);
-        return deadline.getDate();
-    }
 
     Set<StageTypeEntity> getAllStageTypesByCaseType(UUID caseTypeUUID) {
         log.debug("Getting all StageTypes for caseType {}", caseTypeUUID);
