@@ -65,7 +65,7 @@ dependencies {
 	implementation 'org.jboss.resteasy:resteasy-jackson2-provider:3.9.1.Final'
 
 	implementation 'org.apache.commons:commons-csv:1.9.0'
-	implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.2'
 	implementation 'com.jayway.jsonpath:json-path:2.6.0'
 	implementation 'javax.json:javax.json-api:1.1.4'
 
