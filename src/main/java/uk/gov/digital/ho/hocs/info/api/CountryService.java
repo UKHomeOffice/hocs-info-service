@@ -2,8 +2,6 @@ package uk.gov.digital.ho.hocs.info.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.client.ingest.ListConsumerService;
 import uk.gov.digital.ho.hocs.info.domain.model.Country;
@@ -25,7 +23,6 @@ public class CountryService {
         this.listConsumerService = listConsumerService;
     }
 
-    @Cacheable(value = "ActiveCountrys", unless = "#result == null or #result.size() == 0")
     public Set<Country> getAllActiveCountrys() {
         log.debug("Getting all active countries");
         Set<Country> countrys = countryRepository.findAllActiveCountrys();
@@ -33,7 +30,6 @@ public class CountryService {
         return countrys;
     }
 
-    @CacheEvict(value = "ActiveCountrys")
     public void updateWebCountryList() {
         log.info("Started Updating Countries/Territories List");
         countryRepository.deleteAll();
