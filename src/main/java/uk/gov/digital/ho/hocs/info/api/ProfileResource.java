@@ -1,7 +1,6 @@
 package uk.gov.digital.ho.hocs.info.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +40,6 @@ public class ProfileResource {
 
     }
 
-    @Cacheable("getProfileForCaseType")
     @GetMapping(value = "/profile/forcasetype/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<ProfileDto> getProfileForCaseType(@PathVariable String caseType) {
         Profile profile = profileRepository.findByCaseTypeAndSystemName(caseType, "system");
