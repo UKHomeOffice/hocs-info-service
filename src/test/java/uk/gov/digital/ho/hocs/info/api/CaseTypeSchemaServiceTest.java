@@ -64,7 +64,7 @@ public class CaseTypeSchemaServiceTest {
         verifyNoMoreInteractions(caseTypeRepository);
 
         verify(caseTypeSchemaRepository, times(0)).findDistinctStagesByCaseType(TEST_CASE_TYPE);
-        verifyZeroInteractions(caseTypeSchemaRepository);
+        verifyNoMoreInteractions(caseTypeSchemaRepository);
     }
 
     @Test

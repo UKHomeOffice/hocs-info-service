@@ -79,7 +79,7 @@ public class CorrespondentTypeServiceTest {
         } catch (ApplicationExceptions.EntityCreationException e) {
             // Do nothing.
         }
-        verifyZeroInteractions(correspondentTypeRepository);
+        verifyNoMoreInteractions(correspondentTypeRepository);
     }
 
     @Test(expected = ApplicationExceptions.EntityCreationException.class)
@@ -96,7 +96,7 @@ public class CorrespondentTypeServiceTest {
         } catch (ApplicationExceptions.EntityCreationException e) {
             // Do nothing.
         }
-        verifyZeroInteractions(correspondentTypeRepository);
+        verifyNoMoreInteractions(correspondentTypeRepository);
     }
 
 }
