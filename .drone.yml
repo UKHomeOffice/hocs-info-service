@@ -372,8 +372,6 @@ steps:
       ENVIRONMENT: cs-dev
       KUBE_TOKEN:
         from_secret: hocs_info_service_cs_dev
-    depends_on:
-      - clone kube repo
     when:
       target:
         - restart
@@ -388,8 +386,6 @@ steps:
       ENVIRONMENT: wcs-dev
       KUBE_TOKEN:
         from_secret: hocs_info_service_wcs_dev
-    depends_on:
-      - clone kube repo
     when:
       target:
         - restart
