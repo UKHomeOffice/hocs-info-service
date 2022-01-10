@@ -64,5 +64,3 @@ delete from info.entity where uuid in ('5abc65d9-3964-4c25-b570-46e203d5474b',
                                          '8761bda1-8e26-4189-9133-aab3651aa584');
 
 delete from info.entity_list where uuid = '9fda236f-6cd4-4016-b4af-307c424eaa50';
-
-delete from info.case_type_bank_holiday_region;
