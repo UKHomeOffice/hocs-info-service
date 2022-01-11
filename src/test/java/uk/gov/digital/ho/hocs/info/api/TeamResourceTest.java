@@ -30,9 +30,12 @@ public class TeamResourceTest {
 
     private TeamResource teamResource;
 
+    @Mock
+    private UserService userService;
+
     @Before
     public void setUp() {
-        teamResource = new TeamResource(teamService);
+        teamResource = new TeamResource(teamService, userService);
     }
 
     private UUID userUUID1 = UUID.randomUUID();
