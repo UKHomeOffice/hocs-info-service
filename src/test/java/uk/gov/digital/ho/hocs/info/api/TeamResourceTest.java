@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -40,6 +41,7 @@ public class TeamResourceTest {
 
     private UUID userUUID1 = UUID.randomUUID();
     private UUID userUUID2 = UUID.randomUUID();
+    private UUID userUUID3 = UUID.randomUUID();
     private UUID teamUUID = UUID.randomUUID();
     private UUID caseUUID = UUID.randomUUID();
 
@@ -106,6 +108,25 @@ public class TeamResourceTest {
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody().size()).isEqualTo(3);
         verify(teamService).getAllTeams();
+        verifyNoMoreInteractions(teamService);
+    }
+
+    @Test
+    public void shouldGetAllUsersWithTeams() {
+        List<UserDto> users = getAllUsers();
+
+        when(userService.getAllUsers()).thenReturn(users);
+        when(teamService.getTeamsForUser(UUID.fromString(users.get(0).getId()))).thenReturn(getAllTeams());
+        when(teamService.getTeamsForUser(UUID.fromString(users.get(1).getId()))).thenReturn(getTeams());
+        when(teamService.getTeamsForUser(UUID.fromString(users.get(2).getId()))).thenReturn(getTeams());
+
+        ResponseEntity<Set<UserWithTeamsDto>> result = teamResource.getUsersForTeam();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody().size()).isEqualTo(3);
+        verify(userService).getAllUsers();
+        verify(teamService).getTeamsForUser(UUID.fromString(users.get(0).getId()));
+        verify(teamService).getTeamsForUser(UUID.fromString(users.get(1).getId()));
+        verify(teamService).getTeamsForUser(UUID.fromString(users.get(2).getId()));
         verifyNoMoreInteractions(teamService);
     }
 
@@ -362,6 +383,14 @@ public class TeamResourceTest {
             add(new Team("Team1", true));
             add(new Team("Team2", true));
             add(new Team("Team3", false));
+        }};
+    }
+
+    private List<UserDto> getAllUsers() {
+        return new ArrayList<UserDto>() {{
+            add(new UserDto(UUID.randomUUID().toString(), "user1", "user1@email.com", "User", "One", true));
+            add(new UserDto(UUID.randomUUID().toString(), "user2", "user2@email.com", "User", "Two", true));
+            add(new UserDto(UUID.randomUUID().toString(), "user3", "user3@email.com", "User", "Three", true));
         }};
     }
 

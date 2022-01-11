@@ -162,13 +162,15 @@ public class TeamResource {
             ArrayList<UUID> teamUUIDS = new ArrayList<>();
             teams.forEach((team -> {
                 teamUUIDS.add(team.getUuid());
-                team.getUnit().getTeams().forEach((unitTeam) -> {
-                    teamUUIDS.add(unitTeam.getUuid());
-                });
+                if (team.getUnit() != null) {
+                    team.getUnit().getTeams().forEach((unitTeam) -> {
+                        teamUUIDS.add(unitTeam.getUuid());
+                    });
+                }
             }));
             usersWithTeams.add(UserWithTeamsDto.from(user, teamUUIDS));
         }
-        return ResponseEntity.ok(usersWithTeams.stream().collect(Collectors.toSet()));
+        return ResponseEntity.ok(usersWithTeams);
     }
 
     @GetMapping(value = "/team/all")
