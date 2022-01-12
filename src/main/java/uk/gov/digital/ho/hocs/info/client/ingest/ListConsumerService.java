@@ -72,7 +72,7 @@ public class ListConsumerService {
                                     houseAddress.getUuid(),
                                     "NI" + m.getPersonId()))
                     .collect(Collectors.toSet());
-        } catch (ApplicationExceptions.EntityNotFoundException ex) {
+        } catch (ApplicationExceptions.IngestException ex) {
             log.info(ex.getMessage());
             return Collections.emptySet();
         }
@@ -92,7 +92,7 @@ public class ListConsumerService {
                                     houseAddress.getUuid(),
                                     "SC"+m.getPersonId()))
                     .collect(Collectors.toSet());
-        } catch (ApplicationExceptions.EntityNotFoundException ex) {
+        } catch (ApplicationExceptions.IngestException ex) {
             log.info(ex.getMessage());
             return Collections.emptySet();
         }
@@ -112,7 +112,7 @@ public class ListConsumerService {
                                     houseAddress.getUuid(),
                                     "CO"+m.getMemberId()))
                     .collect(Collectors.toSet());
-        } catch (ApplicationExceptions.EntityNotFoundException ex) {
+        } catch (ApplicationExceptions.IngestException ex) {
             log.info(ex.getMessage());
             return Collections.emptySet();
         }
@@ -132,7 +132,7 @@ public class ListConsumerService {
                                     houseAddress.getUuid(),
                                     "LO"+m.getMemberId()))
                     .collect(Collectors.toSet());
-        } catch (ApplicationExceptions.EntityNotFoundException ex) {
+        } catch (ApplicationExceptions.IngestException ex) {
             log.info(ex.getMessage());
             return Collections.emptySet();
         }
@@ -161,7 +161,7 @@ public class ListConsumerService {
                                     houseAddress.getUuid(),
                                     "WE"+m.getId()))
                     .collect(Collectors.toSet());
-        } catch(ApplicationExceptions.EntityNotFoundException ex) {
+        } catch(ApplicationExceptions.IngestException ex) {
             log.info(ex.getMessage());
             return Collections.emptySet();
         }

@@ -38,7 +38,7 @@ public class MemberResource {
 
     @GetMapping(value = "/admin/member/refresh")
     public ResponseEntity getFromApi() {
-        memberService.updateWebMemberLists();
-        return ResponseEntity.ok().build();
+        Integer rowsProcessed = memberService.updateWebMemberLists();
+        return ResponseEntity.ok().body("Rows processed : " + rowsProcessed);
     }
 }
