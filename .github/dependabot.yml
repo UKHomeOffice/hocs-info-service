@@ -11,5 +11,5 @@ updates:
     reviewers:
       - "UKHomeOffice/hocs-core"
     ignore:
-      - dependency-name: "aws-java-sdk"
+      - dependency-name: "com.amazonaws:aws-java-sdk"
         update-types: [ "version-update:semver-patch" ]
