@@ -48,7 +48,6 @@ public class MemberService {
 
     public Integer updateWebMemberLists() {
         log.info("Started Updating Members Lists");
-        Long start = System.currentTimeMillis();
 
         // launch async calls to all members endpoints, threads taken from common pool.
         CompletableFuture<Set<Member>> futureWelsh
@@ -68,8 +67,6 @@ public class MemberService {
 
         updateMembersBulk(membersBulkSet); // update info members table in single transaction
 
-        Long end = System.currentTimeMillis();
-        log.info("updateWebMembersList duration : " + (end-start));
         log.info("Finished Updating Members Lists");
         return membersBulkSet.size();
     }
