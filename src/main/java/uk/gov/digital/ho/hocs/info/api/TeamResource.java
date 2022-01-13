@@ -23,8 +23,12 @@ import static uk.gov.digital.ho.hocs.info.application.LogEvent.*;
 public class TeamResource {
     private TeamService teamService;
 
-    public TeamResource(TeamService teamService) {
+
+    private final UserService userService;
+
+    public TeamResource(TeamService teamService, UserService userService) {
         this.teamService = teamService;
+        this.userService = userService;
     }
 
     @PostMapping(value = "/users/team/{teamUUID}")
@@ -146,6 +150,27 @@ public class TeamResource {
     public ResponseEntity<Set<TeamDto>> getActiveTeams() {
         Set<Team> teams = teamService.getAllActiveTeams();
         return ResponseEntity.ok(teams.stream().map(TeamDto::from).collect(Collectors.toSet()));
+    }
+
+    @GetMapping(value = "/team/users")
+    public ResponseEntity<Set<UserWithTeamsDto>> getUsersForTeam() {
+        List<UserDto> users = userService.getAllUsers();
+        Set<UserWithTeamsDto> usersWithTeams = new HashSet<>();
+
+        for (UserDto user: users){
+            Set<Team> teams = teamService.getTeamsForUser(UUID.fromString(user.getId()));
+            ArrayList<UUID> teamUUIDS = new ArrayList<>();
+            teams.forEach((team -> {
+                teamUUIDS.add(team.getUuid());
+                if (team.getUnit() != null) {
+                    team.getUnit().getTeams().forEach((unitTeam) -> {
+                        teamUUIDS.add(unitTeam.getUuid());
+                    });
+                }
+            }));
+            usersWithTeams.add(UserWithTeamsDto.from(user, teamUUIDS));
+        }
+        return ResponseEntity.ok(usersWithTeams);
     }
 
     @GetMapping(value = "/team/all")
