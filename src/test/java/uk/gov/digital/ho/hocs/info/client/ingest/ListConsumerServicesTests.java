@@ -48,13 +48,15 @@ public class ListConsumerServicesTests {
                         restTemplate);
     }
 
-    @Test(expected = ApplicationExceptions.IngestException.class)
-    public void getDataFromAPI_whenRestTemplateThrowsException_handlesException() {
+    @Test
+    public void getDataFromAPI_whenRestTemplateThrowsException_shouldReturnEmptyCollection() {
         when(houseAddressRepository.findByHouseCode(any())).thenReturn(new HouseAddress());
         when(restTemplate.exchange(eq("Test3"), eq(HttpMethod.GET), any(), eq(IrishMembers.class)))
                 .thenThrow(new RestClientException("Test"));
 
-        listConsumerService.createFromIrishAssemblyAPI();
+        Set<Member> members = listConsumerService.createFromIrishAssemblyAPI();
+
+        assertTrue(members.isEmpty());
     }
 
     @Test

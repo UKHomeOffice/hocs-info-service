@@ -51,13 +51,12 @@ public class MemberServiceTest {
         when(listConsumerService.createFromScottishParliamentAPI()).thenReturn(getMembers());
         when(listConsumerService.createFromWelshAssemblyAPI()).thenReturn(getMembers());
         when(listConsumerService.createLordsFromUKParliamentAPI()).thenReturn(getMembers());
-        //        when(listConsumerService.createFromIrishAssemblyAPI()).thenReturn(getMembers());
-        //        when(listConsumerService.createFromEuropeanParliamentAPI()).thenReturn(getMembers());
+        when(listConsumerService.createFromIrishAssemblyAPI()).thenReturn(getMembers());
 
         memberService.updateWebMemberLists();
 
-        verify(memberRepository, times(4)).findByExternalReference(any());
-        verify(memberRepository, times(4)).save(any());
+        verify(memberRepository, times(5)).findByExternalReference(any());
+        verify(memberRepository, times(1)).saveAll(any());
         verifyNoMoreInteractions(memberRepository);
     }
 
