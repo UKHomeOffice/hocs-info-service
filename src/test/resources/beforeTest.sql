@@ -1,45 +1,3 @@
-delete from parent_topic where uuid in ('94a10f9f-a42e-44c0-8ebe-1227cb347f1d',
-                                        '1abf7a0c-ea2d-478d-b6c8-d739fb60ef04',
-                                        '71caee7b-4632-4ac6-9c15-b91d4c0d27e5',
-                                        '038cecb8-00a2-4417-b18b-88c8905ff52e')
-                            or display_name in ('Test Parent Topic');
-
-delete from team_link where stage_type in ('ST1', 'ST2' );
-
-delete from topic where uuid in ('11111111-ffff-1111-1111-111111111131',
-                                 '11111111-ffff-1111-1111-111111111132',
-                                 '11111111-ffff-1111-1111-111111111133',
-                                 '11111111-ffff-1111-1111-111111111134',
-                                 '11111111-ffff-1111-1111-111111111135')
-                  or display_name in ('test topic');
-
-delete from team_contact where team_uuid in ('08612f06-bae2-4d2f-90d2-2254a68414b8',
-                                             '911adabe-5ab7-4470-8395-6b584a61462d',
-                                             '434a4e33-437f-4e6d-8f04-14ea40fdbfa2');
-
-delete from correspondent_type where uuid in ('fe1e8854-72ef-4141-a675-fb06760264fd',
-                                              'c2155e6c-7ecd-450d-86e3-884e48c8c6c7');
-
-delete from permission where case_type in ('CT1', 'CT2', 'CT3', 'CT4' );
-
-delete from stage_type where type in ('ST1', 'ST2' );
-
-delete from team where unit_uuid in ('09221c48-b916-47df-9aa0-a0194f86f6dd',
-                                 '65996106-91a5-44bf-bc92-a6c2f691f062',
-                                 '10d5b353-a8ed-4530-bcc0-3edab0397d2f',
-                                 'c875dca8-8679-47e7-a589-7cea64b2e13c',
-                                 '66547972-56c6-4a8c-9bf5-b3debec1344a');
-
-delete from case_type where type in ('CT1', 'CT2', 'CT3', 'CT4' );
-
-delete from unit where display_name in ('UNIT 2',
-                                        'UNIT 3',
-                                        'UNIT 4',
-                                        'UNIT 5',
-                                        'UNIT 6');
-
-delete from correspondent_type where type in ('TEST', 'TEST1', 'TEST2');
-
 INSERT INTO unit (display_name, uuid, short_code, active)
 VALUES ('UNIT 2', '09221c48-b916-47df-9aa0-a0194f86f6dd', 'UNIT2', TRUE),
        ('UNIT 3', '65996106-91a5-44bf-bc92-a6c2f691f062', 'UNIT3', TRUE),
@@ -67,6 +25,8 @@ INSERT INTO stage_type (uuid, display_name, short_code, type, case_type_uuid, ac
 VALUES ('a4f3226a-4845-4f41-b1d5-8d4d5146935e', 'stage type 1', 'x1', 'ST1', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0',
         'd09f1444-87ec-4197-8ec5-f28f548d11be', 5, 1, true),
        ('b4f3226a-4845-4f41-b1d5-8d4d5146935e', 'stage type 2', 'x2', 'ST2', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0',
+        'd09f1444-87ec-4197-8ec5-f28f548d11be', 5, 2, true),
+       ('0905343c-a262-431d-b71a-45504ee9f3be', 'stage type 3', 'x3', 'DISPATCH', 'f62834a0-d231-44c9-bfa1-55dd93fc0aa0',
         'd09f1444-87ec-4197-8ec5-f28f548d11be', 5, 2, true);
 
 
@@ -187,4 +147,3 @@ VALUES  ('9fda236f-6cd4-4016-b4af-307c424eaa50','5abc65d9-3964-4c25-b570-46e203d
          'TEST_ENTITY_1', '{ "title" : "One"}'::jsonb, 1),
         ('9fda236f-6cd4-4016-b4af-307c424eaa50','8761bda1-8e26-4189-9133-aab3651aa584',
          'TEST_ENTITY_2', '{ "title" : "Two"}'::jsonb, 2);
-

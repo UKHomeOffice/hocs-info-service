@@ -1,8 +1,6 @@
 package uk.gov.digital.ho.hocs.info.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
@@ -11,7 +9,6 @@ import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -56,44 +53,10 @@ public class CaseTypeResource {
         return ResponseEntity.ok(CaseTypeDto.from(caseType));
     }
 
-    @GetMapping(value = "/caseType/{caseType}/deadline", params = {"received","days"}, produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<LocalDate> getCaseDeadline(@PathVariable String caseType,
-                                              @RequestParam String received,
-                                              @RequestParam int days,
-                                              @RequestParam(required = false, defaultValue = "0") int extensionDays) {
-        LocalDate receivedDate = LocalDate.parse(received);
-        LocalDate deadline = caseTypeService.getDeadlineForCaseType(caseType,receivedDate,days,extensionDays);
-        return ResponseEntity.ok(deadline);
-    }
-
-    @GetMapping(value = "/caseType/{caseType}/deadlineWarning", params = {"received","days"}, produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<LocalDate> getCaseDeadlineWarning(@PathVariable String caseType, @RequestParam String received, @RequestParam int days) {
-        LocalDate receivedDate = LocalDate.parse(received);
-        LocalDate deadline = caseTypeService.getDeadlineWarningForCaseType(caseType,receivedDate,days);
-        return ResponseEntity.ok(deadline);
-    }
-
-    @GetMapping(value = "/caseType/{caseType}/stageType/deadline", params = {"received"}, produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Map<String, LocalDate>> getDeadlines(@PathVariable String caseType, @RequestParam String received) {
-        LocalDate receivedDate = LocalDate.parse(received);
-        Map<String, LocalDate> deadlines = caseTypeService.getAllStageDeadlinesForCaseType(caseType, receivedDate);
-        return ResponseEntity.ok(deadlines);
-    }
-
     @GetMapping(value = "/caseType/{caseType}/documentTags", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<String>> getDocumentTags(@PathVariable String caseType) {
         List<String> documentTags = caseTypeService.getDocumentTagsForCaseType(caseType);
         return ResponseEntity.ok(documentTags);
-    }
-
-    @GetMapping(value = "/caseType/{caseType}/workingDays/{fromDate}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Integer> getWorkingDaysElapsedForCaseType(@PathVariable String caseType, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate) {
-        return ResponseEntity.ok(caseTypeService.calculateWorkingDaysElapsedForCaseType(caseType, fromDate));
-    }
-
-    @GetMapping(value = "/caseType/{caseType}/deadline/{deadlineDate}/remainingDays")
-    public ResponseEntity<Integer> getDaysRemainingToDeadline(@PathVariable String caseType, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate deadlineDate) {
-        return ResponseEntity.ok(caseTypeService.calculateRemainingDaysToDeadline(caseType, deadlineDate));
     }
 
     public ResponseEntity<Void> createCaseType(CreateCaseTypeDto caseType) {
@@ -110,6 +73,12 @@ public class CaseTypeResource {
     @GetMapping("/caseType/{caseType}/actions")
     public ResponseEntity<List<CaseTypeActionDto>> getCaseActionsByType(@PathVariable String caseType) {
         List<CaseTypeActionDto> caseActions = caseTypeService.getCaseActionsByCaseType(caseType);
+        return ResponseEntity.ok(caseActions);
+    }
+
+    @GetMapping("/caseType/{caseType}/exemptionDates")
+    public ResponseEntity<Set<LocalDate>> getExemptionDatesByType(@PathVariable String caseType) {
+        Set<LocalDate> caseActions = caseTypeService.getExemptionDatesByCaseType(caseType);
         return ResponseEntity.ok(caseActions);
     }
 

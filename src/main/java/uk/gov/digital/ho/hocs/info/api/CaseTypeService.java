@@ -12,7 +12,6 @@ import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.security.UserPermissionsService;
-import uk.gov.digital.ho.hocs.info.utils.DateUtils;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -81,41 +80,6 @@ public class CaseTypeService {
         }
     }
 
-    LocalDate getDeadlineForCaseType(String type, LocalDate receivedDate, int days, int extensionDays) {
-        log.debug("Getting deadline for caseType {} with received date of {} and Days of {}", type, receivedDate, days);
-        CaseType caseType = getCaseType(type);
-        int sla = (days > 0) ? days : stageTypeService.getStageType(caseType.getDeadlineStage()).getDeadline();
-
-        sla += extensionDays;
-
-        Set<ExemptionDate> exemptions = holidayDateRepository.findAllByCaseType(caseType.getUuid());
-        LocalDate deadline = Deadline.calculateDeadline(receivedDate, null, sla, exemptions);
-        log.info("Got deadline ({}) for caseType {} with received date of {} ", deadline, type, receivedDate);
-        return deadline;
-    }
-
-    LocalDate getDeadlineWarningForCaseType(String type, LocalDate receivedDate, int days) {
-        log.debug("Getting deadline for caseType {} with received date of {} and Days of {}", type, receivedDate, days);
-        CaseType caseType = getCaseType(type);
-        int sla = (days > 0) ? days : stageTypeService.getStageType(caseType.getDeadlineStage()).getDeadlineWarning();
-        Set<ExemptionDate> exemptions = holidayDateRepository.findAllByCaseType(caseType.getUuid());
-        LocalDate deadline = Deadline.calculateDeadline(receivedDate, null, sla, exemptions);
-        log.info("Got deadline ({}) for caseType {} with received date of {} ", deadline, type, receivedDate);
-        return deadline;
-    }
-
-    Map<String, LocalDate> getAllStageDeadlinesForCaseType(String type, LocalDate receivedDate) {
-        log.debug("Getting all stage deadlines for caseType {} with received date of {} ", type, receivedDate);
-        CaseType caseType = getCaseType(type);
-        Set<StageTypeEntity> stageTypes = stageTypeService.getAllStageTypesByCaseType(caseType.getUuid());
-        Set<ExemptionDate> exemptions = holidayDateRepository.findAllByCaseType(caseType.getUuid());
-        Map<String, LocalDate> deadlines = stageTypes.stream().filter(st -> st.getDeadline() >= 0)
-                .sorted(Comparator.comparingInt(StageTypeEntity::getDisplayStageOrder))
-                .collect(Collectors.toMap(StageTypeEntity::getType, stageType -> Deadline.calculateDeadline(receivedDate, null, stageType.getDeadline(), exemptions), (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-        log.info("Got {} deadlines for caseType {} with received date of {} ", deadlines.size(), type, receivedDate);
-        return deadlines;
-    }
-
     List<String> getDocumentTagsForCaseType(String caseType) {
         log.debug("Getting all document tags for caseType {}", caseType);
         List<DocumentTag> documentTags = documentTagRepository.findByCaseType(caseType);
@@ -133,27 +97,6 @@ public class CaseTypeService {
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("CaseType for type %s was not found", type);
         }
-    }
-
-    public int calculateWorkingDaysElapsedForCaseType(String caseType, LocalDate fromDate) {
-
-        LocalDate now = localDateWrapper.now();
-        if (fromDate == null || now.isBefore(fromDate) || now.isEqual(fromDate)) {
-            return 0;
-        }
-        Set<LocalDate> exemptions = holidayDateRepository.findAllByCaseType(caseType).stream().map(ExemptionDate::getDate).collect(Collectors.toSet());
-        LocalDate date = fromDate;
-        int workingDays = 0;
-        while (date.isBefore(now)) {
-            if (!DateUtils.isDateNonWorkingDay(date, exemptions)) {
-                workingDays++;
-            }
-
-            date = date.plusDays(1);
-        }
-
-        return workingDays;
-
     }
 
     public void createCaseType(CreateCaseTypeDto caseType) {
@@ -174,6 +117,13 @@ public class CaseTypeService {
         return caseActionEntities.stream().map(CaseTypeActionDto::from).collect(Collectors.toList());
     }
 
+    public Set<LocalDate> getExemptionDatesByCaseType(String caseType) {
+        log.debug("Received request for case exemption dates with caseType {}", caseType);
+        final List<ExemptionDate> exemptionDates = holidayDateRepository.findAllByCaseType(caseType);
+        log.info("Found {} case exemption dates for caseType {}", exemptionDates.size(), caseType);
+        return exemptionDates.stream().map(ExemptionDate::getDate).collect(Collectors.toSet());
+    }
+
     public CaseTypeActionDto getCaseTypeActionById(UUID actionId) {
         log.debug("Request received for case type action id: {}", actionId);
         CaseTypeAction action = caseActionTypeRepository.findByUuid(actionId);
@@ -192,9 +142,5 @@ public class CaseTypeService {
         caseTypeActionsItr.forEach(caseTypeActionList::add);
         log.info("Return list of {} case type actions.", caseTypeActionList.size());
         return caseTypeActionList.stream().map(CaseTypeActionDto::from).collect(Collectors.toList());
-    }
-
-    public Integer calculateRemainingDaysToDeadline(String caseType, LocalDate deadlineDate) {
-        return Deadline.calculateRemainingWorkingDays(LocalDate.now(), deadlineDate, new HashSet<>(holidayDateRepository.findAllByCaseType(caseType)));
     }
 }

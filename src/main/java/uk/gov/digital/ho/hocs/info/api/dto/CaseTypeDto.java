@@ -31,6 +31,12 @@ public class CaseTypeDto {
     @JsonProperty("previousCaseType")
     private String previousCaseType;
 
+    @JsonProperty("sla")
+    private int sla;
+
+    @JsonProperty("deadLineWarning")
+    private int deadLineWarning;
+
     public static CaseTypeDto from(CaseType caseType) {
 
         return new CaseTypeDto(
@@ -39,7 +45,10 @@ public class CaseTypeDto {
                 caseType.getDisplayName(),
                 caseType.getShortCode(),
                 caseType.getType(),
-                caseType.getPreviousCaseType());
+                caseType.getPreviousCaseType(),
+                caseType.getDeadlineStageEntity().getDeadline(),
+                caseType.getDeadlineStageEntity().getDeadlineWarning()
+        );
     }
 
 }

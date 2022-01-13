@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.info.api.dto;
 
 import org.junit.Test;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
+import uk.gov.digital.ho.hocs.info.domain.model.StageTypeEntity;
 
 import java.util.UUID;
 
@@ -11,7 +12,7 @@ public class CaseTypeDtoTest {
 
     @Test
     public void shouldBuildCaseTypeDtoFromCaseTypeObject() {
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(),"Name","a1", "MIN",UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, "PREV");
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(),"Name","a1", "MIN",UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, "PREV", new StageTypeEntity());
 
         CaseTypeDto caseTypeDto = CaseTypeDto.from(caseType);
 
