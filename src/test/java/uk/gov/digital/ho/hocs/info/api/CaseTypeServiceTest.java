@@ -161,57 +161,6 @@ public class CaseTypeServiceTest {
     }
 
     @Test
-    public void shouldGetDeadlineWarningForCaseType(){
-        LocalDate receivedDate = LocalDate.of(2020,5,8); // Friday
-        CaseType caseType = new CaseType();
-        when(caseTypeRepository.findByType(CASE_TYPE)).thenReturn(caseType);
-        Set<ExemptionDate> exemptions = Set.of(new ExemptionDate(1L, LocalDate.parse("2020-05-11")), new ExemptionDate(1L, LocalDate.parse("2020-05-12")));
-        when(holidayDateRepository.findAllByCaseType(caseType.getUuid())).thenReturn(exemptions);
-
-        LocalDate response = caseTypeService.getDeadlineWarningForCaseType(CASE_TYPE,receivedDate,1);
-
-        assertThat(response).isEqualTo(LocalDate.of(2020,5,13));
-        verify(caseTypeRepository).findByType(CASE_TYPE);
-        verifyNoMoreInteractions(caseTypeRepository);
-    }
-
-    @Test
-    public void shoudGetAllStageDeadlinesForCaseType(){
-        CaseType caseType = new CaseType();
-        when(caseTypeRepository.findByType(CASE_TYPE)).thenReturn(caseType);
-        Set<StageTypeEntity> stageTypes = new HashSet<>();
-        stageTypes.add(new StageTypeEntity(1L, UUID.randomUUID(), "stage 8", "111","STAGE_TYPE_8", UUID.randomUUID(),8,8,8,true,null, false));
-        stageTypes.add(new StageTypeEntity(1L, UUID.randomUUID(), "stage 2", "111","STAGE_TYPE_2", UUID.randomUUID(),2,2,2,true,null, false));
-        when(stageTypeService.getAllStageTypesByCaseType(caseType.getUuid())).thenReturn(stageTypes);
-
-        Map<String, LocalDate> response = caseTypeService.getAllStageDeadlinesForCaseType(CASE_TYPE, LocalDate.now());
-
-        assertThat(response.size()).isEqualTo(2);
-        Iterator<Map.Entry<String, LocalDate>> iterator = response.entrySet().iterator();
-        Map.Entry<String, LocalDate> first = iterator.next();
-        Map.Entry<String, LocalDate> second = iterator.next();
-        assertThat(first.getValue()).isBefore(second.getValue());
-    }
-
-    @Test
-    public void shouldGetCaseDeadline(){
-        CaseType caseType = new CaseType();
-
-        String receivedDateString = "2020-08-03";
-        String expectedExtendedDateString = "2020-09-07";
-
-        LocalDate receivedDate = LocalDate.parse(receivedDateString);
-        LocalDate expectedExtendedDate = LocalDate.parse(expectedExtendedDateString);
-
-
-        when(caseTypeRepository.findByType(CASE_TYPE)).thenReturn(caseType);
-
-        LocalDate response = caseTypeService.getDeadlineForCaseType(CASE_TYPE, receivedDate, 10, 15);
-
-        assertThat(response).isEqualTo(expectedExtendedDate);
-    }
-
-    @Test
     public void shouldGetDocumentTagsForCaseType(){
         List<DocumentTag> documentTags = new ArrayList<>();
         documentTags.add((new DocumentTag(null,null,null,"First",(short)1)));
@@ -225,75 +174,6 @@ public class CaseTypeServiceTest {
         assertThat(tags.get(1)).isEqualTo("Second");
         verify(documentTagRepository).findByCaseType("TEST");
         verifyNoMoreInteractions(documentTagRepository);
-    }
-
-    @Test
-    public void shouldCalculateWorkingDaysElapsedForCaseType(){
-        when(localDateWrapper.now()).thenReturn(LocalDate.parse("2020-05-18"));
-
-        int result = caseTypeService.calculateWorkingDaysElapsedForCaseType(CASE_TYPE, LocalDate.parse("2020-05-11"));
-
-        assertThat(result).isEqualTo(5);
-        verify(localDateWrapper).now();
-        verify(holidayDateRepository).findAllByCaseType(CASE_TYPE);
-        checkNoMoreInteractions();
-    }
-
-    @Test
-    public void shouldCalculateWorkingDaysElapsedForCaseType_sameDay(){
-        when(localDateWrapper.now()).thenReturn(LocalDate.parse("2020-05-18"));
-
-        int result = caseTypeService.calculateWorkingDaysElapsedForCaseType(CASE_TYPE, LocalDate.parse("2020-05-18"));
-
-        assertThat(result).isEqualTo(0);
-        verify(localDateWrapper).now();
-        checkNoMoreInteractions();
-    }
-
-    @Test
-    public void shouldCalculateWorkingDaysElapsedForCaseType_weekend(){
-        when(localDateWrapper.now()).thenReturn(LocalDate.parse("2020-05-17"));
-
-        int result = caseTypeService.calculateWorkingDaysElapsedForCaseType(CASE_TYPE, LocalDate.parse("2020-05-16"));
-
-        assertThat(result).isEqualTo(0);
-        verify(localDateWrapper).now();
-        verify(holidayDateRepository).findAllByCaseType(CASE_TYPE);
-        checkNoMoreInteractions();
-    }
-
-    @Test
-    public void shouldCalculateWorkingDaysElapsedForCaseType_withExemptions(){
-        when(localDateWrapper.now()).thenReturn(LocalDate.parse("2020-05-18"));
-        List<ExemptionDate> exemptions = List.of(new ExemptionDate(1L, LocalDate.parse("2020-05-11")), new ExemptionDate(1L, LocalDate.parse("2020-05-12")));
-        when(holidayDateRepository.findAllByCaseType(CASE_TYPE)).thenReturn(exemptions);
-
-        int result = caseTypeService.calculateWorkingDaysElapsedForCaseType(CASE_TYPE, LocalDate.parse("2020-05-11"));
-
-        assertThat(result).isEqualTo(3);
-        verify(localDateWrapper).now();
-        verify(holidayDateRepository).findAllByCaseType(CASE_TYPE);
-        checkNoMoreInteractions();
-    }
-
-    @Test
-    public void shouldCalculateWorkingDaysElapsedForCaseType_nullDate(){
-        when(localDateWrapper.now()).thenReturn(LocalDate.parse("2020-05-18"));
-        int result = caseTypeService.calculateWorkingDaysElapsedForCaseType(CASE_TYPE, null);
-
-        assertThat(result).isEqualTo(0);
-        verify(localDateWrapper).now();
-        checkNoMoreInteractions();
-    }
-
-    @Test
-    public void shouldCalculateWorkingDaysElapsedForCaseType_futureDate(){
-        when(localDateWrapper.now()).thenReturn(LocalDate.parse("2020-05-18"));
-        int result = caseTypeService.calculateWorkingDaysElapsedForCaseType(CASE_TYPE, LocalDate.parse("2020-05-19"));
-
-        assertThat(result).isEqualTo(0);
-        verify(localDateWrapper).now();
-        checkNoMoreInteractions();
     }
 
     private void checkNoMoreInteractions(){
@@ -313,33 +193,33 @@ public class CaseTypeServiceTest {
     }
 
     private Set<CaseType> getDCUCaseType() {
-        return new HashSet<>(Arrays.asList(new CaseType(1L, UUID.randomUUID(), "DCU Ministerial","11", "MIN", unitUUID,"DCU_MIN_DISPATCH", true, true, null),
-                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","12", "TRO", unitUUID,"DCU_TRO_DISPATCH", true, true, null),
-                new CaseType(3L,UUID.randomUUID(), "DCU Number 10","13", "DTEN", unitUUID,"DCU_DTEN_DISPATCH",  true, true, null)));
+        return new HashSet<>(Arrays.asList(new CaseType(1L, UUID.randomUUID(), "DCU Ministerial","11", "MIN", unitUUID,"DCU_MIN_DISPATCH", true, true, null, null),
+                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","12", "TRO", unitUUID,"DCU_TRO_DISPATCH", true, true, null, null),
+                new CaseType(3L,UUID.randomUUID(), "DCU Number 10","13", "DTEN", unitUUID,"DCU_DTEN_DISPATCH",  true, true, null, null)));
     }
 
     private Set<CaseType> getDCUCaseTypeBulk() {
-        return new HashSet<>(Arrays.asList(new CaseType(1L, UUID.randomUUID(), "DCU Ministerial","21", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true, null),
-                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","22", "TRO", unitUUID,"DCU_MIN_DISPATCH",  true, true, null)));
+        return new HashSet<>(Arrays.asList(new CaseType(1L, UUID.randomUUID(), "DCU Ministerial","21", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true, null, null),
+                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","22", "TRO", unitUUID,"DCU_MIN_DISPATCH",  true, true, null, null)));
     }
 
     private HashSet<CaseType> getDCUAndUKVICaseType() {
         return new HashSet<>(Arrays.asList(
-                new CaseType(1L,UUID.randomUUID(), "DCU Ministerial","31", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true, null),
-                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","32", "TRO", unitUUID,"DCU_TRO_DISPATCH",  true, true, null),
-                new CaseType(3L,UUID.randomUUID(), "DCU Number 10","33", "DTEN", unitUUID,"DCU_DTEN_DISPATCH",  true, true, null),
-                new CaseType(1L,UUID.randomUUID(), "UKVI B REF","34", "IMCB", unitUUID,"DCU_IMCB_DISPATCH",  true, true, null),
-                new CaseType(2L,UUID.randomUUID(), "UKVI Ministerial REF","35", "IMCM", unitUUID,"DCU_IMCM_DISPATCH", true, true, null),
-                new CaseType(3L,UUID.randomUUID(), "UKVI Number 10","36",  "UTEN",unitUUID,"DCU_UTEN_DISPATCH",  true, true, null)));
+                new CaseType(1L,UUID.randomUUID(), "DCU Ministerial","31", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true, null, null),
+                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","32", "TRO", unitUUID,"DCU_TRO_DISPATCH",  true, true, null, null),
+                new CaseType(3L,UUID.randomUUID(), "DCU Number 10","33", "DTEN", unitUUID,"DCU_DTEN_DISPATCH",  true, true, null, null),
+                new CaseType(1L,UUID.randomUUID(), "UKVI B REF","34", "IMCB", unitUUID,"DCU_IMCB_DISPATCH",  true, true, null, null),
+                new CaseType(2L,UUID.randomUUID(), "UKVI Ministerial REF","35", "IMCM", unitUUID,"DCU_IMCM_DISPATCH", true, true, null, null),
+                new CaseType(3L,UUID.randomUUID(), "UKVI Number 10","36",  "UTEN",unitUUID,"DCU_UTEN_DISPATCH",  true, true, null, null)));
     }
 
     private HashSet<CaseType> getDCUAndUKVICaseTypeBulk() {
         return new HashSet<>(Arrays.asList(
-                new CaseType(1L,UUID.randomUUID(), "DCU Ministerial","41", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true, null),
-                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","42", "TRO", unitUUID,"DCU_TRO_DISPATCH",  true, true, null),
-                new CaseType(1L,UUID.randomUUID(), "UKVI B REF","43", "IMCB", unitUUID,"DCU_IMCB_DISPATCH",  true, true, null),
-                new CaseType(2L,UUID.randomUUID(), "UKVI Ministerial REF","44", "IMCM", unitUUID,"DCU_IMCM_DISPATCH",  true, true, null),
-                new CaseType(3L,UUID.randomUUID(), "UKVI Number 10","45", "UTEN", unitUUID, "DCU_UTEN_DISPATCH", true, true, null)));
+                new CaseType(1L,UUID.randomUUID(), "DCU Ministerial","41", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true, null, null),
+                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","42", "TRO", unitUUID,"DCU_TRO_DISPATCH",  true, true, null, null),
+                new CaseType(1L,UUID.randomUUID(), "UKVI B REF","43", "IMCB", unitUUID,"DCU_IMCB_DISPATCH",  true, true, null, null),
+                new CaseType(2L,UUID.randomUUID(), "UKVI Ministerial REF","44", "IMCM", unitUUID,"DCU_IMCM_DISPATCH",  true, true, null, null),
+                new CaseType(3L,UUID.randomUUID(), "UKVI Number 10","45", "UTEN", unitUUID, "DCU_UTEN_DISPATCH", true, true, null, null)));
     }
 
     @Test
