@@ -160,14 +160,7 @@ public class TeamResource {
         for (UserDto user: users){
             Set<Team> teams = teamService.getTeamsForUser(UUID.fromString(user.getId()));
             ArrayList<UUID> teamUUIDS = new ArrayList<>();
-            teams.forEach((team -> {
-                teamUUIDS.add(team.getUuid());
-                if (team.getUnit() != null) {
-                    team.getUnit().getTeams().forEach((unitTeam) -> {
-                        teamUUIDS.add(unitTeam.getUuid());
-                    });
-                }
-            }));
+            teams.forEach((team -> teamUUIDS.add(team.getUuid())));
             usersWithTeams.add(UserWithTeamsDto.from(user, teamUUIDS));
         }
         return ResponseEntity.ok(usersWithTeams);
