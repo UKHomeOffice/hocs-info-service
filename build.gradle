@@ -70,7 +70,7 @@ dependencies {
 	implementation 'javax.json:javax.json-api:1.1.4'
 
 
-	implementation 'org.flywaydb:flyway-core:8.4.1'
+	implementation 'org.flywaydb:flyway-core:8.4.2'
 	runtimeOnly 'org.hsqldb:hsqldb'
 	runtimeOnly 'org.postgresql:postgresql:42.3.1'
 
