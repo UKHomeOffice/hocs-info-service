@@ -14,20 +14,24 @@ import uk.gov.digital.ho.hocs.info.domain.model.StageTypeEntity;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 public class StageTypeResource {
 
     private final StageTypeService stageTypeService;
+    private final CaseTypeService caseTypeService;
 
     @Autowired
-    public StageTypeResource(StageTypeService stageTypeService) {
+    public StageTypeResource(StageTypeService stageTypeService, CaseTypeService caseTypeService) {
         this.stageTypeService = stageTypeService;
+        this.caseTypeService = caseTypeService;
     }
 
     @GetMapping(value = "/stageType", produces = APPLICATION_JSON_UTF8_VALUE)
@@ -52,44 +56,23 @@ public class StageTypeResource {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping(value = "/stages/caseType/{caseType}", produces = APPLICATION_JSON_VALUE)
+    ResponseEntity<Set<StageTypeDto>> getStagesForCaseType(@PathVariable String caseType) {
+        final UUID caseTypeUuid = caseTypeService.getCaseType(caseType).getUuid();
+
+        final Set<StageTypeDto> stages = stageTypeService
+                .getAllStageTypesByCaseType(caseTypeUuid)
+                .stream()
+                .map(StageTypeDto::from)
+                .collect(Collectors.toSet());
+
+        return ResponseEntity.ok(stages);
+    }
+
     @GetMapping(value = "/stageType/{stageType}/team", produces = APPLICATION_JSON_UTF8_VALUE)
     ResponseEntity<TeamDto> getTeamForStageType(@PathVariable String stageType) {
         Team team = stageTypeService.getTeamForStageType(stageType);
         return ResponseEntity.ok(TeamDto.fromWithoutPermissions(team));
-    }
-
-    @GetMapping(value = "/stageType/{stageType}/deadline", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<LocalDate> getDeadlineByStage(@PathVariable String stageType, @RequestParam String received, @RequestParam String caseDeadline, @RequestParam(required = false, defaultValue = "false") boolean overrideSla) {
-        try {
-            LocalDate receivedDate = LocalDate.parse(received);
-            LocalDate caseDeadlineDate = LocalDate.parse(caseDeadline);
-            LocalDate deadline;
-            if (!overrideSla) {
-                deadline = stageTypeService.getDeadlineForStageType(stageType, receivedDate, caseDeadlineDate);
-            } else {
-                deadline = stageTypeService.getDeadlineForStageTypeOverrideSla(stageType, receivedDate, caseDeadlineDate);
-            }
-            return ResponseEntity.ok(deadline);
-        } catch (ApplicationExceptions.EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
-
-    @GetMapping(value = "/stageType/{stageType}/deadlineWarning", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<LocalDate> getDeadlineWarningByStage(@PathVariable String stageType, @RequestParam String received, @RequestParam String caseDeadlineWarning, @RequestParam(required = false, defaultValue = "false") boolean overrideSla) {
-        try {
-            LocalDate receivedDate = LocalDate.parse(received);
-            LocalDate caseDeadlineWarningDate = LocalDate.parse(caseDeadlineWarning);
-            LocalDate deadline;
-            if (!overrideSla) {
-                deadline = stageTypeService.getDeadlineWarningForStageType(stageType, receivedDate, caseDeadlineWarningDate);
-            } else {
-                deadline = stageTypeService.getDeadlineWarningForStageTypeOverrideSla(stageType, receivedDate, caseDeadlineWarningDate);
-            }
-            return ResponseEntity.ok(deadline);
-        } catch (ApplicationExceptions.EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
     }
 
     @GetMapping(value = "/stageType/{stageType}/contributions", produces = APPLICATION_JSON_UTF8_VALUE)

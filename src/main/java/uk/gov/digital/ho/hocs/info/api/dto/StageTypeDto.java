@@ -26,6 +26,15 @@ public class StageTypeDto {
     @JsonProperty("type")
     private String type;
 
+    @JsonProperty("sla")
+    private int sla;
+
+    @JsonProperty("deadlineWarning")
+    private int deadlineWarning;
+
+    @JsonProperty("sortOrder")
+    private int sortOrder;
+
     public static StageTypeDto from(StageTypeEntity stageTypeEntity) {
 
         return new StageTypeDto(
@@ -33,7 +42,10 @@ public class StageTypeDto {
                 stageTypeEntity.getType(),
                 stageTypeEntity.getDisplayName(),
                 stageTypeEntity.getShortCode(),
-                stageTypeEntity.getType());
+                stageTypeEntity.getType(),
+                stageTypeEntity.getDeadline(),
+                stageTypeEntity.getDeadlineWarning(),
+                stageTypeEntity.getDisplayStageOrder());
     }
 
 }

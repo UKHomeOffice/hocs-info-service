@@ -8,8 +8,12 @@ import uk.gov.digital.ho.hocs.info.domain.model.Member;
 import uk.gov.digital.ho.hocs.info.client.ingest.ListConsumerService;
 import uk.gov.digital.ho.hocs.info.domain.repository.MemberRepository;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -24,14 +28,14 @@ public class MemberService {
         this.listConsumerService = listConsumerService;
     }
 
-    Set<Member> getAllActiveMembers() {
+    public Set<Member> getAllActiveMembers() {
         log.debug("Getting all Members");
         Set<Member> members = memberRepository.findAllActiveMembers();
         log.info("Got {} CaseTypes", members.size());
         return members;
     }
 
-    Member getMember(UUID uuid) {
+    public Member getMember(UUID uuid) {
         log.debug("Requesting House Address for Member {}", uuid);
         Member member = memberRepository.findByUuid(uuid);
         if (member != null) {
@@ -42,28 +46,47 @@ public class MemberService {
         }
     }
 
-    void updateWebMemberLists() {
+    public Integer updateWebMemberLists() {
         log.info("Started Updating Members Lists");
-        updateMember(listConsumerService.createFromWelshAssemblyAPI());
-        updateMember(listConsumerService.createFromScottishParliamentAPI());
-        updateMember(listConsumerService.createCommonsFromUKParliamentAPI());
-        updateMember(listConsumerService.createLordsFromUKParliamentAPI());
-        updateMember(listConsumerService.createFromIrishAssemblyAPI());
+
+        // launch async calls to all members endpoints, threads taken from common pool.
+        CompletableFuture<Set<Member>> futureWelsh
+                = CompletableFuture.supplyAsync(listConsumerService::createFromWelshAssemblyAPI);
+        CompletableFuture<Set<Member>> futureScottish
+                = CompletableFuture.supplyAsync(listConsumerService::createFromScottishParliamentAPI);
+        CompletableFuture<Set<Member>> futureUKCommons
+                = CompletableFuture.supplyAsync(listConsumerService::createCommonsFromUKParliamentAPI);
+        CompletableFuture<Set<Member>> futureUKLords
+                = CompletableFuture.supplyAsync(listConsumerService::createLordsFromUKParliamentAPI);
+        CompletableFuture<Set<Member>> futureIrish
+                = CompletableFuture.supplyAsync(listConsumerService::createFromIrishAssemblyAPI);
+
+        Set<Member> membersBulkSet = Stream.of(futureWelsh, futureScottish, futureUKCommons, futureUKLords, futureIrish)
+                .map(CompletableFuture::join) // wait for all futures to return
+                .collect(HashSet::new, Set::addAll, Set::addAll); // create a new HashSet and flatten future results
+
+        updateMembersBulk(membersBulkSet); // update info members table in single transaction
+
         log.info("Finished Updating Members Lists");
+        return membersBulkSet.size();
     }
 
-    private void updateMember(Set<Member> members) {
+    private void updateMembersBulk(Set<Member> members) {
+
+        Set<Member> membersBulk = new HashSet<>();
+
         members.forEach(member -> {
-            log.debug("Looking for Member: {}", member.getFullTitle());
             Member memberFromDB = memberRepository.findByExternalReference(member.getExternalReference());
             if (memberFromDB != null) {
-                log.info("Member {} found, updating", member.getFullTitle());
                 memberFromDB.update(member.getFullTitle());
-                memberRepository.save(memberFromDB);
+                membersBulk.add(memberFromDB);
             } else {
-                log.info("Member {} not found, creating", member.getFullTitle());
-                memberRepository.save(member);
+                membersBulk.add(member);
             }
         });
+
+        memberRepository.saveAll(membersBulk); // save all members with single transaction
+        log.debug("{} members processed", membersBulk.size());
     }
+
 }
