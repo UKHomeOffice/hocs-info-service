@@ -159,11 +159,11 @@ public class TeamResource {
         for (UserDto user: users){
             Set<Team> teams = teamService.getTeamsForUser(UUID.fromString(user.getId()));
             ArrayList<String> teamNames = new ArrayList<>();
-            ArrayList<String> unitNames = new ArrayList<>();
+            Map<String, String> unitNames = new HashMap<>();
             teams.forEach((team -> {
                 teamNames.add(team.getDisplayName());
                 if (team.getUnit() != null) {
-                    unitNames.add(team.getUnit().getDisplayName());
+                    unitNames.put(team.getDisplayName(), team.getUnit().getDisplayName());
                 }
             }));
             usersWithTeams.add(UserWithTeamsDto.from(user, teamNames, unitNames));
