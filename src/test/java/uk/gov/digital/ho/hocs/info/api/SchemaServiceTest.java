@@ -185,4 +185,17 @@ public class SchemaServiceTest {
         verify(schemaRepository).findAllActiveFormsByCaseTypeAndStages(caseType, expectedStagesList);
     }
 
+    @Test
+    public void shouldGetAllFieldsBySchemaType() {
+        List<Field> fields = new ArrayList<>() {{
+            add(field);
+        }};
+        when(fieldRepository.findAllBySchemaType("SCHEMA_TYPE")).thenReturn(fields);
+
+        List<Field> result = service.getFieldsBySchemaType("SCHEMA_TYPE");
+
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.toArray()[0]).isEqualTo(field);
+    }
+
 }
