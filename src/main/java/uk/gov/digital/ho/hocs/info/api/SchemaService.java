@@ -81,4 +81,11 @@ public class SchemaService {
         log.info("Got {} Forms for CaseType {} and stages {}", caseTypeSchemas.size(), caseType, stages);
         return caseTypeSchemas;
     }
+
+    public List<Field> getFieldsBySchemaType(String schemaType) {
+        log.debug("Getting all Fields for schema {}", schemaType);
+        List<Field> fields = fieldRepository.findAllBySchemaType(schemaType);
+        log.debug("Got {} Fields for Schema {}", fields.size(), schemaType);
+        return fields;
+    }
 }
