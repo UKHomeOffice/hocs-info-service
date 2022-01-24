@@ -30,7 +30,7 @@ then
     export MIN_REPLICAS="2"
     export MAX_REPLICAS="3"
 
-    export MEMBER_REFRESH_HOUR="5"
+    export MEMBER_REFRESH_HOUR="6"
     export UPTIME_PERIOD="Mon-Sun 04:55-23:00 Europe/London"
 
     export ALLOWED_EMAIL_DOMAINS="homeoffice.gov.uk,hmpo.gov.uk,cluster2security.gov.uk"
