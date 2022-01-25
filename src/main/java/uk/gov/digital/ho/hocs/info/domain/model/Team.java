@@ -26,7 +26,14 @@ public class Team implements Serializable {
         this.uuid = UUID.randomUUID();
         this.permissions = new HashSet<>(permissions.size());
         addPermissions(permissions);
+    }
 
+    public Team(String displayName, Unit unit, boolean active) {
+        this.displayName = displayName;
+        this.uuid = UUID.randomUUID();
+        this.active = active;
+        this.permissions = new HashSet<>(0);
+        this.unit = unit;
     }
 
     @Id
