@@ -82,7 +82,7 @@ dependencies {
 	testImplementation "org.apache.camel:camel-test-spring:${camelVersion}"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.assertj:assertj-core'
-	testImplementation 'org.mockito:mockito-inline:4.2.0'
+	testImplementation 'org.mockito:mockito-inline:4.3.0'
 }
 
 jar {
