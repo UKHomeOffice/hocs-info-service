@@ -394,14 +394,6 @@ public class TeamResourceTest {
         }};
     }
 
-    private List<UserDto> getAllUsers() {
-        return new ArrayList<UserDto>() {{
-            add(new UserDto(UUID.randomUUID().toString(), "user1", "user1@email.com", "User", "One", true));
-            add(new UserDto(UUID.randomUUID().toString(), "user2", "user2@email.com", "User", "Two", true));
-            add(new UserDto(UUID.randomUUID().toString(), "user3", "user3@email.com", "User", "Three", true));
-        }};
-    }
-
     @Test
     public void shouldRemoveUserFromTeam() {
         UUID teamUUID = UUID.randomUUID();
