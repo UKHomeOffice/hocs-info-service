@@ -61,6 +61,6 @@ public class SchemaResource {
     @GetMapping(value = "/schema/{schemaType}/fields", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<FieldDto>> getFieldsBySchemaType(@PathVariable String schemaType) {
         List<Field> fields = schemaService.getFieldsBySchemaType(schemaType);
-        return ResponseEntity.ok(fields.stream().map(FieldDto::from).collect(Collectors.toList()));
+        return ResponseEntity.ok(fields.stream().map(FieldDto::fromWithDecoratedProps).collect(Collectors.toList()));
     }
 }
