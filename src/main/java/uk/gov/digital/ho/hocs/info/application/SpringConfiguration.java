@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -25,6 +27,17 @@ public class SpringConfiguration implements WebMvcConfigurer {
         return new RestTemplate();
     }
 
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(createRequestData());
+    }
+
+    @Bean
+    public HttpClient createHttpClient() {
+        return HttpClientBuilder.create()
+                .useSystemProperties().build();
+    }
+
     @Bean
     public ObjectMapper initialiseObjectMapper() {
         ObjectMapper m = new ObjectMapper();
@@ -35,11 +48,5 @@ public class SpringConfiguration implements WebMvcConfigurer {
         m.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         return m;
     }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(createRequestData());
-    }
-
 
 }

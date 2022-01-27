@@ -38,6 +38,7 @@ public class AuditClient {
     private final AmazonSNSAsync auditSearchSnsClient;
     private final ObjectMapper objectMapper;
     private final RequestData requestData;
+
     private final JsonArrayBuilder permissionArray;
     private static final String EVENT_TYPE_HEADER = "event_type";
     private static final String TOPIC = "topicUUID";
@@ -50,7 +51,7 @@ public class AuditClient {
 
     @Autowired
     public AuditClient(AmazonSNSAsync auditSearchSnsClient,
-                       @Value("${audit.queue}") String auditQueue,
+                       @Value("${aws.sns.audit-search.arn}") String auditQueue,
                        @Value("${auditing.deployment.name}") String raisingService,
                        @Value("${auditing.deployment.namespace}") String namespace,
                        ObjectMapper objectMapper,
@@ -61,6 +62,7 @@ public class AuditClient {
         this.namespace = namespace;
         this.objectMapper = objectMapper;
         this.requestData = requestData;
+
         permissionArray = Json.createArrayBuilder();
     }
 

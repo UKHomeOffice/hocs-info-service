@@ -34,7 +34,7 @@ public class NotifyClient {
 
     @Autowired
     public NotifyClient(AmazonSQSAsync notifyAsyncClient,
-                        @Value("${notify.queue}") String notifyQueue,
+                        @Value("${aws.sqs.notify.url}") String notifyQueue,
                         ObjectMapper objectMapper,
                         RequestData requestData) {
         this.notifyAsyncClient = notifyAsyncClient;

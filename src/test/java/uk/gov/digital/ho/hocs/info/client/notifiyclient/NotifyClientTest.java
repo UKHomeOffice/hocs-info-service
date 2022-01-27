@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles({"local", "integration"})
 public class NotifyClientTest extends BaseAwsTest {
 
     @Captor
