@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,10 +16,10 @@ public class UserWithTeamsDto {
     private String email;
     private String firstName;
     private String lastName;
-    private List<UUID> teamUUIDs;
+    private Map<String, List<String>> unitAndTeamNames;
     private boolean enabled;
 
-    public static UserWithTeamsDto from(UserDto user, List<UUID> teams) {
-        return new UserWithTeamsDto(user.getId(), user.getUsername(), user.getEmail(), user.getFirstName(), user.getLastName(), teams, user.isEnabled());
+    public static UserWithTeamsDto from(UserDto user,  Map<String, List<String>> unitAndTeamNames) {
+        return new UserWithTeamsDto(user.getId(), user.getUsername(), user.getEmail(), user.getFirstName(), user.getLastName(), unitAndTeamNames, user.isEnabled());
     }
 }
