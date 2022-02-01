@@ -37,7 +37,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.UnitRepository;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
 @Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
-@ActiveProfiles("test")
+@ActiveProfiles({"local", "integration"})
 public class UserIntegrationTest {
 
     TestRestTemplate restTemplate = new TestRestTemplate();
@@ -107,5 +107,3 @@ public class UserIntegrationTest {
         return "http://localhost:" + port;
     }
 }
-
-

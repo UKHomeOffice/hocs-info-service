@@ -33,7 +33,7 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
 @Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
-@ActiveProfiles("test")
+@ActiveProfiles({"local", "integration"})
 public class SchemaIntegrationTest {
 
     public static final String TEST_SCREEN_SCHEMA = "TEST_SCREEN_SCHEMA";
@@ -75,5 +75,3 @@ public class SchemaIntegrationTest {
         assertThat(((List) body.get("fields")).size()).isEqualTo(2);
     }
 }
-
-
