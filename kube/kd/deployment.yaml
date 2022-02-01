@@ -314,18 +314,23 @@ spec:
                 secretKeyRef:
                   name: '{{.KUBE_NAMESPACE}}-keycloak'
                   key: keycloak_client_id
-            - name: AUDIT_TOPIC_NAME
+            - name: AWS_SNS_AUDIT_SEARCH_TOPIC_NAME
               value: {{.KUBE_NAMESPACE}}-sns
-            - name: AUDIT_AWS_SNS_ACCESS_KEY
+            - name: AWS_SNS_AUDIT_SEARCH_ACCOUNT_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{.KUBE_NAMESPACE}}-audit-sqs
                   key: access_key_id
-            - name: AUDIT_AWS_SNS_SECRET_KEY
+            - name: AWS_SNS_AUDIT_SEARCH_ACCOUNT_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{.KUBE_NAMESPACE}}-audit-sqs
                   key: secret_access_key
+            - name: AWS_SNS_AUDIT_SEARCH_ACCOUNT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: hocs-queue-config
+                  key: AWS_ACCOUNT_ID
             - name: AUDITING_DEPLOYMENT_NAME
               valueFrom:
                 fieldRef:
