@@ -27,12 +27,6 @@ services:
       DEFAULT_REGION: eu-west-2
 
 steps:
-  - name: fetch and checkout
-    image: alpine/git
-    commands:
-      - git fetch --tags
-      - git checkout $${VERSION}
-
   - name: setup localstack
     image: quay.io/ukhomeofficedigital/localstack # need curl which is not in alpine
     commands:
@@ -40,7 +34,7 @@ steps:
       - ./1-setup-sqs.sh
       - ./2-setup-sns.sh
     depends_on:
-      - fetch and checkout
+      - clone
 
   - name: wait for keycloak
     image: quay.io/ukhomeofficedigital/hocs-docker-tools
@@ -163,6 +157,11 @@ environment:
   DOCKER_HOST: tcp://docker:2375
 
 steps:
+  - name: fetch and checkout
+    image: alpine/git
+    commands:
+      - git fetch --tags
+      - git checkout $${VERSION}
 
   - name: deploy to cs-dev
     image: quay.io/ukhomeofficedigital/kd
