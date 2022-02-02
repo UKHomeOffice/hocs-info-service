@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   keycloak:
-    image: jboss/keycloak
+    image: jboss/keycloak:11.0.2
     restart: always
     ports:
     - 9990:9990
