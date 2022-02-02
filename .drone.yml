@@ -81,6 +81,7 @@ steps:
       - ./gradlew check --no-daemon
     depends_on:
       - build project
+      - setup localstack
 
   - name: sonar-scanner
     image: quay.io/ukhomeofficedigital/sonar-scanner:v4.6
