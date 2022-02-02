@@ -57,7 +57,7 @@ dependencies {
 
 	implementation 'org.apache.commons:commons-csv:1.9.0'
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.5'
-	implementation 'com.jayway.jsonpath:json-path:2.6.0'
+	implementation 'com.jayway.jsonpath:json-path:2.7.0'
 	implementation 'javax.json:javax.json-api:1.1.4'
 
 	implementation 'org.flywaydb:flyway-core:8.4.4'
