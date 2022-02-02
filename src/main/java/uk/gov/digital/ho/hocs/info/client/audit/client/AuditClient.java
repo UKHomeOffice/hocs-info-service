@@ -1,13 +1,16 @@
 package uk.gov.digital.ho.hocs.info.client.audit.client;
 
+import com.amazonaws.services.sns.AmazonSNSAsync;
+import com.amazonaws.services.sns.model.MessageAttributeValue;
+import com.amazonaws.services.sns.model.PublishRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.info.api.dto.PermissionDto;
 import uk.gov.digital.ho.hocs.info.application.RequestData;
+import uk.gov.digital.ho.hocs.info.application.aws.util.SnsStringMessageAttributeValue;
 import uk.gov.digital.ho.hocs.info.client.audit.client.dto.CreateAuditRequest;
 import uk.gov.digital.ho.hocs.info.client.audit.client.dto.EventType;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
@@ -15,7 +18,6 @@ import uk.gov.digital.ho.hocs.info.domain.model.*;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -33,9 +35,10 @@ public class AuditClient {
     private final String raisingService;
     private final String namespace;
 
-    private final ProducerTemplate producerTemplate;
+    private final AmazonSNSAsync auditSearchSnsClient;
     private final ObjectMapper objectMapper;
     private final RequestData requestData;
+
     private final JsonArrayBuilder permissionArray;
     private static final String EVENT_TYPE_HEADER = "event_type";
     private static final String TOPIC = "topicUUID";
@@ -47,18 +50,19 @@ public class AuditClient {
 
 
     @Autowired
-    public AuditClient(ProducerTemplate producerTemplate,
-                       @Value("${audit.queue}") String auditQueue,
+    public AuditClient(AmazonSNSAsync auditSearchSnsClient,
+                       @Value("${aws.sns.audit-search.arn}") String auditQueue,
                        @Value("${auditing.deployment.name}") String raisingService,
                        @Value("${auditing.deployment.namespace}") String namespace,
                        ObjectMapper objectMapper,
                        RequestData requestData) {
-        this.producerTemplate = producerTemplate;
+        this.auditSearchSnsClient = auditSearchSnsClient;
         this.auditQueue = auditQueue;
         this.raisingService = raisingService;
         this.namespace = namespace;
         this.objectMapper = objectMapper;
         this.requestData = requestData;
+
         permissionArray = Json.createArrayBuilder();
     }
 
@@ -176,17 +180,6 @@ public class AuditClient {
         sendAuditMessage(request);
     }
 
-
-    public void updateTopicParentAudit(Topic topic) {
-        String auditPayload = Json.createObjectBuilder()
-                .add(TOPIC, topic.getUuid().toString())
-                .add("newParentTopicUUID", topic.getParentTopic().toString())
-                .build()
-                .toString();
-        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.UPDATE_TOPIC_PARENT.toString());
-        sendAuditMessage(request);
-    }
-
     public void addTeamToTopicAudit(TeamLink teamLink) {
         String auditPayload = Json.createObjectBuilder()
                 .add(TOPIC, teamLink.getLinkValue())
@@ -197,19 +190,6 @@ public class AuditClient {
         CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.ADD_TEAM_TO_TOPIC.toString());
         sendAuditMessage(request);
     }
-
-    public void updateTeamForTopicAudit(TeamLink teamLink, UUID oldTeamUUID) {
-        String auditPayload = Json.createObjectBuilder()
-                .add(TOPIC, teamLink.getLinkValue())
-                .add(TEAM_UUID, teamLink.getResponsibleTeamUUID().toString())
-                .add(CASE_TYPE, teamLink.getCaseType())
-                .add(STAGE_TYPE, teamLink.getStageType())
-                .add("oldTeamUUID", oldTeamUUID.toString())
-                .build().toString();
-        CreateAuditRequest request = generateAuditRequest(auditPayload, EventType.UPDATE_TEAM_FOR_TOPIC.toString());
-        sendAuditMessage(request);
-    }
-
 
     public void createCorrespondentType(CorrespondentType correspondentType) {
         String auditPayload = Json.createObjectBuilder()
@@ -225,8 +205,10 @@ public class AuditClient {
     private void sendAuditMessage(CreateAuditRequest request) {
 
         try {
-            Map<String, Object> queueHeaders = getQueueHeaders(request.getType());
-            producerTemplate.sendBodyAndHeaders(auditQueue, objectMapper.writeValueAsString(request), queueHeaders);
+            var publishRequest = new PublishRequest(auditQueue, objectMapper.writeValueAsString(request))
+                    .withMessageAttributes(getQueueHeaders(request.getType()));
+
+            auditSearchSnsClient.publish(publishRequest);
             log.info("Create audit for event {}, correlationID: {}, UserID: {}", request.getType(), requestData.correlationId(), requestData.userId(), value(EVENT, AUDIT_EVENT_CREATED));
         } catch (Exception e) {
             log.error("Failed to create audit event {} for reason {}", request.getType(), e, value(EVENT, AUDIT_FAILED));
@@ -244,13 +226,12 @@ public class AuditClient {
                 requestData.userId());
     }
 
-    private Map<String, Object> getQueueHeaders(String eventType) {
-        Map<String, Object> headers = new HashMap<>();
-        headers.put(EVENT_TYPE_HEADER, eventType);
-        headers.put(RequestData.CORRELATION_ID_HEADER, requestData.correlationId());
-        headers.put(RequestData.USER_ID_HEADER, requestData.userId());
-        headers.put(RequestData.USERNAME_HEADER, requestData.username());
-        headers.put(RequestData.GROUP_HEADER, requestData.groups());
-        return headers;
+    private Map<String, MessageAttributeValue> getQueueHeaders(String eventType) {
+        return Map.of(
+                EVENT_TYPE_HEADER, new SnsStringMessageAttributeValue(eventType),
+                RequestData.CORRELATION_ID_HEADER, new SnsStringMessageAttributeValue(requestData.correlationId()),
+                RequestData.USER_ID_HEADER, new SnsStringMessageAttributeValue(requestData.userId()),
+                RequestData.USERNAME_HEADER, new SnsStringMessageAttributeValue(requestData.username()),
+                RequestData.GROUP_HEADER, new SnsStringMessageAttributeValue(requestData.groups()));
     }
 }

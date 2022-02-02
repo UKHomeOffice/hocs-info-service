@@ -1,14 +1,16 @@
 package uk.gov.digital.ho.hocs.info.client.notifyclient;
 
+import com.amazonaws.services.sqs.AmazonSQSAsync;
+import com.amazonaws.services.sqs.model.MessageAttributeValue;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.CamelExecutionException;
-import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import uk.gov.digital.ho.hocs.info.application.aws.util.SqsStringMessageAttributeValue;
 import uk.gov.digital.ho.hocs.info.client.notifyclient.dto.TeamActiveCommand;
 import uk.gov.digital.ho.hocs.info.client.notifyclient.dto.TeamCommand;
 import uk.gov.digital.ho.hocs.info.client.notifyclient.dto.TeamRenameCommand;
@@ -26,16 +28,16 @@ import static uk.gov.digital.ho.hocs.info.application.LogEvent.EXCEPTION;
 public class NotifyClient {
 
     private final String notifyQueue;
-    private final ProducerTemplate producerTemplate;
+    private final AmazonSQSAsync notifyAsyncClient;
     private final ObjectMapper objectMapper;
     private final RequestData requestData;
 
     @Autowired
-    public NotifyClient(ProducerTemplate producerTemplate,
-                        @Value("${notify.queue}") String notifyQueue,
+    public NotifyClient(AmazonSQSAsync notifyAsyncClient,
+                        @Value("${aws.sqs.notify.url}") String notifyQueue,
                         ObjectMapper objectMapper,
                         RequestData requestData) {
-        this.producerTemplate = producerTemplate;
+        this.notifyAsyncClient = notifyAsyncClient;
         this.notifyQueue = notifyQueue;
         this.objectMapper = objectMapper;
         this.requestData = requestData;
@@ -57,13 +59,17 @@ public class NotifyClient {
 
     private <T extends TeamCommand> void sendTeamCommand(T command) {
         try {
-            producerTemplate.sendBodyAndHeaders(notifyQueue, objectMapper.writeValueAsString(command), getQueueHeaders());
+            var messageRequest =
+                    new SendMessageRequest(notifyQueue, objectMapper.writeValueAsString(command))
+                            .withMessageAttributes(getQueueHeaders());
+
+            notifyAsyncClient.sendMessage(messageRequest);
             log.info("Sent notify event: {}, correlationID: {}, UserID: {}",
                     command.getCommand(),
                     requestData.correlationId(),
                     requestData.userId(),
                     value(EVENT, command.getCommand()));
-        } catch (CamelExecutionException | JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             log.error("Failed to send notify event:{}, correlationID:{}, UserID:{}",
                     command.getCommand(),
                     requestData.correlationId(),
@@ -73,11 +79,11 @@ public class NotifyClient {
         }
     }
 
-    private Map<String, Object> getQueueHeaders() {
+    private Map<String, MessageAttributeValue> getQueueHeaders() {
         return Map.of(
-                RequestData.CORRELATION_ID_HEADER, requestData.correlationId(),
-                RequestData.USER_ID_HEADER, requestData.userId(),
-                RequestData.USERNAME_HEADER, requestData.username(),
-                RequestData.GROUP_HEADER, requestData.groups());
+                RequestData.CORRELATION_ID_HEADER, new SqsStringMessageAttributeValue(requestData.correlationId()),
+                RequestData.USER_ID_HEADER, new SqsStringMessageAttributeValue(requestData.userId()),
+                RequestData.USERNAME_HEADER, new SqsStringMessageAttributeValue(requestData.username()),
+                RequestData.GROUP_HEADER, new SqsStringMessageAttributeValue(requestData.groups()));
     }
 }

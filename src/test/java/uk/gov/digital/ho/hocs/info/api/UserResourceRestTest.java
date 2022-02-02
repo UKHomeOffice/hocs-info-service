@@ -32,7 +32,7 @@ public class UserResourceRestTest {
 
   @Test
   public void testCreateUserWithWhitelistedDomains() throws Exception {
-    List<String> whitelistedDomains = List.of("mick@example.co.uk", "mick@example.org");
+    List<String> whitelistedDomains = List.of("mick@homeoffice.gov.uk");
 
     for (String domain :
             whitelistedDomains) {
