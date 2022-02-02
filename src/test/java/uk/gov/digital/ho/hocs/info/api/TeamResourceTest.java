@@ -373,16 +373,16 @@ public class TeamResourceTest {
 
     private Set<Team> getTeams() {
         return new HashSet<Team>() {{
-            add(new Team("Team1", true));
-            add(new Team("Team2", true));
+            add(new Team("Team1", new Unit("Unit 1", "1", true), true));
+            add(new Team("Team2", new Unit("Unit 2", "2", true), true));
         }};
     }
 
     private Set<Team> getAllTeams() {
         return new HashSet<Team>() {{
-            add(new Team("Team1", true));
-            add(new Team("Team2", true));
-            add(new Team("Team3", false));
+            add(new Team("Team1", new Unit("Unit 1", "1", true), true));
+            add(new Team("Team2", new Unit("Unit 2", "2", true), true));
+            add(new Team("Team3", new Unit("Unit 2", "2", true), false));
         }};
     }
 

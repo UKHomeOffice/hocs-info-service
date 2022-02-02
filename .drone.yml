@@ -20,7 +20,22 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: dev
 
+  - name: localstack
+    image: quay.io/ukhomeofficedigital/localstack
+    environment:
+      SERVICES: sqs, sns
+      DEFAULT_REGION: eu-west-2
+
 steps:
+  - name: setup localstack
+    image: quay.io/ukhomeofficedigital/localstack # need curl which is not in alpine
+    commands:
+      - cd config/localstack
+      - ./1-setup-sqs.sh
+      - ./2-setup-sns.sh
+    depends_on:
+      - clone
+
   - name: wait for keycloak
     image: quay.io/ukhomeofficedigital/hocs-docker-tools
     commands:
@@ -142,6 +157,11 @@ environment:
   DOCKER_HOST: tcp://docker:2375
 
 steps:
+  - name: fetch and checkout
+    image: alpine/git
+    commands:
+      - git fetch --tags
+      - git checkout $${VERSION}
 
   - name: deploy to cs-dev
     image: quay.io/ukhomeofficedigital/kd
@@ -212,6 +232,7 @@ steps:
         from_secret: GITHUB_TOKEN
     depends_on:
       - wait for docker
+      - fetch and checkout
     when:
       event:
         - promote
@@ -322,6 +343,8 @@ steps:
     commands:
       - cd kube
       - ./deploy.sh
+    depends_on:
+      - fetch and checkout
     when:
       target:
         exclude:
@@ -340,6 +363,8 @@ steps:
     commands:
       - cd kube
       - ./deploy.sh
+    depends_on:
+      - fetch and checkout
     when:
       event:
         - promote

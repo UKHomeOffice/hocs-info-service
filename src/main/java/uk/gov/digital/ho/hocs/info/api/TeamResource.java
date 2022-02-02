@@ -23,7 +23,6 @@ import static uk.gov.digital.ho.hocs.info.application.LogEvent.*;
 public class TeamResource {
     private TeamService teamService;
 
-
     private final UserService userService;
 
     public TeamResource(TeamService teamService, UserService userService) {
@@ -159,16 +158,17 @@ public class TeamResource {
 
         for (UserDto user: users){
             Set<Team> teams = teamService.getTeamsForUser(UUID.fromString(user.getId()));
-            ArrayList<UUID> teamUUIDS = new ArrayList<>();
+            Map<String, List<String>> unitAndTeamNames = new HashMap<>();
             teams.forEach((team -> {
-                teamUUIDS.add(team.getUuid());
-                if (team.getUnit() != null) {
-                    team.getUnit().getTeams().forEach((unitTeam) -> {
-                        teamUUIDS.add(unitTeam.getUuid());
-                    });
+                String unitName = team.getUnit().getDisplayName();
+                List<String> teamNames = unitAndTeamNames.get(unitName);
+                if (teamNames == null){
+                    teamNames = new ArrayList<>();
                 }
+                teamNames.add(team.getDisplayName());
+                unitAndTeamNames.put(unitName, teamNames);
             }));
-            usersWithTeams.add(UserWithTeamsDto.from(user, teamUUIDS));
+            usersWithTeams.add(UserWithTeamsDto.from(user, unitAndTeamNames));
         }
         return ResponseEntity.ok(usersWithTeams);
     }
