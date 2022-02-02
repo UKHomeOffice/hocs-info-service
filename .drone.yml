@@ -99,7 +99,6 @@ steps:
       registry: quay.io
       repo: quay.io/ukhomeofficedigital/hocs-info-service
       tags:
-        - build_${DRONE_BUILD_NUMBER}
         - ${DRONE_COMMIT_SHA}
         - branch-${DRONE_COMMIT_BRANCH/\//_}
     when:
@@ -120,7 +119,6 @@ steps:
       registry: quay.io
       repo: quay.io/ukhomeofficedigital/hocs-info-service
       tags:
-        - build_${DRONE_BUILD_NUMBER}
         - ${DRONE_COMMIT_SHA}
         - latest
     when:
@@ -172,8 +170,10 @@ steps:
       ENVIRONMENT: cs-dev
       KUBE_TOKEN:
         from_secret: hocs_info_service_cs_dev
-      VERSION: build_${DRONE_BUILD_NUMBER}
+      VERSION: "${DRONE_COMMIT_SHA}"
       HOCS_INFO_SERVICE_DATA_VERSION: latest
+    depends_on:
+      - fetch and checkout
     when:
       branch:
         - main
@@ -189,8 +189,10 @@ steps:
       ENVIRONMENT: wcs-dev
       KUBE_TOKEN:
         from_secret: hocs_info_service_wcs_dev
-      VERSION: build_${DRONE_BUILD_NUMBER}
+      VERSION: "${DRONE_COMMIT_SHA}"
       HOCS_INFO_SERVICE_DATA_VERSION: latest
+    depends_on:
+      - fetch and checkout
     when:
       branch:
         - main
