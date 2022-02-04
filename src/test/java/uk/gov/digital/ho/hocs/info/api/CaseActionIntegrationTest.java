@@ -74,7 +74,6 @@ public class CaseActionIntegrationTest {
                 serverUrl, "master", username, password, clientId, clientId);
         setupKeycloakRealm();
 
-//        mockCaseworkService = buildMockService(restTemplate);
         userId = keycloakClient.realm(HOCS_REALM).users().search("admin").get(0).getId();
     }
 

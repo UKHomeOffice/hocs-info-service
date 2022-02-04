@@ -124,6 +124,12 @@ public interface ApplicationExceptions {
 
     }
 
+    class UserAlreadyExistsException extends EntityAlreadyExistsException {
+        public UserAlreadyExistsException() {
+            super("User with email already exists");
+        }
+    }
+
     class IngestException extends RuntimeException {
         private final LogEvent event;
 

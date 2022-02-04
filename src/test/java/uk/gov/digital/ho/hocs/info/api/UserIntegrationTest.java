@@ -35,8 +35,6 @@ import uk.gov.digital.ho.hocs.info.domain.repository.UnitRepository;
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = { "user.email.whitelist=homeoffice.gov.uk" },
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
-@Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
 @ActiveProfiles({"local", "integration"})
 public class UserIntegrationTest {
 
@@ -75,6 +73,22 @@ public class UserIntegrationTest {
         assertThat(userDto.getFirstName()).isEqualTo(createUserDto.getFirstName());
         assertThat(userDto.getLastName()).isEqualTo(createUserDto.getLastName());
         assertThat(userDto.isEnabled()).isEqualTo(true);
+    }
+
+    @Test
+    public void shouldReturn409_WhenUserExists() {
+        //create
+        CreateUserDto createUserDto = new CreateUserDto("alreadyexists" + System.currentTimeMillis() + "@homeoffice.gov.uk", "Bbbbb", "Ccccc");
+
+        // the existing tests are using a real Keycloak instance rather than a mock
+        // so create the user first and then trying adding a duplicate to trigger the error
+        HttpEntity httpEntity = new HttpEntity(createUserDto, headers);
+        restTemplate.exchange(
+                getBasePath() + "/user", HttpMethod.POST, httpEntity, CreateUserResponse.class);
+        ResponseEntity<Void> postResponse = restTemplate.exchange(
+                getBasePath() + "/user", HttpMethod.POST, httpEntity, Void.class);
+
+        assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
 
     @Test
