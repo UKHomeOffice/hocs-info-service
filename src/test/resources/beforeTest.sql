@@ -149,5 +149,5 @@ VALUES  ('9fda236f-6cd4-4016-b4af-307c424eaa50','5abc65d9-3964-4c25-b570-46e203d
          'TEST_ENTITY_2', '{ "title" : "Two"}'::jsonb, 2);
 
 INSERT INTO case_type_bank_holiday_region (case_type_uuid, region) VALUES
-       ('f62834a0-d231-44c9-bfa1-55dd93fc0aa0', 'ENGLAND_AND_WALES'),
-       ('f62834a0-d231-44c9-bfa1-55dd93fc0aa0', 'SCOTLAND');
+       ('bf429d0e-b106-4644-83c6-3b15f2e5f749', 'ENGLAND_AND_WALES'),
+       ('bf429d0e-b106-4644-83c6-3b15f2e5f749', 'SCOTLAND');

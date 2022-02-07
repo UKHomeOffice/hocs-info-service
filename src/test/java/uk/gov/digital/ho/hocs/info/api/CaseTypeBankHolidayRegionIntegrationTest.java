@@ -28,7 +28,7 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
 @Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
-@ActiveProfiles("test")
+@ActiveProfiles({"local", "integration"})
 public class CaseTypeBankHolidayRegionIntegrationTest {
 
     TestRestTemplate restTemplate = new TestRestTemplate();
@@ -44,7 +44,7 @@ public class CaseTypeBankHolidayRegionIntegrationTest {
     @Autowired
     ObjectMapper mapper;
 
-    private final UUID caseTypeUuid = UUID.fromString("1fad0500-a290-43b2-8a41-46c8efc7b351");
+    private final UUID caseTypeUuid = UUID.fromString("bf429d0e-b106-4644-83c6-3b15f2e5f749");
 
     @Before
     public void setup() {
