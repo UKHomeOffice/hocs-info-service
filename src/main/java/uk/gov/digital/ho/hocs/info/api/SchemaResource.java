@@ -1,6 +1,5 @@
 package uk.gov.digital.ho.hocs.info.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,15 +22,12 @@ public class SchemaResource {
 
     private final SchemaService schemaService;
     private final ExtractService extractService;
-    private final ObjectMapper mapper;
 
     @Autowired
     public SchemaResource(SchemaService schemaService,
-                          ExtractService extractService,
-                          ObjectMapper mapper) {
+                          ExtractService extractService) {
         this.schemaService = schemaService;
         this.extractService = extractService;
-        this.mapper = mapper;
     }
 
     @GetMapping(value = "/schema/{type}", produces = APPLICATION_JSON_UTF8_VALUE)
@@ -64,7 +60,7 @@ public class SchemaResource {
 
     @GetMapping(value = "/schema/{schemaType}/fields", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<FieldDto>> getFieldsBySchemaType(@PathVariable String schemaType) {
-        List<Field> fields = schemaService.getFieldsBySchemaType(schemaType);
-        return ResponseEntity.ok(fields.stream().map(field -> FieldDto.fromWithDecoratedProps(field, mapper)).collect(Collectors.toList()));
+        List<FieldDto> fields = schemaService.getFieldsBySchemaType(schemaType);
+        return ResponseEntity.ok(fields);
     }
 }

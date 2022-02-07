@@ -1,8 +1,10 @@
 package uk.gov.digital.ho.hocs.info.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.api.dto.FieldDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Field;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
@@ -22,13 +24,17 @@ public class SchemaService {
 
     private final FieldRepository fieldRepository;
     private final SchemaRepository schemaRepository;
+    private final ObjectMapper mapper;
 
     @Autowired
     public SchemaService(
             FieldRepository fieldRepository,
-            SchemaRepository schemaRepository) {
+            SchemaRepository schemaRepository,
+            ObjectMapper mapper
+    ) {
         this.fieldRepository = fieldRepository;
         this.schemaRepository = schemaRepository;
+        this.mapper = mapper;
     }
 
     Schema getSchemaByType(String type) {
@@ -82,10 +88,10 @@ public class SchemaService {
         return caseTypeSchemas;
     }
 
-    public List<Field> getFieldsBySchemaType(String schemaType) {
+    public List<FieldDto> getFieldsBySchemaType(String schemaType) {
         log.debug("Getting all Fields for schema {}", schemaType);
         List<Field> fields = fieldRepository.findAllBySchemaType(schemaType);
         log.debug("Got {} Fields for Schema {}", fields.size(), schemaType);
-        return fields;
+        return fields.stream().map(field -> FieldDto.fromWithDecoratedProps(field, mapper)).collect(Collectors.toList());
     }
 }

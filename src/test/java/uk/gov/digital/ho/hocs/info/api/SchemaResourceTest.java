@@ -30,7 +30,7 @@ public class SchemaResourceTest {
 
     @Before
     public void setup() {
-        schemaResource = new SchemaResource(schemaService, extractService, mapper);
+        schemaResource = new SchemaResource(schemaService, extractService);
     }
 
     @Test
@@ -79,9 +79,12 @@ public class SchemaResourceTest {
     public void shouldGetAllFieldsBySchemaType() {
         Field childField = new Field("component", "childField", "label", "", "", true, null);
         Field field = new Field("component", "Field1", "label", "", "", true, childField);
-        List<Field> fields = new ArrayList<>();
-        fields.add(field);
-        when(schemaService.getFieldsBySchemaType("SCHEMA_TYPE")).thenReturn(fields);
+
+        FieldDto fieldDto = FieldDto.fromWithDecoratedProps(field, mapper);
+        List<FieldDto> fieldDtos = new ArrayList<>();
+        fieldDtos.add(fieldDto);
+
+        when(schemaService.getFieldsBySchemaType("SCHEMA_TYPE")).thenReturn(fieldDtos);
 
         ResponseEntity<List<FieldDto>> result = schemaResource.getFieldsBySchemaType("SCHEMA_TYPE");
         assertThat(result.getBody()).isNotNull();

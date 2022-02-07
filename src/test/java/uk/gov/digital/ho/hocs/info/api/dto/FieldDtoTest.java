@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.api.dto;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import uk.gov.digital.ho.hocs.info.domain.model.Field;
@@ -38,8 +39,8 @@ public class FieldDtoTest {
         boolean fieldSummary = false;
 
         Field field = new Field(fieldComponent,fieldName,fieldLabel,fieldValidation,fieldProps,fieldSummary,null);
-
-        FieldDto dto = FieldDto.fromWithDecoratedProps(field);
+        ObjectMapper mapper = new ObjectMapper();
+        FieldDto dto = FieldDto.fromWithDecoratedProps(field, mapper);
 
         Assert.assertEquals("Field component do not match", fieldComponent, dto.getComponent());
         Assert.assertEquals("Field name do not match", fieldName, dto.getName());

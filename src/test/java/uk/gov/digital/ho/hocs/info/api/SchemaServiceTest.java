@@ -1,10 +1,12 @@
 package uk.gov.digital.ho.hocs.info.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.info.api.dto.FieldDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Field;
 import uk.gov.digital.ho.hocs.info.domain.model.FieldScreen;
@@ -27,12 +29,15 @@ public class SchemaServiceTest {
     @Mock
     private SchemaRepository schemaRepository;
 
+    @Mock
+    ObjectMapper mapper;
+
     private SchemaService service;
     private final Field field = new Field("", "Field1", "", "", "", true, null);
 
     @Before
     public void setup() {
-        service = new SchemaService(fieldRepository, schemaRepository);
+        service = new SchemaService(fieldRepository, schemaRepository, mapper);
     }
 
     @Test
@@ -192,10 +197,10 @@ public class SchemaServiceTest {
         }};
         when(fieldRepository.findAllBySchemaType("SCHEMA_TYPE")).thenReturn(fields);
 
-        List<Field> result = service.getFieldsBySchemaType("SCHEMA_TYPE");
+        List<FieldDto> result = service.getFieldsBySchemaType("SCHEMA_TYPE");
 
         assertThat(result.size()).isEqualTo(1);
-        assertThat(result.toArray()[0]).isEqualTo(field);
+        assertThat(result.get(0).getName()).isEqualTo(field.getName());
     }
 
 }

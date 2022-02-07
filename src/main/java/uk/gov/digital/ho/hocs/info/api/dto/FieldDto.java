@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import uk.gov.digital.ho.hocs.info.domain.model.Field;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -66,15 +67,20 @@ public class FieldDto {
 
         String props = field.getProps();
 
-        try {
-            Map<String, String> propsMap = mapper.readValue(field.getProps(), Map.class);
-            propsMap.put("label", field.getLabel());
-            propsMap.put("name", field.getName());
+        if (!Objects.equals(props, "")) {
+            try {
+                Map<String, String> propsMap = mapper.readValue(field.getProps(), Map.class);
 
-            props = mapper.writeValueAsString(propsMap);
+                if (field.getLabel() != null && field.getName() != null) {
+                    propsMap.put("label", field.getLabel());
+                    propsMap.put("name", field.getName());
+                }
 
-        } catch (JsonProcessingException e) {
-            log.error("Error processing props on field {}", field.getUuid());
+                props = mapper.writeValueAsString(propsMap);
+
+            } catch (JsonProcessingException e) {
+                log.error("Error processing props on field {}", field.getUuid());
+            }
         }
 
         return new FieldDto(field.getUuid(),
