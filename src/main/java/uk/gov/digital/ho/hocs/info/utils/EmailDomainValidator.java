@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailDomainValidator implements ConstraintValidator<EmailDomainWhitelisted, String> {
 
-//    @Value("${user.email.whitelist}")
-    private List<String> whitelistedDomains = List.of("gmail.com", "homeoffice.gov.uk"); // todo: revert this
+    @Value("${user.email.whitelist}")
+    private List<String> whitelistedDomains = Collections.emptyList();;
 
     @Override
     public void initialize(EmailDomainWhitelisted emailDomainWhitelisted) { }
