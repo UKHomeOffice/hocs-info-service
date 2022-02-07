@@ -3,6 +3,8 @@ package uk.gov.digital.ho.hocs.info.api.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -54,5 +56,10 @@ public class FieldDto {
                 field.isSummary(),
                 field.isActive(),
                 childField);
+    }
+
+    public static FieldDto fromWithDecoratedProps(Field field, ObjectMapper mapper) throws JsonProcessingException {
+        mapper.writeValueAsString(field);
+        return null;
     }
 }
