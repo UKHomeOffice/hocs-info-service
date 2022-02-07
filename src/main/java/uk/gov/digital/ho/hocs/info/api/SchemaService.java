@@ -10,6 +10,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.Field;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 import uk.gov.digital.ho.hocs.info.domain.repository.FieldRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.SchemaRepository;
+import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,5 +94,13 @@ public class SchemaService {
         List<Field> fields = fieldRepository.findAllBySchemaType(schemaType);
         log.debug("Got {} Fields for Schema {}", fields.size(), schemaType);
         return fields.stream().map(field -> FieldDto.fromWithDecoratedProps(field, mapper)).collect(Collectors.toList());
+    }
+
+    public List<FieldDto> getFieldsByPermissionLevel(AccessLevel accessLevel) {
+
+        log.debug("Requesting all fields with access permissions of {}", accessLevel);
+        List<Field> restrictedFields = fieldRepository.findAllByActiveIsTrueAndAccessLevelIs(accessLevel);
+        log.info("Returning {} fields with accessLevel {}", restrictedFields.size(), accessLevel);
+        return restrictedFields.stream().map(FieldDto::from).collect(Collectors.toList());
     }
 }
