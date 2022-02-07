@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,12 +23,14 @@ public class SchemaResourceTest {
     SchemaService schemaService;
     @Mock
     ExtractService extractService;
+    @Mock
+    ObjectMapper mapper;
 
     private SchemaResource schemaResource;
 
     @Before
     public void setup() {
-        schemaResource = new SchemaResource(schemaService, extractService);
+        schemaResource = new SchemaResource(schemaService, extractService, mapper);
     }
 
     @Test

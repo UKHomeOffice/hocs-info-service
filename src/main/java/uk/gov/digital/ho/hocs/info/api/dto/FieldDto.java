@@ -61,10 +61,8 @@ public class FieldDto {
                 childField);
     }
 
-    public static FieldDto fromWithDecoratedProps(final Field field) {
+    public static FieldDto fromWithDecoratedProps(final Field field, ObjectMapper mapper) {
         final FieldDto childField = field.getChild() != null ? FieldDto.from(field.getChild()) : null;
-
-        ObjectMapper mapper = new ObjectMapper();
 
         String props = field.getProps();
 
