@@ -55,6 +55,12 @@ public class KeycloakService {
 
         UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
 
+        if (usersResource.search(createUserDto.getEmail()).size() > 0) {
+            log.warn("User {} creation failed - email already exists", createUserDto.getEmail(),
+                    value(EVENT, KEYCLOAK_FAILURE));
+            throw new ApplicationExceptions.UserAlreadyExistsException();
+        }
+
         UserRepresentation userRepresentation = mapToUserRepresentation(createUserDto);
 
         Response response = usersResource.create(userRepresentation);
