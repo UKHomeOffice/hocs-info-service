@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -55,6 +56,11 @@ public class Field implements Serializable {
     @Getter
     @Column(name = "active")
     private boolean active = true;
+
+    @Getter
+    @Column(name = "access_level")
+    @Enumerated(EnumType.STRING)
+    private AccessLevel accessLevel;
 
     @Getter
     @OneToOne(fetch = FetchType.LAZY)

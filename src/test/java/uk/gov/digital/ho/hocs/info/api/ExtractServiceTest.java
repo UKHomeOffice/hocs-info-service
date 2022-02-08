@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.domain.model.ExtractFieldSortOrder;
 import uk.gov.digital.ho.hocs.info.domain.model.Field;
 import uk.gov.digital.ho.hocs.info.domain.repository.ExtractFieldSortOrderRepository;
+import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,7 +144,7 @@ public class ExtractServiceTest {
     }
 
     private Field buildTestField(Long id, String fieldName) {
-        return new Field(id, null, "", fieldName, "", "", "", true, true, true, null);
+        return new Field(id, null, "", fieldName, "", "", "", true, true, true, AccessLevel.READ, null);
     }
 
     private ExtractFieldSortOrder buildSortOrder(String fieldName, Long sortOrder) {

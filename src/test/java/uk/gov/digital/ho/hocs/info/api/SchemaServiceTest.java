@@ -11,6 +11,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.FieldScreen;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 import uk.gov.digital.ho.hocs.info.domain.repository.FieldRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.SchemaRepository;
+import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -51,8 +52,8 @@ public class SchemaServiceTest {
     @Test
     public void getExtractOnlyFields() {
 
-        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true, null);
-        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true, null);
+        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true, AccessLevel.READ,null);
+        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true, AccessLevel.READ ,null);
         UUID schemaUUID = UUID.randomUUID();
 
 
@@ -96,10 +97,10 @@ public class SchemaServiceTest {
     public void getAllReportingFieldsForCaseType() {
         String caseType = "TYPE1";
 
-        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true, null);
-        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true, null);
-        Field field3 = new Field(12L, UUID.randomUUID(), "component", "Field3", "label", "", "", false, true, true, null);
-        Field field4 = new Field(13L, UUID.randomUUID(), "component", "Field4", "label", "", "", false, false, true, null);
+        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true,AccessLevel.READ, null);
+        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true,AccessLevel.READ, null);
+        Field field3 = new Field(12L, UUID.randomUUID(), "component", "Field3", "label", "", "", false, true, true,AccessLevel.READ, null);
+        Field field4 = new Field(13L, UUID.randomUUID(), "component", "Field4", "label", "", "", false, false, true,AccessLevel.READ, null);
 
         UUID schema1UUID = UUID.randomUUID();
         UUID schema2UUID = UUID.randomUUID();

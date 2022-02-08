@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,7 +19,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import uk.gov.digital.ho.hocs.info.api.dto.FieldDto;
 import uk.gov.digital.ho.hocs.info.api.dto.SchemaDto;
+import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -73,5 +76,20 @@ public class SchemaIntegrationTest {
         HashMap<String, Object> body = result.getBody();
         assertThat(body.get("uuid")).isEqualTo("f958f77d-b277-408d-bd6f-4a498d3f217f");
         assertThat(((List) body.get("fields")).size()).isEqualTo(2);
+    }
+
+    @Test
+    public void testShouldReturn1ActiveRestrictedReadField() {
+
+        HttpEntity<List<FieldDto>> httpEntity = new HttpEntity<>(headers);
+
+        ParameterizedTypeReference<List<FieldDto>> typeRef = new ParameterizedTypeReference<>() {};
+
+        ResponseEntity<List<FieldDto>> response = restTemplate.exchange("/schema/restricted", HttpMethod.GET, httpEntity, typeRef);
+
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().size()).isEqualTo(1);
+        assertThat(response.getBody().get(0).getAccessLevel()).isEqualTo(AccessLevel.RESTRICTED_READ);
+
     }
 }

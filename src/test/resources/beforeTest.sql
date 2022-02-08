@@ -147,3 +147,10 @@ VALUES  ('9fda236f-6cd4-4016-b4af-307c424eaa50','5abc65d9-3964-4c25-b570-46e203d
          'TEST_ENTITY_1', '{ "title" : "One"}'::jsonb, 1),
         ('9fda236f-6cd4-4016-b4af-307c424eaa50','8761bda1-8e26-4189-9133-aab3651aa584',
          'TEST_ENTITY_2', '{ "title" : "Two"}'::jsonb, 2);
+
+
+INSERT INTO info.field("uuid", "component", "name", "label", "validation", "summary", "report_extract", "active", "props","access_level") VALUES
+('39170e6b-591f-4ccd-b913-f9ad90d9f77a','dropdown','testDropdownActiveReadRestrict','Test Dropdown','[]',false,false,true,'{}','RESTRICTED_READ'),
+('5e712bab-a52f-4dcc-95c7-332797406e53','dropdown','testDropdownNotActiveReadRestrict','Test Dropdown','[]',false,false,false,'{}','RESTRICTED_READ'),
+('908f487c-cf73-4f54-a118-89ca16519320','dropdown','testDropdownActiveRead','Test Dropdown','[]',false,false,true,'{}','READ');
+

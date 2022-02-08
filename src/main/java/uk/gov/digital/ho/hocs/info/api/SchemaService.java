@@ -3,11 +3,13 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.api.dto.FieldDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Field;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 import uk.gov.digital.ho.hocs.info.domain.repository.FieldRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.SchemaRepository;
+import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,5 +82,13 @@ public class SchemaService {
         Set<Schema> caseTypeSchemas = schemaRepository.findAllActiveFormsByCaseTypeAndStages(caseType, stagesList);
         log.info("Got {} Forms for CaseType {} and stages {}", caseTypeSchemas.size(), caseType, stages);
         return caseTypeSchemas;
+    }
+
+    public List<FieldDto> getAllRestrictedFields() {
+
+        log.debug("Requesting all fields with restricted access permissions");
+        List<Field> restrictedFields = fieldRepository.findAllByActiveIsTrueAndAccessLevelIs(AccessLevel.RESTRICTED_READ);
+        log.info("Returning {} restricted read fields", restrictedFields.size());
+        return restrictedFields.stream().map(FieldDto::from).collect(Collectors.toList());
     }
 }
