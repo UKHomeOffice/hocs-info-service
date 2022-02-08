@@ -38,7 +38,7 @@ spec:
           args:
             - --certs=/certs
             - --command=/usr/bin/create-keystore.sh /certs/tls.pem /certs/tls-key.pem /etc/ssl/certs/acp-root.crt
-            - --domain=hocs-casework.${KUBE_NAMESPACE}.svc.cluster.local
+            - --domain=hocs-info-service.${KUBE_NAMESPACE}.svc.cluster.local
             - --domain=localhost
             - --onetime=true
           env:
