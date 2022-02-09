@@ -58,7 +58,7 @@ public class SchemaResource {
         return ResponseEntity.ok(fields);
     }
 
-    @GetMapping(value = "/schema/restricted", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/schema/restricted/fields", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FieldDto>> getAllRestrictedFields() {
         List<FieldDto> restrictedFieldList = schemaService.getAllRestrictedFields();
         return ResponseEntity.ok(restrictedFieldList);
