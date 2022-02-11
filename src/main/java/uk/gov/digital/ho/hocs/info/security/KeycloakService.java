@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserResponse;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateUserDto;
+import uk.gov.digital.ho.hocs.info.application.LogEvent;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 
@@ -55,10 +56,8 @@ public class KeycloakService {
 
         UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
 
-        if (usersResource.search(createUserDto.getEmail()).size() > 0) {
-            log.warn("User {} creation failed - email already exists", createUserDto.getEmail(),
-                    value(EVENT, KEYCLOAK_FAILURE));
-            throw new ApplicationExceptions.UserAlreadyExistsException();
+        if (!usersResource.search(createUserDto.getEmail()).isEmpty()) {
+            throw new ApplicationExceptions.UserAlreadyExistsException("User with provided email address already exists", LogEvent.CREATE_USER_FAILED);
         }
 
         UserRepresentation userRepresentation = mapToUserRepresentation(createUserDto);
@@ -66,7 +65,7 @@ public class KeycloakService {
         Response response = usersResource.create(userRepresentation);
         if (response.getStatus() != HttpStatus.SC_CREATED) {
             String errorMessage = extractCreateUserErrorMessage(response.getEntity());
-            log.error("Failed to create user {}, status {}", createUserDto.getEmail(), response.getStatus(), value(EVENT, KEYCLOAK_FAILURE));
+            log.error("Failed to create user, status {}", response.getStatus(), value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(errorMessage, response.getStatus());
         }
 
