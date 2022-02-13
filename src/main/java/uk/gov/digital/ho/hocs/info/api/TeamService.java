@@ -108,7 +108,7 @@ public class TeamService {
 
     public Set<Team> getTeamsForUser(UUID userUUID) {
         log.debug("Getting teams for user {}", userUUID);
-        Set<UUID> teamUUIDs = keycloakService.getGroupsForUser(userUUID);
+        Set<UUID> teamUUIDs = keycloakService.getUserTeams(userUUID);
         Set<Team> teams = new HashSet<>();
         teamUUIDs.forEach(teamUUID -> {
             try {

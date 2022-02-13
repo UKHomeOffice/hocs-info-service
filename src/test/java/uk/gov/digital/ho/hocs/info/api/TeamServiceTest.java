@@ -216,7 +216,7 @@ public class TeamServiceTest {
         Set<UUID> teamUUIDs = new HashSet<>();
         teamUUIDs.add(teamId);
 
-        when(keycloakService.getGroupsForUser(userId)).thenReturn(teamUUIDs);
+        when(keycloakService.getUserTeams(userId)).thenReturn(teamUUIDs);
         when(teamRepository.findByUuid(teamId)).thenReturn(team);
         Set<Team> result = teamService.getTeamsForUser(userId);
 

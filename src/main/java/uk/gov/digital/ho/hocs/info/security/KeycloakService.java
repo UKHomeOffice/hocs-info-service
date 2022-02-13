@@ -12,11 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.GroupResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
@@ -35,9 +37,9 @@ import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 @Slf4j
 public class KeycloakService {
 
-    private TeamRepository teamRepository;
-    private Keycloak keycloakClient;
-    private String hocsRealmName;
+    private final TeamRepository teamRepository;
+    private final Keycloak keycloakClient;
+    private final String hocsRealmName;
 
     private static final int USER_BATCH_FETCH_SIZE = 100;
     private static final String KEYCLOAK_ERROR_MESSAGE = "errorMessage";
@@ -124,43 +126,22 @@ public class KeycloakService {
         }
     }
 
-    public void deleteTeamGroup(UUID teamUUID) {
-        String encodedTeamUUID = Base64UUID.uuidToBase64String(teamUUID);
-        String path = "/" + encodedTeamUUID;
-        try {
-            String id = keycloakClient.realm(hocsRealmName).getGroupByPath(path).getId();
-            keycloakClient.realm(hocsRealmName).groups().group(id).remove();
-
-        } catch (Exception e) {
-            log.error("Failed to delete permission group for with path {} for reason: {}, Event: {}", path, e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
-            throw new KeycloakException(e.getMessage(), e);
-        }
-    }
-
-    public Set<UUID> getGroupsForUser(UUID userUUID) {
+    public Set<UUID> getUserTeams(UUID userUUID) {
         try {
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
             List<GroupRepresentation> encodedTeamUUIDs = hocsRealm.users().get(userUUID.toString()).groups();
-            Set<UUID> teamUUIDs = new HashSet<>();
-            if (!encodedTeamUUIDs.isEmpty()) {
-                encodedTeamUUIDs.forEach(group -> teamUUIDs.add(Base64UUID.base64StringToUUID(group.getName())));
-            }
-            return teamUUIDs;
+            return encodedTeamUUIDs.stream().map(group -> Base64UUID.base64StringToUUID(group.getName())).collect(Collectors.toSet());
         } catch (Exception e) {
             log.error("Failed to get groups for user {} for reason: {}, Event: {}", userUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }
 
-
     public List<UserRepresentation> getAllUsers() {
         log.info("Get users from Keycloak realm {}", hocsRealmName);
         UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
-        int totalUserCount = usersResource.count();
         List<UserRepresentation> users = new ArrayList<>();
-
-        for (int i = 0; i < totalUserCount; i += USER_BATCH_FETCH_SIZE) {
-            log.debug("Batch fetching users, total user count: {}, fetched so far: {}", totalUserCount, i);
+        for (int i = 0; i < usersResource.count(); i += USER_BATCH_FETCH_SIZE) {
             users.addAll(usersResource.list(i, USER_BATCH_FETCH_SIZE));
         }
 
@@ -173,17 +154,16 @@ public class KeycloakService {
     }
 
     public Set<UserRepresentation> getUsersForTeam(UUID teamUUID) {
-        String encodedTeamPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
-        HashSet<UserRepresentation> groupUsers = new HashSet<>();
-        try {
-            if (teamRepository.findByUuid(teamUUID) != null) {
-                GroupRepresentation group = keycloakClient.realm(hocsRealmName).getGroupByPath(encodedTeamPath);
+        log.info("Get users for team {}", teamUUID);
 
+        if (teamRepository.findByUuid(teamUUID) != null) {
+            try {
+                var keycloakRealm = keycloakClient.realm(hocsRealmName);
+                GroupRepresentation group = keycloakRealm.getGroupByPath("/" + Base64UUID.uuidToBase64String(teamUUID));
+                GroupResource groupResource = keycloakRealm.groups().group(group.getId());
+                Set<UserRepresentation> groupUsers = new HashSet<>();
                 do {
-                    List<UserRepresentation> pageUsers =
-                            keycloakClient.realm(hocsRealmName)
-                                    .groups().group((group).getId())
-                                    .members(groupUsers.size(), USER_BATCH_FETCH_SIZE);
+                    List<UserRepresentation> pageUsers = groupResource.members(groupUsers.size(), USER_BATCH_FETCH_SIZE);
                     groupUsers.addAll(pageUsers);
 
                     if (pageUsers.size() < USER_BATCH_FETCH_SIZE) {
@@ -192,12 +172,14 @@ public class KeycloakService {
                 } while (groupUsers.size() != 0);
 
                 return groupUsers;
-            } else {
-               throw new ApplicationExceptions.EntityNotFoundException("Team not found for UUID %s", teamUUID);
+
+            } catch (javax.ws.rs.NotFoundException e) {
+                log.error("Keycloak has not found users assigned to this team, Not found exception thrown by keycloak: " + e.getMessage());
+                return new HashSet<>();
             }
-        } catch (javax.ws.rs.NotFoundException e) {
-            log.error("Keycloak has not found users assigned to this team, Not found exception thrown by keycloak: " + e.getMessage());
-            return groupUsers;
+
+        } else {
+           throw new ApplicationExceptions.EntityNotFoundException("Team not found for UUID %s", teamUUID);
         }
     }
 
@@ -205,7 +187,7 @@ public class KeycloakService {
         if (entity instanceof FilterInputStream) {
             FilterInputStream filterInputStream = (FilterInputStream) entity;
             try {
-                Map error = JsonSerialization.readValue(filterInputStream, Map.class);
+                var error = JsonSerialization.readValue(filterInputStream, Map.class);
                 return (String) error.get(KEYCLOAK_ERROR_MESSAGE);
             } catch (IOException e) {
                 log.warn("Could not parse error message");
@@ -222,9 +204,5 @@ public class KeycloakService {
         userRepresentation.setLastName(createUserDto.getLastName());
         userRepresentation.setEnabled(true);
         return userRepresentation;
-    }
-
-    public void refreshCache() {
-        keycloakClient.realm(hocsRealmName).clearRealmCache();
     }
 }

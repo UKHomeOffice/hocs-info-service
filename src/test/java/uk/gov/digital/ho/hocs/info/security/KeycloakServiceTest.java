@@ -4,7 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FilterInputStream;
 import java.net.URI;
-import javax.ws.rs.core.Response.Status;
+
 import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +18,6 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserResponse;
@@ -204,7 +203,7 @@ public class KeycloakServiceTest {
         String userUUIDString = userUUID.toString();
         when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
         when(hocsRealm.users().get(userUUIDString).groups()).thenReturn(groups);
-        Set<UUID> result = service.getGroupsForUser(userUUID);
+        Set<UUID> result = service.getUserTeams(userUUID);
 
         assertThat(result).contains(Base64UUID.base64StringToUUID(groups.get(0).getId()));
         assertThat(result).contains(Base64UUID.base64StringToUUID(groups.get(1).getId()));
@@ -224,7 +223,7 @@ public class KeycloakServiceTest {
         when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
         when(hocsRealm.users().get(userUUIDString).groups()).thenThrow(mockException);
 
-        assertThatThrownBy(() -> service.getGroupsForUser(userUUID))
+        assertThatThrownBy(() -> service.getUserTeams(userUUID))
                 .isInstanceOf(KeycloakException.class);
         verify(keycloakClient).realm(HOCS_REALM);
         verifyNoMoreInteractions(keycloakClient);
