@@ -124,6 +124,12 @@ public interface ApplicationExceptions {
 
     }
 
+    class UserAlreadyExistsException extends EntityAlreadyExistsException {
+        public UserAlreadyExistsException(String msg, LogEvent event, Object... args) {
+            super(msg, event, args);
+        }
+    }
+
     class IngestException extends RuntimeException {
         private final LogEvent event;
 

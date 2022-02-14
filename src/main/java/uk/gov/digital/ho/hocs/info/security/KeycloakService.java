@@ -63,7 +63,7 @@ public class KeycloakService {
                 HttpStatus.SC_CONFLICT,
                 existingUserReps.get(0).getId()
             );
-            throw new ApplicationExceptions.EntityAlreadyExistsException("User with provided email address already exists", LogEvent.CREATE_USER_FAILED);
+            throw new ApplicationExceptions.UserAlreadyExistsException("User with provided email address already exists", LogEvent.CREATE_USER_FAILED);
         }
 
         UserRepresentation userRepresentation = mapToUserRepresentation(createUserDto);
