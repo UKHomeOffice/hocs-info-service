@@ -26,6 +26,7 @@ import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.util.JsonSerialization;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserResponse;
@@ -146,6 +147,7 @@ public class KeycloakService {
         return keycloakRealm.users().get(userUUID.toString()).toRepresentation();
     }
 
+    @Cacheable(value = "getUsersForTeam")
     public Set<UserRepresentation> getUsersForTeam(UUID teamUUID) {
         log.info("Get users for team {}", teamUUID);
 

@@ -54,6 +54,7 @@ dependencies {
 	implementation('org.keycloak:keycloak-services:11.0.2'){
 		exclude module: "slf4j-log4j12"
 	}
+	implementation('com.github.ben-manes.caffeine:caffeine:3.0.5')
 
 	implementation 'org.apache.commons:commons-csv:1.9.0'
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.5'
