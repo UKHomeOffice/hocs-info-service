@@ -141,7 +141,8 @@ public class KeycloakService {
         log.info("Get users from Keycloak realm {}", hocsRealmName);
         UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
         List<UserRepresentation> users = new ArrayList<>();
-        for (int i = 0; i < usersResource.count(); i += USER_BATCH_FETCH_SIZE) {
+        var count = usersResource.count();
+        for (int i = 0; i < count; i += USER_BATCH_FETCH_SIZE) {
             users.addAll(usersResource.list(i, USER_BATCH_FETCH_SIZE));
         }
 
