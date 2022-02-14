@@ -55,14 +55,20 @@ public class KeycloakService {
     public CreateUserResponse createUser(CreateUserDto createUserDto) {
 
         UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
+        List<UserRepresentation> existingUserReps = usersResource.search(createUserDto.getEmail());
 
-        if (!usersResource.search(createUserDto.getEmail()).isEmpty()) {
+        if (!existingUserReps.isEmpty()) {
+            log.warn("Event: {}. Status: {}. User with email already exists as user {}",
+                LogEvent.CREATE_USER_FAILED,
+                HttpStatus.SC_CONFLICT,
+                existingUserReps.get(0).getId()
+            );
             throw new ApplicationExceptions.EntityAlreadyExistsException("User with provided email address already exists", LogEvent.CREATE_USER_FAILED);
         }
 
         UserRepresentation userRepresentation = mapToUserRepresentation(createUserDto);
-
         Response response = usersResource.create(userRepresentation);
+
         if (response.getStatus() != HttpStatus.SC_CREATED) {
             String errorMessage = extractCreateUserErrorMessage(response.getEntity());
             log.error("Failed to create user, status {}", response.getStatus(), value(EVENT, KEYCLOAK_FAILURE));
@@ -70,6 +76,8 @@ public class KeycloakService {
         }
 
         String userId = CreatedResponseUtil.getCreatedId(response);
+        log.info("Event: {}. Created new user {}", LogEvent.CREATE_USER_SUCCESS, userId);
+
         return new CreateUserResponse(userId);
     }
 
