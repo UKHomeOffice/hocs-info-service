@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,8 @@ public class SchemaResourceTest {
     SchemaService schemaService;
     @Mock
     ExtractService extractService;
+    @Mock
+    ObjectMapper mapper;
 
     private SchemaResource schemaResource;
 
@@ -69,6 +72,25 @@ public class SchemaResourceTest {
         verify(extractService).getAllReportingFieldsForCaseType(caseType);
 
         verifyNoMoreInteractions(schemaService);
+
+    }
+
+    @Test
+    public void shouldGetAllFieldsBySchemaType() {
+        Field childField = new Field("component", "childField", "label", "", "", true, null);
+        Field field = new Field("component", "Field1", "label", "", "", true, childField);
+
+        FieldDto fieldDto = FieldDto.fromWithDecoratedProps(field, mapper);
+        List<FieldDto> fieldDtos = new ArrayList<>();
+        fieldDtos.add(fieldDto);
+
+        when(schemaService.getFieldsBySchemaType("SCHEMA_TYPE")).thenReturn(fieldDtos);
+
+        ResponseEntity<List<FieldDto>> result = schemaResource.getFieldsBySchemaType("SCHEMA_TYPE");
+        assertThat(result.getBody()).isNotNull();
+        assertThat(result.getBody().size()).isEqualTo(1);
+        assertThat(result.getBody().get(0).getName()).isEqualTo("Field1");
+        assertThat(result.getBody().get(0).getChild().getUuid()).isEqualTo(childField.getUuid());
 
     }
 }
