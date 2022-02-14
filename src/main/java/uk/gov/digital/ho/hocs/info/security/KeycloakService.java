@@ -19,7 +19,6 @@ import org.apache.http.HttpStatus;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.GroupResource;
-import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.GroupRepresentation;
@@ -39,7 +38,8 @@ import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 public class KeycloakService {
 
     private final TeamRepository teamRepository;
-    private final RealmResource keycloakRealm;
+    private final Keycloak keycloakClient;
+    private final String hocsRealmName;
 
     private static final int USER_BATCH_FETCH_SIZE = 100;
     private static final String KEYCLOAK_ERROR_MESSAGE = "errorMessage";
@@ -49,12 +49,13 @@ public class KeycloakService {
             Keycloak keycloakClient,
             @Value("${keycloak.realm}") String hocsRealmName) {
         this.teamRepository = teamRepository;
-        this.keycloakRealm = keycloakClient.realm(hocsRealmName);
+        this.keycloakClient = keycloakClient;
+        this.hocsRealmName = hocsRealmName;
     }
 
     public CreateUserResponse createUser(CreateUserDto createUserDto) {
 
-        UsersResource usersResource = keycloakRealm.users();
+        UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
         if (usersResource.search(createUserDto.getEmail()).size() > 0) {
             log.warn("User {} creation failed - email already exists", createUserDto.getEmail(),
                     value(EVENT, KEYCLOAK_FAILURE));
@@ -76,7 +77,7 @@ public class KeycloakService {
 
     public void updateUser(UUID userUUID, UpdateUserDto updateUserDto) {
 
-        UserResource userResource = keycloakRealm.users().get(userUUID.toString());
+        UserResource userResource = keycloakClient.realm(hocsRealmName).users().get(userUUID.toString());
         UserRepresentation userRepresentation = userResource.toRepresentation();
         userRepresentation.setFirstName(updateUserDto.getFirstName());
         userRepresentation.setLastName(updateUserDto.getLastName());
@@ -87,6 +88,7 @@ public class KeycloakService {
     public void addUserToTeam(UUID userUUID, UUID teamUUID) {
         try {
             String teamPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
+            var keycloakRealm = keycloakClient.realm(hocsRealmName);
             UserResource user = keycloakRealm.users().get(userUUID.toString());
             GroupRepresentation group = keycloakRealm.getGroupByPath(teamPath);
             user.joinGroup(group.getId());
@@ -99,6 +101,7 @@ public class KeycloakService {
     public void removeUserFromTeam(UUID userUUID, UUID teamUUID) {
         try {
             String teamPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
+            var keycloakRealm = keycloakClient.realm(hocsRealmName);
             UserResource user = keycloakRealm.users().get(userUUID.toString());
             GroupRepresentation group = keycloakRealm.getGroupByPath(teamPath);
             user.leaveGroup(group.getId());
@@ -113,7 +116,7 @@ public class KeycloakService {
             String encodedTeamUUID = Base64UUID.uuidToBase64String(teamUUID);
             GroupRepresentation teamGroup = new GroupRepresentation();
             teamGroup.setName(encodedTeamUUID);
-            Response response = keycloakRealm.groups().add(teamGroup);
+            Response response = keycloakClient.realm(hocsRealmName).groups().add(teamGroup);
             response.close();
         } catch (Exception e) {
             log.error("Failed to create group for team {} for reason: {}, Event: {}", teamUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
@@ -123,7 +126,7 @@ public class KeycloakService {
 
     public Set<UUID> getUserTeams(UUID userUUID) {
         try {
-            List<GroupRepresentation> encodedTeamUUIDs = keycloakRealm.users().get(userUUID.toString()).groups();
+            List<GroupRepresentation> encodedTeamUUIDs = keycloakClient.realm(hocsRealmName).users().get(userUUID.toString()).groups();
             return encodedTeamUUIDs.stream().map(group -> Base64UUID.base64StringToUUID(group.getName())).collect(Collectors.toSet());
         } catch (Exception e) {
             log.error("Failed to get groups for user {} for reason: {}, Event: {}", userUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
@@ -132,7 +135,7 @@ public class KeycloakService {
     }
 
     public List<UserRepresentation> getAllUsers() {
-        UsersResource usersResource = keycloakRealm.users();
+        UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
         List<UserRepresentation> users = new ArrayList<>();
         var count = usersResource.count();
         for (int i = 0; i < count; i += USER_BATCH_FETCH_SIZE) {
@@ -144,7 +147,7 @@ public class KeycloakService {
     }
 
     public UserRepresentation getUserFromUUID(UUID userUUID) {
-        return keycloakRealm.users().get(userUUID.toString()).toRepresentation();
+        return keycloakClient.realm(hocsRealmName).users().get(userUUID.toString()).toRepresentation();
     }
 
     @Cacheable(value = "getUsersForTeam")
@@ -153,6 +156,7 @@ public class KeycloakService {
 
         if (teamRepository.findByUuid(teamUUID) != null) {
             try {
+                var keycloakRealm = keycloakClient.realm(hocsRealmName);
                 GroupRepresentation group = keycloakRealm.getGroupByPath("/" + Base64UUID.uuidToBase64String(teamUUID));
                 GroupResource groupResource = keycloakRealm.groups().group(group.getId());
                 Set<UserRepresentation> groupUsers = new HashSet<>();
