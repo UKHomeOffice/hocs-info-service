@@ -11,6 +11,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.CaseActionTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
+import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 import uk.gov.digital.ho.hocs.info.security.UserPermissionsService;
 
 import java.time.LocalDate;
@@ -53,6 +54,17 @@ public class CaseTypeService {
         log.debug("Getting case types by User, bulkOnly = {}", bulkOnly);
         Set<UUID> userTeams = userPermissionsService.getUserTeams();
         Set<String> teams = userTeams.stream().map(UUID::toString).collect(Collectors.toSet());
+
+        ArrayList<String> accessLevels = new ArrayList<String>();
+
+        try {
+            for(int i = AccessLevel.MIGRATE.getLevel() + 1 ; ; i++){
+                accessLevels.add(AccessLevel.from(i).name());
+            }
+        } catch (IllegalArgumentException ignored) {
+
+        }
+
         log.debug("Finding case types for {} teams", teams);
         if (userTeams.isEmpty()) {
             log.warn("No Teams - Returning 0 CaseTypes");
@@ -60,9 +72,9 @@ public class CaseTypeService {
         } else {
             Set<CaseType> caseTypes;
             if (bulkOnly) {
-                caseTypes = caseTypeRepository.findAllBulkCaseTypesByTeam(teams, initialCaseType);
+                caseTypes = caseTypeRepository.findAllBulkCaseTypesByTeam(teams, initialCaseType, accessLevels);
             } else {
-                caseTypes = caseTypeRepository.findAllCaseTypesByTeam(teams, initialCaseType);
+                caseTypes = caseTypeRepository.findAllCaseTypesByTeam(teams, initialCaseType, accessLevels);
             }
             log.info("Got {} CaseTypes (bulkOnly = {})", caseTypes.size(), bulkOnly);
             return caseTypes;
