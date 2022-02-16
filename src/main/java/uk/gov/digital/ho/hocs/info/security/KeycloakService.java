@@ -58,7 +58,7 @@ public class KeycloakService {
         List<UserRepresentation> existingUserReps = usersResource.search(createUserDto.getEmail());
 
         if (!existingUserReps.isEmpty()) {
-            log.warn("Event: {}. Status: {}. User with email already exists as user {}",
+            log.info("Event: {}. Status: {}. User with email already exists as user {}",
                 LogEvent.CREATE_USER_FAILED,
                 HttpStatus.SC_CONFLICT,
                 existingUserReps.get(0).getId()
