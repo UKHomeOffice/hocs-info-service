@@ -62,7 +62,7 @@ dependencies {
 
 	implementation 'org.flywaydb:flyway-core:8.5.0'
 	runtimeOnly 'org.hsqldb:hsqldb'
-	runtimeOnly 'org.postgresql:postgresql:42.3.2'
+	runtimeOnly 'org.postgresql:postgresql:42.3.3'
 
 	compileOnly 'org.projectlombok:lombok:1.18.22'
 	annotationProcessor 'org.projectlombok:lombok:1.18.22'
