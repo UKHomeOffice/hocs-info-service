@@ -55,16 +55,6 @@ public class CaseTypeService {
         Set<UUID> userTeams = userPermissionsService.getUserTeams();
         Set<String> teams = userTeams.stream().map(UUID::toString).collect(Collectors.toSet());
 
-        ArrayList<String> accessLevels = new ArrayList<String>();
-
-        try {
-            for(int i = AccessLevel.MIGRATE.getLevel() + 1 ; ; i++){
-                accessLevels.add(AccessLevel.from(i).name());
-            }
-        } catch (IllegalArgumentException ignored) {
-
-        }
-
         log.debug("Finding case types for {} teams", teams);
         if (userTeams.isEmpty()) {
             log.warn("No Teams - Returning 0 CaseTypes");
@@ -72,9 +62,9 @@ public class CaseTypeService {
         } else {
             Set<CaseType> caseTypes;
             if (bulkOnly) {
-                caseTypes = caseTypeRepository.findAllBulkCaseTypesByTeam(teams, initialCaseType, accessLevels);
+                caseTypes = caseTypeRepository.findAllBulkCaseTypesByTeam(teams, initialCaseType);
             } else {
-                caseTypes = caseTypeRepository.findAllCaseTypesByTeam(teams, initialCaseType, accessLevels);
+                caseTypes = caseTypeRepository.findAllCaseTypesByTeam(teams, initialCaseType);
             }
             log.info("Got {} CaseTypes (bulkOnly = {})", caseTypes.size(), bulkOnly);
             return caseTypes;
