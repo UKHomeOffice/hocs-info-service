@@ -11,7 +11,6 @@ import uk.gov.digital.ho.hocs.info.domain.repository.CaseActionTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
-import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 import uk.gov.digital.ho.hocs.info.security.UserPermissionsService;
 
 import java.time.LocalDate;
@@ -54,7 +53,6 @@ public class CaseTypeService {
         log.debug("Getting case types by User, bulkOnly = {}", bulkOnly);
         Set<UUID> userTeams = userPermissionsService.getUserTeams();
         Set<String> teams = userTeams.stream().map(UUID::toString).collect(Collectors.toSet());
-
         log.debug("Finding case types for {} teams", teams);
         if (userTeams.isEmpty()) {
             log.warn("No Teams - Returning 0 CaseTypes");
