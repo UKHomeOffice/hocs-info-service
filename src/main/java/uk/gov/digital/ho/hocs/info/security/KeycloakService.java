@@ -76,7 +76,7 @@ public class KeycloakService {
         }
 
         String userId = CreatedResponseUtil.getCreatedId(response);
-        log.info("Event: {}. Created new user {}", LogEvent.CREATE_USER_SUCCESS, userId);
+        log.info("Created new user {}", userId, value(EVENT, LogEvent.CREATE_USER_SUCCESS));
 
         return new CreateUserResponse(userId);
     }
