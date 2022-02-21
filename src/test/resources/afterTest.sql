@@ -64,9 +64,3 @@ delete from info.entity where uuid in ('5abc65d9-3964-4c25-b570-46e203d5474b',
                                          '8761bda1-8e26-4189-9133-aab3651aa584');
 
 delete from info.entity_list where uuid = '9fda236f-6cd4-4016-b4af-307c424eaa50';
-
-
-delete from info.field where uuid in ('39170e6b-591f-4ccd-b913-f9ad90d9f77a',
-                                      '5e712bab-a52f-4dcc-95c7-332797406e53',
-                                      '908f487c-cf73-4f54-a118-89ca16519320');
-

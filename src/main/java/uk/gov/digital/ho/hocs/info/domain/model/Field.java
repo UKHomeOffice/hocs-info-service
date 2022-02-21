@@ -7,7 +7,6 @@ import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 import java.util.UUID;
 
 @javax.persistence.Entity
