@@ -48,7 +48,7 @@ public class RestResponseEntityExceptionHandler {
 
     @ExceptionHandler(ApplicationExceptions.UserAlreadyExistsException.class)
     public ResponseEntity handle(ApplicationExceptions.UserAlreadyExistsException e) {
-        log.info("ApplicationExceptions.UserAlreadyExistsException: {}, Event: {}", e.getMessage(), value(EVENT, e.getEvent()));
+        log.info("ApplicationExceptions.UserAlreadyExistsException: {}", e.getMessage(), value(EVENT, e.getEvent()));
         return new ResponseEntity<>(e.getMessage(), CONFLICT);
     }
 
