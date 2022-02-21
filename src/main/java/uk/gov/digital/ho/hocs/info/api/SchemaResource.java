@@ -65,10 +65,10 @@ public class SchemaResource {
         return ResponseEntity.ok(fields);
     }
 
-    @GetMapping(value = "/schema/permission/{accessLevel}/fields", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<FieldDto>> getFieldsByPermissionLevel(@PathVariable String accessLevel) {
+    @GetMapping(value = "/schema/caseType/{caseType}/permission/{accessLevel}/fields", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<FieldDto>> getFieldsByPermissionLevel(@PathVariable String caseType, @PathVariable String accessLevel) {
         AccessLevel requiredLevel = AccessLevel.valueOf(accessLevel);
-        List<FieldDto> restrictedFieldList = schemaService.getFieldsByPermissionLevel(requiredLevel);
+        List<FieldDto> restrictedFieldList = schemaService.getFieldsByPermissionLevel(requiredLevel, caseType);
         return ResponseEntity.ok(restrictedFieldList);
     }
 }

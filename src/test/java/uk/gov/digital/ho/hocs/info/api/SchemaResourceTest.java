@@ -104,14 +104,15 @@ public class SchemaResourceTest {
     public void shouldGetFieldsByPermissionLevel() {
         // Given
         AccessLevel accessLevel = AccessLevel.RESTRICTED_OWNER;
+        String caseType = "CASE_TYPE";
         Field field = new Field("component", "Field1", "label", "", "", true, AccessLevel.RESTRICTED_OWNER, null);
         List<Field> fieldList = List.of(field);
         List<FieldDto> fieldDtos = fieldList.stream().map(FieldDto::from).collect(Collectors.toList());
 
-        when(schemaService.getFieldsByPermissionLevel(eq(accessLevel))).thenReturn(fieldDtos);
+        when(schemaService.getFieldsByPermissionLevel(eq(accessLevel), eq(caseType))).thenReturn(fieldDtos);
 
         // WHEN
-        ResponseEntity<List<FieldDto>> result = schemaResource.getFieldsByPermissionLevel(accessLevel.toString());
+        ResponseEntity<List<FieldDto>> result = schemaResource.getFieldsByPermissionLevel(accessLevel.toString(), caseType);
 
         // THEN
         assertThat(result.getBody()).isNotNull();

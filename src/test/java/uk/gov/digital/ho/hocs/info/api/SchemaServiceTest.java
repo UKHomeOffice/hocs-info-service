@@ -34,7 +34,7 @@ public class SchemaServiceTest {
     ObjectMapper mapper;
 
     private SchemaService service;
-    private final Field field = new Field("", "Field1", "", "", "", true, AccessLevel.READ, null);
+    private final Field field = new Field("", "Field1", "", "", "", true, AccessLevel.READ, null, null);
 
     @Before
     public void setup() {
@@ -57,8 +57,8 @@ public class SchemaServiceTest {
     @Test
     public void getExtractOnlyFields() {
 
-        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true, AccessLevel.READ,null);
-        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true, AccessLevel.READ ,null);
+        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true, AccessLevel.READ, null, null);
+        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true, AccessLevel.READ, null,null);
         UUID schemaUUID = UUID.randomUUID();
 
 
@@ -102,10 +102,10 @@ public class SchemaServiceTest {
     public void getAllReportingFieldsForCaseType() {
         String caseType = "TYPE1";
 
-        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true,AccessLevel.READ, null);
-        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true,AccessLevel.READ, null);
-        Field field3 = new Field(12L, UUID.randomUUID(), "component", "Field3", "label", "", "", false, true, true,AccessLevel.READ, null);
-        Field field4 = new Field(13L, UUID.randomUUID(), "component", "Field4", "label", "", "", false, false, true,AccessLevel.READ, null);
+        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true,AccessLevel.READ, null, null);
+        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true,AccessLevel.READ, null, null);
+        Field field3 = new Field(12L, UUID.randomUUID(), "component", "Field3", "label", "", "", false, true, true,AccessLevel.READ, null, null);
+        Field field4 = new Field(13L, UUID.randomUUID(), "component", "Field4", "label", "", "", false, false, true,AccessLevel.READ, null, null);
 
         UUID schema1UUID = UUID.randomUUID();
         UUID schema2UUID = UUID.randomUUID();
@@ -209,13 +209,15 @@ public class SchemaServiceTest {
 
         // Given
         AccessLevel accessLevel = AccessLevel.RESTRICTED_OWNER;
-        Field field = new Field("component", "Field1", "label", "", "", true, AccessLevel.RESTRICTED_OWNER, null);
+        String caseType = "SOME_CASE_TYPE";
+        String restrictionCaseTypes = "[\"SOME_CASE_TYPE\"]";
+        Field field = new Field("component", "Field1", "label", "", "", true, AccessLevel.RESTRICTED_OWNER,restrictionCaseTypes, null);
         List<Field> fieldList = List.of(field);
 
-        when(fieldRepository.findAllByActiveIsTrueAndAccessLevelIs(eq(accessLevel))).thenReturn(fieldList);
+        when(fieldRepository.findFieldsByAccessLevelForCaseType(eq(accessLevel), eq(caseType))).thenReturn(fieldList);
 
         // When
-        List<FieldDto> result  = service.getFieldsByPermissionLevel(accessLevel);
+        List<FieldDto> result  = service.getFieldsByPermissionLevel(accessLevel, caseType);
 
         // Then
         assertThat(result).isNotNull();
