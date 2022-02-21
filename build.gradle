@@ -56,18 +56,18 @@ dependencies {
 	}
 
 	implementation 'org.apache.commons:commons-csv:1.9.0'
-	implementation 'org.springdoc:springdoc-openapi-ui:1.6.5'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
 	implementation 'com.jayway.jsonpath:json-path:2.7.0'
 	implementation 'javax.json:javax.json-api:1.1.4'
 
-	implementation 'org.flywaydb:flyway-core:8.4.4'
+	implementation 'org.flywaydb:flyway-core:8.5.0'
 	runtimeOnly 'org.hsqldb:hsqldb'
-	runtimeOnly 'org.postgresql:postgresql:42.3.2'
+	runtimeOnly 'org.postgresql:postgresql:42.3.3'
 
 	compileOnly 'org.projectlombok:lombok:1.18.22'
 	annotationProcessor 'org.projectlombok:lombok:1.18.22'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-	annotationProcessor 'org.springframework:spring-context-indexer:5.3.15'
+	annotationProcessor 'org.springframework:spring-context-indexer:5.3.16'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.assertj:assertj-core'
