@@ -400,22 +400,6 @@ public class KeycloakServiceTest {
     }
 
     @Test
-    public void shouldThrowKUserAlreadyExistsExceptionIfUserCreationFails() {
-        //given
-        CreateUserDto createUserDto = new CreateUserDto("email", "firstname", "lastname");
-        UsersResource usersResource = mock(UsersResource.class);
-
-        when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
-        when(hocsRealm.users()).thenReturn(usersResource);
-        when(usersResource.search(any())).thenReturn(List.of(new UserRepresentation()));
-
-        //when & then
-        assertThatThrownBy(() -> service.createUser(createUserDto))
-            .isInstanceOf(ApplicationExceptions.UserAlreadyExistsException.class)
-            .hasMessage("User with email already exists");
-    }
-
-    @Test
     public void shouldUpdateUser() {
 
         //given
