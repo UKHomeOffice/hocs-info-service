@@ -96,10 +96,10 @@ public class SchemaService {
         return fields.stream().map(field -> FieldDto.fromWithDecoratedProps(field, mapper)).collect(Collectors.toList());
     }
 
-    public List<FieldDto> getFieldsByPermissionLevel(AccessLevel accessLevel, String caseType) {
+    public List<FieldDto> getFieldsByCaseTypePermissionLevel(String caseType, AccessLevel accessLevel) {
 
         log.debug("Requesting all fields with access permissions of {} for caseType {}", accessLevel, caseType);
-        List<Field> fields = fieldRepository.findAllByAccessLevelAndCaseType(accessLevel.toString(), caseType);
+        List<Field> fields = fieldRepository.findAllByAccessLevelAndCaseType(caseType, accessLevel.toString());
         log.info("Returning {} fields with accessLevel {} for caseType {}", fields.size(), accessLevel, caseType);
         return fields.stream().map(FieldDto::from).collect(Collectors.toList());
     }

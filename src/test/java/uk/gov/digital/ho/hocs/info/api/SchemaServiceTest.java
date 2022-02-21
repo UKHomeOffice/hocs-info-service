@@ -205,7 +205,7 @@ public class SchemaServiceTest {
     }
 
     @Test
-    public void shouldGetAllFieldsOfPermissionLevel() {
+    public void shouldGetAllFieldsOfPermissionLevelForCaseType() {
 
         // Given
         AccessLevel accessLevel = AccessLevel.RESTRICTED_OWNER;
@@ -213,10 +213,10 @@ public class SchemaServiceTest {
         Field field = new Field("component", "Field1", "label", "", "", true, AccessLevel.RESTRICTED_OWNER, null);
         List<Field> fieldList = List.of(field);
 
-        when(fieldRepository.findAllByAccessLevelAndCaseType(eq(accessLevel.toString()), eq(caseType))).thenReturn(fieldList);
+        when(fieldRepository.findAllByAccessLevelAndCaseType(eq(caseType),eq(accessLevel.toString()))).thenReturn(fieldList);
 
         // When
-        List<FieldDto> result  = service.getFieldsByPermissionLevel(accessLevel, caseType);
+        List<FieldDto> result  = service.getFieldsByCaseTypePermissionLevel(caseType,accessLevel);
 
         // Then
         assertThat(result).isNotNull();
