@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AccessLevel;
+import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 @Getter
 @Slf4j
 public class FieldDto {
@@ -44,6 +44,9 @@ public class FieldDto {
     @JsonProperty("active")
     private boolean active;
 
+    @JsonProperty("accessLevel")
+    private AccessLevel accessLevel;
+
     @JsonProperty("child")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private FieldDto child;
@@ -59,6 +62,7 @@ public class FieldDto {
                 field.getProps(),
                 field.isSummary(),
                 field.isActive(),
+                field.getAccessLevel(),
                 childField);
     }
 
@@ -91,6 +95,7 @@ public class FieldDto {
                 props,
                 field.isSummary(),
                 field.isActive(),
+                field.getAccessLevel(),
                 childField);
     }
 }
