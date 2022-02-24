@@ -9,9 +9,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.api.dto.FieldDto;
 import uk.gov.digital.ho.hocs.info.domain.model.Field;
+import uk.gov.digital.ho.hocs.info.domain.repository.FieldRepository;
+import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
@@ -26,6 +29,9 @@ public class SchemaResourceTest {
     @Mock
     ObjectMapper mapper;
 
+    @Mock
+    FieldRepository fieldRepository;
+
     private SchemaResource schemaResource;
 
     @Before
@@ -35,8 +41,8 @@ public class SchemaResourceTest {
 
     @Test
     public void shouldGetAllSummaryFieldsForCaseType() {
-        Field childField = new Field("component", "childField", "label", "", "", true, null);
-        Field field = new Field("component", "Field1", "label", "", "", true, childField);
+        Field childField = new Field("component", "childField", "label", "", "", true, AccessLevel.READ, null);
+        Field field = new Field("component", "Field1", "label", "", "", true, AccessLevel.READ, childField);
         List<Field> fields = new ArrayList<>();
         fields.add(field);
         when(schemaService.getAllSummaryFieldsForCaseType("CASE_TYPE")).thenReturn(fields);
@@ -77,8 +83,8 @@ public class SchemaResourceTest {
 
     @Test
     public void shouldGetAllFieldsBySchemaType() {
-        Field childField = new Field("component", "childField", "label", "", "", true, null);
-        Field field = new Field("component", "Field1", "label", "", "", true, childField);
+        Field childField = new Field("component", "childField", "label", "", "", true, AccessLevel.READ, null);
+        Field field = new Field("component", "Field1", "label", "", "", true, AccessLevel.READ, childField);
 
         FieldDto fieldDto = FieldDto.fromWithDecoratedProps(field, mapper);
         List<FieldDto> fieldDtos = new ArrayList<>();
@@ -92,5 +98,25 @@ public class SchemaResourceTest {
         assertThat(result.getBody().get(0).getName()).isEqualTo("Field1");
         assertThat(result.getBody().get(0).getChild().getUuid()).isEqualTo(childField.getUuid());
 
+    }
+
+    @Test
+    public void shouldGetFieldsByCaseTypeAndPermissionLevel() {
+        // Given
+        AccessLevel accessLevel = AccessLevel.RESTRICTED_OWNER;
+        String caseType = "CASE_TYPE";
+        Field field = new Field("component", "Field1", "label", "", "", true, AccessLevel.RESTRICTED_OWNER, null);
+        List<Field> fieldList = List.of(field);
+        List<FieldDto> fieldDtos = fieldList.stream().map(FieldDto::from).collect(Collectors.toList());
+
+        when(schemaService.getFieldsByCaseTypePermissionLevel(eq(caseType), eq(accessLevel))).thenReturn(fieldDtos);
+
+        // WHEN
+        ResponseEntity<List<FieldDto>> result = schemaResource.getFieldsByCaseTypeAndPermissionLevel(caseType, accessLevel.toString());
+
+        // THEN
+        assertThat(result.getBody()).isNotNull();
+        assertThat(result.getBody().size()).isEqualTo(1);
+        assertThat(result.getBody().get(0).getAccessLevel().getLevel()).isEqualTo(AccessLevel.RESTRICTED_OWNER.getLevel());
     }
 }
