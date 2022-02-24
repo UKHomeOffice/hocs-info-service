@@ -125,8 +125,8 @@ public interface ApplicationExceptions {
     }
 
     class UserAlreadyExistsException extends EntityAlreadyExistsException {
-        public UserAlreadyExistsException() {
-            super("User with email already exists", LogEvent.CREATE_USER_FAILED);
+        public UserAlreadyExistsException(String msg, LogEvent event, Object... args) {
+            super(msg, event, args);
         }
     }
 
