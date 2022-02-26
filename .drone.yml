@@ -101,7 +101,6 @@ steps:
       repo: quay.io/ukhomeofficedigital/hocs-info-service
       tags:
         - ${DRONE_COMMIT_SHA}
-        - branch-${DRONE_COMMIT_BRANCH/\//_}
     when:
       branch:
         exclude:
