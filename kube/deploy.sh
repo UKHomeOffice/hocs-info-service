@@ -33,7 +33,7 @@ then
     export MEMBER_REFRESH_HOUR="5"
     export UPTIME_PERIOD="Mon-Sun 04:55-23:00 Europe/London"
 
-    export ALLOWED_EMAIL_DOMAINS="homeoffice.gov.uk,hmpo.gov.uk,cluster2security.gov.uk"
+    export ALLOWED_EMAIL_DOMAINS="homeoffice.gov.uk,hmpo.gov.uk,cluster2security.gov.uk,combatingdrugs.gov.uk"
 
     export CLUSTER_NAME="acp-prod"
     export KUBE_SERVER="https://kube-api-prod.prod.acp.homeoffice.gov.uk"
@@ -44,7 +44,7 @@ else
     export MEMBER_REFRESH_HOUR="8"
     export UPTIME_PERIOD="Mon-Fri 07:55-18:00 Europe/London"
 
-    export ALLOWED_EMAIL_DOMAINS="digital.homeoffice.gov.uk,homeoffice.gov.uk,hmpo.gov.uk,cluster2security.gov.uk"
+    export ALLOWED_EMAIL_DOMAINS="digital.homeoffice.gov.uk,homeoffice.gov.uk,hmpo.gov.uk,cluster2security.gov.uk,combatingdrugs.gov.uk"
 
     export CLUSTER_NAME="acp-notprod"
     export KUBE_SERVER="https://kube-api-notprod.notprod.acp.homeoffice.gov.uk"

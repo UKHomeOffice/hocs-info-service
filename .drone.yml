@@ -20,7 +20,22 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: dev
 
+  - name: localstack
+    image: quay.io/ukhomeofficedigital/localstack
+    environment:
+      SERVICES: sqs, sns
+      DEFAULT_REGION: eu-west-2
+
 steps:
+  - name: setup localstack
+    image: quay.io/ukhomeofficedigital/localstack
+    commands:
+      - cd config/localstack
+      - ./1-setup-sqs.sh
+      - ./2-setup-sns.sh
+    depends_on:
+      - clone
+
   - name: wait for keycloak
     image: quay.io/ukhomeofficedigital/hocs-docker-tools
     commands:
@@ -50,25 +65,26 @@ steps:
           -H "Content-Type: application/json"
 
   - name: build project
-    image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
+    image: quay.io/ukhomeofficedigital/hocs-base-image-build
     commands:
-      - ./gradlew assemble --no-daemon
+      - ./gradlew clean assemble
     depends_on:
       - wait for keycloak
 
   - name: test project
-    image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
+    image: quay.io/ukhomeofficedigital/hocs-base-image-build
     environment:
       SPRING_PROFILES_ACTIVE: "development, local, test"
       DB_HOST: postgres
       AWS_LOCAL_HOST: localstack
     commands:
-      - ./gradlew check --no-daemon
+      - ./gradlew check
     depends_on:
       - build project
+      - setup localstack
 
   - name: sonar-scanner
-    image: quay.io/ukhomeofficedigital/sonar-scanner:v4.6
+    image: quay.io/ukhomeofficedigital/sonar-scanner
     commands:
       - sonar-scanner -Dsonar.projectVersion="$(git rev-parse --abbrev-ref HEAD)"
     depends_on:
@@ -84,9 +100,7 @@ steps:
       registry: quay.io
       repo: quay.io/ukhomeofficedigital/hocs-info-service
       tags:
-        - build_${DRONE_BUILD_NUMBER}
         - ${DRONE_COMMIT_SHA}
-        - branch-${DRONE_COMMIT_BRANCH/\//_}
     when:
       branch:
         exclude:
@@ -105,7 +119,6 @@ steps:
       registry: quay.io
       repo: quay.io/ukhomeofficedigital/hocs-info-service
       tags:
-        - build_${DRONE_BUILD_NUMBER}
         - ${DRONE_COMMIT_SHA}
         - latest
     when:
@@ -142,6 +155,11 @@ environment:
   DOCKER_HOST: tcp://docker:2375
 
 steps:
+  - name: fetch and checkout
+    image: alpine/git
+    commands:
+      - git fetch --tags
+      - git checkout $${VERSION}
 
   - name: deploy to cs-dev
     image: quay.io/ukhomeofficedigital/kd
@@ -152,8 +170,10 @@ steps:
       ENVIRONMENT: cs-dev
       KUBE_TOKEN:
         from_secret: hocs_info_service_cs_dev
-      VERSION: build_${DRONE_BUILD_NUMBER}
+      VERSION: "${DRONE_COMMIT_SHA}"
       HOCS_INFO_SERVICE_DATA_VERSION: latest
+    depends_on:
+      - fetch and checkout
     when:
       branch:
         - main
@@ -169,8 +189,10 @@ steps:
       ENVIRONMENT: wcs-dev
       KUBE_TOKEN:
         from_secret: hocs_info_service_wcs_dev
-      VERSION: build_${DRONE_BUILD_NUMBER}
+      VERSION: "${DRONE_COMMIT_SHA}"
       HOCS_INFO_SERVICE_DATA_VERSION: latest
+    depends_on:
+      - fetch and checkout
     when:
       branch:
         - main
@@ -212,6 +234,7 @@ steps:
         from_secret: GITHUB_TOKEN
     depends_on:
       - wait for docker
+      - fetch and checkout
     when:
       event:
         - promote
@@ -322,6 +345,8 @@ steps:
     commands:
       - cd kube
       - ./deploy.sh
+    depends_on:
+      - fetch and checkout
     when:
       target:
         exclude:
@@ -340,6 +365,8 @@ steps:
     commands:
       - cd kube
       - ./deploy.sh
+    depends_on:
+      - fetch and checkout
     when:
       event:
         - promote

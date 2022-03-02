@@ -1,13 +1,16 @@
 package uk.gov.digital.ho.hocs.info.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.info.api.dto.FieldDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Field;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 import uk.gov.digital.ho.hocs.info.domain.repository.FieldRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.SchemaRepository;
+import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,13 +25,17 @@ public class SchemaService {
 
     private final FieldRepository fieldRepository;
     private final SchemaRepository schemaRepository;
+    private final ObjectMapper mapper;
 
     @Autowired
     public SchemaService(
             FieldRepository fieldRepository,
-            SchemaRepository schemaRepository) {
+            SchemaRepository schemaRepository,
+            ObjectMapper mapper
+    ) {
         this.fieldRepository = fieldRepository;
         this.schemaRepository = schemaRepository;
+        this.mapper = mapper;
     }
 
     Schema getSchemaByType(String type) {
@@ -80,5 +87,20 @@ public class SchemaService {
         Set<Schema> caseTypeSchemas = schemaRepository.findAllActiveFormsByCaseTypeAndStages(caseType, stagesList);
         log.info("Got {} Forms for CaseType {} and stages {}", caseTypeSchemas.size(), caseType, stages);
         return caseTypeSchemas;
+    }
+
+    public List<FieldDto> getFieldsBySchemaType(String schemaType) {
+        log.debug("Getting all Fields for schema {}", schemaType);
+        List<Field> fields = fieldRepository.findAllBySchemaType(schemaType);
+        log.debug("Got {} Fields for Schema {}", fields.size(), schemaType);
+        return fields.stream().map(field -> FieldDto.fromWithDecoratedProps(field, mapper)).collect(Collectors.toList());
+    }
+
+    public List<FieldDto> getFieldsByCaseTypePermissionLevel(String caseType, AccessLevel accessLevel) {
+
+        log.debug("Requesting all fields with access permissions of {} for caseType {}", accessLevel, caseType);
+        List<Field> fields = fieldRepository.findAllByAccessLevelAndCaseType(caseType, accessLevel.toString());
+        log.info("Returning {} fields with accessLevel {} for caseType {}", fields.size(), accessLevel, caseType);
+        return fields.stream().map(FieldDto::from).collect(Collectors.toList());
     }
 }

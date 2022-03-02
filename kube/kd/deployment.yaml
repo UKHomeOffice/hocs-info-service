@@ -38,7 +38,7 @@ spec:
           args:
             - --certs=/certs
             - --command=/usr/bin/create-keystore.sh /certs/tls.pem /certs/tls-key.pem /etc/ssl/certs/acp-root.crt
-            - --domain=hocs-casework.${KUBE_NAMESPACE}.svc.cluster.local
+            - --domain=hocs-info-service.${KUBE_NAMESPACE}.svc.cluster.local
             - --domain=localhost
             - --onetime=true
           env:
@@ -314,18 +314,23 @@ spec:
                 secretKeyRef:
                   name: '{{.KUBE_NAMESPACE}}-keycloak'
                   key: keycloak_client_id
-            - name: AUDIT_TOPIC_NAME
+            - name: AWS_SNS_AUDIT_SEARCH_TOPIC_NAME
               value: {{.KUBE_NAMESPACE}}-sns
-            - name: AUDIT_AWS_SNS_ACCESS_KEY
+            - name: AWS_SNS_AUDIT_SEARCH_ACCOUNT_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{.KUBE_NAMESPACE}}-audit-sqs
                   key: access_key_id
-            - name: AUDIT_AWS_SNS_SECRET_KEY
+            - name: AWS_SNS_AUDIT_SEARCH_ACCOUNT_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{.KUBE_NAMESPACE}}-audit-sqs
                   key: secret_access_key
+            - name: AWS_SNS_AUDIT_SEARCH_ACCOUNT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: hocs-queue-config
+                  key: AWS_ACCOUNT_ID
             - name: AUDITING_DEPLOYMENT_NAME
               valueFrom:
                 fieldRef:
@@ -334,18 +339,17 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            - name: NOTIFY_QUEUE_NAME	
-              value:	
-                {{.KUBE_NAMESPACE}}-notify-sqs
-            - name: NOTIFY_QUEUE_DLQ_NAME	
-              value:	
-                {{.KUBE_NAMESPACE}}-notify-sqs-dlq
-            - name: NOTIFY_AWS_SQS_ACCESS_KEY
+            - name: AWS_SQS_NOTIFY_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{.KUBE_NAMESPACE}}-notify-sqs
+                  key: sqs_queue_url
+            - name: AWS_SQS_NOTIFY_ACCOUNT_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{.KUBE_NAMESPACE}}-notify-sqs
                   key: access_key_id
-            - name: NOTIFY_AWS_SQS_SECRET_KEY
+            - name: AWS_SQS_NOTIFY_ACCOUNT_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{.KUBE_NAMESPACE}}-notify-sqs
