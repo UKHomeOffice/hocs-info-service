@@ -53,6 +53,10 @@ public class UserService {
         return keycloakService.getUsersForTeam(teamUUID).stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
     }
 
+    public UserDto getUserIfInTeam(UUID userUuid, UUID teamUuid) {
+        return UserDto.from(keycloakService.getUserIfInTeam(userUuid, teamUuid));
+    }
+
     public UserDto getUserForTeam(UUID teamUUID, UUID userUUID) {
         String userId = userUUID.toString();
         List<UserDto> users = getUsersForTeam(teamUUID);

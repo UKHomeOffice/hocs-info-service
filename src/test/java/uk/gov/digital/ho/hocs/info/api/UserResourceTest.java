@@ -87,7 +87,7 @@ public class UserResourceTest {
         UUID teamUUID = UUID.randomUUID();
         UUID userUUID = UUID.randomUUID();
         UserDto user =  new UserDto(userUUID.toString(),"some user", "user1@noemail.com","FirstName", "LastName", true);
-        when(userService.getUserForTeam(teamUUID, userUUID)).thenReturn(user);
+        when(userService.getUserIfInTeam(userUUID, teamUUID)).thenReturn(user);
 
         ResponseEntity<UserDto> result = userResource.getUserForTeam(teamUUID, userUUID);
 

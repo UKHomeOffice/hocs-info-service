@@ -43,7 +43,7 @@ public class UserResource {
 
     @GetMapping(value = "/teams/{teamUUID}/member/{userUUID}")
     public ResponseEntity<UserDto> getUserForTeam(@PathVariable UUID teamUUID, @PathVariable UUID userUUID) {
-        return ResponseEntity.ok(userService.getUserForTeam(teamUUID, userUUID));
+        return ResponseEntity.ok(userService.getUserIfInTeam(userUUID, teamUUID));
     }
 
     @GetMapping(value = "/case/{caseUUID}/stage/{stageUUID}/team/members")
@@ -64,4 +64,3 @@ public class UserResource {
         return ResponseEntity.ok().build();
     }
 }
-

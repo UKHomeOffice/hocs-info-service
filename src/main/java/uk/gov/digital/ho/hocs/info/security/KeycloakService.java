@@ -179,6 +179,19 @@ public class KeycloakService {
         return keycloakClient.realm(hocsRealmName).users().get(userUUID.toString()).toRepresentation();
     }
 
+    public UserRepresentation getUserIfInTeam(UUID userUuid, UUID teamUuid) {
+        String encodedTeamPath = "/" + Base64UUID.uuidToBase64String(teamUuid);
+
+        var userResource = keycloakClient.realm(hocsRealmName)
+                .users().get(userUuid.toString());
+
+        if (userResource.groups(encodedTeamPath, 0, 1).size() != 1) {
+            return null;
+        }
+
+        return userResource.toRepresentation();
+    }
+
     public Set<UserRepresentation> getUsersForTeam(UUID teamUUID) {
         String encodedTeamPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
         HashSet<UserRepresentation> groupUsers = new HashSet<>();
