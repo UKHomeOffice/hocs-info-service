@@ -1,6 +1,7 @@
 FROM quay.io/ukhomeofficedigital/hocs-base-image-build as builder
 
-USER root
+COPY build/libs/hocs-info-service.jar ./
+COPY scripts/run.sh ./
 
 COPY . .
 RUN ./gradlew clean assemble --no-daemon
