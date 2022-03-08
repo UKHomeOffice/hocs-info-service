@@ -64,13 +64,6 @@ steps:
           -H "Authorization: Bearer $${TKN}" \
           -H "Content-Type: application/json"
 
-  - name: build project
-    image: quay.io/ukhomeofficedigital/hocs-base-image-build
-    commands:
-      - ./gradlew clean assemble
-    depends_on:
-      - wait for keycloak
-
   - name: test project
     image: quay.io/ukhomeofficedigital/hocs-base-image-build
     environment:
@@ -78,9 +71,10 @@ steps:
       DB_HOST: postgres
       AWS_LOCAL_HOST: localstack
     commands:
-      - ./gradlew check
+      - ./gradlew clean build --no-daemon
     depends_on:
       - build project
+      - wait for keycloak
       - setup localstack
 
   - name: sonar-scanner
