@@ -317,7 +317,7 @@ steps:
     commands:
       - sonar-scanner -Dsonar.projectVersion="$(git rev-parse --abbrev-ref HEAD)"
     depends_on:
-      - build and test project
+      - test project
 
   - name: build & push latest
     image: plugins/docker
