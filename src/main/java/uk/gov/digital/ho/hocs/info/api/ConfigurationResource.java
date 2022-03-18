@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.digital.ho.hocs.info.api.dto.ConfigurationDto;
 
@@ -27,7 +28,7 @@ public class ConfigurationResource {
             return ResponseEntity.ok(ConfigurationDto.from(configurationService.getConfiguration("system")));
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(500).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }
