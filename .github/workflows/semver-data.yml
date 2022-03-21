@@ -5,6 +5,7 @@ on:
       increment:
         description: 'SemVer Increment Value'
         required: true
+        type: choice
         default: 'patch'
         options:
           - patch
