@@ -236,6 +236,8 @@ trigger:
     - tag
   branch:
     - main
+concurrency:
+  limit: 1
 
 environment:
   KEYCLOAK_SERVER_ROOT: http://keycloak:8080

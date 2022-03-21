@@ -1,0 +1,22 @@
+name: 'SemVer - Tag on Data Change'
+on:
+  workflow_dispatch:
+    inputs:
+      increment:
+        description: 'SemVer Increment Value'
+        required: true
+        default: 'patch'
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  semver:
+    name: Manual SemVer Tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: UKHomeOffice/semver-tag-action@v1.0.0
+        with:
+          increment: ${{ github.event.inputs.increment }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
