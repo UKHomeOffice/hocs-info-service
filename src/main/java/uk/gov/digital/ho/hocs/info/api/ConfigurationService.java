@@ -44,7 +44,6 @@ public class ConfigurationService {
             );
         }
         log.info("Got {} Configuration", configuration.getSystemName());
-        log.info(configuration.toString());
         return configuration;
     }
 
