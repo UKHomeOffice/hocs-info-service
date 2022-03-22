@@ -188,48 +188,6 @@ steps:
 ---
 kind: pipeline
 type: kubernetes
-name: restart dev
-trigger:
-  event:
-    - promote
-  target:
-    include:
-      - restart*
-
-# This pipeline allows the downstream data repos to require a restart
-# on our dev environments to force info-service to repull :latest
-# separately to our main deployment pipeline
-
-steps:
-  - name: restart cs-dev
-    image: quay.io/ukhomeofficedigital/kd
-    commands:
-      - cd kube
-      - ./restart.sh
-    environment:
-      ENVIRONMENT: cs-dev
-      KUBE_TOKEN:
-        from_secret: hocs_info_service_cs_dev
-    when:
-      target:
-        - restart-cs
-
-  - name: restart wcs-dev
-    image: quay.io/ukhomeofficedigital/kd
-    commands:
-      - cd kube
-      - ./restart.sh
-    environment:
-      ENVIRONMENT: wcs-dev
-      KUBE_TOKEN:
-        from_secret: hocs_info_service_wcs_dev
-    when:
-      target:
-        - restart-wcs
-
----
-kind: pipeline
-type: kubernetes
 name: build tag
 trigger:
   event:
