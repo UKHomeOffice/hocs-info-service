@@ -112,9 +112,6 @@ name: deploy
 trigger:
   event:
     - promote
-  target:
-    exclude:
-      - restart*
 
 steps:
   - name: fetch and checkout
@@ -194,8 +191,6 @@ trigger:
     - tag
   branch:
     - main
-concurrency:
-  limit: 1
 
 environment:
   KEYCLOAK_SERVER_ROOT: http://keycloak:8080
@@ -291,57 +286,6 @@ steps:
 ---
 kind: pipeline
 type: kubernetes
-name: tag data
-trigger:
-  event:
-    - tag
-  branch:
-    - main
-
-clone:
-  disable: true
-
-steps:
-  - name: env-file
-    image: alpine:latest
-    commands:
-      - echo HOCS_INFO_SERVICE_DATA_VERSION=$${DRONE_TAG} > info-service-data-version.env
-
-  - name: CS downstream build
-    image: plugins/downstream
-    settings:
-      server: https://drone-gh.acp.homeoffice.gov.uk
-      deploy: cs-qa
-      fork: false
-      last_successful: true
-      token:
-        from_secret: DRONE_TOKEN
-      params:
-        - info-service-data-version.env
-      repositories:
-        - UKHomeOffice/hocs-data@main
-    depends_on:
-      - env-file
-
-  - name: WCS downstream build
-    image: plugins/downstream
-    settings:
-      server: https://drone-gh.acp.homeoffice.gov.uk
-      deploy: wcs-qa
-      fork: false
-      last_successful: true
-      token:
-        from_secret: DRONE_TOKEN
-      params:
-        - info-service-data-version.env
-      repositories:
-        - UKHomeOffice/hocs-data-wcs@main
-    depends_on:
-      - env-file
-
----
-kind: pipeline
-type: kubernetes
 name: deploy tag
 trigger:
   event:
@@ -350,7 +294,6 @@ trigger:
     - main
 depends_on:
   - build tag
-  - tag data
 
 steps:
   - name: deploy to cs-dev
