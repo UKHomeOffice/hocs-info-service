@@ -119,34 +119,6 @@ spec:
               cpu: 200m
               memory: 96Mi
 
-        - name: hocs-info-service-data-migration
-          image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/hocs/{{.HOCS_DATA_REPO}}:{{.HOCS_INFO_SERVICE_DATA_VERSION}}
-          securityContext:
-            runAsNonRoot: true
-          env:
-            - name: FLYWAY_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{.KUBE_NAMESPACE}}-rds
-                  key: jdbc_url
-            - name: FLYWAY_USER
-              valueFrom:
-                secretKeyRef:
-                  name: hocs-info-service
-                  key: rds_user
-            - name: FLYWAY_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: hocs-info-service
-                  key: rds_password
-          resources:
-            limits:
-              cpu: 900m
-              memory: 128Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
-
       containers:
         - name: certs
           image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/cfssl-sidekick:v0.0.9
