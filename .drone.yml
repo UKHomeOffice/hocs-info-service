@@ -73,7 +73,7 @@ steps:
       - clone
 
   - name: test project
-    image: quay.io/ukhomeofficedigital/hocs-base-image-build
+    image: quay.io/ukhomeofficedigital/hocs-base-image-build:1.0.2
     environment:
       SPRING_PROFILES_ACTIVE: "development, local, test"
       DB_HOST: postgres
@@ -261,7 +261,7 @@ steps:
       - clone
 
   - name: test project
-    image: quay.io/ukhomeofficedigital/hocs-base-image-build
+    image: quay.io/ukhomeofficedigital/hocs-base-image-build:1.0.2
     environment:
       SPRING_PROFILES_ACTIVE: "development, local, test"
       DB_HOST: postgres
