@@ -65,13 +65,17 @@ public class ListConsumerService {
             IrishMembers irishMembers =
                     getDataFromAPI(apiNorthernIrishAssembly, MediaType.APPLICATION_XML, IrishMembers.class);
 
-            return irishMembers.getMembers()
-                    .stream().map(m ->
-                            new Member(House.HOUSE_NORTHERN_IRISH_ASSEMBLY.getDisplayValue(),
-                                    m.getFullDisplayName() + " MLA",
-                                    houseAddress.getUuid(),
-                                    "NI" + m.getPersonId()))
-                    .collect(Collectors.toSet());
+            if (irishMembers.getMembers() != null) {
+                return irishMembers.getMembers()
+                        .stream().map(m ->
+                                new Member(House.HOUSE_NORTHERN_IRISH_ASSEMBLY.getDisplayValue(),
+                                        m.getFullDisplayName() + " MLA",
+                                        houseAddress.getUuid(),
+                                        "NI" + m.getPersonId()))
+                        .collect(Collectors.toSet());
+            }
+            return Collections.emptySet();
+
         } catch (ApplicationExceptions.IngestException | ApplicationExceptions.EntityNotFoundException ex) {
             log.warn(ex.getMessage());
             return Collections.emptySet();
@@ -105,13 +109,17 @@ public class ListConsumerService {
 
             UKMembers houseOfCommomsMembers = getDataFromAPI(getFormattedUkEndpoint(HOUSE_COMMONS), MediaType.APPLICATION_XML, UKMembers.class);
 
-            return houseOfCommomsMembers.getMembers()
-                    .stream().map(m ->
-                            new Member(House.HOUSE_COMMONS.getDisplayValue(),
-                                    m.getFullTitle(),
-                                    houseAddress.getUuid(),
-                                    "CO"+m.getMemberId()))
-                    .collect(Collectors.toSet());
+            if (houseOfCommomsMembers.getMembers() != null) {
+                return houseOfCommomsMembers.getMembers()
+                        .stream().map(m ->
+                                new Member(House.HOUSE_COMMONS.getDisplayValue(),
+                                        m.getFullTitle(),
+                                        houseAddress.getUuid(),
+                                        "CO" + m.getMemberId()))
+                        .collect(Collectors.toSet());
+            }
+
+            return Collections.emptySet();
         } catch (ApplicationExceptions.IngestException | ApplicationExceptions.EntityNotFoundException ex) {
             log.warn(ex.getMessage());
             return Collections.emptySet();
@@ -125,13 +133,17 @@ public class ListConsumerService {
 
             UKMembers houseOfLordsMembers = getDataFromAPI(getFormattedUkEndpoint(HOUSE_LORDS), MediaType.APPLICATION_XML, UKMembers.class);
 
-            return houseOfLordsMembers.getMembers()
-                    .stream().map(m ->
-                            new Member(House.HOUSE_LORDS.getDisplayValue(),
-                                    m.getFullTitle(),
-                                    houseAddress.getUuid(),
-                                    "LO"+m.getMemberId()))
-                    .collect(Collectors.toSet());
+            if (houseOfLordsMembers.getMembers() != null) {
+                return houseOfLordsMembers.getMembers()
+                        .stream().map(m ->
+                                new Member(House.HOUSE_LORDS.getDisplayValue(),
+                                        m.getFullTitle(),
+                                        houseAddress.getUuid(),
+                                        "LO" + m.getMemberId()))
+                        .collect(Collectors.toSet());
+            }
+
+            return Collections.emptySet();
         } catch (ApplicationExceptions.IngestException | ApplicationExceptions.EntityNotFoundException ex) {
             log.warn(ex.getMessage());
             return Collections.emptySet();
@@ -145,22 +157,26 @@ public class ListConsumerService {
 
             WelshWards welshWards = getDataFromAPI(apiWelshAssembly, MediaType.APPLICATION_XML, WelshWards.class);
 
-            Set<WelshMembers> welshMembers = welshWards.getWards().stream()
-                    .map(WelshWard::getMembers)
-                    .collect(Collectors.toSet());
+            if (welshWards.getWards() != null) {
+                Set<WelshMembers> welshMembers = welshWards.getWards().stream()
+                        .map(WelshWard::getMembers)
+                        .collect(Collectors.toSet());
 
-            Set<WelshMember> welshMemberSet = welshMembers.stream()
-                    .map(WelshMembers::getMembers)
-                    .flatMap(Collection::stream)
-                    .collect(Collectors.toSet());
+                Set<WelshMember> welshMemberSet = welshMembers.stream()
+                        .map(WelshMembers::getMembers)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toSet());
 
-            return welshMemberSet.stream()
-                    .map(m ->
-                            new Member(House.HOUSE_WELSH_ASSEMBLY.getDisplayValue(),
-                                    m.getName(),
-                                    houseAddress.getUuid(),
-                                    "WE"+m.getId()))
-                    .collect(Collectors.toSet());
+                return welshMemberSet.stream()
+                        .map(m ->
+                                new Member(House.HOUSE_WELSH_ASSEMBLY.getDisplayValue(),
+                                        m.getName(),
+                                        houseAddress.getUuid(),
+                                        "WE"+m.getId()))
+                        .collect(Collectors.toSet());
+            }
+
+            return Collections.emptySet();
         } catch (ApplicationExceptions.IngestException | ApplicationExceptions.EntityNotFoundException ex) {
             log.warn(ex.getMessage());
             return Collections.emptySet();
@@ -206,7 +222,6 @@ public class ListConsumerService {
             throw new ApplicationExceptions.IngestException("ListConsumerService exchange exception : " + e.getMessage() + " endpoint : " +
                     apiEndpoint + " headers : " + headers.toString() + " media type : " +  mediaType.toString());
         }
-
         return response.getBody();
     }
 

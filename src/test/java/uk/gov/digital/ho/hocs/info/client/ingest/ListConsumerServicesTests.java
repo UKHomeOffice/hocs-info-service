@@ -5,10 +5,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Country;
 import uk.gov.digital.ho.hocs.info.domain.model.HouseAddress;
 import uk.gov.digital.ho.hocs.info.domain.model.Member;
@@ -20,8 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ListConsumerServicesTests {
@@ -66,6 +64,116 @@ public class ListConsumerServicesTests {
         Set<Member> members = listConsumerService.createFromIrishAssemblyAPI();
 
         verify(houseAddressRepository).findByHouseCode(any());
+
+        assertTrue(members.isEmpty());
+    }
+
+    @Test
+    public void whenNiAssemblyApiReturnsNoMembers_shouldReturnEmptyCollection() {
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_JSON);
+
+        IrishMembers irishMembers = new IrishMembers();
+
+        ResponseEntity<?> responseEntity = new ResponseEntity<>(
+                irishMembers,
+                header,
+                HttpStatus.OK
+        );
+
+        when(houseAddressRepository.findByHouseCode(any())).thenReturn(new HouseAddress());
+        when(restTemplate.exchange(eq("Test3"), eq(HttpMethod.GET), any(), eq(IrishMembers.class)))
+                .thenReturn((ResponseEntity<IrishMembers>) responseEntity);
+
+        Set<Member> members = listConsumerService.createFromIrishAssemblyAPI();
+
+        assertTrue(members.isEmpty());
+    }
+
+    @Test
+    public void whenCommonsApiReturnsNoMembers_shouldReturnEmptyCollection() {
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_JSON);
+
+        UKMembers ukMembers = new UKMembers();
+
+        ResponseEntity<?> responseEntity = new ResponseEntity<>(
+                ukMembers,
+                header,
+                HttpStatus.OK
+        );
+
+        when(houseAddressRepository.findByHouseCode(any())).thenReturn(new HouseAddress());
+        when(restTemplate.exchange(eq("Test1"), eq(HttpMethod.GET), any(), eq(UKMembers.class)))
+                .thenReturn((ResponseEntity<UKMembers>) responseEntity);
+
+        Set<Member> members = listConsumerService.createCommonsFromUKParliamentAPI();
+
+        assertTrue(members.isEmpty());
+    }
+
+    @Test
+    public void whenLordsApiReturnsNoMembers_shouldReturnEmptyCollection() {
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_JSON);
+
+        UKMembers ukMembers = new UKMembers();
+
+        ResponseEntity<?> responseEntity = new ResponseEntity<>(
+                ukMembers,
+                header,
+                HttpStatus.OK
+        );
+
+        when(houseAddressRepository.findByHouseCode(any())).thenReturn(new HouseAddress());
+        when(restTemplate.exchange(eq("Test1"), eq(HttpMethod.GET), any(), eq(UKMembers.class)))
+                .thenReturn((ResponseEntity<UKMembers>) responseEntity);
+
+        Set<Member> members = listConsumerService.createLordsFromUKParliamentAPI();
+
+        assertTrue(members.isEmpty());
+    }
+
+    @Test
+    public void whenWelshAssemblyApiReturnsNoMembers_shouldReturnEmptyCollection() {
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_JSON);
+
+        WelshWards welshWards = new WelshWards();
+
+        ResponseEntity<?> responseEntity = new ResponseEntity<>(
+                welshWards,
+                header,
+                HttpStatus.OK
+        );
+
+        when(houseAddressRepository.findByHouseCode(any())).thenReturn(new HouseAddress());
+        when(restTemplate.exchange(eq("Test4"), eq(HttpMethod.GET), any(), eq(WelshWards.class)))
+                .thenReturn((ResponseEntity<WelshWards>) responseEntity);
+
+        Set<Member> members = listConsumerService.createFromWelshAssemblyAPI();
+
+        assertTrue(members.isEmpty());
+    }
+
+    @Test
+    public void whenScottishParliamentApiReturnsNoMembers_shouldReturnEmptyCollection() {
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_JSON);
+
+        ScottishMember[] scottishMembers = new ScottishMember[0];
+
+        ResponseEntity<?> responseEntity = new ResponseEntity<>(
+                scottishMembers,
+                header,
+                HttpStatus.OK
+        );
+
+        when(houseAddressRepository.findByHouseCode(any())).thenReturn(new HouseAddress());
+        when(restTemplate.exchange(eq("Test2"), eq(HttpMethod.GET), any(), eq(ScottishMember[].class)))
+                .thenReturn((ResponseEntity<ScottishMember[]>) responseEntity);
+
+        Set<Member> members = listConsumerService.createFromScottishParliamentAPI();
 
         assertTrue(members.isEmpty());
     }
