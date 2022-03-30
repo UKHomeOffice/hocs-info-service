@@ -21,6 +21,10 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static net.logstash.logback.argument.StructuredArguments.value;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.EVENT;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.MEMBERS_API_EMPTY_RECORDS;
+
 @Service
 @Slf4j
 public class ListConsumerService {
@@ -58,15 +62,15 @@ public class ListConsumerService {
     }
 
     public Set<Member> createFromIrishAssemblyAPI() {
-        log.info("Updating Irish Assembly");
+        log.info("Updating Northern Irish Assembly");
         try {
             final HouseAddress houseAddress = retrieveHouseAddress(HouseCodes.IRISH_ASSEMBLY);
 
-            IrishMembers irishMembers =
-                    getDataFromAPI(apiNorthernIrishAssembly, MediaType.APPLICATION_XML, IrishMembers.class);
+            NorthernIrishMembers northernIrishMembers =
+                    getDataFromAPI(apiNorthernIrishAssembly, MediaType.APPLICATION_XML, NorthernIrishMembers.class);
 
-            if (irishMembers.getMembers() != null) {
-                return irishMembers.getMembers()
+            if (northernIrishMembers.getMembers() != null) {
+                return northernIrishMembers.getMembers()
                         .stream().map(m ->
                                 new Member(House.HOUSE_NORTHERN_IRISH_ASSEMBLY.getDisplayValue(),
                                         m.getFullDisplayName() + " MLA",
@@ -74,6 +78,7 @@ public class ListConsumerService {
                                         "NI" + m.getPersonId()))
                         .collect(Collectors.toSet());
             }
+            log.info("Northern Irish members API returned an empty set", value(EVENT, MEMBERS_API_EMPTY_RECORDS));
             return Collections.emptySet();
 
         } catch (ApplicationExceptions.IngestException | ApplicationExceptions.EntityNotFoundException ex) {
@@ -89,13 +94,17 @@ public class ListConsumerService {
 
             ScottishMember[] scottishMembers = getDataFromAPI(apiScottishParliament, MediaType.APPLICATION_JSON, ScottishMember[].class);
 
-            return Arrays.stream(scottishMembers)
-                    .map(m ->
-                            new Member(House.HOUSE_SCOTTISH_PARLIAMENT.getDisplayValue(),
-                                    m.getName()+" MSP",
-                                    houseAddress.getUuid(),
-                                    "SC"+m.getPersonId()))
-                    .collect(Collectors.toSet());
+            if (scottishMembers != null && scottishMembers.length > 0) {
+                return Arrays.stream(scottishMembers)
+                        .map(m ->
+                                new Member(House.HOUSE_SCOTTISH_PARLIAMENT.getDisplayValue(),
+                                        m.getName()+" MSP",
+                                        houseAddress.getUuid(),
+                                        "SC"+m.getPersonId()))
+                        .collect(Collectors.toSet());
+            }
+            log.info("Scottish Parliament members API returned an empty set", value(EVENT, MEMBERS_API_EMPTY_RECORDS));
+            return Collections.emptySet();
         } catch (ApplicationExceptions.IngestException | ApplicationExceptions.EntityNotFoundException ex) {
             log.warn(ex.getMessage());
             return Collections.emptySet();
@@ -118,7 +127,7 @@ public class ListConsumerService {
                                         "CO" + m.getMemberId()))
                         .collect(Collectors.toSet());
             }
-
+            log.info("House of Commons members API returned an empty set", value(EVENT, MEMBERS_API_EMPTY_RECORDS));
             return Collections.emptySet();
         } catch (ApplicationExceptions.IngestException | ApplicationExceptions.EntityNotFoundException ex) {
             log.warn(ex.getMessage());
@@ -142,7 +151,7 @@ public class ListConsumerService {
                                         "LO" + m.getMemberId()))
                         .collect(Collectors.toSet());
             }
-
+            log.info("House of Lords members API returned an empty set", value(EVENT, MEMBERS_API_EMPTY_RECORDS));
             return Collections.emptySet();
         } catch (ApplicationExceptions.IngestException | ApplicationExceptions.EntityNotFoundException ex) {
             log.warn(ex.getMessage());
@@ -175,7 +184,7 @@ public class ListConsumerService {
                                         "WE"+m.getId()))
                         .collect(Collectors.toSet());
             }
-
+            log.info("Welsh Assembly members API returned an empty set", value(EVENT, MEMBERS_API_EMPTY_RECORDS));
             return Collections.emptySet();
         } catch (ApplicationExceptions.IngestException | ApplicationExceptions.EntityNotFoundException ex) {
             log.warn(ex.getMessage());

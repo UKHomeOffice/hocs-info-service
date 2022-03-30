@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class IrishMember {
+public class NorthernIrishMember {
 
     @JacksonXmlProperty(localName = "MemberFirstName")
     private String firstName;

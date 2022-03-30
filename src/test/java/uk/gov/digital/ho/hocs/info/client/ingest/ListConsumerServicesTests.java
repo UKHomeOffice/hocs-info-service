@@ -49,7 +49,7 @@ public class ListConsumerServicesTests {
     @Test
     public void getDataFromAPI_whenRestTemplateThrowsException_shouldReturnEmptyCollection() {
         when(houseAddressRepository.findByHouseCode(any())).thenReturn(new HouseAddress());
-        when(restTemplate.exchange(eq("Test3"), eq(HttpMethod.GET), any(), eq(IrishMembers.class)))
+        when(restTemplate.exchange(eq("Test3"), eq(HttpMethod.GET), any(), eq(NorthernIrishMembers.class)))
                 .thenThrow(new RestClientException("Test"));
 
         Set<Member> members = listConsumerService.createFromIrishAssemblyAPI();
@@ -73,17 +73,17 @@ public class ListConsumerServicesTests {
         HttpHeaders header = new HttpHeaders();
         header.setContentType(MediaType.APPLICATION_JSON);
 
-        IrishMembers irishMembers = new IrishMembers();
+        NorthernIrishMembers northernIrishMembers = new NorthernIrishMembers();
 
         ResponseEntity<?> responseEntity = new ResponseEntity<>(
-                irishMembers,
+                northernIrishMembers,
                 header,
                 HttpStatus.OK
         );
 
         when(houseAddressRepository.findByHouseCode(any())).thenReturn(new HouseAddress());
-        when(restTemplate.exchange(eq("Test3"), eq(HttpMethod.GET), any(), eq(IrishMembers.class)))
-                .thenReturn((ResponseEntity<IrishMembers>) responseEntity);
+        when(restTemplate.exchange(eq("Test3"), eq(HttpMethod.GET), any(), eq(NorthernIrishMembers.class)))
+                .thenReturn((ResponseEntity<NorthernIrishMembers>) responseEntity);
 
         Set<Member> members = listConsumerService.createFromIrishAssemblyAPI();
 
