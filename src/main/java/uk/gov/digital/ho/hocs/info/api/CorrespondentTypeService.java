@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import uk.gov.digital.ho.hocs.info.client.audit.client.AuditClient;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.CorrespondentType;
@@ -56,9 +57,11 @@ public class CorrespondentTypeService {
     }
 
     private void validateInput(String displayName, String type){
-        Optional.ofNullable(displayName).orElseThrow(() -> new ApplicationExceptions.EntityCreationException(
-                "Cannot create Correspondent Type of Type: %s, with no display name", type));
-        Optional.ofNullable(type).orElseThrow(() -> new ApplicationExceptions.EntityCreationException(
-                "Cannot create Correspondent Type of Display Name: %s, with no type", displayName));
+        if(!StringUtils.hasText(displayName)) {
+            throw new ApplicationExceptions.EntityCreationException("Cannot create Correspondent Type of Type: %s, with no display name", type);
+        }
+        if(!StringUtils.hasText(type)) {
+            throw new ApplicationExceptions.EntityCreationException("Cannot create Correspondent Type of Display Name: %s, with no type", displayName);
+        }
     }
 }
