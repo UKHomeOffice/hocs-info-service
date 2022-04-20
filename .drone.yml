@@ -334,8 +334,7 @@ steps:
     settings:
       server: https://drone-gh.acp.homeoffice.gov.uk
       deploy: cs-qa
-      fork: false
-      last_successful: true
+      fork: true
       token:
         from_secret: DRONE_TOKEN
       params:
@@ -350,8 +349,8 @@ steps:
     settings:
       server: https://drone-gh.acp.homeoffice.gov.uk
       deploy: wcs-qa
-      fork: false
-      last_successful: true
+      fork: true
+      last_successful: false
       token:
         from_secret: DRONE_TOKEN
       params:
