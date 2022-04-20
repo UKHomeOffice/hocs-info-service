@@ -329,11 +329,10 @@ steps:
     commands:
       - echo HOCS_INFO_SERVICE_DATA_VERSION=$${DRONE_TAG} > info-service-data-version.env
 
-  - name: CS downstream build
+  - name: Data downstream build
     image: plugins/downstream
     settings:
       server: https://drone-gh.acp.homeoffice.gov.uk
-      deploy: cs-qa
       fork: true
       token:
         from_secret: DRONE_TOKEN
@@ -341,21 +340,6 @@ steps:
         - info-service-data-version.env
       repositories:
         - UKHomeOffice/hocs-data@main
-    depends_on:
-      - env-file
-
-  - name: WCS downstream build
-    image: plugins/downstream
-    settings:
-      server: https://drone-gh.acp.homeoffice.gov.uk
-      deploy: wcs-qa
-      fork: true
-      last_successful: false
-      token:
-        from_secret: DRONE_TOKEN
-      params:
-        - info-service-data-version.env
-      repositories:
         - UKHomeOffice/hocs-data-wcs@main
     depends_on:
       - env-file
