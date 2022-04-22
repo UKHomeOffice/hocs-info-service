@@ -28,7 +28,7 @@ spec:
         - name: registry-credentials
       initContainers:
         - name: truststore
-          image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/cfssl-sidekick-jks:v0.0.9
+          image: quay.io/ukhomeofficedigital/cfssl-sidekick-jks:v0.0.9
           securityContext:
             runAsNonRoot: true
             capabilities:
@@ -92,7 +92,7 @@ spec:
 
       containers:
         - name: certs
-          image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/cfssl-sidekick:v0.0.9
+          image: quay.io/ukhomeofficedigital/cfssl-sidekick:v0.0.9
           securityContext:
             runAsNonRoot: true
             capabilities:
@@ -124,7 +124,7 @@ spec:
               cpu: 100m
 
         - name: proxy
-          image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/nginx-proxy:v4.2.0
+          image: quay.io/ukhomeofficedigital/nginx-proxy:v4.2.0
           securityContext:
             runAsNonRoot: true
             capabilities:
@@ -174,7 +174,7 @@ spec:
               cpu: 100m
 
         - name: hocs-info-service
-          image: quay.digital.homeoffice.gov.uk/ukhomeofficedigital/hocs-info-service:{{.VERSION}}
+          image: quay.io/ukhomeofficedigital/hocs-info-service:{{.VERSION}}
           securityContext:
             runAsNonRoot: true
             capabilities:
