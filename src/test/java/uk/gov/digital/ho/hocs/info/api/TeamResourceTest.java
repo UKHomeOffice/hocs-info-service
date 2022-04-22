@@ -31,12 +31,9 @@ public class TeamResourceTest {
 
     private TeamResource teamResource;
 
-    @Mock
-    private UserService userService;
-
     @Before
     public void setUp() {
-        teamResource = new TeamResource(teamService, userService);
+        teamResource = new TeamResource(teamService);
     }
 
     private UUID userUUID1 = UUID.randomUUID();
@@ -108,25 +105,6 @@ public class TeamResourceTest {
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody().size()).isEqualTo(3);
         verify(teamService).getAllTeams();
-        verifyNoMoreInteractions(teamService);
-    }
-
-    @Test
-    public void shouldGetAllUsersWithTeams() {
-        List<UserDto> users = getAllUsers();
-
-        when(userService.getAllUsers()).thenReturn(users);
-        when(teamService.getTeamsForUser(UUID.fromString(users.get(0).getId()))).thenReturn(getAllTeams());
-        when(teamService.getTeamsForUser(UUID.fromString(users.get(1).getId()))).thenReturn(getTeams());
-        when(teamService.getTeamsForUser(UUID.fromString(users.get(2).getId()))).thenReturn(getTeams());
-
-        ResponseEntity<Set<UserWithTeamsDto>> result = teamResource.getUsersForTeam();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(result.getBody().size()).isEqualTo(3);
-        verify(userService).getAllUsers();
-        verify(teamService).getTeamsForUser(UUID.fromString(users.get(0).getId()));
-        verify(teamService).getTeamsForUser(UUID.fromString(users.get(1).getId()));
-        verify(teamService).getTeamsForUser(UUID.fromString(users.get(2).getId()));
         verifyNoMoreInteractions(teamService);
     }
 
