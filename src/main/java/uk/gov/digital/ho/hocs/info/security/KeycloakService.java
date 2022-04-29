@@ -24,6 +24,7 @@ import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.util.JsonSerialization;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserResponse;
@@ -144,6 +145,7 @@ public class KeycloakService {
         }
     }
 
+    @Cacheable(value = "getGroupsForUser", unless = "#result == null or #result.size() == 0", key = "#userUUID")
     public Set<UUID> getGroupsForUser(UUID userUUID) {
         try {
             RealmResource hocsRealm = keycloakClient.realm(hocsRealmName);
@@ -159,7 +161,7 @@ public class KeycloakService {
         }
     }
 
-
+    @Cacheable(value = "getAllUsers", unless = "#result == null or #result.size() == 0")
     public List<UserRepresentation> getAllUsers() {
         log.info("Get users from Keycloak realm {}", hocsRealmName);
         UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
@@ -175,10 +177,12 @@ public class KeycloakService {
         return users;
     }
 
+    @Cacheable(value = "getUserFromUUID", unless = "#result == null", key = "#userUUID")
     public UserRepresentation getUserFromUUID(UUID userUUID) {
         return keycloakClient.realm(hocsRealmName).users().get(userUUID.toString()).toRepresentation();
     }
 
+    @Cacheable(value = "getUsersForTeam", unless = "#result == null or #result.size() == 0", key = "#teamUUID")
     public Set<UserRepresentation> getUsersForTeam(UUID teamUUID) {
         String encodedTeamPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
         HashSet<UserRepresentation> groupUsers = new HashSet<>();
