@@ -99,6 +99,18 @@ public class CaseTypeService {
         }
     }
 
+    CaseConfig getCaseConfig(String type) {
+        log.debug("Getting CaseConfig for type {}", type);
+        List<String> tabs = caseTypeRepository.findTabsByType(type);
+
+        if (tabs != null) {
+            log.info("Got CaseConfig for type {}", type);
+            return new CaseConfig(type, tabs);
+        } else {
+            throw new ApplicationExceptions.EntityNotFoundException("CaseConfig for type %s was not found", type);
+        }
+    }
+
     public void createCaseType(CreateCaseTypeDto caseType) {
 
         caseTypeRepository.save(new CaseType(caseType.getDisplayName(),

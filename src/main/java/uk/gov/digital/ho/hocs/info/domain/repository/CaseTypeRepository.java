@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -33,6 +34,9 @@ public interface CaseTypeRepository extends CrudRepository<CaseType, String> {
     Set<CaseType> findByIncludePreviousCaseType(Boolean addCaseTypeWithPreviousCase);
 
     CaseType findByShortCode(String shortCode);
+
+    @Query(value = "SELECT ctab.tab_name FROM case_type_tab ctt JOIN case_type ctype on ctt.case_type_uuid = ctype.uuid JOIN case_tab ctab on ctt.case_tab_uuid = ctab.uuid WHERE ctype.type = ?1", nativeQuery=true)
+    List<String> findTabsByType(String type);
 
     CaseType findByType(String type);
 

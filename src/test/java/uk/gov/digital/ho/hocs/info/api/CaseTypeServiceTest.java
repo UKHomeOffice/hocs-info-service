@@ -365,5 +365,17 @@ public class CaseTypeServiceTest {
 
         assertThat(output.size()).isEqualTo(0);
     }
+
+    @Test
+    public void shouldReturnCaseConfigForCaseType() {
+        String type = "COMP";
+        List<String> tabs = Arrays.asList("documents", "summary", "timeline", "people");
+
+        when(caseTypeRepository.findTabsByType(type)).thenReturn(tabs);
+        CaseConfig caseConfig = caseTypeService.getCaseConfig(type);
+
+        assertEquals(type, caseConfig.getType());
+        assertEquals(tabs, caseConfig.getTabs());
+    }
 }
 

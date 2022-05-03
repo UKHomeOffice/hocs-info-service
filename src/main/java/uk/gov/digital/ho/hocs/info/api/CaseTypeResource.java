@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uk.gov.digital.ho.hocs.info.api.dto.CaseConfigDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
@@ -13,6 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import uk.gov.digital.ho.hocs.info.domain.model.CaseConfig;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -45,6 +47,12 @@ public class CaseTypeResource {
     ResponseEntity<CaseTypeDto> getCaseType(@PathVariable String type) {
         CaseType caseType = caseTypeService.getCaseType(type);
         return ResponseEntity.ok(CaseTypeDto.from(caseType));
+    }
+
+    @GetMapping(value = "/caseType/{type}/config", produces = APPLICATION_JSON_UTF8_VALUE)
+    ResponseEntity<CaseConfigDto> getCaseConfig(@PathVariable String type) {
+        CaseConfig caseConfig = caseTypeService.getCaseConfig(type);
+        return ResponseEntity.ok(CaseConfigDto.from(caseConfig));
     }
 
     @GetMapping(value = "/caseType/shortCode/{shortCode}", produces = APPLICATION_JSON_UTF8_VALUE)
