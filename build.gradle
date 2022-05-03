@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
 	id 'jacoco'
-	id 'org.springframework.boot' version '2.6.5'
+	id 'org.springframework.boot' version '2.6.7'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
@@ -43,35 +43,35 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation "com.amazonaws:aws-java-sdk-sns:1.12.149"
 
-	implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.1.1'
 
 
 	implementation 'org.apache.httpcomponents:httpmime:4.5.13'
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
-	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.6'
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.2'
 	implementation 'org.keycloak:keycloak-admin-client:11.0.2'
 	implementation('org.keycloak:keycloak-services:11.0.2'){
 		exclude module: "slf4j-log4j12"
 	}
 
 	implementation 'org.apache.commons:commons-csv:1.9.0'
-	implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
 	implementation 'com.jayway.jsonpath:json-path:2.7.0'
 	implementation 'javax.json:javax.json-api:1.1.4'
 
-	implementation 'org.flywaydb:flyway-core:8.5.4'
+	implementation 'org.flywaydb:flyway-core:8.5.10'
 	runtimeOnly 'org.hsqldb:hsqldb'
-	runtimeOnly 'org.postgresql:postgresql:42.3.3'
+	runtimeOnly 'org.postgresql:postgresql:42.3.4'
 
-	compileOnly 'org.projectlombok:lombok:1.18.22'
+	compileOnly 'org.projectlombok:lombok:1.18.24'
 	annotationProcessor 'org.projectlombok:lombok:1.18.22'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-	annotationProcessor 'org.springframework:spring-context-indexer:5.3.17'
+	annotationProcessor 'org.springframework:spring-context-indexer:5.3.19'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.assertj:assertj-core'
 	testImplementation 'junit:junit:4.13.2'
-	testImplementation 'org.mockito:mockito-inline:4.4.0'
+	testImplementation 'org.mockito:mockito-inline:4.5.1'
 }
 
 jar {

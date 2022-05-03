@@ -26,3 +26,6 @@
 /nbdist/
 /.nb-gradle/
 keycloak/hsperfdata_jboss/
+
+### VS Code ###
+/bin/
