@@ -106,7 +106,7 @@ public class CaseTypeService {
         log.debug("Getting CaseConfig for type {}", type);
         List<CaseTab> tabs = caseTabRepository.findTabsByType(type);
 
-        if (tabs != null) {
+        if (!tabs.isEmpty()) {
             log.info("Got CaseConfig for type {}", type);
             return new CaseConfig(type, tabs);
         } else {

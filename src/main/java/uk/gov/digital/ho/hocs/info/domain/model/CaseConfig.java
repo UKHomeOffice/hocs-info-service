@@ -26,6 +26,5 @@ public class CaseConfig {
     private final String type;
 
     @Getter
-    @OneToMany
     private final List<CaseTab> tabs;
 }

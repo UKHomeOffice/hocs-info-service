@@ -14,13 +14,10 @@ import java.util.List;
 @Getter
 public class CaseTabDto {
 
-    @JsonProperty("name")
     String name;
 
-    @JsonProperty("label")
     String label;
 
-    @JsonProperty("screen")
     String screen;
 
     public static CaseTabDto from(CaseTab caseTab) {

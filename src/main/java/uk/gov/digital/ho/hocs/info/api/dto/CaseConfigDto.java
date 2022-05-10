@@ -14,10 +14,8 @@ import java.util.stream.Collectors;
 @Getter
 public class CaseConfigDto {
 
-    @JsonProperty("type")
     String type;
 
-    @JsonProperty("tabs")
     List<CaseTabDto> tabs;
 
     public static CaseConfigDto from(CaseConfig caseConfig) {
