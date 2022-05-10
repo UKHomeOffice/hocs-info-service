@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseConfig;
-import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,10 +18,11 @@ public class CaseConfigDto {
     String type;
 
     @JsonProperty("tabs")
-    List<String> tabs;
+    List<CaseTabDto> tabs;
 
     public static CaseConfigDto from(CaseConfig caseConfig) {
-        return new CaseConfigDto(caseConfig.getType(), caseConfig.getTabs());
+        List<CaseTabDto> caseTabDtos = caseConfig.getTabs().stream().map(CaseTabDto::from).collect(Collectors.toList());
+        return new CaseConfigDto(caseConfig.getType(), caseTabDtos);
     }
 
 }
