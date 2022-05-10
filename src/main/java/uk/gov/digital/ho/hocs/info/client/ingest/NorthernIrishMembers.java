@@ -12,10 +12,10 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-class IrishMembers {
+class NorthernIrishMembers {
 
     @JacksonXmlProperty(localName = "Member")
     @JacksonXmlElementWrapper(localName = "Member", useWrapping = false)
-    private List<IrishMember> members;
+    private List<NorthernIrishMember> members;
 
 }

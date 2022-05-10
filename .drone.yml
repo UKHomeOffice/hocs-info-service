@@ -319,6 +319,8 @@ trigger:
     - tag
   branch:
     - main
+depends_on:
+  - build tag
 
 clone:
   disable: true
@@ -371,7 +373,6 @@ trigger:
   branch:
     - main
 depends_on:
-  - build tag
   - tag data
 
 steps:
