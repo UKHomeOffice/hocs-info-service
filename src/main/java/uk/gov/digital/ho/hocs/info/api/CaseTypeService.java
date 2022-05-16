@@ -8,6 +8,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseActionTypeRepository;
+import uk.gov.digital.ho.hocs.info.domain.repository.CaseTabRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class CaseTypeService {
 
     private final CaseTypeRepository caseTypeRepository;
+    private final CaseTabRepository caseTabRepository;
     private final DocumentTagRepository documentTagRepository;
     private final HolidayDateRepository holidayDateRepository;
     private final CaseActionTypeRepository caseActionTypeRepository;
@@ -30,10 +32,11 @@ public class CaseTypeService {
     private final LocalDateWrapper localDateWrapper;
 
     @Autowired
-    public CaseTypeService(CaseTypeRepository caseTypeRepository, DocumentTagRepository documentTagRepository,
+    public CaseTypeService(CaseTypeRepository caseTypeRepository, CaseTabRepository caseTabRepository, DocumentTagRepository documentTagRepository,
                            HolidayDateRepository holidayDateRepository, CaseActionTypeRepository caseActionTypeRepository, StageTypeService stageTypeService,
                            UserPermissionsService userPermissionsService, LocalDateWrapper localDateWrapper) {
         this.caseTypeRepository = caseTypeRepository;
+        this.caseTabRepository = caseTabRepository;
         this.documentTagRepository = documentTagRepository;
         this.holidayDateRepository = holidayDateRepository;
         this.caseActionTypeRepository = caseActionTypeRepository;
@@ -96,6 +99,18 @@ public class CaseTypeService {
             return caseType;
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("CaseType for type %s was not found", type);
+        }
+    }
+
+    CaseConfig getCaseConfig(String type) {
+        log.debug("Getting CaseConfig for type {}", type);
+        List<CaseTab> tabs = caseTabRepository.findTabsByType(type);
+
+        if (!tabs.isEmpty()) {
+            log.info("Got CaseConfig for type {}", type);
+            return new CaseConfig(type, tabs);
+        } else {
+            throw new ApplicationExceptions.EntityNotFoundException("CaseConfig for type %s was not found", type);
         }
     }
 

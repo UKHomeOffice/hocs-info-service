@@ -3,8 +3,11 @@ package uk.gov.digital.ho.hocs.info.domain.repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import uk.gov.digital.ho.hocs.info.domain.model.CaseConfig;
+import uk.gov.digital.ho.hocs.info.domain.model.CaseTab;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository

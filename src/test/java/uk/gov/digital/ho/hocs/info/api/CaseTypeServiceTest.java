@@ -10,6 +10,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseActionTypeRepository;
+import uk.gov.digital.ho.hocs.info.domain.repository.CaseTabRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
@@ -32,6 +33,9 @@ public class CaseTypeServiceTest {
 
     @Mock
     private CaseTypeRepository caseTypeRepository;
+
+    @Mock
+    private CaseTabRepository caseTabRepository;
 
     @Mock
     private DocumentTagRepository documentTagRepository;
@@ -63,7 +67,7 @@ public class CaseTypeServiceTest {
 
     @Before
     public void setUp() {
-        this.caseTypeService = new CaseTypeService(caseTypeRepository,documentTagRepository,holidayDateRepository, caseActionTypeRepository, stageTypeService,userPermissionsService, localDateWrapper);
+        this.caseTypeService = new CaseTypeService(caseTypeRepository,caseTabRepository,documentTagRepository,holidayDateRepository, caseActionTypeRepository, stageTypeService,userPermissionsService, localDateWrapper);
     }
 
     @Test
@@ -364,6 +368,20 @@ public class CaseTypeServiceTest {
         List<CaseTypeActionDto> output  = caseTypeService.getAllCaseActions();
 
         assertThat(output.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void shouldReturnCaseConfigForCaseType() {
+        String type = "COMP";
+        CaseTab caseTab1 = new CaseTab(UUID.randomUUID(),"documents", "Documents", "DOCUMENTS");
+        CaseTab caseTab2 = new CaseTab(UUID.randomUUID(),"summary", "Summary", "SUMMARY");
+        List<CaseTab> tabs = Arrays.asList(caseTab1, caseTab2);
+
+        when(caseTabRepository.findTabsByType(type)).thenReturn(tabs);
+        CaseConfig caseConfig = caseTypeService.getCaseConfig(type);
+
+        assertEquals(type, caseConfig.getType());
+        assertEquals(tabs, caseConfig.getTabs());
     }
 }
 
