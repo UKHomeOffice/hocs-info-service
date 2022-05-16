@@ -1,3 +1,5 @@
+import org.gradle.api.JavaVersion
+
 plugins {
 	id 'java'
 	id 'jacoco'
@@ -6,7 +8,7 @@ plugins {
 }
 
 group = 'uk.gov.digital.ho.hocs'
-sourceCompatibility = '11'
+sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
 	mavenCentral()
@@ -48,7 +50,7 @@ dependencies {
 
 	implementation 'org.apache.httpcomponents:httpmime:4.5.13'
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
-	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.2'
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.3'
 	implementation 'org.keycloak:keycloak-admin-client:11.0.2'
 	implementation('org.keycloak:keycloak-services:11.0.2'){
 		exclude module: "slf4j-log4j12"
@@ -61,12 +63,12 @@ dependencies {
 
 	implementation 'org.flywaydb:flyway-core:8.5.10'
 	runtimeOnly 'org.hsqldb:hsqldb'
-	runtimeOnly 'org.postgresql:postgresql:42.3.4'
+	runtimeOnly 'org.postgresql:postgresql:42.3.5'
 
 	compileOnly 'org.projectlombok:lombok:1.18.24'
 	annotationProcessor 'org.projectlombok:lombok:1.18.22'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-	annotationProcessor 'org.springframework:spring-context-indexer:5.3.19'
+	annotationProcessor 'org.springframework:spring-context-indexer:5.3.20'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.assertj:assertj-core'

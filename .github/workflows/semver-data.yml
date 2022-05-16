@@ -17,7 +17,7 @@ jobs:
     name: Manual SemVer Tag
     runs-on: ubuntu-latest
     steps:
-      - uses: UKHomeOffice/semver-tag-action@v1.0.0
+      - uses: UKHomeOffice/semver-tag-action@v2
         with:
           increment: ${{ github.event.inputs.increment }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
