@@ -70,18 +70,18 @@ spec:
             - name: FLYWAY_URL
               valueFrom:
                 secretKeyRef:
-                  name: {{.KUBE_NAMESPACE}}-rds
+                  name: {{.KUBE_NAMESPACE}}-info-rds
                   key: jdbc_url
             - name: FLYWAY_USER
               valueFrom:
                 secretKeyRef:
-                  name: hocs-info-service
-                  key: rds_user
+                  name: {{.KUBE_NAMESPACE}}-info-rds
+                  key: user_name
             - name: FLYWAY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: hocs-info-service
-                  key: rds_password
+                  name: {{.KUBE_NAMESPACE}}-info-rds
+                  key: password
           resources:
             limits:
               cpu: 900m
@@ -205,33 +205,33 @@ spec:
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
-                  name: {{.KUBE_NAMESPACE}}-rds
-                  key: endpoint
+                  name: {{.KUBE_NAMESPACE}}-info-rds
+                  key: host
             - name: DB_PORT
               valueFrom:
                 secretKeyRef:
-                  name: {{.KUBE_NAMESPACE}}-rds
+                  name: {{.KUBE_NAMESPACE}}-info-rds
                   key: port
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: {{.KUBE_NAMESPACE}}-rds
-                  key: db_name
+                  name: {{.KUBE_NAMESPACE}-info-rds
+                  key: name
             - name: DB_SCHEMA_NAME
               valueFrom:
                 secretKeyRef:
                   name: hocs-info-service
-                  key: rds_schema
+                  key: schema
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: hocs-info-service
-                  key: rds_user
+                  key: user_name
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: hocs-info-service
-                  key: rds_password
+                  key: password
             - name: KEYCLOAK_SERVER_ROOT
               valueFrom:
                 secretKeyRef:
