@@ -215,22 +215,22 @@ spec:
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: {{.KUBE_NAMESPACE}-info-rds
+                  name: {{.KUBE_NAMESPACE}}-info-rds
                   key: name
             - name: DB_SCHEMA_NAME
               valueFrom:
                 secretKeyRef:
-                  name: hocs-info-service
+                  name: {{.KUBE_NAMESPACE}}-info-rds
                   key: schema
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: hocs-info-service
+                  name: {{.KUBE_NAMESPACE}}-info-rds
                   key: user_name
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: hocs-info-service
+                  name: {{.KUBE_NAMESPACE}}-info-rds
                   key: password
             - name: KEYCLOAK_SERVER_ROOT
               valueFrom:
