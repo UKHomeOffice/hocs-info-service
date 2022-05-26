@@ -21,7 +21,7 @@ services:
       DB_VENDOR: h2
 
   - name: postgres
-    image: postgres:12-alpine
+    image: postgres:14-alpine
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: dev
@@ -210,7 +210,7 @@ services:
       DB_VENDOR: h2
 
   - name: postgres
-    image: postgres:12-alpine
+    image: postgres:14-alpine
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: dev
