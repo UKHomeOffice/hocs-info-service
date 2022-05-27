@@ -73,17 +73,6 @@ INSERT INTO correspondent_type (uuid, display_name, type)
 VALUES ('fe1e8854-72ef-4141-a675-fb06760264fd', 'Test Correspondent Type 1', 'TEST1'),
        ('c2155e6c-7ecd-450d-86e3-884e48c8c6c7', 'Test Correspondent Type 2', 'TEST2');
 
---- schema test
-CREATE OR REPLACE FUNCTION get_field_id_from_uuid(field_uuid UUID)
-    RETURNS INTEGER AS '
-DECLARE
-result INTEGER;
-BEGIN
-    result := (SELECT id FROM info.field WHERE uuid = field_uuid);
-RETURN result;
-END;
-' LANGUAGE plpgsql;
-
 INSERT INTO info.screen_schema(uuid, type, title, action_label, active, props, validation)
 VALUES ('f958f77d-b277-408d-bd6f-4a498d3f217f',
         'TEST_SCREEN_SCHEMA',
@@ -93,7 +82,7 @@ VALUES ('f958f77d-b277-408d-bd6f-4a498d3f217f',
         '{}',
         '{}');
 
-INSERT INTO info.field ("uuid", "component", "name", "label", "validation", "summary", "report_extract", "active", "props", child_field_id)
+INSERT INTO info.field ("uuid", "component", "name", "label", "validation", "summary", "report_extract", "active", "props", child_field)
 VALUES ('782a75de-ce06-4d31-95eb-87e42234f396',
         'text-area',
         'TEST_TEXT_FIELD',
@@ -110,7 +99,7 @@ VALUES ('782a75de-ce06-4d31-95eb-87e42234f396',
         null,
         '[]'::jsonb, true, false, true,
         '{"direction": "TEST_DIRECTION"}'::jsonb,
-        get_field_id_from_uuid('782a75de-ce06-4d31-95eb-87e42234f396'));
+        '782a75de-ce06-4d31-95eb-87e42234f396');
 
 INSERT INTO info.field_screen(schema_uuid, field_uuid) VALUES
     ('f958f77d-b277-408d-bd6f-4a498d3f217f', '782a75de-ce06-4d31-95eb-87e42234f396'),
