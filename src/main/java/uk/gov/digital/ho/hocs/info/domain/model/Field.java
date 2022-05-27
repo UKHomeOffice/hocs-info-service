@@ -64,7 +64,7 @@ public class Field implements Serializable {
 
     @Getter
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "child_field_id")
+    @JoinColumn(name = "child_field", referencedColumnName = "uuid")
     private Field child = null;
 
     public Field(String component, String name, String label, String validation, String props, boolean summary, AccessLevel accessLevel, Field child) {
