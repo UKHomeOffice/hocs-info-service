@@ -7,6 +7,8 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
+def keycloakVersion = '15.0.2'
+
 group = 'uk.gov.digital.ho.hocs'
 sourceCompatibility = JavaVersion.VERSION_17
 
@@ -51,10 +53,8 @@ dependencies {
 	implementation 'org.apache.httpcomponents:httpmime:4.5.13'
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.3'
-	implementation 'org.keycloak:keycloak-admin-client:11.0.2'
-	implementation('org.keycloak:keycloak-services:11.0.2'){
-		exclude module: "slf4j-log4j12"
-	}
+	implementation "org.keycloak:keycloak-admin-client:${keycloakVersion}"
+	implementation "org.keycloak:keycloak-services:${keycloakVersion}"
 
 	implementation 'org.apache.commons:commons-csv:1.9.0'
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
