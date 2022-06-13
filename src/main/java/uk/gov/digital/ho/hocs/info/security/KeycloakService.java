@@ -6,7 +6,7 @@ import static uk.gov.digital.ho.hocs.info.application.LogEvent.KEYCLOAK_FAILURE;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,11 +36,10 @@ import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 @Slf4j
 public class KeycloakService {
 
-    private TeamRepository teamRepository;
-    private Keycloak keycloakClient;
-    private String hocsRealmName;
+    private final TeamRepository teamRepository;
+    private final Keycloak keycloakClient;
+    private final String hocsRealmName;
 
-    private static final int USER_BATCH_FETCH_SIZE = 100;
     private static final String KEYCLOAK_ERROR_MESSAGE = "errorMessage";
 
     public KeycloakService(
@@ -53,7 +52,6 @@ public class KeycloakService {
     }
 
     public CreateUserResponse createUser(CreateUserDto createUserDto) {
-
         UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
         List<UserRepresentation> existingUserReps = usersResource.search(createUserDto.getEmail());
 
@@ -159,19 +157,13 @@ public class KeycloakService {
         }
     }
 
-
     public List<UserRepresentation> getAllUsers() {
-        log.info("Get users from Keycloak realm {}", hocsRealmName);
-        UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
-        int totalUserCount = usersResource.count();
-        List<UserRepresentation> users = new ArrayList<>();
-
-        for (int i = 0; i < totalUserCount; i += USER_BATCH_FETCH_SIZE) {
-            log.debug("Batch fetching users, total user count: {}, fetched so far: {}", totalUserCount, i);
-            users.addAll(usersResource.list(i, USER_BATCH_FETCH_SIZE));
-        }
-
+        var users
+                = keycloakClient.realm(hocsRealmName)
+                    .users()
+                    .list(0, -1);
         log.info("Found {} users in Keycloak", users.size());
+
         return users;
     }
 
@@ -179,32 +171,22 @@ public class KeycloakService {
         return keycloakClient.realm(hocsRealmName).users().get(userUUID.toString()).toRepresentation();
     }
 
-    public Set<UserRepresentation> getUsersForTeam(UUID teamUUID) {
+    public List<UserRepresentation> getUsersForTeam(UUID teamUUID) {
         String encodedTeamPath = "/" + Base64UUID.uuidToBase64String(teamUUID);
-        HashSet<UserRepresentation> groupUsers = new HashSet<>();
+
+        if (teamRepository.findByUuid(teamUUID) == null) {
+            throw new ApplicationExceptions.EntityNotFoundException("Team not found for UUID %s", teamUUID);
+        }
+
         try {
-            if (teamRepository.findByUuid(teamUUID) != null) {
-                GroupRepresentation group = keycloakClient.realm(hocsRealmName).getGroupByPath(encodedTeamPath);
+            GroupRepresentation group = keycloakClient.realm(hocsRealmName).getGroupByPath(encodedTeamPath);
 
-                do {
-                    List<UserRepresentation> pageUsers =
-                            keycloakClient.realm(hocsRealmName)
-                                    .groups().group((group).getId())
-                                    .members(groupUsers.size(), USER_BATCH_FETCH_SIZE);
-                    groupUsers.addAll(pageUsers);
-
-                    if (pageUsers.size() < USER_BATCH_FETCH_SIZE) {
-                        break;
-                    }
-                } while (groupUsers.size() != 0);
-
-                return groupUsers;
-            } else {
-               throw new ApplicationExceptions.EntityNotFoundException("Team not found for UUID %s", teamUUID);
-            }
+            return keycloakClient.realm(hocsRealmName)
+                    .groups().group(group.getId())
+                    .members(0, -1);
         } catch (javax.ws.rs.NotFoundException e) {
             log.error("Keycloak has not found users assigned to this team, Not found exception thrown by keycloak: " + e.getMessage());
-            return groupUsers;
+            return Collections.emptyList();
         }
     }
 
@@ -229,9 +211,5 @@ public class KeycloakService {
         userRepresentation.setLastName(createUserDto.getLastName());
         userRepresentation.setEnabled(true);
         return userRepresentation;
-    }
-
-    public void refreshCache() {
-        keycloakClient.realm(hocsRealmName).clearRealmCache();
     }
 }
