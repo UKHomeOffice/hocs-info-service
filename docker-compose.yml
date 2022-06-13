@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.8'
 
 services:
   keycloak:
@@ -31,15 +31,16 @@ services:
       - /var/lib/postgresql
 
   localstack:
-    image: localstack/localstack:0.11.1
+    image: localstack/localstack:0.14.3
     ports:
-      - 4566:4566
+      - "4566:4566"
     networks:
       - hocs-network
     environment:
       HOSTNAME_EXTERNAL: localstack
       DEFAULT_REGION: eu-west-2
       SERVICES: sqs, sns
+      SQS_PROVIDER: "elasticmq"
     volumes:
       - ./config/localstack:/docker-entrypoint-initaws.d
 
