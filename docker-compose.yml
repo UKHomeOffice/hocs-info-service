@@ -2,10 +2,9 @@ version: '3.8'
 
 services:
   keycloak:
-    image: jboss/keycloak:11.0.2
+    image: jboss/keycloak:15.0.2
     restart: always
     ports:
-    - 9990:9990
     - 9081:8080
     networks:
     - hocs-network
