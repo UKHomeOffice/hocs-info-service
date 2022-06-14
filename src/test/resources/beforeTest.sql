@@ -3,7 +3,8 @@ VALUES ('UNIT 2', '09221c48-b916-47df-9aa0-a0194f86f6dd', 'UNIT2', TRUE),
        ('UNIT 3', '65996106-91a5-44bf-bc92-a6c2f691f062', 'UNIT3', TRUE),
        ('UNIT 4', '10d5b353-a8ed-4530-bcc0-3edab0397d2f', 'UNIT4', TRUE),
        ('UNIT 5', 'c875dca8-8679-47e7-a589-7cea64b2e13c', 'UNIT5', TRUE),
-       ('UNIT 6', '66547972-56c6-4a8c-9bf5-b3debec1344a', 'UNIT6', TRUE);
+       ('UNIT 6', '66547972-56c6-4a8c-9bf5-b3debec1344a', 'UNIT6', TRUE),
+       ('Integration Unit', '00000000-0000-0000-0000-000000000000', 'INT_UNIT', TRUE);
 
 Insert INTO case_type (uuid, display_name, short_code, type, owning_unit_uuid, deadline_stage, active, bulk, previous_case_type, initial_case)
 VALUES ('f62834a0-d231-44c9-bfa1-55dd93fc0aa0','Test Case Type 1', 'z9', 'CT1', '09221c48-b916-47df-9aa0-a0194f86f6dd', 'DISPATCH', true, true, null, true),
@@ -18,7 +19,8 @@ VALUES ('TEAM 4', null, '08612f06-bae2-4d2f-90d2-2254a68414b8', '09221c48-b916-4
        ('TEAM 7', null, '8b3b4366-a37c-48b6-b274-4c50f8083843', '09221c48-b916-47df-9aa0-a0194f86f6dd', TRUE),
        ('TEAM 8', null, '5d584129-66ea-4e97-9277-7576ab1d32c0', '09221c48-b916-47df-9aa0-a0194f86f6dd', TRUE),
        ('TEAM 9', null, '7c33c878-9404-4f67-9bbc-ca52dff285ca', '09221c48-b916-47df-9aa0-a0194f86f6dd', TRUE),
-       ('TEAM 10', null, 'd09f1444-87ec-4197-8ec5-f28f548d11be', '10d5b353-a8ed-4530-bcc0-3edab0397d2f', FALSE);
+       ('TEAM 10', null, 'd09f1444-87ec-4197-8ec5-f28f548d11be', '10d5b353-a8ed-4530-bcc0-3edab0397d2f', FALSE),
+       ('Integration Team', null, '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', TRUE);
 
 INSERT INTO stage_type (uuid, display_name, short_code, type, case_type_uuid, acting_team_uuid, deadline,
                         display_stage_order, active)

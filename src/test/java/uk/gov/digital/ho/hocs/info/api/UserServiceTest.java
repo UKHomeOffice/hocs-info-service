@@ -79,7 +79,7 @@ public class UserServiceTest {
         Team team = new Team("Team1", Boolean.TRUE);
         team.setUnit(unit);
 
-        Set<UserRepresentation> userRepresentations = new HashSet<>();
+        List<UserRepresentation> userRepresentations = new ArrayList<>();
         UserRepresentation user = generateUserRepresentation(1);
         userRepresentations.add(user);
         UserRepresentation user2 = generateUserRepresentation(2);
@@ -99,7 +99,7 @@ public class UserServiceTest {
         Unit unit = new Unit("UNIT ONE", "UNIT1", Boolean.TRUE);
         Team team = new Team("Team1", Boolean.TRUE);
         team.setUnit(unit);
-        Set<UserRepresentation> userRepresentations = new HashSet<>();
+        List<UserRepresentation> userRepresentations = new ArrayList<>();
         UserRepresentation user1 = generateUserRepresentation(1);
         userRepresentations.add(user1);
         UserRepresentation user2 = generateUserRepresentation(2);
@@ -122,7 +122,7 @@ public class UserServiceTest {
         Unit unit = new Unit("UNIT ONE", "UNIT1", Boolean.TRUE);
         Team team = new Team("Team1", Boolean.TRUE);
         team.setUnit(unit);
-        Set<UserRepresentation> userRepresentations = new HashSet<>();
+        List<UserRepresentation> userRepresentations = new ArrayList<>();
         UserRepresentation user1 = generateUserRepresentation(1);
         userRepresentations.add(user1);
         UserRepresentation user2 = generateUserRepresentation(2);
@@ -143,7 +143,7 @@ public class UserServiceTest {
         UUID teamUUID = UUID.randomUUID();
         String stageType = "some-stage-type";
 
-        Set<UserRepresentation> userRepresentations = new HashSet<>();
+        List<UserRepresentation> userRepresentations = new ArrayList<>();
         UserRepresentation user1 = generateUserRepresentation(1);
         userRepresentations.add(user1);
         UserRepresentation user2 = generateUserRepresentation(2);

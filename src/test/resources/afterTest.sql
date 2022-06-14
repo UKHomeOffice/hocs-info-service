@@ -33,7 +33,8 @@ delete from team where unit_uuid in ('09221c48-b916-47df-9aa0-a0194f86f6dd',
                                  '5d153f3b-865d-49d9-a493-baedd241db19',
                                  '5d153f3b-865d-49d9-a493-baedd241db19',
                                  'a95a4e2b-102b-4300-939b-1bb6c69e9989',
-                                 'a95a4e2b-102b-4300-939b-1bb6c69e9989');
+                                 'a95a4e2b-102b-4300-939b-1bb6c69e9989',
+                                 '00000000-0000-0000-0000-000000000000');
 
 delete from case_type where type in ('CT1', 'CT2', 'CT3', 'CT4' );
 
@@ -43,7 +44,8 @@ delete from unit where display_name in ('UNIT 2',
                                         'UNIT 5',
                                         'UNIT 6',
                                         'UNIT_101',
-                                        'UNIT_100'
+                                        'UNIT_100',
+                                        'Integration Unit'
                                        );
 
 delete from correspondent_type where type in ('TEST', 'TEST1', 'TEST2');

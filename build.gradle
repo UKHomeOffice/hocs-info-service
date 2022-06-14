@@ -21,6 +21,7 @@ plugins.withType(JacocoPlugin) {
 }
 
 test {
+	useJUnitPlatform()
 	finalizedBy jacocoTestReport // report is always generated after tests run
 }
 
@@ -71,8 +72,10 @@ dependencies {
 	annotationProcessor 'org.springframework:spring-context-indexer:5.3.20'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.vintage:junit-vintage-engine:5.9.0-M1'
 	testImplementation 'org.assertj:assertj-core'
-	testImplementation 'junit:junit:4.13.2'
+
+
 	testImplementation 'org.mockito:mockito-inline:4.6.1'
 }
 
