@@ -157,7 +157,8 @@ public class TeamService {
     @Transactional
     public Team createTeam(TeamDto newTeam, UUID unitUUID) {
         log.debug("Creating Team {}", newTeam.getDisplayName());
-        Team team = teamRepository.findByUuidOrDisplayName(newTeam.getUuid(), newTeam.getDisplayName());
+
+        Team team = teamRepository.findByDisplayName(newTeam.getDisplayName());
         Unit unit = unitRepository.findByUuid(unitUUID);
         if (team == null) {
             log.debug("Team {} doesn't exist, creating.", newTeam.getDisplayName());

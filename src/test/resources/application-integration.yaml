@@ -1,0 +1,16 @@
+keycloak:
+  master:
+    realm: master
+  integration:
+    realm: integration
+    resource: info-service-client
+    secret: 3cafe5b6-805e-4bcd-a8ef-633fa6a5287f
+  realm: ${keycloak.integration.realm}
+
+spring:
+  flyway:
+    enabled: true
+
+user:
+  email:
+    whitelist: example.com

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
@@ -52,16 +53,15 @@ public class UserResource {
         return ResponseEntity.ok(users);
     }
 
-    @PostMapping(value = "/user", produces = APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/user", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<CreateUserResponse> createUser(@Valid @RequestBody CreateUserDto createUserDto) {
         CreateUserResponse createUserResponse = userService.createUser(createUserDto);
         return ResponseEntity.ok().body(createUserResponse);
     }
 
-    @PutMapping(value = "/user/{userUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(value = "/user/{userUUID}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity updateUser(@PathVariable UUID userUUID, @Valid @RequestBody UpdateUserDto updateUserDto) {
         userService.updateUser(userUUID, updateUserDto);
         return ResponseEntity.ok().build();
     }
 }
-

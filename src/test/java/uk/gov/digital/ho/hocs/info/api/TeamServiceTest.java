@@ -164,36 +164,36 @@ public class TeamServiceTest {
 
         TeamDto teamDto = new TeamDto("Team1", new HashSet<>());
 
-        when(teamRepository.findByUuidOrDisplayName(any(), any())).thenReturn(null);
+        when(teamRepository.findByDisplayName(any())).thenReturn(null);
         when(unitRepository.findByUuid(unit.getUuid())).thenReturn(unit);
 
         Team result = teamService.createTeam(teamDto, unit.getUuid());
 
-        verify(teamRepository, times(1)).findByUuidOrDisplayName(any(), any());
-        verify(unitRepository, times(1)).findByUuid(unit.getUuid());
-        verify(keycloakService, times(1)).createTeamGroupIfNotExists(result.getUuid());
+        verify(teamRepository).findByDisplayName(any());
+        verify(unitRepository).findByUuid(unit.getUuid());
+        verify(keycloakService).createTeamGroupIfNotExists(result.getUuid());
         verifyNoMoreInteractions(teamRepository);
         verifyNoMoreInteractions(keycloakService);
     }
 
     @Test
     public void shouldAddTeamToKeycloakIfTeamExists() {
-
-        Team team = new Team("Team1", true);
+        Team team = new Team("TEAM 4", true);
         Unit unit = new Unit("UNIT1", "UNIT1", true);
         unit.addTeam(team);
 
-        TeamDto teamDto = new TeamDto("Team1", null, team1UUID, true, new HashSet<>(), null);
-        when(teamRepository.findByUuidOrDisplayName(team1UUID, team.getDisplayName())).thenReturn(team);
+        TeamDto teamDto = new TeamDto("TEAM 1", null,
+                UUID.randomUUID(), true, new HashSet<>(), null);
+        when(unitRepository.findByUuid(unit.getUuid())).thenReturn(unit);
 
         try {
             teamService.createTeam(teamDto, unit.getUuid());
         } catch (ApplicationExceptions.EntityAlreadyExistsException e) {
-            assertThat(e.getMessage()).isEqualTo("Team: Team1 already exists.");
+            assertThat(e.getMessage()).isEqualTo("Team: TEAM 4 already exists.");
         }
-        verify(unitRepository, times(1)).findByUuid(unit.getUuid());
+        verify(unitRepository).findByUuid(unit.getUuid());
         verify(unitRepository, never()).save(unit);
-        verify(keycloakService, times(1)).createTeamGroupIfNotExists(team.getUuid());
+        verify(keycloakService).createTeamGroupIfNotExists(any());
         verifyNoMoreInteractions(keycloakService);
     }
 
