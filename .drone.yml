@@ -16,7 +16,7 @@ environment:
 
 services:
   - name: keycloak
-    image: jboss/keycloak
+    image: quay.io/keycloak/keycloak:15.1.1
     environment:
       DB_VENDOR: h2
 
@@ -27,14 +27,14 @@ services:
       POSTGRES_PASSWORD: dev
 
   - name: localstack
-    image: quay.io/ukhomeofficedigital/localstack
+    image: localstack/localstack:0.14.3
     environment:
       SERVICES: sqs, sns
       DEFAULT_REGION: eu-west-2
 
 steps:
   - name: setup localstack
-    image: quay.io/ukhomeofficedigital/localstack
+    image: localstack/localstack:0.14.3
     commands:
       - cd config/localstack
       - ./1-setup-sqs.sh
@@ -216,14 +216,14 @@ services:
       POSTGRES_PASSWORD: dev
 
   - name: localstack
-    image: quay.io/ukhomeofficedigital/localstack
+    image: localstack/localstack:0.14.3
     environment:
       SERVICES: sqs, sns
       DEFAULT_REGION: eu-west-2
 
 steps:
   - name: setup localstack
-    image: quay.io/ukhomeofficedigital/localstack
+    image: localstack/localstack:0.14.3
     commands:
       - cd config/localstack
       - ./1-setup-sqs.sh
