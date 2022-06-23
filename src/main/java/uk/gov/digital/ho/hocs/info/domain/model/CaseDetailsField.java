@@ -34,5 +34,8 @@ public class CaseDetailsField implements Serializable {
     @Column(name = "props")
     private String props;
 
+    @Getter
+    @Column(name = "sort_order")
+    private Long sortOrder;
 
 }
