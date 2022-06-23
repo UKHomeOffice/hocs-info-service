@@ -14,7 +14,7 @@ public class CaseDetailsFieldDtoTest {
         String component = "componentA";
         String props = "propertyA";
 
-        CaseDetailsField caseDetailsField = new CaseDetailsField(1L, caseType, name, component, props);
+        CaseDetailsField caseDetailsField = new CaseDetailsField(1L, caseType, name, component, props, 1L);
 
 
         CaseDetailsFieldDto dto = CaseDetailsFieldDto.from(caseDetailsField);
