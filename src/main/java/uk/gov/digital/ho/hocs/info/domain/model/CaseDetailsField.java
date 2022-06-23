@@ -19,7 +19,7 @@ public class CaseDetailsField implements Serializable {
     private Long id;
 
     @Getter
-    @Column(name = "caseType")
+    @Column(name = "case_type")
     private String caseType;
 
     @Getter
