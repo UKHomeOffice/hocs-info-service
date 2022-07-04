@@ -65,6 +65,7 @@ public class SchemaResource {
         return ResponseEntity.ok(fields);
     }
 
+    @Deprecated(forRemoval = true)
     @GetMapping(value = "/schema/caseType/{caseType}/permission/{accessLevel}/fields", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FieldDto>> getFieldsByCaseTypeAndPermissionLevel(@PathVariable String caseType, @PathVariable String accessLevel) {
         AccessLevel requiredLevel = AccessLevel.valueOf(accessLevel);
