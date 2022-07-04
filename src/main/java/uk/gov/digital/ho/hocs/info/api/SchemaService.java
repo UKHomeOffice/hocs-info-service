@@ -96,6 +96,7 @@ public class SchemaService {
         return fields.stream().map(field -> FieldDto.fromWithDecoratedProps(field, mapper)).collect(Collectors.toList());
     }
 
+    @Deprecated(forRemoval = true)
     public List<FieldDto> getFieldsByCaseTypePermissionLevel(String caseType, AccessLevel accessLevel) {
 
         log.debug("Requesting all fields with access permissions of {} for caseType {}", accessLevel, caseType);
