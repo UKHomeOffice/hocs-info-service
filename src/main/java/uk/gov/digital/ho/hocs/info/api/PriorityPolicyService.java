@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Deprecated(forRemoval = true)
 public class PriorityPolicyService {
 
     private final PriorityPolicyRepository priorityPolicyRepository;
@@ -21,6 +22,7 @@ public class PriorityPolicyService {
         this.priorityPolicyRepository = priorityPolicyRepository;
     }
 
+    @Deprecated(forRemoval = true)
     public List<PriorityPolicyDto> getByCaseType(String caseType) {
         log.debug("Getting Priority Policies for {}", caseType);
         List<PriorityPolicy> policies = priorityPolicyRepository.findAllByCaseType(caseType);
