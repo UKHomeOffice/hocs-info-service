@@ -12,6 +12,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @RestController
+@Deprecated(forRemoval = true)
 public class PriorityPolicyResource {
 
     private final PriorityPolicyService priorityPolicyService;
@@ -21,6 +22,7 @@ public class PriorityPolicyResource {
         this.priorityPolicyService = priorityPolicyService;
     }
 
+    @Deprecated(forRemoval = true)
     @GetMapping(value = "/priority/policy/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<PriorityPolicyDto>> getByCaseType(@PathVariable String caseType) {
         return ResponseEntity.ok(priorityPolicyService.getByCaseType(caseType));
