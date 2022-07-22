@@ -41,7 +41,7 @@ dependencies {
 	implementation 'com.jayway.jsonpath:json-path:2.7.0'
 	implementation 'javax.json:javax.json-api:1.1.4'
 
-	implementation 'org.flywaydb:flyway-core:8.5.13'
+	implementation 'org.flywaydb:flyway-core:9.0.1'
 	runtimeOnly 'org.hsqldb:hsqldb'
 	runtimeOnly 'org.postgresql:postgresql:42.4.0'
 
