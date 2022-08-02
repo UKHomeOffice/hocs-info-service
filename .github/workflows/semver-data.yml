@@ -31,7 +31,7 @@ jobs:
         id: calculate
         uses: UKHomeOffice/semver-calculate-action@v1
         with:
-          increment: ${{ steps.label.outputs.matchedLabels }}
+          increment: ${{ github.event.inputs.increment }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_to_highest: ${{ github.base_ref == 'main' }}
 
@@ -42,7 +42,7 @@ jobs:
         with:
           images: 'quay.io/ukhomeofficedigital/hocs-info-service'
           tags: |
-            type=raw,value=${{steps.increment.outputs.version}}
+            type=raw,value=${{steps.calculate.outputs.version}}
             type=raw,value=latest,enable=true
 
       - name: Build container
