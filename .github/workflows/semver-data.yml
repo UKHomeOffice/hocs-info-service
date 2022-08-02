@@ -38,7 +38,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ inputs.images }}
+          images: 'quay.io/ukhomeofficedigital/hocs-info-service'
           tags: |
             type=raw,value=${{steps.increment.outputs.version}}
             type=raw,value=latest,enable=true
