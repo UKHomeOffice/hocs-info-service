@@ -20,7 +20,7 @@ The source for this service can be found on [GitHub](https://github.com/UKHomeOf
 
 ### Prerequisites
 
-* ```Java 8```
+* ```Java 17```
 * ```Docker```
 * ```Postgres```
 * ```SQS```
