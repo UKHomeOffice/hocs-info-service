@@ -67,7 +67,7 @@ public class SchemaServiceTest {
                 new FieldScreen(schemaUUID, field2.getUuid(), 2L, field2));
 
 
-        Schema testSchema = new Schema(20L, schemaUUID, "type", "schemaTitle", "save", true, "stageType", fields, null, null, null);
+        Schema testSchema = new Schema(20L, schemaUUID, "type", "schemaTitle", "save", true, "stageType", fields, null, null, null, null);
 
         when(schemaRepository.findExtractOnlySchema()).thenReturn(testSchema);
 
@@ -117,8 +117,8 @@ public class SchemaServiceTest {
                 new FieldScreen(schema2UUID, field3.getUuid(), 1L, field3),
                 new FieldScreen(schema2UUID, field4.getUuid(), 2L, field4));
 
-        Schema schema1 = new Schema(21L, UUID.randomUUID(), "type1", "schemaTitle1", "save", true, "stageType", fields1, null, null, null);
-        Schema schema2 = new Schema(22L, UUID.randomUUID(), "type2", "schemaTitle2", "save", true, "stageType", fields2, null, null, null);
+        Schema schema1 = new Schema(21L, UUID.randomUUID(), "type1", "schemaTitle1", "save", true, "stageType", fields1, null, null, null, null);
+        Schema schema2 = new Schema(22L, UUID.randomUUID(), "type2", "schemaTitle2", "save", true, "stageType", fields2, null, null, null, null);
 
         when(schemaRepository.findAllActiveFormsByCaseType(caseType)).thenReturn(Set.of(schema1, schema2));
 
@@ -149,7 +149,7 @@ public class SchemaServiceTest {
     public void getSchemaByType() {
         String type = "TEST_TYPE";
         UUID uuid = UUID.randomUUID();
-        Schema testSchema = new Schema(1L, uuid, type, "schemaTitle", "save", true, "stageType", null, null, null, null);
+        Schema testSchema = new Schema(1L, uuid, type, "schemaTitle", "save", true, "stageType", null, null, null, null, null);
 
         when(schemaRepository.findByType(type)).thenReturn(testSchema);
 
