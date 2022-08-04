@@ -7,4 +7,4 @@ jobs:
   test:
     uses: UKHomeOffice/hocs-ci-infrastructure/.github/workflows/test-jvm.yml@v1
     with:
-      components: 'localstack keycloak'
+      components: 'localstack postgres keycloak'
