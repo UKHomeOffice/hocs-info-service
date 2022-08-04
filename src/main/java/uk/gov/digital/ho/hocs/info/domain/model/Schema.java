@@ -68,6 +68,10 @@ public class Schema implements Serializable {
     @Column(name = "validation")
     private String validation;
 
+    @Getter
+    @Column(name = "summary")
+    private String summary;
+
     public List<Field> getFields() {
         return fieldScreens.stream()
                 .map(e -> e.getField())
