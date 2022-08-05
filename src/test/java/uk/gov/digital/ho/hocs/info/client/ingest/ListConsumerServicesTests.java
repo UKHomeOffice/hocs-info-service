@@ -135,7 +135,7 @@ public class ListConsumerServicesTests {
     }
 
     @Test
-    public void whenWelshAssemblyApiReturnsNoMembers_shouldReturnEmptyCollection() {
+    public void whenWelshParliamentApiReturnsNoMembers_shouldReturnEmptyCollection() {
         HttpHeaders header = new HttpHeaders();
         header.setContentType(MediaType.APPLICATION_JSON);
 
@@ -151,7 +151,7 @@ public class ListConsumerServicesTests {
         when(restTemplate.exchange(eq("Test4"), eq(HttpMethod.GET), any(), eq(WelshWards.class)))
                 .thenReturn((ResponseEntity<WelshWards>) responseEntity);
 
-        Set<Member> members = listConsumerService.createFromWelshAssemblyAPI();
+        Set<Member> members = listConsumerService.createFromWelshParliamentAPI();
 
         assertTrue(members.isEmpty());
     }

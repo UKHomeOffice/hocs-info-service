@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -51,7 +50,7 @@ public class MemberService {
 
         // launch async calls to all members endpoints, threads taken from common pool.
         CompletableFuture<Set<Member>> futureWelsh
-                = CompletableFuture.supplyAsync(listConsumerService::createFromWelshAssemblyAPI);
+                = CompletableFuture.supplyAsync(listConsumerService::createFromWelshParliamentAPI);
         CompletableFuture<Set<Member>> futureScottish
                 = CompletableFuture.supplyAsync(listConsumerService::createFromScottishParliamentAPI);
         CompletableFuture<Set<Member>> futureUKCommons
