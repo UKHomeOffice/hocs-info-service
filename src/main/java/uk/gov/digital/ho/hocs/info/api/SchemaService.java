@@ -89,6 +89,7 @@ public class SchemaService {
         return caseTypeSchemas;
     }
 
+    @Deprecated(forRemoval = true)
     public List<FieldDto> getFieldsBySchemaType(String schemaType) {
         log.debug("Getting all Fields for schema {}", schemaType);
         List<Field> fields = fieldRepository.findAllBySchemaType(schemaType);
