@@ -66,6 +66,7 @@ public class FieldDto {
                 childField);
     }
 
+    @Deprecated(forRemoval = true)
     public static FieldDto fromWithDecoratedProps(final Field field, ObjectMapper mapper) {
         final FieldDto childField = field.getChild() != null ? FieldDto.from(field.getChild()) : null;
 
