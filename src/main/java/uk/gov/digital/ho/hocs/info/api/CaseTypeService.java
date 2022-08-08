@@ -102,6 +102,7 @@ public class CaseTypeService {
         }
     }
 
+    @Deprecated(forRemoval = true)
     CaseConfig getCaseConfig(String type) {
         log.debug("Getting CaseConfig for type {}", type);
         List<CaseTab> tabs = caseTabRepository.findTabsByType(type);
