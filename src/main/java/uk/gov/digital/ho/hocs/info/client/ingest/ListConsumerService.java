@@ -35,8 +35,8 @@ public class ListConsumerService {
 
     private final String apiUkParliament;
     private final String apiScottishParliament;
-    private final String apiNorthernIrishAssembly;
-    private final String apiWelshAssembly;
+    private final String apiNorthernIrelandAssembly;
+    private final String apiWelshParliament;
     private final String countriesJsonFilename;
     private final String territoriesJsonFilename;
     private final HouseAddressRepository houseAddressRepository;
@@ -45,16 +45,16 @@ public class ListConsumerService {
     @Autowired
     public ListConsumerService(@Value("${api.uk.parliament}") String apiUkParliament,
                                @Value("${api.scottish.parliament}") String apiScottishParliament,
-                               @Value("${api.ni.assembly}") String apiNorthernIrishAssembly,
-                               @Value("${api.welsh.assembly}") String apiWelshAssembly,
+                               @Value("${api.ni.assembly}") String apiNorthernIrelandAssembly,
+                               @Value("${api.welsh.assembly}") String apiWelshParliament,
                                @Value("${country.json.filename}") String countriesJsonFilename,
                                @Value("${territory.json.filename}") String territoriesJsonFilename,
                                HouseAddressRepository houseAddressRepository,
                                RestTemplate restTemplate) {
         this.apiUkParliament = apiUkParliament;
         this.apiScottishParliament = apiScottishParliament;
-        this.apiNorthernIrishAssembly = apiNorthernIrishAssembly;
-        this.apiWelshAssembly = apiWelshAssembly;
+        this.apiNorthernIrelandAssembly = apiNorthernIrelandAssembly;
+        this.apiWelshParliament = apiWelshParliament;
         this.countriesJsonFilename = countriesJsonFilename;
         this.territoriesJsonFilename = territoriesJsonFilename;
         this.houseAddressRepository = houseAddressRepository;
@@ -62,12 +62,12 @@ public class ListConsumerService {
     }
 
     public Set<Member> createFromIrishAssemblyAPI() {
-        log.info("Updating Northern Irish Assembly");
+        log.info("Updating Northern Ireland Assembly");
         try {
             final HouseAddress houseAddress = retrieveHouseAddress(HouseCodes.IRISH_ASSEMBLY);
 
             NorthernIrishMembers northernIrishMembers =
-                    getDataFromAPI(apiNorthernIrishAssembly, MediaType.APPLICATION_XML, NorthernIrishMembers.class);
+                    getDataFromAPI(apiNorthernIrelandAssembly, MediaType.APPLICATION_XML, NorthernIrishMembers.class);
 
             if (northernIrishMembers.getMembers() != null) {
                 return northernIrishMembers.getMembers()
@@ -78,7 +78,7 @@ public class ListConsumerService {
                                         "NI" + m.getPersonId()))
                         .collect(Collectors.toSet());
             }
-            log.info("Northern Irish members API returned an empty set", value(EVENT, MEMBERS_API_EMPTY_RECORDS));
+            log.info("Northern Ireland members API returned an empty set", value(EVENT, MEMBERS_API_EMPTY_RECORDS));
             return Collections.emptySet();
 
         } catch (ApplicationExceptions.IngestException | ApplicationExceptions.EntityNotFoundException ex) {
@@ -159,12 +159,12 @@ public class ListConsumerService {
         }
     }
 
-    public Set<Member> createFromWelshAssemblyAPI() {
-        log.info("Updating Welsh Assembly");
+    public Set<Member> createFromWelshParliamentAPI() {
+        log.info("Updating Welsh Parliament");
         try {
             final HouseAddress houseAddress = retrieveHouseAddress(HouseCodes.WELSH_ASSEMBLY);
 
-            WelshWards welshWards = getDataFromAPI(apiWelshAssembly, MediaType.APPLICATION_XML, WelshWards.class);
+            WelshWards welshWards = getDataFromAPI(apiWelshParliament, MediaType.APPLICATION_XML, WelshWards.class);
 
             if (welshWards.getWards() != null) {
                 Set<WelshMembers> welshMembers = welshWards.getWards().stream()
@@ -184,7 +184,7 @@ public class ListConsumerService {
                                         "WE"+m.getId()))
                         .collect(Collectors.toSet());
             }
-            log.info("Welsh Assembly members API returned an empty set", value(EVENT, MEMBERS_API_EMPTY_RECORDS));
+            log.info("Welsh Parliament members API returned an empty set", value(EVENT, MEMBERS_API_EMPTY_RECORDS));
             return Collections.emptySet();
         } catch (ApplicationExceptions.IngestException | ApplicationExceptions.EntityNotFoundException ex) {
             log.warn(ex.getMessage());

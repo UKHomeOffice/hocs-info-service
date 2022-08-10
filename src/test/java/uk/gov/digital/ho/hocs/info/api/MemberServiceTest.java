@@ -49,7 +49,7 @@ public class MemberServiceTest {
 
         when(listConsumerService.createCommonsFromUKParliamentAPI()).thenReturn(getMembers());
         when(listConsumerService.createFromScottishParliamentAPI()).thenReturn(getMembers());
-        when(listConsumerService.createFromWelshAssemblyAPI()).thenReturn(getMembers());
+        when(listConsumerService.createFromWelshParliamentAPI()).thenReturn(getMembers());
         when(listConsumerService.createLordsFromUKParliamentAPI()).thenReturn(getMembers());
         when(listConsumerService.createFromIrishAssemblyAPI()).thenReturn(getMembers());
 
