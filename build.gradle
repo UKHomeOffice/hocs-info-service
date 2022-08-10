@@ -2,7 +2,7 @@ import org.gradle.api.JavaVersion
 
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.7.1'
+	id 'org.springframework.boot' version '2.7.2'
 	id 'io.spring.dependency-management' version '1.0.12.RELEASE'
 }
 
@@ -43,7 +43,7 @@ dependencies {
 
 	implementation 'org.flywaydb:flyway-core:8.5.13'
 	runtimeOnly 'org.hsqldb:hsqldb'
-	runtimeOnly 'org.postgresql:postgresql:42.4.0'
+	runtimeOnly 'org.postgresql:postgresql:42.4.1'
 
 	compileOnly "org.projectlombok:lombok:${lombokVersion}"
 	annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -51,7 +51,7 @@ dependencies {
 	annotationProcessor 'org.springframework:spring-context-indexer:5.3.22'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.junit.vintage:junit-vintage-engine:5.9.0-RC1'
+	testImplementation 'org.junit.vintage:junit-vintage-engine:5.9.0'
 	testImplementation 'org.assertj:assertj-core'
 
 

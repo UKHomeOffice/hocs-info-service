@@ -17,15 +17,8 @@ jobs:
     name: 'Manual SemVer Tag'
     runs-on: ubuntu-latest
     steps:
-
-      - name: Calculate SemVer increment
-        id: increment
-        uses: UKHomeOffice/semver-tag-action@v2
-        with:
-          increment: ${{ github.event.inputs.increment }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          default_use_head_tag: true
-          dry_run: true
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Login to Quay.io
         uses: docker/login-action@v2
@@ -34,13 +27,22 @@ jobs:
           username: ${{ secrets.QUAY_ROBOT_USER_NAME }}
           password: ${{ secrets.QUAY_ROBOT_TOKEN }}
 
+      - name: Calculate SemVer value
+        id: calculate
+        uses: UKHomeOffice/semver-calculate-action@v1
+        with:
+          increment: ${{ github.event.inputs.increment }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_to_highest: ${{ github.base_ref == 'main' }}
+
+
       - name: Calculate metadata
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ inputs.images }}
+          images: 'quay.io/ukhomeofficedigital/hocs-info-service'
           tags: |
-            type=raw,value=${{steps.increment.outputs.version}}
+            type=raw,value=${{steps.calculate.outputs.version}}
             type=raw,value=latest,enable=true
 
       - name: Build container
@@ -51,17 +53,16 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Tag repository with SemVer
-        uses: UKHomeOffice/semver-tag-action@v2
+      - name: Tag Repository
+        uses: UKHomeOffice/semver-tag-action@v3
         with:
-          tag: ${{steps.increment.outputs.version}}
+          tag: ${{ steps.calculate.outputs.version }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          default_use_head_tag: true
 
       - name: Post failure to Slack channel
         id: slack
-        uses: slackapi/slack-github-action@v1.19.0
-        if: ${{ failure() && steps.*.conclusion == 'failure' }}
+        uses: slackapi/slack-github-action@v1.21.0
+        if: ${{ failure() }}
         with:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
           slack-message: "GitHub Action failure: ${{github.repository}}\nRun: ${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}\nOriginating PR: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}"

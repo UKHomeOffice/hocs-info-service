@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Deprecated(forRemoval = true)
 public class CaseConfigDto {
 
     String type;

@@ -59,6 +59,7 @@ public class SchemaResource {
         return ResponseEntity.ok(fields);
     }
 
+    @Deprecated(forRemoval = true)
     @GetMapping(value = "/schema/{schemaType}/fields", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FieldDto>> getFieldsBySchemaType(@PathVariable String schemaType) {
         List<FieldDto> fields = schemaService.getFieldsBySchemaType(schemaType);
