@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
+@Deprecated(forRemoval = true)
 public class ExportViewFieldAdapterDto {
 
     private Long id;

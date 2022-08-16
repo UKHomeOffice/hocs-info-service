@@ -12,6 +12,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @RestController
+@Deprecated(forRemoval = true)
 public class ExportViewResource {
 
     private final ExportViewService exportViewService;

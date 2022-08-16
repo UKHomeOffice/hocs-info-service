@@ -7,6 +7,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
+@Deprecated(forRemoval = true)
 public class ExportViewDto {
 
     private Long id;

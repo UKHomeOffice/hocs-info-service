@@ -8,6 +8,7 @@ import java.util.List;
 @java.lang.SuppressWarnings("squid:S1068")
 @Getter
 @AllArgsConstructor
+@Deprecated(forRemoval = true)
 public class ExportViewFieldDto {
 
     private Long id;
