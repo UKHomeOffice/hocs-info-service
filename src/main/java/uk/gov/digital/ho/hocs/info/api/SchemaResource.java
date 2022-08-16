@@ -53,6 +53,7 @@ public class SchemaResource {
         return ResponseEntity.ok(fields.stream().map(FieldDto::from).collect(Collectors.toList()));
     }
 
+    @Deprecated(forRemoval = true)
     @GetMapping(value = "/schema/caseType/{caseType}/reporting", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<List<String>> getAllReportingFieldsForCaseType(@PathVariable String caseType) {
         List<String> fields = extractService.getAllReportingFieldsForCaseType(caseType);

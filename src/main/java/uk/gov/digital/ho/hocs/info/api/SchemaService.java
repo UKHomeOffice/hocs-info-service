@@ -50,6 +50,7 @@ public class SchemaService {
         }
     }
 
+    @Deprecated(forRemoval = true)
     Set<Schema> getAllSchemasForCaseType(String caseType) {
         log.debug("Getting all Forms for CaseType {}", caseType);
         Set<Schema> caseTypeSchemas = schemaRepository.findAllActiveFormsByCaseType(caseType);
@@ -64,12 +65,14 @@ public class SchemaService {
         return summaryFields;
     }
 
+    @Deprecated(forRemoval = true)
     public Stream<Field> getAllReportingFieldsForCaseType(String caseType) {
         Set<Schema> caseTypeSchemas = getAllSchemasForCaseType(caseType);
         log.debug("Filtering to reporting only.");
         return caseTypeSchemas.stream().flatMap(f -> f.getFields().stream()).filter(Field::isReporting);
     }
 
+    @Deprecated(forRemoval = true)
     public List<Field> getExtractOnlyFields() {
         Schema extractOnlySchema = schemaRepository.findExtractOnlySchema();
 
