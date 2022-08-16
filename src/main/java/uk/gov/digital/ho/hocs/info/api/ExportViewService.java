@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Deprecated(forRemoval = true)
 public class ExportViewService {
 
     private final ExportViewRepository exportViewRepository;

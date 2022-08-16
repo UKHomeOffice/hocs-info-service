@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @javax.persistence.Entity
 @Table(name = "export_view")
+@Deprecated(forRemoval = true)
 public class ExportView implements Serializable {
 
     @Id
