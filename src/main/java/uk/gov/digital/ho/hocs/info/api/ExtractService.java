@@ -17,6 +17,7 @@ public class ExtractService {
         this.schemaService = schemaService;
     }
 
+    @Deprecated(forRemoval = true)
     public List<String> getAllReportingFieldsForCaseType(String caseType) {
         Stream<Field> sortedFields = Stream.concat(schemaService.getExtractOnlyFields().stream(),
                 schemaService.getAllReportingFieldsForCaseType(caseType).sorted(Comparator.comparingLong(Field::getId)));
