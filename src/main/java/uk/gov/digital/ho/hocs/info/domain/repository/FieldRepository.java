@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface FieldRepository extends CrudRepository<Field, String> {
 
+    @Deprecated(forRemoval = true)
     @Query(value = "SELECT * FROM field fi WHERE fi.summary = TRUE AND fi.uuid IN (SELECT field_uuid FROM field_screen fs INNER JOIN screen_schema ss ON ss.uuid = fs.schema_uuid INNER JOIN case_type_schema cts ON cts.schema_uuid = ss.uuid WHERE fs.field_uuid = fi.uuid AND ss.active = TRUE AND cts.case_type = ?1) ORDER BY fi.id", nativeQuery = true)
     List<Field> findAllSummaryFields(String caseType);
 
@@ -19,4 +20,5 @@ public interface FieldRepository extends CrudRepository<Field, String> {
     @Deprecated(forRemoval = true)
     @Query(value = "SELECT * FROM field fi WHERE fi.access_level = ?2 AND fi.uuid IN (SELECT field_uuid FROM field_screen fs INNER JOIN screen_schema ss ON ss.uuid = fs.schema_uuid INNER JOIN case_type_schema cts ON cts.schema_uuid = ss.uuid WHERE fs.field_uuid = fi.uuid AND ss.active = TRUE AND cts.case_type = ?1) ORDER BY fi.id", nativeQuery = true)
     List<Field> findAllByAccessLevelAndCaseType(String caseType, String accessLevel);
+
 }
