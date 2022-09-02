@@ -58,6 +58,7 @@ public class SchemaService {
         return caseTypeSchemas;
     }
 
+    @Deprecated(forRemoval = true)
     List<Field> getAllSummaryFieldsForCaseType(String caseType) {
         log.debug("Getting all summary fields CaseType {}", caseType);
         List<Field> summaryFields = fieldRepository.findAllSummaryFields(caseType);
