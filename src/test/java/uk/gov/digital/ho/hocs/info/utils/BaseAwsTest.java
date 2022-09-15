@@ -11,11 +11,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class BaseAwsTest {
+
     @Autowired
     protected ObjectMapper objectMapper;
 
     public String getMessageMd5(Object objectToHash) {
-        try{
+        try {
             var hashObject = objectMapper.writeValueAsString(objectToHash);
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(hashObject.getBytes());
@@ -27,6 +28,7 @@ public class BaseAwsTest {
     }
 
     public static class ResultCaptor<T> implements Answer<T> {
+
         private T result = null;
 
         public T getResult() {
@@ -38,5 +40,7 @@ public class BaseAwsTest {
             result = (T) invocationOnMock.callRealMethod();
             return result;
         }
+
     }
+
 }

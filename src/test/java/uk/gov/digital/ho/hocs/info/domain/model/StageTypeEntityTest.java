@@ -14,19 +14,8 @@ public class StageTypeEntityTest {
         UUID caseTypeUuid = UUID.randomUUID();
         Team team1 = new Team("Team 2", true);
 
-        StageTypeEntity stageTypeEntity = new StageTypeEntity(
-                uuid,
-                "displayName",
-                "shortCode",
-                "type",
-                caseTypeUuid,
-                1,
-                2,
-                1,
-                true,
-                team1,
-                false
-        );
+        StageTypeEntity stageTypeEntity = new StageTypeEntity(uuid, "displayName", "shortCode", "type", caseTypeUuid, 1,
+            2, 1, true, team1, false);
 
         assertThat(stageTypeEntity.getUuid()).isEqualTo(uuid);
         assertThat(stageTypeEntity.getDisplayName()).isEqualTo("displayName");
@@ -38,4 +27,5 @@ public class StageTypeEntityTest {
         assertThat(stageTypeEntity.isActive()).isTrue();
         assertThat(stageTypeEntity.getTeam()).isEqualTo(team1);
     }
+
 }

@@ -39,16 +39,9 @@ public class CaseTypeDto {
 
     public static CaseTypeDto from(CaseType caseType) {
 
-        return new CaseTypeDto(
-                caseType.getDisplayName(),
-                caseType.getType(),
-                caseType.getDisplayName(),
-                caseType.getShortCode(),
-                caseType.getType(),
-                caseType.getPreviousCaseType(),
-                caseType.getDeadlineStageEntity().getDeadline(),
-                caseType.getDeadlineStageEntity().getDeadlineWarning()
-        );
+        return new CaseTypeDto(caseType.getDisplayName(), caseType.getType(), caseType.getDisplayName(),
+            caseType.getShortCode(), caseType.getType(), caseType.getPreviousCaseType(),
+            caseType.getDeadlineStageEntity().getDeadline(), caseType.getDeadlineStageEntity().getDeadlineWarning());
     }
 
 }

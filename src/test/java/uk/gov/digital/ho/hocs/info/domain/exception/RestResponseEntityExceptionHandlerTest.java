@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.info.domain.exception;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpInputMessage;
@@ -22,14 +23,15 @@ public class RestResponseEntityExceptionHandlerTest {
     private RestResponseEntityExceptionHandler restResponseEntityExceptionHandler;
 
     @Before
-    public void beforeTest(){
+    public void beforeTest() {
         restResponseEntityExceptionHandler = new RestResponseEntityExceptionHandler();
     }
 
     @Test
-    public void handleEntityCreationException(){
+    public void handleEntityCreationException() {
         String msg = "Test Error msg";
-        ApplicationExceptions.EntityCreationException exception = new ApplicationExceptions.EntityCreationException(msg);
+        ApplicationExceptions.EntityCreationException exception = new ApplicationExceptions.EntityCreationException(
+            msg);
 
         ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
 
@@ -39,9 +41,10 @@ public class RestResponseEntityExceptionHandlerTest {
     }
 
     @Test
-    public void handleEntityAlreadyExistsException(){
+    public void handleEntityAlreadyExistsException() {
         String msg = "Test Error msg";
-        ApplicationExceptions.EntityAlreadyExistsException exception = new ApplicationExceptions.EntityAlreadyExistsException(msg);
+        ApplicationExceptions.EntityAlreadyExistsException exception = new ApplicationExceptions.EntityAlreadyExistsException(
+            msg);
 
         ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
 
@@ -51,9 +54,10 @@ public class RestResponseEntityExceptionHandlerTest {
     }
 
     @Test
-    public void handleEntityNotFoundException(){
+    public void handleEntityNotFoundException() {
         String msg = "Test Error msg";
-        ApplicationExceptions.EntityNotFoundException exception = new ApplicationExceptions.EntityNotFoundException(msg);
+        ApplicationExceptions.EntityNotFoundException exception = new ApplicationExceptions.EntityNotFoundException(
+            msg);
 
         ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
 
@@ -63,9 +67,10 @@ public class RestResponseEntityExceptionHandlerTest {
     }
 
     @Test
-    public void handleResourceServerException(){
+    public void handleResourceServerException() {
         String msg = "Test Error msg";
-        ApplicationExceptions.ResourceServerException exception = new ApplicationExceptions.ResourceServerException(msg, null);
+        ApplicationExceptions.ResourceServerException exception = new ApplicationExceptions.ResourceServerException(msg,
+            null);
 
         ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
 
@@ -75,9 +80,10 @@ public class RestResponseEntityExceptionHandlerTest {
     }
 
     @Test
-    public void handleResourceNotFoundException(){
+    public void handleResourceNotFoundException() {
         String msg = "Test Error msg";
-        ApplicationExceptions.ResourceNotFoundException exception = new ApplicationExceptions.ResourceNotFoundException(msg, null);
+        ApplicationExceptions.ResourceNotFoundException exception = new ApplicationExceptions.ResourceNotFoundException(
+            msg, null);
 
         ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
 
@@ -87,7 +93,7 @@ public class RestResponseEntityExceptionHandlerTest {
     }
 
     @Test
-    public void handleMethodArgumentNotValidExceptionWithNoBindingErrors(){
+    public void handleMethodArgumentNotValidExceptionWithNoBindingErrors() {
         String msg = "Test Error msg";
         MethodArgumentNotValidException exception = mock(MethodArgumentNotValidException.class);
         when(exception.getMessage()).thenReturn(msg);
@@ -101,7 +107,7 @@ public class RestResponseEntityExceptionHandlerTest {
     }
 
     @Test
-    public void handleMethodArgumentNotValidExceptionWithBingingErrors(){
+    public void handleMethodArgumentNotValidExceptionWithBingingErrors() {
         String validationMessage = "Test Error msg";
         MethodArgumentNotValidException exception = mock(MethodArgumentNotValidException.class);
         when(exception.getMessage()).thenReturn("abc");
@@ -119,7 +125,7 @@ public class RestResponseEntityExceptionHandlerTest {
     }
 
     @Test
-    public void handleHttpmsgConversionException(){
+    public void handleHttpmsgConversionException() {
         String msg = "Test Error msg";
         HttpMessageConversionException exception = new HttpMessageConversionException(msg);
 
@@ -130,9 +136,8 @@ public class RestResponseEntityExceptionHandlerTest {
 
     }
 
-
     @Test
-    public void handleHttpmsgNotReadableException(){
+    public void handleHttpmsgNotReadableException() {
         String msg = "Test Error msg";
         HttpInputMessage httpInputMessage = null;
 
@@ -145,11 +150,11 @@ public class RestResponseEntityExceptionHandlerTest {
 
     }
 
-
     @Test
-    public void handleCorrespondentCreationException(){
+    public void handleCorrespondentCreationException() {
         String msg = "Test Error msg";
-        ApplicationExceptions.CorrespondentCreationException exception = new ApplicationExceptions.CorrespondentCreationException(msg);
+        ApplicationExceptions.CorrespondentCreationException exception = new ApplicationExceptions.CorrespondentCreationException(
+            msg);
 
         ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
 
@@ -159,7 +164,7 @@ public class RestResponseEntityExceptionHandlerTest {
     }
 
     @Test
-    public void handleKeycloakExceptionWithoutHttpStatus(){
+    public void handleKeycloakExceptionWithoutHttpStatus() {
         String msg = "Test Error msg";
         KeycloakException exception = new KeycloakException(msg);
 
@@ -170,7 +175,7 @@ public class RestResponseEntityExceptionHandlerTest {
     }
 
     @Test
-    public void handleKeycloakExceptionWithHttpStatus(){
+    public void handleKeycloakExceptionWithHttpStatus() {
         String msg = "Test Error msg";
         int httpStatusCode = 409;
         KeycloakException exception = new KeycloakException(msg, httpStatusCode);
@@ -182,9 +187,8 @@ public class RestResponseEntityExceptionHandlerTest {
 
     }
 
-
     @Test
-    public void handleTeamDeleteException(){
+    public void handleTeamDeleteException() {
         String msg = "Test Error msg";
 
         ApplicationExceptions.TeamDeleteException exception = new ApplicationExceptions.TeamDeleteException(msg, null);
@@ -195,9 +199,8 @@ public class RestResponseEntityExceptionHandlerTest {
 
     }
 
-
     @Test
-    public void handleTopicCreationException(){
+    public void handleTopicCreationException() {
         String msg = "Test Error msg";
         ApplicationExceptions.TopicCreationException exception = new ApplicationExceptions.TopicCreationException(msg);
 
@@ -208,9 +211,8 @@ public class RestResponseEntityExceptionHandlerTest {
 
     }
 
-
     @Test
-    public void handleTopicUpdateException(){
+    public void handleTopicUpdateException() {
         String msg = "Test Error msg";
         ApplicationExceptions.TopicUpdateException exception = new ApplicationExceptions.TopicUpdateException(msg);
 
@@ -222,7 +224,7 @@ public class RestResponseEntityExceptionHandlerTest {
     }
 
     @Test
-    public void handleUserRemoveException(){
+    public void handleUserRemoveException() {
         String msg = "Test Error msg";
         ApplicationExceptions.UserRemoveException exception = new ApplicationExceptions.UserRemoveException(msg);
 
@@ -234,7 +236,7 @@ public class RestResponseEntityExceptionHandlerTest {
     }
 
     @Test
-    public void handleException(){
+    public void handleException() {
         String msg = "Test Error msg";
         Exception exception = new Exception(msg);
 
@@ -244,4 +246,5 @@ public class RestResponseEntityExceptionHandlerTest {
         assertEquals("Error msg incorrect", msg, result.getBody());
 
     }
+
 }

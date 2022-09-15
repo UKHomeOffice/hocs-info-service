@@ -24,6 +24,7 @@ public class TopicResourceTest {
 
     @Mock
     private TopicService topicService;
+
     @Mock
     private ParentTopicRepository parentTopicRepository;
 
@@ -195,5 +196,6 @@ public class TopicResourceTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
 }
 

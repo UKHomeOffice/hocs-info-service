@@ -9,9 +9,11 @@ import java.util.List;
 @Getter
 @Deprecated(forRemoval = true)
 public class CaseConfig {
+
     @Getter
     private final String type;
 
     @Getter
     private final List<CaseTab> tabs;
+
 }

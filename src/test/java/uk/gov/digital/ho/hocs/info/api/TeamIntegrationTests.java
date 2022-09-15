@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
@@ -45,8 +46,10 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
-@Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
-@ActiveProfiles({"local", "integration"})
+@Sql(scripts = "classpath:afterTest.sql",
+     config = @SqlConfig(transactionMode = ISOLATED),
+     executionPhase = AFTER_TEST_METHOD)
+@ActiveProfiles({ "local", "integration" })
 public class TeamIntegrationTests extends BaseKeycloakTest {
 
     @Autowired
@@ -62,9 +65,13 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
     private int port;
 
     private TestRestTemplate testRestTemplate = new TestRestTemplate();
+
     private MockRestServiceServer mockCaseworkService;
+
     private HttpHeaders headers;
+
     private String userId;
+
     private final UUID unitUUID = UUID.fromString("09221c48-b916-47df-9aa0-a0194f86f6dd");
 
     @BeforeEach
@@ -76,19 +83,15 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
 
         mockCaseworkService = buildMockService(restTemplate);
 
-        userId = keycloakClient.realm(REALM).users().search("integration-test@example.com")
-                .stream().findFirst()
-                .map(UserRepresentation::getId)
-                .orElseThrow();
+        userId = keycloakClient.realm(REALM).users().search("integration-test@example.com").stream().findFirst().map(
+            UserRepresentation::getId).orElseThrow();
     }
 
     @Test
     public void shouldGetAllTeamsForUnit() {
         HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
-        ResponseEntity<Set<TeamDto>> result = testRestTemplate.exchange(
-                getBasePath() + "/unit/" + unitUUID + "/teams"
-                , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
-                });
+        ResponseEntity<Set<TeamDto>> result = testRestTemplate.exchange(getBasePath() + "/unit/" + unitUUID + "/teams",
+            HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {});
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).hasSize(6);
     }
@@ -100,15 +103,14 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
 
         HttpEntity<TeamDto> httpEntity = new HttpEntity<>(team, headers);
 
-        ResponseEntity<TeamDto> result = testRestTemplate.exchange(
-                getBasePath() + "/unit/" + unitUUID + "/teams"
-                , HttpMethod.POST, httpEntity, TeamDto.class);
+        ResponseEntity<TeamDto> result = testRestTemplate.exchange(getBasePath() + "/unit/" + unitUUID + "/teams",
+            HttpMethod.POST, httpEntity, TeamDto.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(teamRepository.findByUuid(result.getBody().getUuid())).isNotNull();
 
-        GroupRepresentation group = keycloakClient.realm(REALM)
-                .getGroupByPath("/" + Base64UUID.uuidToBase64String(result.getBody().getUuid()));
+        GroupRepresentation group = keycloakClient.realm(REALM).getGroupByPath(
+            "/" + Base64UUID.uuidToBase64String(result.getBody().getUuid()));
 
         assertThat(group).isNotNull();
     }
@@ -119,18 +121,15 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
         String base64TeamUUID = Base64UUID.uuidToBase64String(UUID.fromString(teamId));
         HttpEntity<List<String>> httpEntity = new HttpEntity<>(List.of(userId), headers);
 
-        ResponseEntity<String> result = testRestTemplate.exchange(
-                getBasePath() + "/users/team/" + teamId
-                , HttpMethod.POST, httpEntity, String.class);
+        ResponseEntity<String> result = testRestTemplate.exchange(getBasePath() + "/users/team/" + teamId,
+            HttpMethod.POST, httpEntity, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        GroupRepresentation group = keycloakClient.realm(REALM)
-                .getGroupByPath("/" + base64TeamUUID);
+        GroupRepresentation group = keycloakClient.realm(REALM).getGroupByPath("/" + base64TeamUUID);
 
-        assertThat(keycloakClient.realm(REALM)
-                .users().get(userId).groups().stream()
-                .anyMatch(g -> g.getId().equals(group.getId()))).isTrue();
+        assertThat(keycloakClient.realm(REALM).users().get(userId).groups().stream().anyMatch(
+            g -> g.getId().equals(group.getId()))).isTrue();
 
     }
 
@@ -139,30 +138,24 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
 
         String teamId = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
         String base64TeamUUID = Base64UUID.uuidToBase64String(UUID.fromString(teamId));
-        HttpEntity httpEntity = new HttpEntity(List.of(userId),headers);
+        HttpEntity httpEntity = new HttpEntity(List.of(userId), headers);
 
-        testRestTemplate.exchange(
-                getBasePath() + "/users/team/" + teamId
-                , HttpMethod.POST, httpEntity, String.class);
+        testRestTemplate.exchange(getBasePath() + "/users/team/" + teamId, HttpMethod.POST, httpEntity, String.class);
 
         setupCaseworkServiceWithNoCases();
 
-        GroupRepresentation group = keycloakClient.realm(REALM)
-                .getGroupByPath("/" + base64TeamUUID);
+        GroupRepresentation group = keycloakClient.realm(REALM).getGroupByPath("/" + base64TeamUUID);
 
-        assertThat(keycloakClient.realm(REALM)
-                .users().get(userId).groups().stream()
-                .anyMatch(g -> g.getId().equals(group.getId()))).isTrue();
+        assertThat(keycloakClient.realm(REALM).users().get(userId).groups().stream().anyMatch(
+            g -> g.getId().equals(group.getId()))).isTrue();
 
         ResponseEntity<String> result = testRestTemplate.exchange(
-                getBasePath() + "/users/" + userId + "/team/" + teamId
-                , HttpMethod.DELETE, httpEntity, String.class);
+            getBasePath() + "/users/" + userId + "/team/" + teamId, HttpMethod.DELETE, httpEntity, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        assertThat(keycloakClient.realm(REALM)
-                .users().get(userId).groups().stream()
-                .anyMatch(g -> g.getId().equals(group.getId()))).isFalse();
+        assertThat(keycloakClient.realm(REALM).users().get(userId).groups().stream().anyMatch(
+            g -> g.getId().equals(group.getId()))).isFalse();
     }
 
     @Test
@@ -170,32 +163,25 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
 
         String teamId = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
         String base64TeamUUID = Base64UUID.uuidToBase64String(UUID.fromString(teamId));
-        HttpEntity httpEntity = new HttpEntity(List.of(userId),headers);
+        HttpEntity httpEntity = new HttpEntity(List.of(userId), headers);
 
-        testRestTemplate.exchange(
-                getBasePath() + "/users/team/" + teamId
-                , HttpMethod.POST, httpEntity, String.class);
+        testRestTemplate.exchange(getBasePath() + "/users/team/" + teamId, HttpMethod.POST, httpEntity, String.class);
 
         setupCaseworkServiceWithCases();
 
-        GroupRepresentation group = keycloakClient.realm(REALM)
-                .getGroupByPath("/" + base64TeamUUID);
+        GroupRepresentation group = keycloakClient.realm(REALM).getGroupByPath("/" + base64TeamUUID);
 
-        assertThat(keycloakClient.realm(REALM)
-                .users().get(userId).groups().stream()
-                .anyMatch(g -> g.getId().equals(group.getId()))).isTrue();
+        assertThat(keycloakClient.realm(REALM).users().get(userId).groups().stream().anyMatch(
+            g -> g.getId().equals(group.getId()))).isTrue();
 
         ResponseEntity<String> result = testRestTemplate.exchange(
-                getBasePath() + "/users/" + userId + "/team/" + teamId
-                , HttpMethod.DELETE, httpEntity, String.class);
+            getBasePath() + "/users/" + userId + "/team/" + teamId, HttpMethod.DELETE, httpEntity, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
 
-        assertThat(keycloakClient.realm(REALM)
-                .users().get(userId).groups().stream()
-                .anyMatch(g -> g.getId().equals(group.getId()))).isTrue();
+        assertThat(keycloakClient.realm(REALM).users().get(userId).groups().stream().anyMatch(
+            g -> g.getId().equals(group.getId()))).isTrue();
     }
-
 
     @Test
     @Transactional
@@ -209,9 +195,8 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
 
         HttpEntity<UpdateTeamPermissionsRequest> httpEntity = new HttpEntity<>(request, headers);
 
-        ResponseEntity<String> result = testRestTemplate.exchange(
-                getBasePath() + "/team/" + teamId + "/permissions"
-                , HttpMethod.DELETE, httpEntity, String.class);
+        ResponseEntity<String> result = testRestTemplate.exchange(getBasePath() + "/team/" + teamId + "/permissions",
+            HttpMethod.DELETE, httpEntity, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).getPermissions()).size().isEqualTo(0);
@@ -229,9 +214,8 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
 
         HttpEntity<UpdateTeamPermissionsRequest> httpEntity = new HttpEntity<>(request, headers);
 
-        ResponseEntity<String> result = testRestTemplate.exchange(
-                getBasePath() + "/team/" + teamId + "/permissions"
-                , HttpMethod.DELETE, httpEntity, String.class);
+        ResponseEntity<String> result = testRestTemplate.exchange(getBasePath() + "/team/" + teamId + "/permissions",
+            HttpMethod.DELETE, httpEntity, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).getPermissions()).size().isEqualTo(2);
@@ -244,9 +228,8 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
         UpdateTeamNameRequest request = new UpdateTeamNameRequest("New Team Name");
         HttpEntity<UpdateTeamNameRequest> httpEntity = new HttpEntity<>(request);
 
-        ResponseEntity<String> result = testRestTemplate.exchange(
-                getBasePath() + "/team/" + teamId
-                , HttpMethod.PUT, httpEntity, String.class);
+        ResponseEntity<String> result = testRestTemplate.exchange(getBasePath() + "/team/" + teamId, HttpMethod.PUT,
+            httpEntity, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).getDisplayName()).isEqualTo("New Team Name");
@@ -259,9 +242,8 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
         UpdateTeamLetterNameRequest request = new UpdateTeamLetterNameRequest("New Name");
         HttpEntity<UpdateTeamNameRequest> httpEntity = new HttpEntity(request);
 
-        ResponseEntity<String> result = testRestTemplate.exchange(
-                getBasePath() + "/team/" + teamId +"/lettername"
-                , HttpMethod.PUT, httpEntity, String.class);
+        ResponseEntity<String> result = testRestTemplate.exchange(getBasePath() + "/team/" + teamId + "/lettername",
+            HttpMethod.PUT, httpEntity, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).getLetterName()).isEqualTo("New Name");
@@ -271,9 +253,8 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
     public void shouldDeleteTeam() {
         String teamId = "8b3b4366-a37c-48b6-b274-4c50f8083843";
 
-        ResponseEntity<String> result = testRestTemplate.exchange(
-                getBasePath() + "/team/" + teamId
-                , HttpMethod.DELETE, new HttpEntity(null), String.class);
+        ResponseEntity<String> result = testRestTemplate.exchange(getBasePath() + "/team/" + teamId, HttpMethod.DELETE,
+            new HttpEntity(null), String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).isActive()).isFalse();
@@ -283,9 +264,8 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
     public void shouldReturnPreConditionFailedErrorWhenTryingToDeleteTeamWhichHasActiveParentTopicsAttached() {
         String teamId = "7c33c878-9404-4f67-9bbc-ca52dff285ca";
 
-        ResponseEntity<String> result = testRestTemplate.exchange(
-                getBasePath() + "/team/" + teamId
-                , HttpMethod.DELETE, new HttpEntity(null), String.class);
+        ResponseEntity<String> result = testRestTemplate.exchange(getBasePath() + "/team/" + teamId, HttpMethod.DELETE,
+            new HttpEntity(null), String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.PRECONDITION_FAILED);
         assertThat(teamRepository.findByUuid(UUID.fromString(teamId)).isActive()).isTrue();
@@ -296,24 +276,16 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
         String unitShortCode = "UNIT_100";
 
         HttpEntity<?> httpEntity = new HttpEntity<>(headers);
-        ResponseEntity<Set<TeamDto>> result = testRestTemplate.exchange(
-                getBasePath() + "/teams?unit=" + unitShortCode,
-                HttpMethod.GET,
-                httpEntity,
-                new ParameterizedTypeReference<>() {
-                }
-        );
+        ResponseEntity<Set<TeamDto>> result = testRestTemplate.exchange(getBasePath() + "/teams?unit=" + unitShortCode,
+            HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {});
 
         Set<TeamDto> teamDtos = result.getBody();
 
         assertThat(teamDtos).hasSize(2);
-        assertThat(teamDtos.stream().map(TeamDto::getDisplayName)).noneMatch(el -> el.equals("TEAM_103")
-                        || el.equals("TEAM_104")
-                        || el.equals("TEAM_102")
-        );
-        assertThat(teamDtos.stream().map(TeamDto::getDisplayName)).allMatch(el -> el.equals("TEAM_101")
-                || el.equals("TEAM_100")
-        );
+        assertThat(teamDtos.stream().map(TeamDto::getDisplayName)).noneMatch(
+            el -> el.equals("TEAM_103") || el.equals("TEAM_104") || el.equals("TEAM_102"));
+        assertThat(teamDtos.stream().map(TeamDto::getDisplayName)).allMatch(
+            el -> el.equals("TEAM_101") || el.equals("TEAM_100"));
     }
 
     /**********************
@@ -334,10 +306,9 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
         String teamUUID = "434a4e33-437f-4e6d-8f04-14ea40fdbfa2";
         Set<UUID> caseUUIDs = new HashSet<>();
 
-        mockCaseworkService
-                .expect(requestTo("http://localhost:8082/stage/team/" + teamUUID + "/user/" + userId))
-                .andExpect(method(GET))
-                .andRespond(withSuccess(mapper.writeValueAsString(caseUUIDs), MediaType.APPLICATION_JSON));
+        mockCaseworkService.expect(
+            requestTo("http://localhost:8082/stage/team/" + teamUUID + "/user/" + userId)).andExpect(
+            method(GET)).andRespond(withSuccess(mapper.writeValueAsString(caseUUIDs), MediaType.APPLICATION_JSON));
     }
 
     private void setupCaseworkServiceWithCases() throws JsonProcessingException {
@@ -345,9 +316,9 @@ public class TeamIntegrationTests extends BaseKeycloakTest {
         Set<UUID> caseUUIDs = new HashSet<>();
         caseUUIDs.add(UUID.fromString("08d72d00-f081-4156-96b1-c36e511012ba"));
 
-        mockCaseworkService
-                .expect(requestTo("http://localhost:8082/stage/team/" + teamUUID + "/user/" + userId))
-                .andExpect(method(GET))
-                .andRespond(withSuccess(mapper.writeValueAsString(caseUUIDs), MediaType.APPLICATION_JSON));
+        mockCaseworkService.expect(
+            requestTo("http://localhost:8082/stage/team/" + teamUUID + "/user/" + userId)).andExpect(
+            method(GET)).andRespond(withSuccess(mapper.writeValueAsString(caseUUIDs), MediaType.APPLICATION_JSON));
     }
+
 }

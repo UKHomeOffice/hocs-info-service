@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@EqualsAndHashCode(of = {"type"})
+@EqualsAndHashCode(of = { "type" })
 public class StageTypeEntity implements Serializable {
 
     @Id
@@ -56,7 +56,17 @@ public class StageTypeEntity implements Serializable {
     @Column(name = "can_display_contributions")
     private boolean canDisplayContributions;
 
-    public StageTypeEntity(UUID uuid, String displayName, String shortCode, String type, UUID caseTypeUUID, int deadline, int deadlineWarning, int displayStageOrder, boolean active, Team team, boolean canDisplayContributions) {
+    public StageTypeEntity(UUID uuid,
+                           String displayName,
+                           String shortCode,
+                           String type,
+                           UUID caseTypeUUID,
+                           int deadline,
+                           int deadlineWarning,
+                           int displayStageOrder,
+                           boolean active,
+                           Team team,
+                           boolean canDisplayContributions) {
         this.uuid = uuid;
         this.displayName = displayName;
         this.shortCode = shortCode;
@@ -69,4 +79,5 @@ public class StageTypeEntity implements Serializable {
         this.team = team;
         this.canDisplayContributions = canDisplayContributions;
     }
+
 }

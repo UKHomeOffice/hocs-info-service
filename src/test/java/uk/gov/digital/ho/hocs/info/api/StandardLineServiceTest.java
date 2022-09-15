@@ -45,21 +45,29 @@ public class StandardLineServiceTest {
     private StandardLineService standardLineService;
 
     private static final UUID uuid = UUID.randomUUID();
+
     private static final UUID standardLineUUID = UUID.randomUUID();
+
     private static final UUID topicUUID = UUID.randomUUID();
+
     private static final UUID documentUUID = UUID.randomUUID();
+
     private static final UUID userUUID = UUID.randomUUID();
+
     private static final LocalDateTime END_OF_DAY = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+
     private static final String DISPLAY_NAME = "dn";
+
     private static final UUID NEW_DOCUMENT_UUID = UUID.randomUUID();
 
     @Before
     public void setUp() {
-        this.standardLineService = new StandardLineService(standardLineRepository, documentClient, caseworkClient, teamService, topicService);
+        this.standardLineService = new StandardLineService(standardLineRepository, documentClient, caseworkClient,
+            teamService, topicService);
     }
 
     @Test
-    public void shouldReturnStandardLine(){
+    public void shouldReturnStandardLine() {
         when(standardLineRepository.findStandardLinesByExpires(END_OF_DAY)).thenReturn(Set.of(new StandardLine()));
         standardLineService.getActiveStandardLines();
         verify(standardLineRepository).findStandardLinesByExpires(END_OF_DAY);
@@ -67,23 +75,28 @@ public class StandardLineServiceTest {
     }
 
     @Test
-    public void shouldReturnStandardLineForPrimaryTopic(){
-        when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid, END_OF_DAY)).thenReturn(new StandardLine());
+    public void shouldReturnStandardLineForPrimaryTopic() {
+        when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid, END_OF_DAY)).thenReturn(
+            new StandardLine());
         standardLineService.getStandardLineForTopic(uuid);
         verify(standardLineRepository).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
         verifyNoMoreInteractions(standardLineRepository);
     }
 
     @Test
-    public void shouldCreateNewStandardLine(){
-        CreateStandardLineDocumentDto request = new CreateStandardLineDocumentDto(DISPLAY_NAME,"URL",uuid,LocalDate.now().plusDays(1));
+    public void shouldCreateNewStandardLine() {
+        CreateStandardLineDocumentDto request = new CreateStandardLineDocumentDto(DISPLAY_NAME, "URL", uuid,
+            LocalDate.now().plusDays(1));
 
-        when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq("URL"), eq(ManagedDocumentType.STANDARD_LINE))).thenReturn(NEW_DOCUMENT_UUID);
+        when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq("URL"),
+            eq(ManagedDocumentType.STANDARD_LINE))).thenReturn(NEW_DOCUMENT_UUID);
         when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid, END_OF_DAY)).thenReturn(null);
 
-        standardLineService.createStandardLine(request.getDisplayName(), request.getTopicUUID(), request.getExpires(), request.getS3UntrustedUrl());
+        standardLineService.createStandardLine(request.getDisplayName(), request.getTopicUUID(), request.getExpires(),
+            request.getS3UntrustedUrl());
 
-        verify(documentClient).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq("URL"), eq(ManagedDocumentType.STANDARD_LINE));
+        verify(documentClient).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq("URL"),
+            eq(ManagedDocumentType.STANDARD_LINE));
         verify(standardLineRepository).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
         verify(standardLineRepository).save(any());
         verifyNoMoreInteractions(standardLineRepository);
@@ -91,18 +104,22 @@ public class StandardLineServiceTest {
     }
 
     @Test
-    public void shouldCreateStandardLineExpiringPrevious(){
-        CreateStandardLineDocumentDto request = new CreateStandardLineDocumentDto(DISPLAY_NAME,"URL",uuid,LocalDate.now().plusDays(1));
+    public void shouldCreateStandardLineExpiringPrevious() {
+        CreateStandardLineDocumentDto request = new CreateStandardLineDocumentDto(DISPLAY_NAME, "URL", uuid,
+            LocalDate.now().plusDays(1));
 
         StandardLine standardLine = new StandardLine(DISPLAY_NAME, uuid, END_OF_DAY);
         standardLine.setDocumentUUID(UUID.randomUUID());
 
-        when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq("URL"), eq(ManagedDocumentType.STANDARD_LINE))).thenReturn(NEW_DOCUMENT_UUID);
-        when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid , END_OF_DAY)).thenReturn(standardLine);
-      
-        standardLineService.createStandardLine(request.getDisplayName(), request.getTopicUUID(), request.getExpires(), request.getS3UntrustedUrl());
+        when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq("URL"),
+            eq(ManagedDocumentType.STANDARD_LINE))).thenReturn(NEW_DOCUMENT_UUID);
+        when(standardLineRepository.findStandardLinesByTopicAndExpires(uuid, END_OF_DAY)).thenReturn(standardLine);
 
-        verify(documentClient).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq("URL"), eq(ManagedDocumentType.STANDARD_LINE));
+        standardLineService.createStandardLine(request.getDisplayName(), request.getTopicUUID(), request.getExpires(),
+            request.getS3UntrustedUrl());
+
+        verify(documentClient).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq("URL"),
+            eq(ManagedDocumentType.STANDARD_LINE));
         verify(standardLineRepository).findStandardLinesByTopicAndExpires(uuid, END_OF_DAY);
         verify(standardLineRepository, times(2)).save(any());
         verify(documentClient).deleteDocument(standardLine.getDocumentUUID());
@@ -113,7 +130,7 @@ public class StandardLineServiceTest {
     }
 
     @Test
-    public void getAllStandardLines(){
+    public void getAllStandardLines() {
         List<StandardLine> standardLines = List.of(new StandardLine("DisplayName", uuid, LocalDateTime.now()));
 
         when(standardLineRepository.findAllStandardLines()).thenReturn(standardLines);
@@ -128,8 +145,9 @@ public class StandardLineServiceTest {
     }
 
     @Test
-    public void getStandardLine(){
-        when(standardLineRepository.findByUuid(standardLineUUID)).thenReturn(new StandardLine("DisplayName", uuid, LocalDateTime.now()));
+    public void getStandardLine() {
+        when(standardLineRepository.findByUuid(standardLineUUID)).thenReturn(
+            new StandardLine("DisplayName", uuid, LocalDateTime.now()));
 
         StandardLine result = standardLineService.getStandardLine(standardLineUUID);
         verify(standardLineRepository).findByUuid(standardLineUUID);
@@ -140,7 +158,7 @@ public class StandardLineServiceTest {
     }
 
     @Test
-    public void expireStandardLine(){
+    public void expireStandardLine() {
         StandardLine standardLineMock = mock(StandardLine.class);
         when(standardLineRepository.findByUuid(standardLineUUID)).thenReturn(standardLineMock);
 
@@ -154,7 +172,7 @@ public class StandardLineServiceTest {
     }
 
     @Test
-    public void deleteStandardLine(){
+    public void deleteStandardLine() {
         StandardLine standardLineMock = mock(StandardLine.class);
         when(standardLineMock.getTopicUUID()).thenReturn(topicUUID);
         when(standardLineMock.getDocumentUUID()).thenReturn(documentUUID);
@@ -174,7 +192,7 @@ public class StandardLineServiceTest {
     }
 
     @Test
-    public void updateStandardLine(){
+    public void updateStandardLine() {
         StandardLine standardLineMock = mock(StandardLine.class);
         when(standardLineMock.getTopicUUID()).thenReturn(topicUUID);
         UpdateStandardLineDto updateStandardLineDto = new UpdateStandardLineDto("NewDN", LocalDate.now().plusDays(10));
@@ -192,7 +210,7 @@ public class StandardLineServiceTest {
     }
 
     @Test
-    public void getStandardLinesForUser(){
+    public void getStandardLinesForUser() {
         List<StandardLine> standardLines = List.of(new StandardLine("DisplayName", uuid, LocalDateTime.now()));
         Team team = new Team("Test", true);
         Topic topic = new Topic("Topic Test", UUID.randomUUID());
@@ -215,7 +233,7 @@ public class StandardLineServiceTest {
     }
 
     @Test
-    public void getStandardLinesForUser_NoTeams_ReturnsEmptyList(){
+    public void getStandardLinesForUser_NoTeams_ReturnsEmptyList() {
         Set<Team> teamSet = new HashSet<>();
 
         when(teamService.getTeamsForUser(userUUID)).thenReturn(teamSet);
@@ -228,7 +246,7 @@ public class StandardLineServiceTest {
     }
 
     @Test
-    public void getStandardLinesForUser_TeamWithNoTopic_ReturnsEmptyList(){
+    public void getStandardLinesForUser_TeamWithNoTopic_ReturnsEmptyList() {
         Team team = new Team("Test", true);
         Set<Team> teamsSet = Set.of(team);
 
@@ -243,7 +261,7 @@ public class StandardLineServiceTest {
     }
 
     @Test
-    public void getStandardLinesForUser_TeamTopicNoStandardLines_ReturnsEmptyList(){
+    public void getStandardLinesForUser_TeamTopicNoStandardLines_ReturnsEmptyList() {
         List<StandardLine> standardLines = new ArrayList<>();
         Team team = new Team("Test", true);
         Topic topic = new Topic("Topic Test", UUID.randomUUID());
@@ -263,7 +281,8 @@ public class StandardLineServiceTest {
         assertThat(result.size()).isEqualTo(0);
     }
 
-    private void checkNoMoreInteractions(){
+    private void checkNoMoreInteractions() {
         verifyNoMoreInteractions(standardLineRepository, documentClient, caseworkClient, teamService, topicService);
     }
+
 }

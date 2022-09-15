@@ -27,15 +27,25 @@ public class ExportViewServiceTest {
     private ExportViewService exportViewService;
 
     private static final UUID USER_UUID = UUID.randomUUID();
+
     private static final String PERMISSION_1 = "permission_name1";
+
     private static final String PERMISSION_2 = "permission_name2";
+
     private static final String VIEW_CODE_1 = "view_name1";
+
     private static final String VIEW_CODE_2 = "view_name2";
+
     private static final String VIEW_DISPLAY_NAME_1 = "display_name1";
+
     private static final String VIEW_DISPLAY_NAME_2 = "display_name2";
+
     private static final String FIELD_NAME_A = "FieldA";
+
     private static final String FIELD_NAME_B = "FieldB";
+
     private static final String FIELD_NAME_C = "FieldC";
+
     private static final String FIELD_NAME_D = "FieldD";
 
     @Before
@@ -76,7 +86,6 @@ public class ExportViewServiceTest {
         verifyNoMoreInteractions(exportViewRepository);
     }
 
-
     @Test
     public void getAllExportViews_Blank() {
 
@@ -90,7 +99,6 @@ public class ExportViewServiceTest {
         verify(exportViewRepository).findAll();
         verifyNoMoreInteractions(exportViewRepository);
     }
-
 
     @Test
     public void getExportView() {
@@ -122,7 +130,6 @@ public class ExportViewServiceTest {
 
     }
 
-
     private List<ExportView> buildExportViews() {
         return List.of(buildExportView1(), buildExportView2());
     }
@@ -140,6 +147,5 @@ public class ExportViewServiceTest {
         List<ExportViewField> fields2 = List.of(fieldC, fieldD);
         return new ExportView(2L, VIEW_CODE_2, VIEW_DISPLAY_NAME_2, PERMISSION_2, fields2);
     }
-
 
 }

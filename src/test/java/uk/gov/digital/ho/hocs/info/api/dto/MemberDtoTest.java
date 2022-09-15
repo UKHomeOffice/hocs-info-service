@@ -13,12 +13,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MemberDtoTest {
 
     UUID uuid = UUID.randomUUID();
+
     UUID houseUUID = UUID.randomUUID();
 
     @Test
     public void from() {
-        HouseAddress houseAddress = new HouseAddress(1l, uuid, "house", "housecode", "address1", "address2", "address3", "postcode", "counter", LocalDate.now(), LocalDate.now());
-        Member member = new Member(1l, "House", "Full Title", "Ext Ref", uuid, LocalDateTime.now(), Boolean.FALSE, houseUUID, houseAddress);
+        HouseAddress houseAddress = new HouseAddress(1l, uuid, "house", "housecode", "address1", "address2", "address3",
+            "postcode", "counter", LocalDate.now(), LocalDate.now());
+        Member member = new Member(1l, "House", "Full Title", "Ext Ref", uuid, LocalDateTime.now(), Boolean.FALSE,
+            houseUUID, houseAddress);
 
         MemberDto memberDto = MemberDto.from(member);
 
@@ -26,4 +29,5 @@ public class MemberDtoTest {
         assertThat(memberDto.getUuid()).isEqualTo(uuid);
         assertThat(memberDto.getHouse()).isEqualTo("House");
     }
+
 }

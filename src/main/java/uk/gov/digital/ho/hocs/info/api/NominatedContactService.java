@@ -29,20 +29,19 @@ public class NominatedContactService {
         return contacts;
     }
 
-    public NominatedContact createNominatedContact(UUID teamUUID, String emailAddress){
+    public NominatedContact createNominatedContact(UUID teamUUID, String emailAddress) {
         log.debug("Creating new nominated contact for Team: {} with Email: {}", teamUUID, emailAddress);
         NominatedContact nominatedContact = new NominatedContact(teamUUID, emailAddress);
         try {
             nominatedContactRepository.save(nominatedContact);
-        }
-        catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new ApplicationExceptions.EntityAlreadyExistsException("Nominated contact already exists");
         }
         log.info("Created nominated contact for team UUID: {} with email: {}", teamUUID, emailAddress);
         return nominatedContact;
     }
 
-    public void updateNominatedContact(UUID nominatedContactUUID, String emailAddress){
+    public void updateNominatedContact(UUID nominatedContactUUID, String emailAddress) {
         log.debug("Updating nominated contact uuid: {} with email: {}", nominatedContactUUID, emailAddress);
         NominatedContact nominatedContact = nominatedContactRepository.findByUuid(nominatedContactUUID);
         nominatedContact.setEmailAddress(emailAddress);
@@ -50,17 +49,18 @@ public class NominatedContactService {
         log.info("Updated nominated contact uuid: {} with email:{} ", nominatedContactUUID, emailAddress);
     }
 
-    public void deleteNominatedContact(UUID teamUUID, UUID nominatedContactUUID){
+    public void deleteNominatedContact(UUID teamUUID, UUID nominatedContactUUID) {
         log.debug("Deleting nominated contact with uuid: {} from team {}", nominatedContactUUID, teamUUID);
 
         Set<NominatedContact> contacts = nominatedContactRepository.findAllByTeamUUID(teamUUID);
-        if (contacts.size() > 1 ) {
+        if (contacts.size() > 1) {
             NominatedContact nominatedContact = nominatedContactRepository.findByUuid(nominatedContactUUID);
             nominatedContactRepository.delete(nominatedContact);
             log.info("Deleted nominated contact uuid: {} ", nominatedContactUUID);
         } else {
             throw new ApplicationExceptions.NominatedContactDeleteException(
-                    "Unable to delete nominated contact for team {} - teams must have at least one contact", teamUUID);
+                "Unable to delete nominated contact for team {} - teams must have at least one contact", teamUUID);
         }
     }
+
 }

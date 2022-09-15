@@ -9,8 +9,9 @@ import java.util.UUID;
 
 public interface NominatedContactRepository extends CrudRepository<NominatedContact, String> {
 
-    @Query(value ="SELECT * FROM team_contact np WHERE team_uuid = ?1" , nativeQuery = true )
+    @Query(value = "SELECT * FROM team_contact np WHERE team_uuid = ?1", nativeQuery = true)
     Set<NominatedContact> findAllByTeamUUID(UUID teamUUID);
 
     NominatedContact findByUuid(UUID nominatedContactUUID);
+
 }

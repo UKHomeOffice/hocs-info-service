@@ -23,7 +23,9 @@ public class CreateCorrespondentTypeResponse {
     private String type;
 
     public static CreateCorrespondentTypeResponse from(CorrespondentType correspondentType) {
-        return new CreateCorrespondentTypeResponse(correspondentType.getUuid(), correspondentType.getDisplayName(), correspondentType.getType());
+        return new CreateCorrespondentTypeResponse(correspondentType.getUuid(), correspondentType.getDisplayName(),
+            correspondentType.getType());
     }
+
 }
 

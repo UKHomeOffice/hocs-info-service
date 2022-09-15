@@ -41,7 +41,10 @@ public class ExportView implements Serializable {
     private List<ExportViewField> fields;
 
     public ExportViewDto toDto() {
-        List<ExportViewFieldDto> fieldDtos = CollectionUtils.isNullOrEmpty(fields) ? new ArrayList<>() : fields.stream().map(ExportViewField::toDto).collect(Collectors.toList());
+        List<ExportViewFieldDto> fieldDtos = CollectionUtils.isNullOrEmpty(fields)
+            ? new ArrayList<>()
+            : fields.stream().map(ExportViewField::toDto).collect(Collectors.toList());
         return new ExportViewDto(id, code, displayName, requiredPermission, fieldDtos);
     }
+
 }

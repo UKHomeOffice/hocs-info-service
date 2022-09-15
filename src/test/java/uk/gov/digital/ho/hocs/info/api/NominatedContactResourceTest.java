@@ -28,6 +28,7 @@ public class NominatedContactResourceTest {
     private NominatedContactResource nominatedContactResource;
 
     private static UUID teamUUID = UUID.randomUUID();
+
     private static String email = "email@test.com";
 
     @Before
@@ -40,8 +41,7 @@ public class NominatedContactResourceTest {
 
         when(nominatedContactService.getNominatedContacts(teamUUID)).thenReturn(getMockNominatedContactsForTeam());
 
-        ResponseEntity<Set<NominatedContact>> response =
-                nominatedContactResource.getNominatedContacts(teamUUID);
+        ResponseEntity<Set<NominatedContact>> response = nominatedContactResource.getNominatedContacts(teamUUID);
 
         verify(nominatedContactService, times(1)).getNominatedContacts(teamUUID);
         verifyNoMoreInteractions(nominatedContactService);
@@ -64,7 +64,8 @@ public class NominatedContactResourceTest {
         NominatedContact contact = new NominatedContact(teamUUID, email);
         when(nominatedContactService.createNominatedContact(teamUUID, email)).thenReturn(contact);
 
-        ResponseEntity<CreateNominatedContactResponse> response = nominatedContactResource.createNominatedContact(teamUUID, request);
+        ResponseEntity<CreateNominatedContactResponse> response = nominatedContactResource.createNominatedContact(
+            teamUUID, request);
 
         verify(nominatedContactService, times(1)).createNominatedContact(teamUUID, email);
         verifyNoMoreInteractions(nominatedContactService);
@@ -107,4 +108,5 @@ public class NominatedContactResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
     }
+
 }

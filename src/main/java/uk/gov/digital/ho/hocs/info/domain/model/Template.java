@@ -51,4 +51,5 @@ public class Template implements Serializable {
         this.deleted = Boolean.TRUE;
 
     }
+
 }

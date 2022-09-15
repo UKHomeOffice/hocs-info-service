@@ -15,4 +15,5 @@ public class AddTeamToTopicDto {
 
     @JsonProperty("stage_type")
     private String stageType;
+
 }

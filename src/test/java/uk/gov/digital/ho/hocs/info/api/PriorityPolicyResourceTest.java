@@ -31,12 +31,12 @@ public class PriorityPolicyResourceTest {
     public void getByCaseType() {
         String caseType = "testCaseType";
 
-        List<PriorityPolicyDto> priorityPolicyDtos = Collections.singletonList(new PriorityPolicyDto("policyType", caseType, "config"));
+        List<PriorityPolicyDto> priorityPolicyDtos = Collections.singletonList(
+            new PriorityPolicyDto("policyType", caseType, "config"));
 
         when(priorityPolicyService.getByCaseType(caseType)).thenReturn(priorityPolicyDtos);
 
         ResponseEntity<List<PriorityPolicyDto>> result = priorityPolicyResource.getByCaseType(caseType);
-
 
         Assert.assertEquals("Status code incorrect", 200, result.getStatusCode().value());
         Assert.assertEquals("Returned list do not match", priorityPolicyDtos, result.getBody());

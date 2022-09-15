@@ -26,8 +26,10 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
-@Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
-@ActiveProfiles({"local", "integration"})
+@Sql(scripts = "classpath:afterTest.sql",
+     config = @SqlConfig(transactionMode = ISOLATED),
+     executionPhase = AFTER_TEST_METHOD)
+@ActiveProfiles({ "local", "integration" })
 public class CorrespondentTypeIntegrationTests {
 
     TestRestTemplate restTemplate = new TestRestTemplate();
@@ -56,8 +58,7 @@ public class CorrespondentTypeIntegrationTests {
 
         HttpEntity httpEntity = new HttpEntity(headers);
         ResponseEntity<GetCorrespondentTypeResponse> result = restTemplate.exchange(
-                getBasePath() + "/correspondentType"
-                , HttpMethod.GET, httpEntity, GetCorrespondentTypeResponse.class);
+            getBasePath() + "/correspondentType", HttpMethod.GET, httpEntity, GetCorrespondentTypeResponse.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody().getCorrespondentTypes().size()).isEqualTo(correspondentCount);
@@ -70,8 +71,7 @@ public class CorrespondentTypeIntegrationTests {
 
         HttpEntity<CreateCorrespondentTypeDto> httpEntity = new HttpEntity(request, headers);
         ResponseEntity<CreateCorrespondentTypeResponse> result = restTemplate.exchange(
-                getBasePath() + "/correspondentType"
-                , HttpMethod.POST, httpEntity, CreateCorrespondentTypeResponse.class );
+            getBasePath() + "/correspondentType", HttpMethod.POST, httpEntity, CreateCorrespondentTypeResponse.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody().getDisplayName()).isEqualTo("Test Correspondent Type");
@@ -79,14 +79,13 @@ public class CorrespondentTypeIntegrationTests {
     }
 
     @Test
-    public void shouldReturnErrorAndNotCreateCorrespondentTypeWhenNoDisplayName(){
+    public void shouldReturnErrorAndNotCreateCorrespondentTypeWhenNoDisplayName() {
         CreateCorrespondentTypeDto request = new CreateCorrespondentTypeDto(null, "TEST");
 
         Long numberOfTypesBefore = correspondentTypeRepository.count();
         HttpEntity<CreateCorrespondentTypeDto> httpEntity = new HttpEntity(request, headers);
-        ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/correspondentType"
-                , HttpMethod.POST, httpEntity, String.class );
+        ResponseEntity result = restTemplate.exchange(getBasePath() + "/correspondentType", HttpMethod.POST, httpEntity,
+            String.class);
 
         Long numberOfTypesAfter = correspondentTypeRepository.count();
 
@@ -95,14 +94,13 @@ public class CorrespondentTypeIntegrationTests {
     }
 
     @Test
-    public void shouldReturnErrorAndNotCreateCorrespondentTypeWhenNoType(){
+    public void shouldReturnErrorAndNotCreateCorrespondentTypeWhenNoType() {
         CreateCorrespondentTypeDto request = new CreateCorrespondentTypeDto("Test Correspondent Type", null);
 
         Long numberOfTypesBefore = correspondentTypeRepository.count();
         HttpEntity<CreateCorrespondentTypeDto> httpEntity = new HttpEntity(request, headers);
-        ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/correspondentType"
-                , HttpMethod.POST, httpEntity, String.class );
+        ResponseEntity result = restTemplate.exchange(getBasePath() + "/correspondentType", HttpMethod.POST, httpEntity,
+            String.class);
 
         Long numberOfTypesAfter = correspondentTypeRepository.count();
 

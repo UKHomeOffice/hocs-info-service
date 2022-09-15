@@ -9,11 +9,7 @@ public class SomuTypeDtoTest {
 
     @Test
     public void from() {
-        SomuType somuType = new SomuType(
-                "caseType",
-                "type",
-                "schema",
-                true);
+        SomuType somuType = new SomuType("caseType", "type", "schema", true);
 
         SomuTypeDto somuTypeDto = SomuTypeDto.from(somuType);
 
@@ -24,4 +20,5 @@ public class SomuTypeDtoTest {
         assertThat(somuTypeDto.getSchema()).isEqualTo("schema");
         assertThat(somuTypeDto.isActive()).isTrue();
     }
+
 }

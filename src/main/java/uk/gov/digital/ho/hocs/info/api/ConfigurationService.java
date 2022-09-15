@@ -32,16 +32,14 @@ public class ConfigurationService {
             log.error(configuration.toString());
             throw new Exception(errorMessage);
         } else {
-            configuration.getWorkstackTypes().forEach(
-                    wst -> {
-                        if (wst.getWorkstackColumns() == null) {
-                            String errorMessage = "Empty WorkstackColumns";
-                            log.error(errorMessage);
-                            log.error(configuration.toString());
-                            throw new RuntimeException(errorMessage);
-                        }
-                    }
-            );
+            configuration.getWorkstackTypes().forEach(wst -> {
+                if (wst.getWorkstackColumns() == null) {
+                    String errorMessage = "Empty WorkstackColumns";
+                    log.error(errorMessage);
+                    log.error(configuration.toString());
+                    throw new RuntimeException(errorMessage);
+                }
+            });
         }
         log.info("Got {} Configuration", configuration.getSystemName());
         return configuration;

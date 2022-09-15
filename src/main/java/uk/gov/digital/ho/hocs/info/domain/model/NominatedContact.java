@@ -35,9 +35,10 @@ public class NominatedContact {
     @Column(name = "email_address")
     String emailAddress;
 
-    public NominatedContact(UUID teamUUID, String emailAddress){
+    public NominatedContact(UUID teamUUID, String emailAddress) {
         this.teamUUID = teamUUID;
         this.uuid = UUID.randomUUID();
         this.emailAddress = emailAddress;
     }
+
 }

@@ -9,6 +9,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.api.dto.UnitDto;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -29,11 +30,9 @@ public class UnitResourceTest {
         unitResource = new UnitResource(unitService);
     }
 
-
-
     @Test
     public void getAllUnitsShouldCallCollaborators() {
-        Set<UnitDto> units = new HashSet<UnitDto>(){{
+        Set<UnitDto> units = new HashSet<UnitDto>() {{
             add(new UnitDto("Unit1", UUID.randomUUID().toString(), "UNIT1"));
             add(new UnitDto("Unit2", UUID.randomUUID().toString(), "UNIT2"));
         }};
@@ -57,7 +56,7 @@ public class UnitResourceTest {
     }
 
     @Test
-    public void shouldDeleteUnit(){
+    public void shouldDeleteUnit() {
 
         UUID unitUUID = UUID.randomUUID();
 
@@ -67,7 +66,6 @@ public class UnitResourceTest {
         verify(unitService, times(1)).deleteUnit(unitUUID);
         verifyNoMoreInteractions(unitService);
 
-
-
     }
+
 }

@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.domain.model.SearchField;
 
-
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class SearchFieldDto {
@@ -24,8 +23,8 @@ public class SearchFieldDto {
     @JsonRawValue
     private String props;
 
-
     public static SearchFieldDto from(SearchField field) {
         return new SearchFieldDto(field.getName(), field.getComponent(), field.getValidation(), field.getProps());
     }
+
 }

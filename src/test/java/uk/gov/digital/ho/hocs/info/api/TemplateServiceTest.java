@@ -12,6 +12,7 @@ import uk.gov.digital.ho.hocs.info.client.documentclient.model.ManagedDocumentTy
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Template;
 import uk.gov.digital.ho.hocs.info.domain.repository.TemplateRepository;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -33,8 +34,11 @@ public class TemplateServiceTest {
     private CaseworkClient caseworkClient;
 
     private TemplateService templateService;
+
     private static final String DISPLAY_NAME = "dn";
+
     private static final String CASE_TYPE = "MIN";
+
     private static final UUID NEW_DOCUMENT_UUID = UUID.randomUUID();
 
     @Before
@@ -67,11 +71,13 @@ public class TemplateServiceTest {
     public void shouldCreateNewTemplate() {
         CreateTemplateDocumentDto request = new CreateTemplateDocumentDto(DISPLAY_NAME, CASE_TYPE, "URL");
 
-        when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq("URL"), eq(ManagedDocumentType.TEMPLATE))).thenReturn(NEW_DOCUMENT_UUID);
+        when(documentClient.createDocument(any(UUID.class), eq(request.getDisplayName()), eq("URL"),
+            eq(ManagedDocumentType.TEMPLATE))).thenReturn(NEW_DOCUMENT_UUID);
 
         templateService.createTemplate(request);
 
-        verify(documentClient).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq("URL"), eq(ManagedDocumentType.TEMPLATE));
+        verify(documentClient).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq("URL"),
+            eq(ManagedDocumentType.TEMPLATE));
         verify(templateRepository).save(any());
         verify(caseworkClient).clearCachedTemplateForCaseType(CASE_TYPE);
         verifyNoMoreInteractions(templateRepository, documentClient, caseworkClient);

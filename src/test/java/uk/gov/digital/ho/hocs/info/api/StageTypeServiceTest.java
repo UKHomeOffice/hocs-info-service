@@ -29,7 +29,8 @@ public class StageTypeServiceTest {
     private HolidayDateRepository holidayDateRepository;
 
     private StageTypeService service;
-    private final Team team = new Team( "Team1" , new HashSet<>());
+
+    private final Team team = new Team("Team1", new HashSet<>());
 
     @Before
     public void setup() {
@@ -38,7 +39,8 @@ public class StageTypeServiceTest {
 
     @Test
     public void shouldGetAllStageTypes() {
-        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true, team, false);
+        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111", "STAGE_TYPE",
+            UUID.randomUUID(), 1, 1, 1, true, team, false);
         Set<StageTypeEntity> stages = new HashSet<StageTypeEntity>() {{
             add(stage);
         }};
@@ -51,7 +53,8 @@ public class StageTypeServiceTest {
 
     @Test
     public void shouldGetTeamForStageType() {
-        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true,team, false);
+        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111", "STAGE_TYPE",
+            UUID.randomUUID(), 1, 1, 1, true, team, false);
 
         when(stageTypeRepository.findByType("STAGE_TYPE")).thenReturn(stage);
 
@@ -62,11 +65,13 @@ public class StageTypeServiceTest {
 
     @Test
     public void shouldGetContributionsForStageType() {
-        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true,team, true);
+        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111", "STAGE_TYPE",
+            UUID.randomUUID(), 1, 1, 1, true, team, true);
 
         when(stageTypeRepository.findByType("STAGE_TYPE")).thenReturn(stage);
 
         Boolean result = service.getCanDisplayContributionsForStageType("STAGE_TYPE");
         assertThat(result).isEqualTo(true);
     }
+
 }

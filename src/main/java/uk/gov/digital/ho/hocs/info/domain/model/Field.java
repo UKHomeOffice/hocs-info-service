@@ -67,7 +67,14 @@ public class Field implements Serializable {
     @JoinColumn(name = "child_field", referencedColumnName = "uuid")
     private Field child = null;
 
-    public Field(String component, String name, String label, String validation, String props, boolean summary, AccessLevel accessLevel, Field child) {
+    public Field(String component,
+                 String name,
+                 String label,
+                 String validation,
+                 String props,
+                 boolean summary,
+                 AccessLevel accessLevel,
+                 Field child) {
         this.uuid = UUID.randomUUID();
         this.component = component;
         this.name = name;

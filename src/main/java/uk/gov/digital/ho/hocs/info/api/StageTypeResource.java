@@ -26,6 +26,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class StageTypeResource {
 
     private final StageTypeService stageTypeService;
+
     private final CaseTypeService caseTypeService;
 
     @Autowired
@@ -42,14 +43,16 @@ public class StageTypeResource {
 
     /**
      * Endpoint for retrieving the name for a Stage Type by using a given Stage Type UUID
+     *
      * @param stageTypeUUID the UUID of the stage type name that should be retrieved
+     *
      * @return a Stage Type entity corresponding to the given UUID
      */
     @GetMapping(value = "/stageType/{stageTypeUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
     ResponseEntity<StageTypeDto> getStageTypeByUuid(String stageTypeUUID) {
         Set<StageTypeEntity> stageTypes = stageTypeService.getAllStageTypes();
-        for (StageTypeEntity stageType : stageTypes){
-            if (stageType.getUuid().equals(UUID.fromString(stageTypeUUID))){
+        for (StageTypeEntity stageType : stageTypes) {
+            if (stageType.getUuid().equals(UUID.fromString(stageTypeUUID))) {
                 return ResponseEntity.ok(StageTypeDto.from(stageType));
             }
         }
@@ -60,11 +63,8 @@ public class StageTypeResource {
     ResponseEntity<Set<StageTypeDto>> getStagesForCaseType(@PathVariable String caseType) {
         final UUID caseTypeUuid = caseTypeService.getCaseType(caseType).getUuid();
 
-        final Set<StageTypeDto> stages = stageTypeService
-                .getAllStageTypesByCaseType(caseTypeUuid)
-                .stream()
-                .map(StageTypeDto::from)
-                .collect(Collectors.toSet());
+        final Set<StageTypeDto> stages = stageTypeService.getAllStageTypesByCaseType(caseTypeUuid).stream().map(
+            StageTypeDto::from).collect(Collectors.toSet());
 
         return ResponseEntity.ok(stages);
     }
@@ -84,4 +84,5 @@ public class StageTypeResource {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
 }

@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SomuTypeResourceTest {
-    
+
     private UUID somuUuid = UUID.randomUUID();
 
     @Mock
@@ -115,4 +115,5 @@ public class SomuTypeResourceTest {
         verify(somuTypeService).upsertSomuTypeForCaseTypeAndType("CaseType", "Type", "{}", true);
         verifyNoMoreInteractions(somuTypeService);
     }
+
 }

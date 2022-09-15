@@ -17,21 +17,29 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ExportViewResourceTest {
 
-
     @Mock
     private ExportViewService exportViewService;
 
     private ExportViewResource exportViewResource;
 
     private static final String PERMISSION_1 = "permission_name1";
+
     private static final String PERMISSION_2 = "permission_name2";
+
     private static final String VIEW_CODE_1 = "view_name1";
+
     private static final String VIEW_CODE_2 = "view_name2";
+
     private static final String VIEW_DISPLAY_NAME_1 = "display_name1";
+
     private static final String VIEW_DISPLAY_NAME_2 = "display_name2";
+
     private static final String FIELD_NAME_A = "FieldA";
+
     private static final String FIELD_NAME_B = "FieldB";
+
     private static final String FIELD_NAME_C = "FieldC";
+
     private static final String FIELD_NAME_D = "FieldD";
 
     @Before
@@ -86,6 +94,5 @@ public class ExportViewResourceTest {
         List<ExportViewFieldDto> fields2 = List.of(fieldC, fieldD);
         return new ExportViewDto(2L, VIEW_CODE_2, VIEW_DISPLAY_NAME_2, PERMISSION_2, fields2);
     }
-
 
 }

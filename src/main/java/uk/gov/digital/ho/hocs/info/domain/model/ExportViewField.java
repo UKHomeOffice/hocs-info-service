@@ -35,12 +35,17 @@ public class ExportViewField implements Serializable {
     private String displayName;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_export_view_field_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "parent_export_view_field_id",
+                referencedColumnName = "id",
+                insertable = false,
+                updatable = false)
     @OrderBy("sortOrder")
     private List<ExportViewFieldAdapter> adapters;
 
     public ExportViewFieldDto toDto() {
-        List<ExportViewFieldAdapterDto> adapterDtos = CollectionUtils.isNullOrEmpty(adapters) ? new ArrayList<>() : adapters.stream().map(ExportViewFieldAdapter::toDto).collect(Collectors.toList());
+        List<ExportViewFieldAdapterDto> adapterDtos = CollectionUtils.isNullOrEmpty(adapters)
+            ? new ArrayList<>()
+            : adapters.stream().map(ExportViewFieldAdapter::toDto).collect(Collectors.toList());
         return new ExportViewFieldDto(id, parentExportViewId, sortOrder, displayName, adapterDtos);
     }
 

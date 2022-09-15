@@ -24,15 +24,16 @@ public class ParentTopicAndTopicDto {
     @JsonProperty("options")
     List<TopicDto> topics;
 
-    public static ParentTopicAndTopicDto from (ParentTopic parentTopic) {
+    public static ParentTopicAndTopicDto from(ParentTopic parentTopic) {
         List<TopicDto> topicDto = parentTopic.getTopic().stream().map(TopicDto::from).collect(Collectors.toList());
-        return new ParentTopicAndTopicDto(parentTopic.getDisplayName(), parentTopic.getUuid(), topicDto); }
+        return new ParentTopicAndTopicDto(parentTopic.getDisplayName(), parentTopic.getUuid(), topicDto);
+    }
 
-    public static ParentTopicAndTopicDto fromTopicWithFilteredChildren (ParentTopic parentTopic, List<Topic> childTopics) {
-        List<TopicDto> filteredChildTopics = childTopics
-                .stream()
-                .filter(t -> t.getParentTopic().equals(parentTopic.getUuid()))
-                .map(TopicDto::from)
-                .collect(Collectors.toList());
-        return new ParentTopicAndTopicDto(parentTopic.getDisplayName(), parentTopic.getUuid(), filteredChildTopics); }
+    public static ParentTopicAndTopicDto fromTopicWithFilteredChildren(ParentTopic parentTopic,
+                                                                       List<Topic> childTopics) {
+        List<TopicDto> filteredChildTopics = childTopics.stream().filter(
+            t -> t.getParentTopic().equals(parentTopic.getUuid())).map(TopicDto::from).collect(Collectors.toList());
+        return new ParentTopicAndTopicDto(parentTopic.getDisplayName(), parentTopic.getUuid(), filteredChildTopics);
+    }
+
 }

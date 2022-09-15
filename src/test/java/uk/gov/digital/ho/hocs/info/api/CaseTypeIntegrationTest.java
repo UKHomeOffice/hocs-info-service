@@ -27,11 +27,13 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TES
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(properties = {"user.email.whitelist=homeoffice.gov.uk"},
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(properties = { "user.email.whitelist=homeoffice.gov.uk" },
+                webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
-@Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
-@ActiveProfiles({"local", "integration"})
+@Sql(scripts = "classpath:afterTest.sql",
+     config = @SqlConfig(transactionMode = ISOLATED),
+     executionPhase = AFTER_TEST_METHOD)
+@ActiveProfiles({ "local", "integration" })
 public class CaseTypeIntegrationTest {
 
     TestRestTemplate restTemplate = new TestRestTemplate();
@@ -55,8 +57,8 @@ public class CaseTypeIntegrationTest {
 
         // when
         ResponseEntity<Set<CaseTypeDto>> getCaseTypesRequest = restTemplate.exchange(
-                getBasePath() + "/caseType?initialCaseType=true", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
-                });
+            getBasePath() + "/caseType?initialCaseType=true", HttpMethod.GET, httpEntity,
+            new ParameterizedTypeReference<>() {});
 
         // then
         assertThat(getCaseTypesRequest).isNotNull();
@@ -64,11 +66,9 @@ public class CaseTypeIntegrationTest {
 
         Set<CaseTypeDto> caseTypeDtos = getCaseTypesRequest.getBody();
         assertThat(caseTypeDtos).isNotNull();
-        assertThat(caseTypeDtos
-                .stream()
-                .filter(caseTypeDto -> caseTypeDto.getPreviousCaseType() == null)
-                .count())
-                .isEqualTo(3);
+        assertThat(
+            caseTypeDtos.stream().filter(caseTypeDto -> caseTypeDto.getPreviousCaseType() == null).count()).isEqualTo(
+            3);
 
     }
 
@@ -81,8 +81,8 @@ public class CaseTypeIntegrationTest {
 
         // when
         ResponseEntity<Set<CaseTypeDto>> getCaseTypesRequest = restTemplate.exchange(
-                getBasePath() + "/caseType?addCasesWithPreviousType=true", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
-                });
+            getBasePath() + "/caseType?addCasesWithPreviousType=true", HttpMethod.GET, httpEntity,
+            new ParameterizedTypeReference<>() {});
 
         // then
         assertThat(getCaseTypesRequest).isNotNull();
@@ -97,7 +97,8 @@ public class CaseTypeIntegrationTest {
     @Test
     public void shouldRetrieveNonBulkCasesWithoutPreviousCaseType() {
         // given
-        headers.add("X-Auth-Groups", "/CGEvBrriTS-Q0iJUpoQUuA,/kRravlq3RHCDlWtYSmFGLQ,/Q0pOM0N_Tm2PBBTqQP2_og,/iztDZqN8SLaydExQ-Ag4Qw,/XVhBKWbqTpeSd3V2qx0ywA,/fDPIeJQET2ebvMpS3_KFyg,/0J8URIfsQZeOxfKPVI0Rvg");
+        headers.add("X-Auth-Groups",
+            "/CGEvBrriTS-Q0iJUpoQUuA,/kRravlq3RHCDlWtYSmFGLQ,/Q0pOM0N_Tm2PBBTqQP2_og,/iztDZqN8SLaydExQ-Ag4Qw,/XVhBKWbqTpeSd3V2qx0ywA,/fDPIeJQET2ebvMpS3_KFyg,/0J8URIfsQZeOxfKPVI0Rvg");
         // setup done in before.sql
         HttpEntity httpEntity = new HttpEntity(headers);
 
@@ -106,8 +107,8 @@ public class CaseTypeIntegrationTest {
         for (Map.Entry<Boolean, Long> bulkValue : bulkValues.entrySet()) {
             // when
             ResponseEntity<Set<CaseTypeDto>> getCaseTypesRequest = restTemplate.exchange(
-                    getBasePath() + "/caseType?bulkOnly=" + bulkValue.getKey(), HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
-                    });
+                getBasePath() + "/caseType?bulkOnly=" + bulkValue.getKey(), HttpMethod.GET, httpEntity,
+                new ParameterizedTypeReference<>() {});
 
             // then
             assertThat(getCaseTypesRequest).isNotNull();
@@ -115,11 +116,8 @@ public class CaseTypeIntegrationTest {
 
             Set<CaseTypeDto> caseTypeDtos = getCaseTypesRequest.getBody();
             assertThat(caseTypeDtos).isNotNull();
-            assertThat(caseTypeDtos
-                    .stream()
-                    .filter(caseTypeDto -> caseTypeDto.getPreviousCaseType() == null)
-                    .count())
-                    .isEqualTo(bulkValue.getValue());
+            assertThat(caseTypeDtos.stream().filter(
+                caseTypeDto -> caseTypeDto.getPreviousCaseType() == null).count()).isEqualTo(bulkValue.getValue());
 
         }
 
@@ -133,11 +131,7 @@ public class CaseTypeIntegrationTest {
 
         HttpEntity httpEntity = new HttpEntity(headers);
         ResponseEntity<List<CaseTypeActionDto>> response = restTemplate.exchange(
-                getBasePath()  + "/caseType/" + caseTypeString + "/actions",
-                HttpMethod.GET,
-                httpEntity,
-                typeReference
-        );
+            getBasePath() + "/caseType/" + caseTypeString + "/actions", HttpMethod.GET, httpEntity, typeReference);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(Objects.requireNonNull(response.getBody()).size()).isEqualTo(2);
@@ -151,11 +145,7 @@ public class CaseTypeIntegrationTest {
 
         HttpEntity httpEntity = new HttpEntity(headers);
         ResponseEntity<List<CaseTypeActionDto>> response = restTemplate.exchange(
-                getBasePath() + "/caseType/" + caseTypeString + "/actions",
-                HttpMethod.GET,
-                httpEntity,
-                typeReference
-        );
+            getBasePath() + "/caseType/" + caseTypeString + "/actions", HttpMethod.GET, httpEntity, typeReference);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(Objects.requireNonNull(response.getBody()).size()).isEqualTo(0);
@@ -167,11 +157,8 @@ public class CaseTypeIntegrationTest {
         UUID nonExistentActionID = UUID.randomUUID();
 
         ResponseEntity<Void> response = restTemplate.exchange(
-                getBasePath() + "/caseType/" + caseTypeString + "/actions/" + nonExistentActionID ,
-                HttpMethod.GET,
-                new HttpEntity<>(headers),
-                Void.class
-        );
+            getBasePath() + "/caseType/" + caseTypeString + "/actions/" + nonExistentActionID, HttpMethod.GET,
+            new HttpEntity<>(headers), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 
@@ -187,11 +174,8 @@ public class CaseTypeIntegrationTest {
 
         HttpEntity httpEntity = new HttpEntity(headers);
         ResponseEntity<CaseTypeActionDto> response = restTemplate.exchange(
-                getBasePath() + "/caseType/" + caseTypeString + "/actions/" + actionID,
-                HttpMethod.GET,
-                httpEntity,
-                typeReference
-        );
+            getBasePath() + "/caseType/" + caseTypeString + "/actions/" + actionID, HttpMethod.GET, httpEntity,
+            typeReference);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -204,12 +188,8 @@ public class CaseTypeIntegrationTest {
         ParameterizedTypeReference<List<CaseTypeActionDto>> typeReference = new ParameterizedTypeReference<>() {};
 
         HttpEntity httpEntity = new HttpEntity(headers);
-        ResponseEntity<List<CaseTypeActionDto>> response = restTemplate.exchange(
-                getBasePath()  + "/caseType/actions",
-                HttpMethod.GET,
-                httpEntity,
-                typeReference
-        );
+        ResponseEntity<List<CaseTypeActionDto>> response = restTemplate.exchange(getBasePath() + "/caseType/actions",
+            HttpMethod.GET, httpEntity, typeReference);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(Objects.requireNonNull(response.getBody()).size()).isEqualTo(4);

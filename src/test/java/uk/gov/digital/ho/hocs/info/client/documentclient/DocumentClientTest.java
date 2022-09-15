@@ -22,11 +22,14 @@ public class DocumentClientTest {
     RestHelper restHelper;
 
     private final String serviceBaseURL = "http://localhost:8087";
-    private final UUID uuid = UUID.randomUUID();
-    private final UUID SL_EXT_REF = UUID.fromString("77777777-7777-7777-7777-777777777777");
-    private final String DISPLAY_NAME = "DN";
-    private final String FILE_LOC = "ANY.txt";
 
+    private final UUID uuid = UUID.randomUUID();
+
+    private final UUID SL_EXT_REF = UUID.fromString("77777777-7777-7777-7777-777777777777");
+
+    private final String DISPLAY_NAME = "DN";
+
+    private final String FILE_LOC = "ANY.txt";
 
     DocumentClient documentClient;
 
@@ -39,11 +42,13 @@ public class DocumentClientTest {
     public void shouldCreateDocument() {
         UUID createManagedDocumentResponse = UUID.randomUUID();
 
-        when(restHelper.post(eq(serviceBaseURL), eq("/document"), any(CreateManagedDocumentRequest.class), eq(UUID.class))).thenReturn(new ResponseEntity<>(createManagedDocumentResponse, HttpStatus.OK));
+        when(restHelper.post(eq(serviceBaseURL), eq("/document"), any(CreateManagedDocumentRequest.class),
+            eq(UUID.class))).thenReturn(new ResponseEntity<>(createManagedDocumentResponse, HttpStatus.OK));
 
-        documentClient.createDocument(SL_EXT_REF, DISPLAY_NAME, FILE_LOC,  ManagedDocumentType.STANDARD_LINE);
+        documentClient.createDocument(SL_EXT_REF, DISPLAY_NAME, FILE_LOC, ManagedDocumentType.STANDARD_LINE);
 
-        verify(restHelper, times(1)).post(eq(serviceBaseURL), eq("/document"), any(CreateManagedDocumentRequest.class), eq(UUID.class));
+        verify(restHelper, times(1)).post(eq(serviceBaseURL), eq("/document"), any(CreateManagedDocumentRequest.class),
+            eq(UUID.class));
         verifyNoMoreInteractions(restHelper);
 
     }
@@ -51,12 +56,14 @@ public class DocumentClientTest {
     @Test
     public void shouldDeleteDocument() {
 
-        when(restHelper.delete(serviceBaseURL, String.format("/document/%s", uuid), Void.class)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        when(restHelper.delete(serviceBaseURL, String.format("/document/%s", uuid), Void.class)).thenReturn(
+            new ResponseEntity<>(HttpStatus.OK));
 
         documentClient.deleteDocument(uuid);
 
-        verify(restHelper, times(1)).delete(serviceBaseURL, String.format("/document/%s", uuid),  Void.class);
+        verify(restHelper, times(1)).delete(serviceBaseURL, String.format("/document/%s", uuid), Void.class);
         verifyNoMoreInteractions(restHelper);
 
     }
+
 }

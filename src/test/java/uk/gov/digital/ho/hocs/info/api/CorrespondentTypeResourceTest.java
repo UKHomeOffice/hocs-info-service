@@ -20,7 +20,6 @@ public class CorrespondentTypeResourceTest {
 
     private CorrespondentTypeResource correspondentTypeResource;
 
-
     @Before
     public void setUp() {
         correspondentTypeResource = new CorrespondentTypeResource(correspondentTypeService);
@@ -50,7 +49,7 @@ public class CorrespondentTypeResourceTest {
 
     @Test
     public void shouldCreateNewCorrespondentType() {
-        CreateCorrespondentTypeDto request = new CreateCorrespondentTypeDto("name","NAME");
+        CreateCorrespondentTypeDto request = new CreateCorrespondentTypeDto("name", "NAME");
 
         when(correspondentTypeService.createCorrespondentType(any(), any())).thenReturn(new CorrespondentType());
 
@@ -59,4 +58,5 @@ public class CorrespondentTypeResourceTest {
         verify(correspondentTypeService, times(1)).createCorrespondentType(any(), any());
         verifyNoMoreInteractions(correspondentTypeService);
     }
+
 }

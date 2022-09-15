@@ -31,5 +31,4 @@ public class FieldScreen implements Serializable {
     @JoinColumn(name = "field_uuid", referencedColumnName = "uuid", insertable = false, updatable = false)
     private Field field;
 
-
 }

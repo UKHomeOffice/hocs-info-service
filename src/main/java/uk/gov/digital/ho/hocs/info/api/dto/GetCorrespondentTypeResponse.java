@@ -19,7 +19,9 @@ public class GetCorrespondentTypeResponse {
     Set<CorrespondentTypeDto> correspondentTypes;
 
     public static GetCorrespondentTypeResponse from(Set<CorrespondentType> correspondentTypeSet) {
-        Set<CorrespondentTypeDto> correspondentTypes = correspondentTypeSet.stream().map(CorrespondentTypeDto::from).collect(Collectors.toSet());
+        Set<CorrespondentTypeDto> correspondentTypes = correspondentTypeSet.stream().map(
+            CorrespondentTypeDto::from).collect(Collectors.toSet());
         return new GetCorrespondentTypeResponse(correspondentTypes);
     }
+
 }

@@ -14,4 +14,5 @@ public interface SomuTypeRepository extends CrudRepository<SomuType, String> {
     Set<SomuType> findAll();
 
     Set<SomuType> findAllByCaseType(String caseType);
+
 }

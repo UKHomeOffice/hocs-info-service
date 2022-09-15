@@ -12,19 +12,16 @@ public class ExtractService {
 
     private final SchemaService schemaService;
 
-    public ExtractService(
-            SchemaService schemaService) {
+    public ExtractService(SchemaService schemaService) {
         this.schemaService = schemaService;
     }
 
     @Deprecated(forRemoval = true)
     public List<String> getAllReportingFieldsForCaseType(String caseType) {
         Stream<Field> sortedFields = Stream.concat(schemaService.getExtractOnlyFields().stream(),
-                schemaService.getAllReportingFieldsForCaseType(caseType).sorted(Comparator.comparingLong(Field::getId)));
+            schemaService.getAllReportingFieldsForCaseType(caseType).sorted(Comparator.comparingLong(Field::getId)));
 
-        return sortedFields.map(Field::getName)
-                .distinct()
-                .toList();
+        return sortedFields.map(Field::getName).distinct().toList();
     }
 
 }

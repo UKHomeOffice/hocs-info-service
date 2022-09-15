@@ -12,12 +12,13 @@ public class LocalDateWrapperImplTest {
     private LocalDateWrapperImpl localDateWrapper;
 
     @Before
-    public void before(){
+    public void before() {
         localDateWrapper = new LocalDateWrapperImpl();
     }
 
     @Test
-    public void now(){
+    public void now() {
         assertThat(localDateWrapper.now()).isEqualTo(LocalDate.now());
     }
+
 }

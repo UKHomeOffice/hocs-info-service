@@ -12,4 +12,5 @@ public class CreateTopicResponse {
 
     @JsonProperty("topicUUID")
     String topicUUID;
+
 }

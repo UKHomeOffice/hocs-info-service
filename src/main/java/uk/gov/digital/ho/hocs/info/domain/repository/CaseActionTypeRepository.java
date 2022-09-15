@@ -13,4 +13,5 @@ public interface CaseActionTypeRepository extends CrudRepository<CaseTypeAction,
     List<CaseTypeAction> findAllByCaseTypeAndActiveIsTrue(String caseType);
 
     CaseTypeAction findByUuid(UUID caseTypeActionUuid);
+
 }

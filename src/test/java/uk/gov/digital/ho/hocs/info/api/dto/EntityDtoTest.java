@@ -22,4 +22,5 @@ public class EntityDtoTest {
         assertThat(entityDto.getData()).isEqualTo(data);
         assertThat(entityDto.getUuid()).isEqualTo(uuid.toString());
     }
+
 }

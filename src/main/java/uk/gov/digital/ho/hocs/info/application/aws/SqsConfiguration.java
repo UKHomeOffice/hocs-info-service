@@ -20,11 +20,9 @@ public class SqsConfiguration {
     public AmazonSQSAsync sqsClient(@Value("${aws.sqs.notify.account.access-key}") String accessKey,
                                     @Value("${aws.sqs.notify.account.secret-key}") String secretKey,
                                     @Value("${aws.sqs.config.region}") String region) {
-        return AmazonSQSAsyncClientBuilder.standard()
-                .withRegion(region)
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-                .withClientConfiguration(new ClientConfiguration())
-                .build();
+        return AmazonSQSAsyncClientBuilder.standard().withRegion(region).withCredentials(
+            new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey))).withClientConfiguration(
+            new ClientConfiguration()).build();
     }
 
 }

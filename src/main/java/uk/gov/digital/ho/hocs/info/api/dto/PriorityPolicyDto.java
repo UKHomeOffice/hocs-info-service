@@ -9,7 +9,10 @@ import lombok.Getter;
 public class PriorityPolicyDto {
 
     private String policyType;
+
     private String caseType;
+
     @JsonRawValue
     private String config;
+
 }

@@ -24,8 +24,10 @@ public class SchemaResourceTest {
 
     @Mock
     SchemaService schemaService;
+
     @Mock
     ExtractService extractService;
+
     @Mock
     ObjectMapper mapper;
 
@@ -55,12 +57,12 @@ public class SchemaResourceTest {
 
     }
 
-
     @Test
     public void getAllReportingFieldsForCaseType() {
         String caseType = "Type1";
 
-        when(extractService.getAllReportingFieldsForCaseType(caseType)).thenReturn(List.of("Field4ExtractOnly", "Field1", "Field2", "Field3"));
+        when(extractService.getAllReportingFieldsForCaseType(caseType)).thenReturn(
+            List.of("Field4ExtractOnly", "Field1", "Field2", "Field3"));
 
         ResponseEntity<List<String>> result = schemaResource.getAllReportingFieldsForCaseType(caseType);
 
@@ -73,7 +75,6 @@ public class SchemaResourceTest {
         assertThat(resultList.get(1)).isEqualTo("Field1");
         assertThat(resultList.get(2)).isEqualTo("Field2");
         assertThat(resultList.get(3)).isEqualTo("Field3");
-
 
         verify(extractService).getAllReportingFieldsForCaseType(caseType);
 
@@ -112,11 +113,14 @@ public class SchemaResourceTest {
         when(schemaService.getFieldsByCaseTypePermissionLevel(eq(caseType), eq(accessLevel))).thenReturn(fieldDtos);
 
         // WHEN
-        ResponseEntity<List<FieldDto>> result = schemaResource.getFieldsByCaseTypeAndPermissionLevel(caseType, accessLevel.toString());
+        ResponseEntity<List<FieldDto>> result = schemaResource.getFieldsByCaseTypeAndPermissionLevel(caseType,
+            accessLevel.toString());
 
         // THEN
         assertThat(result.getBody()).isNotNull();
         assertThat(result.getBody().size()).isEqualTo(1);
-        assertThat(result.getBody().get(0).getAccessLevel().getLevel()).isEqualTo(AccessLevel.RESTRICTED_OWNER.getLevel());
+        assertThat(result.getBody().get(0).getAccessLevel().getLevel()).isEqualTo(
+            AccessLevel.RESTRICTED_OWNER.getLevel());
     }
+
 }

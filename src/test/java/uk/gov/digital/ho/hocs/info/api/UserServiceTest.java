@@ -198,4 +198,5 @@ public class UserServiceTest {
         user.setEnabled(true);
         return user;
     }
+
 }

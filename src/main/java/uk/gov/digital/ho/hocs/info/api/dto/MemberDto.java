@@ -24,4 +24,5 @@ public class MemberDto {
     public static MemberDto from(Member member) {
         return new MemberDto(member.getFullTitle(), member.getUuid(), member.getHouse());
     }
+
 }

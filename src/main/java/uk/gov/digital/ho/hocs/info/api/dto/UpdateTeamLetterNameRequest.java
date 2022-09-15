@@ -9,11 +9,11 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class UpdateTeamLetterNameRequest {
 
+    private String letterName;
 
-        private String letterName;
+    @JsonCreator
+    public UpdateTeamLetterNameRequest(@JsonProperty("letterName") String letterName) {
+        this.letterName = letterName;
+    }
 
-        @JsonCreator
-        public UpdateTeamLetterNameRequest(@JsonProperty("letterName") String letterName) {
-                this.letterName = letterName;
-        }
 }

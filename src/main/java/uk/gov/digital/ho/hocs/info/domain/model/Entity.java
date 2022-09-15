@@ -8,7 +8,6 @@ import uk.gov.digital.ho.hocs.info.api.dto.EntityDto;
 import javax.persistence.*;
 import java.util.UUID;
 
-
 @NoArgsConstructor
 @AllArgsConstructor
 @javax.persistence.Entity
@@ -63,4 +62,5 @@ public class Entity {
          */
         this.data = entityDto.getData();
     }
+
 }

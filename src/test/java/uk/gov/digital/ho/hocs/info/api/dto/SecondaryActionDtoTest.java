@@ -20,7 +20,6 @@ public class SecondaryActionDtoTest {
         String validation = "Validation";
         String props = "props";
 
-
         SecondaryAction secondaryAction = new SecondaryAction(id, uuid, component, name, label, validation, props);
 
         SecondaryActionDto result = SecondaryActionDto.from(secondaryAction);
@@ -33,4 +32,5 @@ public class SecondaryActionDtoTest {
         assertThat(result.getProps()).isEqualTo(props);
 
     }
+
 }

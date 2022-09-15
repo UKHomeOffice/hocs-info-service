@@ -11,21 +11,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EntityTest {
 
     private Long id = 1L;
+
     private String simpleName = "name123";
+
     private String data = "{ title: 'Title 321' }";
+
     private UUID uuid = UUID.randomUUID();
+
     private UUID listUuid = UUID.randomUUID();
+
     private boolean active = true;
 
     private Entity entity;
 
     @Before
-    public void before(){
+    public void before() {
         this.entity = new Entity(id, uuid, simpleName, data, listUuid, active, 10);
     }
 
     @Test
-    public void updateShouldOnlyAmendData(){
+    public void updateShouldOnlyAmendData() {
         String newSimpleName = "name";
         String newUuid = UUID.randomUUID().toString();
         String newData = "data";
@@ -39,4 +44,5 @@ public class EntityTest {
         assertThat(entity.isActive()).isEqualTo(active);
         assertThat(entity.getData()).isEqualTo(newData);
     }
+
 }

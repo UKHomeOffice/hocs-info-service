@@ -11,6 +11,9 @@ public interface TeamLinkRepository extends CrudRepository<TeamLink, String> {
 
     Set<TeamLink> findAllByLinkValueAndLinkType(String linkValue, String linkType);
 
-    TeamLink findByLinkValueAndLinkTypeAndCaseTypeAndStageType(String linkValue, String linkType, String caseType, String stageType);
+    TeamLink findByLinkValueAndLinkTypeAndCaseTypeAndStageType(String linkValue,
+                                                               String linkType,
+                                                               String caseType,
+                                                               String stageType);
 
 }

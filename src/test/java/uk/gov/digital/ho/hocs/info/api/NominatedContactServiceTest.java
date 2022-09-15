@@ -26,6 +26,7 @@ public class NominatedContactServiceTest {
     private NominatedContactService nominatedContactService;
 
     private static UUID teamUUID = UUID.randomUUID();
+
     private static String emailAddress = "email@test.com";
 
     @Before
@@ -59,7 +60,7 @@ public class NominatedContactServiceTest {
         verifyNoMoreInteractions(nominatedContactRepository);
     }
 
-    @Test (expected = ApplicationExceptions.EntityAlreadyExistsException.class)
+    @Test(expected = ApplicationExceptions.EntityAlreadyExistsException.class)
     public void shouldNotCreateNominatedContactWithDuplicateEmailAddress() {
 
         NominatedContact contact = new NominatedContact(teamUUID, emailAddress);
@@ -109,7 +110,7 @@ public class NominatedContactServiceTest {
 
     }
 
-    @Test (expected = ApplicationExceptions.NominatedContactDeleteException.class)
+    @Test(expected = ApplicationExceptions.NominatedContactDeleteException.class)
     public void shouldNotDeleteNominatedContactWhenTeamHasNoOthers() {
         NominatedContact contact = new NominatedContact(teamUUID, emailAddress);
         Set<NominatedContact> contacts = new HashSet<>();
@@ -124,4 +125,5 @@ public class NominatedContactServiceTest {
         verify(nominatedContactRepository, times(1)).findAllByTeamUUID(teamUUID);
         verifyNoMoreInteractions(nominatedContactRepository);
     }
+
 }

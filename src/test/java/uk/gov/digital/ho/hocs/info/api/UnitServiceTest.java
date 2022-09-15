@@ -37,8 +37,6 @@ public class UnitServiceTest {
         unitService = new UnitService(unitRepository, teamService);
     }
 
-
-
     @Test
     public void shouldCreateUnit() {
         UnitDto unit = new UnitDto("UNIT1", "TEST1");
@@ -66,7 +64,7 @@ public class UnitServiceTest {
         verifyNoMoreInteractions(unitRepository);
     }
 
-    @Test (expected = ApplicationExceptions.UnitDeleteException.class)
+    @Test(expected = ApplicationExceptions.UnitDeleteException.class)
     public void shouldNotDeleteUnitWithActiveTeams() {
 
         UUID unitUUID = UUID.randomUUID();
@@ -88,9 +86,9 @@ public class UnitServiceTest {
     @Test
     public void shouldGetAllUnits() {
 
-        Set<Unit> units = new HashSet<Unit>(){{
-            add(new Unit( "UNIT1", "TEST1",true));
-            add(new Unit( "UNIT2", "TEST2",true));
+        Set<Unit> units = new HashSet<Unit>() {{
+            add(new Unit("UNIT1", "TEST1", true));
+            add(new Unit("UNIT2", "TEST2", true));
 
         }};
 
@@ -103,12 +101,11 @@ public class UnitServiceTest {
         verify(unitRepository, times(1)).findAll();
     }
 
-
     @Test
     public void shouldNotReturnTeams() {
 
-        Set<Unit> units = new HashSet<Unit>(){{
-            add(new Unit("UNIT1", "TEST1",true));
+        Set<Unit> units = new HashSet<Unit>() {{
+            add(new Unit("UNIT1", "TEST1", true));
         }};
         when(unitRepository.findAll()).thenReturn(units);
 
@@ -118,13 +115,12 @@ public class UnitServiceTest {
         verify(unitRepository, times(1)).findAll();
     }
 
-
     @Test
     public void shouldGetUnit() {
 
         UUID unitUUID = UUID.randomUUID();
 
-        when(unitRepository.findByUuid(unitUUID)).thenReturn(new Unit("UNIT1", "TEST1",true));
+        when(unitRepository.findByUuid(unitUUID)).thenReturn(new Unit("UNIT1", "TEST1", true));
         unitService.getUnit(unitUUID);
 
         verify(unitRepository, times(1)).findByUuid(unitUUID);
@@ -132,7 +128,7 @@ public class UnitServiceTest {
     }
 
     @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
-    public void shouldNotGetUnit(){
+    public void shouldNotGetUnit() {
 
         UUID unitUUID = UUID.randomUUID();
 
@@ -141,4 +137,5 @@ public class UnitServiceTest {
         unitService.getUnit(unitUUID);
         verifyNoMoreInteractions(unitRepository);
     }
+
 }

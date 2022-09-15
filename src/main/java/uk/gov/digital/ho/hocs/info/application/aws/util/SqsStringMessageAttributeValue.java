@@ -4,6 +4,7 @@ import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import org.springframework.util.StringUtils;
 
 public class SqsStringMessageAttributeValue extends MessageAttributeValue {
+
     private static final String type = "String";
 
     public SqsStringMessageAttributeValue(String value) {
@@ -14,4 +15,5 @@ public class SqsStringMessageAttributeValue extends MessageAttributeValue {
         this.setDataType(type);
         this.setStringValue(value);
     }
+
 }

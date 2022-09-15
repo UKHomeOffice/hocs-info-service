@@ -20,4 +20,5 @@ public class GetStandardLineResponseTest {
 
         assertThat(getStandardLineResponse.getDisplayName()).isEqualTo("DisplayName");
     }
+
 }

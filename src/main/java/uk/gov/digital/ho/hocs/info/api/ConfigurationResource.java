@@ -30,4 +30,5 @@ public class ConfigurationResource {
             return ResponseEntity.status(500).build();
         }
     }
+
 }

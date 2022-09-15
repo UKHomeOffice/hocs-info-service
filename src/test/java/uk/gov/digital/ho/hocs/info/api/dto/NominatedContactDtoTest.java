@@ -14,10 +14,11 @@ public class NominatedContactDtoTest {
     @Test
     public void from() {
 
-        NominatedContact nominatedContact = new NominatedContact(uuid,"email");
+        NominatedContact nominatedContact = new NominatedContact(uuid, "email");
 
         NominatedContactDto nominatedContactDto = NominatedContactDto.from(nominatedContact);
 
         assertThat(nominatedContactDto.getEmailAddress()).isEqualTo("email");
     }
+
 }

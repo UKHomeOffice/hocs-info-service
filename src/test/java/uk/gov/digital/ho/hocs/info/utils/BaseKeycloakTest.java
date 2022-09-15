@@ -28,7 +28,7 @@ import static org.keycloak.OAuth2Constants.CLIENT_CREDENTIALS;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles({"local", "integration"})
+@ActiveProfiles({ "local", "integration" })
 @ContextConfiguration(classes = { BaseKeycloakTest.KeycloakIntegration.class })
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 public class BaseKeycloakTest {
@@ -42,13 +42,8 @@ public class BaseKeycloakTest {
                                              @Value("${keycloak.username}") String username,
                                              @Value("${keycloak.password}") String password,
                                              @Value("${keycloak.client.id}") String clientId) {
-            return KeycloakBuilder.builder()
-                    .serverUrl(serverUrl)
-                    .realm(realm)
-                    .clientId(clientId)
-                    .username(username)
-                    .password(password)
-                    .build();
+            return KeycloakBuilder.builder().serverUrl(serverUrl).realm(realm).clientId(clientId).username(
+                username).password(password).build();
         }
 
         @Primary
@@ -57,13 +52,8 @@ public class BaseKeycloakTest {
                                            @Value("${keycloak.integration.realm}") String realm,
                                            @Value("${keycloak.integration.resource}") String clientId,
                                            @Value("${keycloak.integration.secret}") String secretKey) {
-            return KeycloakBuilder.builder()
-                    .grantType(CLIENT_CREDENTIALS)
-                    .serverUrl(serverUrl)
-                    .realm(realm)
-                    .clientId(clientId)
-                    .clientSecret(secretKey)
-                    .build();
+            return KeycloakBuilder.builder().grantType(CLIENT_CREDENTIALS).serverUrl(serverUrl).realm(realm).clientId(
+                clientId).clientSecret(secretKey).build();
         }
 
     }
@@ -111,8 +101,7 @@ public class BaseKeycloakTest {
         assert resourceFile != null;
 
         var file = new File(resourceFile.getFile());
-        var partialImportRep =
-                mapper.readValue(file, PartialImportRepresentation.class);
+        var partialImportRep = mapper.readValue(file, PartialImportRepresentation.class);
         partialImportRep.setIfResourceExists(PartialImportRepresentation.Policy.SKIP.name());
         masterKeycloakClient.realm(REALM).partialImport(partialImportRep);
     }

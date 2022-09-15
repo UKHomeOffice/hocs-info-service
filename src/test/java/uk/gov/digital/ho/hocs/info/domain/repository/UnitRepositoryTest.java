@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.info.domain.repository;
 
 import java.util.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,16 +16,16 @@ import uk.gov.digital.ho.hocs.info.domain.model.Permission;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Unit;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
+
 import javax.persistence.PersistenceException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 public class UnitRepositoryTest {
-
 
     @Autowired
     private TestEntityManager entityManager;
@@ -36,7 +37,7 @@ public class UnitRepositoryTest {
 
     @Before
     public void setup() {
-        Unit unit = new Unit("Unit 1", "UNIT_1",true);
+        Unit unit = new Unit("Unit 1", "UNIT_1", true);
         this.entityManager.persist(unit);
         unitUUID = unit.getUuid();
     }
@@ -66,12 +67,12 @@ public class UnitRepositoryTest {
     public void shouldAddTeamWithPermissionsToUnit() {
 
         Unit unit = repository.findByUuid(unitUUID);
-        CaseType caseType = new CaseType(null,UUID.randomUUID(),"TEST","TEST","a1", unitUUID,"TEST", true,true, null, null);
+        CaseType caseType = new CaseType(null, UUID.randomUUID(), "TEST", "TEST", "a1", unitUUID, "TEST", true, true,
+            null, null);
         entityManager.persistAndFlush(caseType);
 
-
-        Set<Permission> permissions = new HashSet<Permission>(){{
-            add(new Permission(AccessLevel.OWNER,null, caseType));
+        Set<Permission> permissions = new HashSet<Permission>() {{
+            add(new Permission(AccessLevel.OWNER, null, caseType));
         }};
         Team team = new Team("a team", permissions);
         unit.addTeam(team);
@@ -88,19 +89,19 @@ public class UnitRepositoryTest {
 
     @Test(expected = PersistenceException.class)
     public void shouldThrowExceptionWhenuplicateUUID() {
-        this.entityManager.persist(new Unit("Unit 1", "UNIT_1",true));
+        this.entityManager.persist(new Unit("Unit 1", "UNIT_1", true));
     }
 
     @Test(expected = PersistenceException.class)
     public void shouldThrowExceptionWhenuplicateShortCode() {
-        this.entityManager.persist(new Unit("Unit 1", "UNIT_1",true));
-        this.entityManager.persist(new Unit("Unit 2", "UNIT_1",true));
+        this.entityManager.persist(new Unit("Unit 1", "UNIT_1", true));
+        this.entityManager.persist(new Unit("Unit 2", "UNIT_1", true));
     }
 
     @Test(expected = PersistenceException.class)
     public void shouldThrowExceptionWhenuplicateDisplayName() {
-        this.entityManager.persist(new Unit("Unit 1", "UNIT_1",true));
-        this.entityManager.persist(new Unit("Unit 1", "UNIT_2",true));
+        this.entityManager.persist(new Unit("Unit 1", "UNIT_1", true));
+        this.entityManager.persist(new Unit("Unit 1", "UNIT_2", true));
     }
 
 }

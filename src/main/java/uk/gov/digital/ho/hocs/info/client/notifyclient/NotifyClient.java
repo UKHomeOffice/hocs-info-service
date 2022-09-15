@@ -28,8 +28,11 @@ import static uk.gov.digital.ho.hocs.info.application.LogEvent.EXCEPTION;
 public class NotifyClient {
 
     private final String notifyQueue;
+
     private final AmazonSQSAsync notifyAsyncClient;
+
     private final ObjectMapper objectMapper;
+
     private final RequestData requestData;
 
     @Autowired
@@ -59,31 +62,26 @@ public class NotifyClient {
 
     private <T extends TeamCommand> void sendTeamCommand(T command) {
         try {
-            var messageRequest =
-                    new SendMessageRequest(notifyQueue, objectMapper.writeValueAsString(command))
-                            .withMessageAttributes(getQueueHeaders());
+            var messageRequest = new SendMessageRequest(notifyQueue,
+                objectMapper.writeValueAsString(command)).withMessageAttributes(getQueueHeaders());
 
             notifyAsyncClient.sendMessage(messageRequest);
-            log.info("Sent notify event: {}, correlationID: {}, UserID: {}",
-                    command.getCommand(),
-                    requestData.correlationId(),
-                    requestData.userId(),
-                    value(EVENT, command.getCommand()));
+            log.info("Sent notify event: {}, correlationID: {}, UserID: {}", command.getCommand(),
+                requestData.correlationId(), requestData.userId(), value(EVENT, command.getCommand()));
         } catch (JsonProcessingException e) {
-            log.error("Failed to send notify event:{}, correlationID:{}, UserID:{}",
-                    command.getCommand(),
-                    requestData.correlationId(),
-                    requestData.userId(),
-                    value(EVENT, command.getCommand()), value(EXCEPTION, e));
+            log.error("Failed to send notify event:{}, correlationID:{}, UserID:{}", command.getCommand(),
+                requestData.correlationId(), requestData.userId(), value(EVENT, command.getCommand()),
+                value(EXCEPTION, e));
             throw new RuntimeException(e);
         }
     }
 
     private Map<String, MessageAttributeValue> getQueueHeaders() {
-        return Map.of(
-                RequestData.CORRELATION_ID_HEADER, new SqsStringMessageAttributeValue(requestData.correlationId()),
-                RequestData.USER_ID_HEADER, new SqsStringMessageAttributeValue(requestData.userId()),
-                RequestData.USERNAME_HEADER, new SqsStringMessageAttributeValue(requestData.username()),
-                RequestData.GROUP_HEADER, new SqsStringMessageAttributeValue(requestData.groups()));
+        return Map.of(RequestData.CORRELATION_ID_HEADER,
+            new SqsStringMessageAttributeValue(requestData.correlationId()), RequestData.USER_ID_HEADER,
+            new SqsStringMessageAttributeValue(requestData.userId()), RequestData.USERNAME_HEADER,
+            new SqsStringMessageAttributeValue(requestData.username()), RequestData.GROUP_HEADER,
+            new SqsStringMessageAttributeValue(requestData.groups()));
     }
+
 }

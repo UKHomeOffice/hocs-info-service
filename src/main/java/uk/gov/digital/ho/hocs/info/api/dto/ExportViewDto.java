@@ -11,8 +11,13 @@ import java.util.List;
 public class ExportViewDto {
 
     private Long id;
+
     private String code;
+
     private String displayName;
+
     private String requiredPermission;
+
     private List<ExportViewFieldDto> fields;
+
 }

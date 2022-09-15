@@ -21,6 +21,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 public class ProfileResource {
 
     private final CaseTypeService caseTypeService;
+
     private final ProfileRepository profileRepository;
 
     @Autowired
@@ -30,13 +31,16 @@ public class ProfileResource {
     }
 
     @GetMapping(value = "/profileNames", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<List<String>> getProfileNameForUser(@RequestParam(required = false, name = "initialCaseType", defaultValue = "true") Boolean initialCaseType ) {
-        List<String> userCaseTypes = caseTypeService.getAllCaseTypesForUser(false, initialCaseType).stream().map(CaseType::getType).collect(Collectors.toList());
+    public ResponseEntity<List<String>> getProfileNameForUser(
+        @RequestParam(required = false, name = "initialCaseType", defaultValue = "true") Boolean initialCaseType) {
+        List<String> userCaseTypes = caseTypeService.getAllCaseTypesForUser(false, initialCaseType).stream().map(
+            CaseType::getType).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(userCaseTypes)) {
             return ResponseEntity.ok(List.of());
         }
-        return ResponseEntity.ok(profileRepository.findAllProfileNamesByCaseTypesAndSystemName(userCaseTypes, "system"));
+        return ResponseEntity.ok(
+            profileRepository.findAllProfileNamesByCaseTypesAndSystemName(userCaseTypes, "system"));
 
     }
 

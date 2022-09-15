@@ -127,4 +127,5 @@ public class CountryServiceTest {
         assertThat(capturedCountries.get(2).getDeleted()).isEqualTo(Boolean.FALSE);
         verifyNoMoreInteractions(countryRepository);
     }
+
 }

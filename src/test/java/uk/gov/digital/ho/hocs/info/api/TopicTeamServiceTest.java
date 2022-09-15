@@ -30,31 +30,32 @@ public class TopicTeamServiceTest {
 
     @Mock
     private TeamLinkRepository teamLinkRepository;
+
     @Mock
     private TopicRepository topicRepository;
+
     @Mock
     private TeamRepository teamRepository;
+
     @Mock
     private TopicService topicService;
+
     @Mock
     private TeamService teamService;
+
     @Mock
     private CaseTypeService caseTypeService;
+
     @Mock
     private StageTypeService stageTypeService;
+
     @Mock
     private AuditClient auditClient;
 
     @Before
     public void setUp() {
-        this.topicTeamService = new TopicTeamService(teamLinkRepository,
-                topicRepository,
-                teamRepository,
-                topicService,
-                teamService,
-                caseTypeService,
-                stageTypeService,
-                auditClient);
+        this.topicTeamService = new TopicTeamService(teamLinkRepository, topicRepository, teamRepository, topicService,
+            teamService, caseTypeService, stageTypeService, auditClient);
     }
 
     @Test
@@ -69,7 +70,8 @@ public class TopicTeamServiceTest {
         TeamLink teamLink1 = new TeamLink(topic.getUuid().toString(), "TOPIC", team1.getUuid(), "TEST", "TEST");
         TeamLink teamLink2 = new TeamLink(topic.getUuid().toString(), "TOPIC", team2.getUuid(), "TEST", "TEST");
         Set<TeamLink> teamLinks = Set.of(teamLink1, teamLink2);
-        when(teamLinkRepository.findAllByLinkValueAndLinkType(topic.getUuid().toString(), "TOPIC")).thenReturn(teamLinks);
+        when(teamLinkRepository.findAllByLinkValueAndLinkType(topic.getUuid().toString(), "TOPIC")).thenReturn(
+            teamLinks);
 
         Set<TopicTeam> result = topicTeamService.getTopicsByCaseTypeWithTeams("TEST");
 
@@ -97,7 +99,6 @@ public class TopicTeamServiceTest {
         when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
 
         topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
-
 
         verify(teamLinkRepository).save(any());
         verify(teamLinkRepository).findByLinkValueAndLinkTypeAndCaseTypeAndStageType(any(), eq("TOPIC"), any(), any());
@@ -266,8 +267,8 @@ public class TopicTeamServiceTest {
         when(stageTypeService.getStageType("DCU_MIN_MARKUP")).thenReturn(new StageTypeEntity());
         when(caseTypeService.getCaseType("MIN")).thenReturn(new CaseType());
         when(topicService.getTopic(topicUUID)).thenReturn(new Topic());
-        when(teamLinkRepository.findByLinkValueAndLinkTypeAndCaseTypeAndStageType(
-                any(), eq("TOPIC"), any(), any())).thenReturn(new TeamLink());
+        when(teamLinkRepository.findByLinkValueAndLinkTypeAndCaseTypeAndStageType(any(), eq("TOPIC"), any(),
+            any())).thenReturn(new TeamLink());
 
         topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
 
@@ -275,7 +276,6 @@ public class TopicTeamServiceTest {
         verify(teamLinkRepository).save(any());
         verifyNoMoreInteractions(teamLinkRepository);
     }
-
 
     @Test
     public void shouldAuditAddTeamToTopic() {
@@ -310,4 +310,5 @@ public class TopicTeamServiceTest {
         verify(teamRepository).findTopicToTeamMappingByStageType(testStageString);
         verifyNoMoreInteractions(teamRepository);
     }
+
 }

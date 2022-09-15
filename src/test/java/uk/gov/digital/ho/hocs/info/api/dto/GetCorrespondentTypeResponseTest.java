@@ -12,20 +12,25 @@ public class GetCorrespondentTypeResponseTest {
     @Test
     public void shouldCreateGetCorrespondentTypeResponseDTOFromCorrespondentType() {
         Set<CorrespondentType> correspondentTypeSet = new HashSet<>();
-        correspondentTypeSet.add(new CorrespondentType(1L, UUID.randomUUID(),"Correspondent","CORRESPONDENT"));
-        correspondentTypeSet.add(new CorrespondentType(2L, UUID.randomUUID(),"Constituent","CONSTITUENT"));
-        correspondentTypeSet.add(new CorrespondentType(3L, UUID.randomUUID(),"Member","MEMBER"));
-        GetCorrespondentTypeResponse getCorrespondentTypeResponse = GetCorrespondentTypeResponse.from(correspondentTypeSet);
+        correspondentTypeSet.add(new CorrespondentType(1L, UUID.randomUUID(), "Correspondent", "CORRESPONDENT"));
+        correspondentTypeSet.add(new CorrespondentType(2L, UUID.randomUUID(), "Constituent", "CONSTITUENT"));
+        correspondentTypeSet.add(new CorrespondentType(3L, UUID.randomUUID(), "Member", "MEMBER"));
+        GetCorrespondentTypeResponse getCorrespondentTypeResponse = GetCorrespondentTypeResponse.from(
+            correspondentTypeSet);
 
-        List<CorrespondentTypeDto> responseAsList = new ArrayList<>(Objects.requireNonNull(getCorrespondentTypeResponse.getCorrespondentTypes()));
+        List<CorrespondentTypeDto> responseAsList = new ArrayList<>(
+            Objects.requireNonNull(getCorrespondentTypeResponse.getCorrespondentTypes()));
 
-        CorrespondentTypeDto result1 = responseAsList.stream().filter(x -> "CORRESPONDENT".equals(x.getType())).findAny().orElse(null);
+        CorrespondentTypeDto result1 = responseAsList.stream().filter(
+            x -> "CORRESPONDENT".equals(x.getType())).findAny().orElse(null);
         assertThat(result1).isNotNull();
         assertThat(result1.getDisplayName()).isEqualTo("Correspondent");
-        CorrespondentTypeDto result2 = responseAsList.stream().filter(x -> "CONSTITUENT".equals(x.getType())).findAny().orElse(null);
+        CorrespondentTypeDto result2 = responseAsList.stream().filter(
+            x -> "CONSTITUENT".equals(x.getType())).findAny().orElse(null);
         assertThat(result2).isNotNull();
         assertThat(result2.getDisplayName()).isEqualTo("Constituent");
-        CorrespondentTypeDto result3 = responseAsList.stream().filter(x -> "MEMBER".equals(x.getType())).findAny().orElse(null);
+        CorrespondentTypeDto result3 = responseAsList.stream().filter(
+            x -> "MEMBER".equals(x.getType())).findAny().orElse(null);
         assertThat(result3).isNotNull();
         assertThat(result3.getDisplayName()).isEqualTo("Member");
     }
@@ -34,4 +39,5 @@ public class GetCorrespondentTypeResponseTest {
     public void shouldConvertCaseTypeCorrectly() {
 
     }
+
 }

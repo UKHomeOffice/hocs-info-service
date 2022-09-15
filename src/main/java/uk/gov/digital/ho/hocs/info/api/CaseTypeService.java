@@ -23,18 +23,30 @@ import java.util.stream.Collectors;
 public class CaseTypeService {
 
     private final CaseTypeRepository caseTypeRepository;
+
     private final CaseTabRepository caseTabRepository;
+
     private final DocumentTagRepository documentTagRepository;
+
     private final HolidayDateRepository holidayDateRepository;
+
     private final CaseActionTypeRepository caseActionTypeRepository;
+
     private final StageTypeService stageTypeService;
+
     private final UserPermissionsService userPermissionsService;
+
     private final LocalDateWrapper localDateWrapper;
 
     @Autowired
-    public CaseTypeService(CaseTypeRepository caseTypeRepository, CaseTabRepository caseTabRepository, DocumentTagRepository documentTagRepository,
-                           HolidayDateRepository holidayDateRepository, CaseActionTypeRepository caseActionTypeRepository, StageTypeService stageTypeService,
-                           UserPermissionsService userPermissionsService, LocalDateWrapper localDateWrapper) {
+    public CaseTypeService(CaseTypeRepository caseTypeRepository,
+                           CaseTabRepository caseTabRepository,
+                           DocumentTagRepository documentTagRepository,
+                           HolidayDateRepository holidayDateRepository,
+                           CaseActionTypeRepository caseActionTypeRepository,
+                           StageTypeService stageTypeService,
+                           UserPermissionsService userPermissionsService,
+                           LocalDateWrapper localDateWrapper) {
         this.caseTypeRepository = caseTypeRepository;
         this.caseTabRepository = caseTabRepository;
         this.documentTagRepository = documentTagRepository;
@@ -47,7 +59,8 @@ public class CaseTypeService {
 
     Set<CaseType> getAllCaseTypes(Boolean addCaseTypeWithPreviousType) {
         log.debug("Getting all CaseTypes with addCaseTypeWithPreviousType:{}", addCaseTypeWithPreviousType);
-        Set<CaseType> caseTypes = caseTypeRepository.findByIncludePreviousCaseType(addCaseTypeWithPreviousType != null && addCaseTypeWithPreviousType);
+        Set<CaseType> caseTypes = caseTypeRepository.findByIncludePreviousCaseType(
+            addCaseTypeWithPreviousType != null && addCaseTypeWithPreviousType);
         log.info("Got {} CaseTypes", caseTypes.size());
         return caseTypes;
     }
@@ -117,13 +130,8 @@ public class CaseTypeService {
 
     public void createCaseType(CreateCaseTypeDto caseType) {
 
-        caseTypeRepository.save(new CaseType(caseType.getDisplayName(),
-                caseType.getShortCode(),
-                caseType.getType(),
-                caseType.getDeadlineStage(),
-                caseType.isBulk(),
-                caseType.isActive(),
-                caseType.getPreviousCaseType()));
+        caseTypeRepository.save(new CaseType(caseType.getDisplayName(), caseType.getShortCode(), caseType.getType(),
+            caseType.getDeadlineStage(), caseType.isBulk(), caseType.isActive(), caseType.getPreviousCaseType()));
     }
 
     public List<CaseTypeActionDto> getCaseActionsByCaseType(String caseType) {
@@ -148,7 +156,8 @@ public class CaseTypeService {
             log.info("Found case type action {}", actionDto.toString());
             return actionDto;
         }
-        throw new ApplicationExceptions.EntityNotFoundException(String.format("Case Type Action with id: %s, does not exist", actionId));
+        throw new ApplicationExceptions.EntityNotFoundException(
+            String.format("Case Type Action with id: %s, does not exist", actionId));
     }
 
     public List<CaseTypeActionDto> getAllCaseActions() {
@@ -159,4 +168,5 @@ public class CaseTypeService {
         log.info("Return list of {} case type actions.", caseTypeActionList.size());
         return caseTypeActionList.stream().map(CaseTypeActionDto::from).collect(Collectors.toList());
     }
+
 }

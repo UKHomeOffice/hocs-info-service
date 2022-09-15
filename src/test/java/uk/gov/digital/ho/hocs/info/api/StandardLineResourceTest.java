@@ -32,6 +32,7 @@ public class StandardLineResourceTest {
     private StandardLineResource standardLineResource;
 
     private UUID uuid = UUID.randomUUID();
+
     private UUID standardLineUUID = UUID.randomUUID();
 
     @Before
@@ -57,8 +58,7 @@ public class StandardLineResourceTest {
 
         when(standardLineService.getStandardLineForTopic(uuid)).thenReturn(new StandardLine());
 
-        ResponseEntity<GetStandardLineResponse> response =
-                standardLineResource.getStandardLinesForPrimaryTopic(uuid);
+        ResponseEntity<GetStandardLineResponse> response = standardLineResource.getStandardLinesForPrimaryTopic(uuid);
 
         verify(standardLineService).getStandardLineForTopic(uuid);
         verifyNoMoreInteractions(standardLineService);
@@ -86,18 +86,20 @@ public class StandardLineResourceTest {
     public void shouldCreateStandardLineForTopic() {
         CreateStandardLineDocumentDto standardLineDocumentDto = new CreateStandardLineDocumentDto();
 
-        ResponseEntity response =
-                standardLineResource.createStandardLine(standardLineDocumentDto);
+        ResponseEntity response = standardLineResource.createStandardLine(standardLineDocumentDto);
 
-        verify(standardLineService).createStandardLine(standardLineDocumentDto.getDisplayName(), standardLineDocumentDto.getTopicUUID(), standardLineDocumentDto.getExpires(), standardLineDocumentDto.getS3UntrustedUrl());
+        verify(standardLineService).createStandardLine(standardLineDocumentDto.getDisplayName(),
+            standardLineDocumentDto.getTopicUUID(), standardLineDocumentDto.getExpires(),
+            standardLineDocumentDto.getS3UntrustedUrl());
         verifyNoMoreInteractions(standardLineService);
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    public void getStandardLine(){
-        when(standardLineService.getStandardLine(standardLineUUID)).thenReturn(new StandardLine("DisplayName", uuid, LocalDateTime.now()));
+    public void getStandardLine() {
+        when(standardLineService.getStandardLine(standardLineUUID)).thenReturn(
+            new StandardLine("DisplayName", uuid, LocalDateTime.now()));
 
         ResponseEntity<GetStandardLineResponse> response = standardLineResource.getStandardLine(standardLineUUID);
         verify(standardLineService).getStandardLine(standardLineUUID);
@@ -110,7 +112,7 @@ public class StandardLineResourceTest {
     }
 
     @Test
-    public void getStandardLine_lineNotFound(){
+    public void getStandardLine_lineNotFound() {
 
         ResponseEntity<GetStandardLineResponse> response = standardLineResource.getStandardLine(standardLineUUID);
         verify(standardLineService).getStandardLine(standardLineUUID);
@@ -121,7 +123,7 @@ public class StandardLineResourceTest {
     }
 
     @Test
-    public void getAllStandardLines(){
+    public void getAllStandardLines() {
         List<StandardLine> standardLines = List.of(new StandardLine("DisplayName", uuid, LocalDateTime.now()));
 
         when(standardLineService.getAllStandardLines()).thenReturn(standardLines);
@@ -138,8 +140,9 @@ public class StandardLineResourceTest {
     }
 
     @Test
-    public void updateStandardLine(){
-        UpdateStandardLineDto updateStandardLineDto = new UpdateStandardLineDto("NewDisplayName", LocalDate.now().plusDays(10));
+    public void updateStandardLine() {
+        UpdateStandardLineDto updateStandardLineDto = new UpdateStandardLineDto("NewDisplayName",
+            LocalDate.now().plusDays(10));
         ResponseEntity response = standardLineResource.updateStandardLine(standardLineUUID, updateStandardLineDto);
 
         verify(standardLineService).updateStandardLine(standardLineUUID, updateStandardLineDto);
@@ -149,7 +152,7 @@ public class StandardLineResourceTest {
     }
 
     @Test
-    public void expireStandardLine(){
+    public void expireStandardLine() {
         ResponseEntity response = standardLineResource.expireStandardLine(standardLineUUID);
 
         verify(standardLineService).expireStandardLine(standardLineUUID);
@@ -159,7 +162,7 @@ public class StandardLineResourceTest {
     }
 
     @Test
-    public void deleteStandardLine(){
+    public void deleteStandardLine() {
         ResponseEntity response = standardLineResource.deleteStandardLine(standardLineUUID);
 
         verify(standardLineService).deleteStandardLine(standardLineUUID);
@@ -169,7 +172,7 @@ public class StandardLineResourceTest {
     }
 
     @Test
-    public void getStandardLinesForUser(){
+    public void getStandardLinesForUser() {
         List<StandardLine> standardLines = List.of(new StandardLine("DisplayName", uuid, LocalDateTime.now()));
 
         when(standardLineService.getStandardLinesForUser(any())).thenReturn(standardLines);
@@ -184,4 +187,5 @@ public class StandardLineResourceTest {
         assertThat(response.getBody().get(0).getDisplayName()).isEqualTo("DisplayName");
         assertThat(response.getBody().get(0).getTopicUUID()).isEqualTo(uuid);
     }
+
 }

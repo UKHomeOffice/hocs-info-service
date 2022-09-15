@@ -15,7 +15,6 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-
 @RunWith(MockitoJUnitRunner.class)
 public class PriorityPolicyServiceTest {
 
@@ -33,20 +32,24 @@ public class PriorityPolicyServiceTest {
     public void getByCaseType() {
         String caseType = "testCaseType";
 
-        List<PriorityPolicy> priorityPolicies = Collections.singletonList(new PriorityPolicy(25L, "policyType", caseType, "config"));
+        List<PriorityPolicy> priorityPolicies = Collections.singletonList(
+            new PriorityPolicy(25L, "policyType", caseType, "config"));
 
         when(priorityPolicyRepository.findAllByCaseType(caseType)).thenReturn(priorityPolicies);
 
         List<PriorityPolicyDto> results = priorityPolicyService.getByCaseType(caseType);
 
-
         Assert.assertNotNull(results);
         Assert.assertEquals("Returned list size do not match", priorityPolicies.size(), results.size());
-        Assert.assertEquals("Returned item property do not match", priorityPolicies.get(0).getCaseType(), results.get(0).getCaseType());
-        Assert.assertEquals("Returned item property do not match", priorityPolicies.get(0).getConfig(), results.get(0).getConfig());
-        Assert.assertEquals("Returned item property do not match", priorityPolicies.get(0).getPolicyType(), results.get(0).getPolicyType());
+        Assert.assertEquals("Returned item property do not match", priorityPolicies.get(0).getCaseType(),
+            results.get(0).getCaseType());
+        Assert.assertEquals("Returned item property do not match", priorityPolicies.get(0).getConfig(),
+            results.get(0).getConfig());
+        Assert.assertEquals("Returned item property do not match", priorityPolicies.get(0).getPolicyType(),
+            results.get(0).getPolicyType());
 
         verify(priorityPolicyRepository).findAllByCaseType(caseType);
         verifyNoMoreInteractions(priorityPolicyRepository);
     }
+
 }

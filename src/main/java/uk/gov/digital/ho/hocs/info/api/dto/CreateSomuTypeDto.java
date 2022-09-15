@@ -21,4 +21,5 @@ public class CreateSomuTypeDto {
 
     @JsonProperty("active")
     private Boolean active;
+
 }

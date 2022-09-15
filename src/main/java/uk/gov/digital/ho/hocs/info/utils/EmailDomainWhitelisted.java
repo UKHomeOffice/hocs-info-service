@@ -10,10 +10,14 @@ import javax.validation.Payload;
 
 @Documented
 @Constraint(validatedBy = EmailDomainValidator.class)
-@Target( { ElementType.METHOD, ElementType.FIELD })
+@Target({ ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EmailDomainWhitelisted {
-  String message() default "Email domain invalid";
-  Class<?>[] groups() default {};
-  Class<? extends Payload>[] payload() default {};
+
+    String message() default "Email domain invalid";
+
+    Class<?>[] groups() default { };
+
+    Class<? extends Payload>[] payload() default { };
+
 }

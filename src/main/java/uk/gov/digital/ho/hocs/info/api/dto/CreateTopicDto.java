@@ -12,4 +12,5 @@ public class CreateTopicDto {
 
     @JsonProperty("displayName")
     private String displayName;
+
 }

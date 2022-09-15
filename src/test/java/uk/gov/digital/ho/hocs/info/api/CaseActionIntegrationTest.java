@@ -16,6 +16,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeDto;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -29,12 +30,15 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
-@Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
+@Sql(scripts = "classpath:afterTest.sql",
+     config = @SqlConfig(transactionMode = ISOLATED),
+     executionPhase = AFTER_TEST_METHOD)
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
-@ActiveProfiles({"local", "integration"})
+@ActiveProfiles({ "local", "integration" })
 public class CaseActionIntegrationTest {
 
     TestRestTemplate restTemplate = new TestRestTemplate();
+
     @LocalServerPort
     int port;
 
@@ -54,8 +58,8 @@ public class CaseActionIntegrationTest {
 
         // when
         ResponseEntity<Set<CaseTypeDto>> getCaseTypesRequest = restTemplate.exchange(
-                getBasePath() + "/caseType?initialCaseType=true", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
-                });
+            getBasePath() + "/caseType?initialCaseType=true", HttpMethod.GET, httpEntity,
+            new ParameterizedTypeReference<>() {});
 
         // then
         assertThat(getCaseTypesRequest).isNotNull();
@@ -63,11 +67,9 @@ public class CaseActionIntegrationTest {
 
         Set<CaseTypeDto> caseTypeDtos = getCaseTypesRequest.getBody();
         assertThat(caseTypeDtos).isNotNull();
-        assertThat(caseTypeDtos
-                .stream()
-                .filter(caseTypeDto -> caseTypeDto.getPreviousCaseType() == null)
-                .count())
-                .isEqualTo(3);
+        assertThat(
+            caseTypeDtos.stream().filter(caseTypeDto -> caseTypeDto.getPreviousCaseType() == null).count()).isEqualTo(
+            3);
     }
 
     @Test
@@ -78,8 +80,8 @@ public class CaseActionIntegrationTest {
 
         // when
         ResponseEntity<Set<CaseTypeDto>> getCaseTypesRequest = restTemplate.exchange(
-                getBasePath() + "/caseType?addCasesWithPreviousType=true", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
-                });
+            getBasePath() + "/caseType?addCasesWithPreviousType=true", HttpMethod.GET, httpEntity,
+            new ParameterizedTypeReference<>() {});
 
         // then
         assertThat(getCaseTypesRequest).isNotNull();
@@ -98,30 +100,21 @@ public class CaseActionIntegrationTest {
         ParameterizedTypeReference<CaseTypeActionDto> typeReference = new ParameterizedTypeReference<>() {};
 
         HttpEntity httpEntity = new HttpEntity(headers);
-        ResponseEntity<CaseTypeActionDto> response = restTemplate.exchange(
-                getBasePath() + "/actions/" + actionID,
-                HttpMethod.GET,
-                httpEntity,
-                typeReference
-        );
+        ResponseEntity<CaseTypeActionDto> response = restTemplate.exchange(getBasePath() + "/actions/" + actionID,
+            HttpMethod.GET, httpEntity, typeReference);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("APPEAL 1", Objects.requireNonNull(response.getBody()).getActionLabel());
     }
 
-
     @Test
     public void shouldReturnRequestedActionLabelById() {
         String actionID = "f2b625c9-7250-4293-9e68-c8f515e3043d";
 
         HttpEntity httpEntity = new HttpEntity(headers);
-        ResponseEntity<String> response = restTemplate.exchange(
-                getBasePath() + "/actions/" + actionID + "/label",
-                HttpMethod.GET,
-                httpEntity,
-                String.class
-        );
+        ResponseEntity<String> response = restTemplate.exchange(getBasePath() + "/actions/" + actionID + "/label",
+            HttpMethod.GET, httpEntity, String.class);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());

@@ -30,15 +30,18 @@ public class CaseTypeResource {
     }
 
     @GetMapping(value = "/caseType", produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<Set<CaseTypeDto>> getAllCaseTypes(@RequestParam(required = false, name = "addCasesWithPreviousType", defaultValue = "true") Boolean addCasesWithPreviousType) {
+    ResponseEntity<Set<CaseTypeDto>> getAllCaseTypes(
+        @RequestParam(required = false, name = "addCasesWithPreviousType", defaultValue = "true")
+        Boolean addCasesWithPreviousType) {
         Set<CaseType> caseTypes = caseTypeService.getAllCaseTypes(addCasesWithPreviousType);
         return ResponseEntity.ok(caseTypes.stream().map(CaseTypeDto::from).collect(Collectors.toSet()));
     }
 
-    @GetMapping(value = "/caseType", params = {"bulkOnly"}, produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<Set<CaseTypeDto>> getCaseTypes(
-            @RequestParam("bulkOnly") boolean bulkOnly,
-            @RequestParam(required = false, name = "initialCaseType", defaultValue = "true") Boolean initialCaseType) {
+    @GetMapping(value = "/caseType", params = { "bulkOnly" }, produces = APPLICATION_JSON_UTF8_VALUE)
+    ResponseEntity<Set<CaseTypeDto>> getCaseTypes(@RequestParam("bulkOnly") boolean bulkOnly,
+                                                  @RequestParam(required = false,
+                                                                name = "initialCaseType",
+                                                                defaultValue = "true") Boolean initialCaseType) {
         Set<CaseType> caseTypes = caseTypeService.getAllCaseTypesForUser(bulkOnly, initialCaseType);
         return ResponseEntity.ok(caseTypes.stream().map(CaseTypeDto::from).collect(Collectors.toSet()));
     }
@@ -97,4 +100,5 @@ public class CaseTypeResource {
         CaseTypeActionDto actionDto = caseTypeService.getCaseTypeActionById(actionId);
         return ResponseEntity.ok(actionDto);
     }
+
 }

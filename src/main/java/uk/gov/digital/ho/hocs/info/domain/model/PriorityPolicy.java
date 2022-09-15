@@ -28,8 +28,7 @@ public class PriorityPolicy {
     @Column(name = "config", insertable = false, updatable = false)
     private String config;
 
-
-    public PriorityPolicyDto toDto(){
+    public PriorityPolicyDto toDto() {
         return new PriorityPolicyDto(policyType, caseType, config);
     }
 

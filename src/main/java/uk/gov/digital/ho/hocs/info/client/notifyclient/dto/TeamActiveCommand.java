@@ -10,6 +10,7 @@ import java.util.UUID;
 public class TeamActiveCommand extends TeamCommand {
 
     private UUID teamUUID;
+
     private Boolean currentActiveStatus;
 
     public TeamActiveCommand() {

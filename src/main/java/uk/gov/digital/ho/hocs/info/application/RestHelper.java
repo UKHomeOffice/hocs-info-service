@@ -26,24 +26,29 @@ public class RestHelper {
     private RequestData requestData;
 
     @Autowired
-    public RestHelper(RestTemplate restTemplate, @Value("${hocs.basicauth}") String basicAuth, RequestData requestData) {
+    public RestHelper(RestTemplate restTemplate,
+                      @Value("${hocs.basicauth}") String basicAuth,
+                      RequestData requestData) {
         this.restTemplate = restTemplate;
         this.basicAuth = basicAuth;
         this.requestData = requestData;
     }
 
-    public <T,R> ResponseEntity<R> post(String serviceBaseURL, String url, T request, Class<R> responseType) {
-        return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.POST, new HttpEntity<>(request, createAuthHeaders()), responseType);
+    public <T, R> ResponseEntity<R> post(String serviceBaseURL, String url, T request, Class<R> responseType) {
+        return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.POST,
+            new HttpEntity<>(request, createAuthHeaders()), responseType);
     }
 
     public <R> ResponseEntity<R> get(String serviceBaseURL, String url, Class<R> responseType) {
-        ResponseEntity<R> response = restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.GET, new HttpEntity<>(null, createAuthHeaders()), responseType);
+        ResponseEntity<R> response = restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.GET,
+            new HttpEntity<>(null, createAuthHeaders()), responseType);
         validateResponse(response);
         return response;
     }
 
     public <R> ResponseEntity<R> delete(String serviceBaseURL, String url, Class<R> responseType) {
-        return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.DELETE, new HttpEntity<>(null, createAuthHeaders()), responseType);
+        return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.DELETE,
+            new HttpEntity<>(null, createAuthHeaders()), responseType);
     }
 
     private HttpHeaders createAuthHeaders() {
@@ -57,23 +62,30 @@ public class RestHelper {
     }
 
     private String getBasicAuth() {
-        return String.format("Basic %s", Base64.getEncoder().encodeToString(basicAuth.getBytes(Charset.forName("UTF-8"))));
+        return String.format("Basic %s",
+            Base64.getEncoder().encodeToString(basicAuth.getBytes(Charset.forName("UTF-8"))));
     }
 
-    private static <T> T validateResponse(ResponseEntity<T>  responseEntity) {
-        if(responseEntity.getStatusCode().equals(HttpStatus.OK)) {
-            if(responseEntity.hasBody()) {
+    private static <T> T validateResponse(ResponseEntity<T> responseEntity) {
+        if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+            if (responseEntity.hasBody()) {
                 return responseEntity.getBody();
             } else {
-                log.error("Server returned malformed response %s", responseEntity.getStatusCodeValue() , value(EVENT, REST_HELPER_MALFORMED_RESPONSE));
-                throw new ApplicationExceptions.ResourceServerException("Server returned malformed response", REST_HELPER_MALFORMED_RESPONSE );
+                log.error("Server returned malformed response %s", responseEntity.getStatusCodeValue(),
+                    value(EVENT, REST_HELPER_MALFORMED_RESPONSE));
+                throw new ApplicationExceptions.ResourceServerException("Server returned malformed response",
+                    REST_HELPER_MALFORMED_RESPONSE);
             }
-        } else if(responseEntity.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-            log.error("Server returned not found response %s", responseEntity.getStatusCodeValue() , value(EVENT, REST_HELPER_MALFORMED_RESPONSE));
-            throw new ApplicationExceptions.ResourceNotFoundException("Server returned not found response", REST_HELPER_NOT_FOUND);
+        } else if (responseEntity.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+            log.error("Server returned not found response %s", responseEntity.getStatusCodeValue(),
+                value(EVENT, REST_HELPER_MALFORMED_RESPONSE));
+            throw new ApplicationExceptions.ResourceNotFoundException("Server returned not found response",
+                REST_HELPER_NOT_FOUND);
         } else {
-            log.error("Server returned invalid response %s", responseEntity.getStatusCodeValue() , value(EVENT, REST_HELPER_MALFORMED_RESPONSE));
-            throw new ApplicationExceptions.ResourceServerException("Server returned invalid response", REST_HELPER_INTERNAL_SERVER_ERROR);
+            log.error("Server returned invalid response %s", responseEntity.getStatusCodeValue(),
+                value(EVENT, REST_HELPER_MALFORMED_RESPONSE));
+            throw new ApplicationExceptions.ResourceServerException("Server returned invalid response",
+                REST_HELPER_INTERNAL_SERVER_ERROR);
         }
     }
 

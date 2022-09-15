@@ -34,8 +34,7 @@ public class SpringConfiguration implements WebMvcConfigurer {
 
     @Bean
     public HttpClient createHttpClient() {
-        return HttpClientBuilder.create()
-                .useSystemProperties().build();
+        return HttpClientBuilder.create().useSystemProperties().build();
     }
 
     @Bean

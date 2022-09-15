@@ -7,8 +7,8 @@ metadata:
   name: hocs-info-service
 spec:
   ports:
-  - name: https
-    port: 443
-    targetPort: 10443
+    - name: https
+      port: 443
+      targetPort: 10443
   selector:
     name: hocs-info-service

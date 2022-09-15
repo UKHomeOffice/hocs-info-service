@@ -12,6 +12,7 @@ import java.io.Serializable;
 @Getter
 @EqualsAndHashCode
 public class Country implements Serializable {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,4 +34,5 @@ public class Country implements Serializable {
         this.name = name;
         this.isTerritory = isTerritory;
     }
+
 }

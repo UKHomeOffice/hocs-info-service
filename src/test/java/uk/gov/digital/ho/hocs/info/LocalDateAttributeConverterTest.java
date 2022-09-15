@@ -23,11 +23,7 @@ public class LocalDateAttributeConverterTest {
 
     @Test
     public void shouldConvertToDatabaseColumn() {
-        LocalDate date = LocalDate.of(
-                2018,
-                1,
-                1
-        );
+        LocalDate date = LocalDate.of(2018, 1, 1);
 
         Date convertedDate = converter.convertToDatabaseColumn(date);
 
@@ -35,7 +31,6 @@ public class LocalDateAttributeConverterTest {
         assertThat(convertedDate).isInstanceOf(Date.class);
         assertThat(convertedDate.toString()).isEqualTo("2018-01-01");
     }
-
 
     @Test
     public void shouldConvertToEntityAttribute() {

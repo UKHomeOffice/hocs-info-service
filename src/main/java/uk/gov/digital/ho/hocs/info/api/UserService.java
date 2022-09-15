@@ -14,17 +14,20 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-
 @Service
 @Slf4j
 public class UserService {
 
     private KeycloakService keycloakService;
+
     private CaseworkClient caseworkClient;
+
     private StageTypeService stageTypeService;
 
     @Autowired
-    public UserService(KeycloakService keycloakService, CaseworkClient caseworkClient, StageTypeService stageTypeService) {
+    public UserService(KeycloakService keycloakService,
+                       CaseworkClient caseworkClient,
+                       StageTypeService stageTypeService) {
         this.keycloakService = keycloakService;
         this.caseworkClient = caseworkClient;
         this.stageTypeService = stageTypeService;
@@ -32,7 +35,8 @@ public class UserService {
 
     public List<UserDto> getAllUsers() {
         log.info("Retrieving all users from Keycloak");
-        List<UserDto> users = keycloakService.getAllUsers().stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
+        List<UserDto> users = keycloakService.getAllUsers().stream().map(user -> UserDto.from(user)).collect(
+            Collectors.toList());
         log.info("Found {} users", users.size());
         return users;
     }
@@ -50,14 +54,15 @@ public class UserService {
     }
 
     public List<UserDto> getUsersForTeam(UUID teamUUID) {
-        return keycloakService.getUsersForTeam(teamUUID).stream().map(user -> UserDto.from(user)).collect(Collectors.toList());
+        return keycloakService.getUsersForTeam(teamUUID).stream().map(user -> UserDto.from(user)).collect(
+            Collectors.toList());
     }
 
     public UserDto getUserForTeam(UUID teamUUID, UUID userUUID) {
         String userId = userUUID.toString();
         List<UserDto> users = getUsersForTeam(teamUUID);
         for (UserDto user : users) {
-            if (user.getId().equals(userId)){
+            if (user.getId().equals(userId)) {
                 return user;
             }
         }
@@ -69,6 +74,5 @@ public class UserService {
         UUID teamUUID = stageTypeService.getTeamForStageType(stageType).getUuid();
         return getUsersForTeam(teamUUID);
     }
-
 
 }

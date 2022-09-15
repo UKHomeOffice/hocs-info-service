@@ -31,4 +31,5 @@ public class DocumentTag implements Serializable {
 
     @Column(name = "sort_order")
     private short sortOrder;
+
 }

@@ -30,7 +30,8 @@ public class StageTypeResourceTest {
     CaseTypeService caseTypeService;
 
     StageTypeResource service;
-    Team team = new Team( "Team1" , new HashSet<>());
+
+    Team team = new Team("Team1", new HashSet<>());
 
     @Before
     public void setup() {
@@ -39,7 +40,8 @@ public class StageTypeResourceTest {
 
     @Test
     public void shouldGetStageTypes() {
-        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true,team, false);
+        StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111", "STAGE_TYPE",
+            UUID.randomUUID(), 1, 1, 1, true, team, false);
         Set<StageTypeEntity> stages = new HashSet<StageTypeEntity>() {{
             add(stage);
         }};
@@ -59,7 +61,8 @@ public class StageTypeResourceTest {
     @Test
     public void shouldGetStageTypeName() {
         UUID stageUuid = UUID.randomUUID();
-        StageTypeEntity stage = new StageTypeEntity(1L, stageUuid, "stage name", "111","STAGE_TYPE", UUID.randomUUID(),1,1,1,true,team, false);
+        StageTypeEntity stage = new StageTypeEntity(1L, stageUuid, "stage name", "111", "STAGE_TYPE", UUID.randomUUID(),
+            1, 1, 1, true, team, false);
         Set<StageTypeEntity> stages = new HashSet<>() {{
             add(stage);
         }};
@@ -77,11 +80,12 @@ public class StageTypeResourceTest {
 
     @Test
     public void shouldGetTeamForStageType() {
-        Team team = new Team( "Team1" , true);
+        Team team = new Team("Team1", true);
         when(stageTypeService.getTeamForStageType("STAGE_TYPE")).thenReturn(team);
 
         ResponseEntity<TeamDto> result = service.getTeamForStageType("STAGE_TYPE");
         assertThat(result.getBody().getUuid()).isEqualTo(team.getUuid());
         assertThat(result.getBody().getDisplayName()).isEqualTo("Team1");
     }
+
 }

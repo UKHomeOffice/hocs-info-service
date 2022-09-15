@@ -24,6 +24,7 @@ public class ProfileResourceTest {
 
     @Mock
     CaseTypeService caseTypeService;
+
     @Mock
     ProfileRepository profileRepository;
 
@@ -45,17 +46,19 @@ public class ProfileResourceTest {
         verify(caseTypeService).getAllCaseTypesForUser(false, true);
         verifyNoMoreInteractions(caseTypeService, profileRepository);
 
-
     }
 
     @Test
     public void getProfileNameForUser() {
-        CaseType caseType1 = new CaseType(null, UUID.randomUUID(), "TEST1", "a1", "type1", UUID.randomUUID(), "TEST", true, true, null, null);
-        CaseType caseType2 = new CaseType(null, UUID.randomUUID(), "TEST2", "a2", "type2", UUID.randomUUID(), "TEST", true, true, null, null);
+        CaseType caseType1 = new CaseType(null, UUID.randomUUID(), "TEST1", "a1", "type1", UUID.randomUUID(), "TEST",
+            true, true, null, null);
+        CaseType caseType2 = new CaseType(null, UUID.randomUUID(), "TEST2", "a2", "type2", UUID.randomUUID(), "TEST",
+            true, true, null, null);
 
         List<String> expectedResult = new ArrayList<>(Arrays.asList("Profile1", "Profile2"));
         when(caseTypeService.getAllCaseTypesForUser(false, true)).thenReturn(Set.of(caseType1, caseType2));
-        when(profileRepository.findAllProfileNamesByCaseTypesAndSystemName(anyList(), eq("system"))).thenReturn(expectedResult);
+        when(profileRepository.findAllProfileNamesByCaseTypesAndSystemName(anyList(), eq("system"))).thenReturn(
+            expectedResult);
 
         ResponseEntity<List<String>> response = profileResource.getProfileNameForUser(true);
 
@@ -73,8 +76,9 @@ public class ProfileResourceTest {
     public void getProfileForCaseType() {
         String caseType = "C1";
 
-        List<SearchField> searchFields = Arrays.asList(new SearchField(10L, "system", "name", "component", "validationRules", "properties"));
-        Profile profile =  new Profile("testProfile", "system", true, searchFields);
+        List<SearchField> searchFields = Arrays.asList(
+            new SearchField(10L, "system", "name", "component", "validationRules", "properties"));
+        Profile profile = new Profile("testProfile", "system", true, searchFields);
 
         when(profileRepository.findByCaseTypeAndSystemName(caseType, "system")).thenReturn(profile);
 
@@ -107,4 +111,5 @@ public class ProfileResourceTest {
         verifyNoMoreInteractions(caseTypeService, profileRepository);
 
     }
+
 }

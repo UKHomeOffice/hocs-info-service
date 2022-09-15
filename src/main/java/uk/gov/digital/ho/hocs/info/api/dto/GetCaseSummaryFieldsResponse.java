@@ -16,11 +16,9 @@ public class GetCaseSummaryFieldsResponse {
     Set<String> fields;
 
     public static GetCaseSummaryFieldsResponse from(Set<Entity> entities) {
-        Set<String> fields = entities
-                .stream()
-                .map(e -> e.getSimpleName())
-                .collect(Collectors.toSet());
+        Set<String> fields = entities.stream().map(e -> e.getSimpleName()).collect(Collectors.toSet());
 
         return new GetCaseSummaryFieldsResponse(fields);
     }
+
 }

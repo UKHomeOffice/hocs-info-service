@@ -33,7 +33,8 @@ public class SecondaryActionDto {
 
     public static SecondaryActionDto from(SecondaryAction secondaryAction) {
         return new SecondaryActionDto(secondaryAction.getUuid(), secondaryAction.getComponent(),
-                secondaryAction.getValidation(), secondaryAction.getName(), secondaryAction.getLabel(),
-                secondaryAction.getProps());
+            secondaryAction.getValidation(), secondaryAction.getName(), secondaryAction.getLabel(),
+            secondaryAction.getProps());
     }
+
 }

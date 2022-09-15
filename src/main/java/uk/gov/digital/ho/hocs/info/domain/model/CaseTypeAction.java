@@ -60,4 +60,5 @@ public class CaseTypeAction {
 
     @Column(name = "last_updated_timestamp")
     private LocalDateTime lastUpdatedTimestamp;
+
 }

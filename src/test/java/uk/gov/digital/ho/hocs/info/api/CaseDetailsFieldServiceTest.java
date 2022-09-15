@@ -15,18 +15,15 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-
 @RunWith(MockitoJUnitRunner.class)
 public class CaseDetailsFieldServiceTest {
 
     @Mock
     private CaseDetailsFieldRepository caseDetailsFieldRepository;
 
-
     private CaseDetailsFieldService caseDetailsFieldService;
 
     private final String caseType = "Type1";
-
 
     @Before
     public void setUp() {
@@ -79,7 +76,8 @@ public class CaseDetailsFieldServiceTest {
     @Test(expected = PersistenceException.class)
     public void getCaseDetailsFieldsByCaseType_throwsException() {
 
-        when(caseDetailsFieldRepository.findByCaseTypeOrderBySortOrder(caseType)).thenThrow(new PersistenceException("Test Exception"));
+        when(caseDetailsFieldRepository.findByCaseTypeOrderBySortOrder(caseType)).thenThrow(
+            new PersistenceException("Test Exception"));
 
         caseDetailsFieldService.getCaseDetailsFieldsByCaseType(caseType);
 

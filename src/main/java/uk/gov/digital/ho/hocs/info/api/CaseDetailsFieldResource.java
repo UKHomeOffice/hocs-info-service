@@ -26,10 +26,10 @@ public class CaseDetailsFieldResource {
     @GetMapping(value = "/caseDetailsFields/{caseType}", produces = APPLICATION_JSON_UTF8_VALUE)
     ResponseEntity<List<CaseDetailsFieldDto>> getCaseDetailsFieldsByCaseType(@PathVariable String caseType) {
         log.debug("Getting CaseDetailsFieldDtos for {}", caseType);
-        List<CaseDetailsFieldDto> caseDetailsFieldDtos = caseDetailsFieldService.getCaseDetailsFieldsByCaseType(caseType);
+        List<CaseDetailsFieldDto> caseDetailsFieldDtos = caseDetailsFieldService.getCaseDetailsFieldsByCaseType(
+            caseType);
         log.debug("Got {} CaseDetailsFieldDtos for {}", caseDetailsFieldDtos.size(), caseType);
         return ResponseEntity.ok(caseDetailsFieldDtos);
     }
-
 
 }

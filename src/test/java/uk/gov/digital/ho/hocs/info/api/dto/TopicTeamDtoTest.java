@@ -16,7 +16,7 @@ public class TopicTeamDtoTest {
     @Test
     public void from() {
         Set<Team> teams = Set.of(new Team("Team", true));
-        TopicTeam topicTeam = new TopicTeam(uuid,"DisplayName",teams);
+        TopicTeam topicTeam = new TopicTeam(uuid, "DisplayName", teams);
 
         TopicTeamDto topicTeamDto = TopicTeamDto.from(topicTeam);
 
@@ -24,4 +24,5 @@ public class TopicTeamDtoTest {
         assertThat(topicTeamDto.getDisplayName()).isEqualTo("DisplayName");
         assertThat(topicTeamDto.getTeams().size()).isEqualTo(1);
     }
+
 }

@@ -14,12 +14,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RequestDataTest
-{
+public class RequestDataTest {
+
     @Mock
     private HttpServletRequest mockHttpServletRequest;
-    @Mock private HttpServletResponse mockHttpServletResponse;
-    @Mock private Object mockHandler;
+
+    @Mock
+    private HttpServletResponse mockHttpServletResponse;
+
+    @Mock
+    private Object mockHandler;
 
     private RequestData requestData;
 
@@ -63,4 +67,5 @@ public class RequestDataTest
 
         assertThat(requestData.username()).isEqualTo("some username");
     }
+
 }

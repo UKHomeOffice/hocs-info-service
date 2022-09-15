@@ -29,8 +29,10 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
-@Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
-@ActiveProfiles({"local", "integration"})
+@Sql(scripts = "classpath:afterTest.sql",
+     config = @SqlConfig(transactionMode = ISOLATED),
+     executionPhase = AFTER_TEST_METHOD)
+@ActiveProfiles({ "local", "integration" })
 public class TopicIntegrationTests {
 
     TestRestTemplate restTemplate = new TestRestTemplate();
@@ -47,27 +49,29 @@ public class TopicIntegrationTests {
     int port;
 
     final UUID parentTopicUUID = UUID.fromString("94a10f9f-a42e-44c0-8ebe-1227cb347f1d");
+
     final UUID inactiveParentTopicUUID = UUID.fromString("71caee7b-4632-4ac6-9c15-b91d4c0d27e5");
+
     final UUID invalidParentTopicUUID = UUID.fromString("a1f227ca-707c-488e-a21f-bdd94f37e5bb");
+
     final UUID topicUUID = UUID.fromString("11111111-ffff-1111-1111-111111111131");
 
     @Before
-    public void setup(){
+    public void setup() {
         headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.toString());
     }
 
     @Test
-    public void shouldCreateParentTopic(){
+    public void shouldCreateParentTopic() {
 
         CreateParentTopicDto request = new CreateParentTopicDto("Test Parent Topic");
 
         long numberOfTopicsBefore = parentTopicRepository.count();
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity<CreateParentTopicResponse> result = restTemplate.exchange(
-                getBasePath() + "/topic/parent"
-                , HttpMethod.POST, httpEntity, CreateParentTopicResponse.class);
+        ResponseEntity<CreateParentTopicResponse> result = restTemplate.exchange(getBasePath() + "/topic/parent",
+            HttpMethod.POST, httpEntity, CreateParentTopicResponse.class);
 
         long numberOfTopicsAfter = parentTopicRepository.count();
 
@@ -85,9 +89,8 @@ public class TopicIntegrationTests {
         CreateParentTopicDto request = new CreateParentTopicDto("test parent topic 100");
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity<Void> result = restTemplate.exchange(
-                getBasePath() + "/topic/parent/"
-                , HttpMethod.POST, httpEntity, Void.class);
+        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent/", HttpMethod.POST,
+            httpEntity, Void.class);
 
         long numberOfTopicsAfter = parentTopicRepository.count();
 
@@ -104,9 +107,8 @@ public class TopicIntegrationTests {
         CreateParentTopicDto request = new CreateParentTopicDto("test inactive parent topic 102");
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity<Void> result = restTemplate.exchange(
-                getBasePath() + "/topic/parent/"
-                , HttpMethod.POST, httpEntity, Void.class);
+        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent/", HttpMethod.POST,
+            httpEntity, Void.class);
 
         long numberOfTopicsAfter = parentTopicRepository.count();
 
@@ -124,8 +126,8 @@ public class TopicIntegrationTests {
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
         ResponseEntity<CreateTopicResponse> result = restTemplate.exchange(
-                getBasePath() + "/topic/parent/" + parentTopicUUID.toString()
-                , HttpMethod.POST, httpEntity, CreateTopicResponse.class);
+            getBasePath() + "/topic/parent/" + parentTopicUUID.toString(), HttpMethod.POST, httpEntity,
+            CreateTopicResponse.class);
 
         long numberOfTopicsAfter = topicRepository.findTopicByParentTopic(parentTopicUUID).size();
 
@@ -143,9 +145,8 @@ public class TopicIntegrationTests {
         CreateTopicDto request = new CreateTopicDto("Topic 1");
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity<Void> result = restTemplate.exchange(
-                getBasePath() + "/topic/parent/" + invalidParentTopicUUID
-                , HttpMethod.POST, httpEntity, Void.class);
+        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent/" + invalidParentTopicUUID,
+            HttpMethod.POST, httpEntity, Void.class);
 
         long numberOfTopicsAfter = topicRepository.count();
 
@@ -161,12 +162,10 @@ public class TopicIntegrationTests {
         CreateTopicDto request = new CreateTopicDto("Topic 1");
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity<Void> result = restTemplate.exchange(
-                getBasePath() + "/topic/parent/" + inactiveParentTopicUUID
-                , HttpMethod.POST, httpEntity, Void.class);
+        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent/" + inactiveParentTopicUUID,
+            HttpMethod.POST, httpEntity, Void.class);
 
         long numberOfTopicsAfter = topicRepository.count();
-
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(numberOfTopicsAfter).isEqualTo(numberOfTopicsBefore);
@@ -180,9 +179,8 @@ public class TopicIntegrationTests {
         CreateTopicDto request = new CreateTopicDto("test topic 1");
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity<Void> result = restTemplate.exchange(
-                getBasePath() + "/topic/parent/" + parentTopicUUID
-                , HttpMethod.POST, httpEntity, Void.class);
+        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent/" + parentTopicUUID,
+            HttpMethod.POST, httpEntity, Void.class);
 
         long numberOfTopicsAfter = topicRepository.count();
 
@@ -199,9 +197,8 @@ public class TopicIntegrationTests {
         CreateTopicDto request = new CreateTopicDto("test inactive topic 4");
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity<Map> result = restTemplate.exchange(
-                getBasePath() + "/topic/parent/" + parentTopicUUID
-                , HttpMethod.POST, httpEntity, Map.class);
+        ResponseEntity<Map> result = restTemplate.exchange(getBasePath() + "/topic/parent/" + parentTopicUUID,
+            HttpMethod.POST, httpEntity, Map.class);
 
         long numberOfTopicsAfter = topicRepository.count();
         long numberOfActiveTopicsAfter = topicRepository.findAllByActiveIsTrue().size();
@@ -220,8 +217,8 @@ public class TopicIntegrationTests {
         HttpEntity httpEntity = new HttpEntity(headers);
 
         ResponseEntity<Void> result = restTemplate.exchange(
-                getBasePath() + "/topic/parent/" + parentTopicWithNoChildrenUUID
-                , HttpMethod.DELETE, httpEntity, Void.class);
+            getBasePath() + "/topic/parent/" + parentTopicWithNoChildrenUUID, HttpMethod.DELETE, httpEntity,
+            Void.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(parentTopicRepository.findByUuid(parentTopicWithNoChildrenUUID).isActive()).isFalse();
@@ -229,16 +226,15 @@ public class TopicIntegrationTests {
     }
 
     @Test
-    public void shouldMakeParentTopicAndItsChildrenInactive(){
+    public void shouldMakeParentTopicAndItsChildrenInactive() {
 
         UUID topicUUID1 = UUID.fromString("11111111-ffff-1111-1111-111111111131");
         UUID topicUUID2 = UUID.fromString("11111111-ffff-1111-1111-111111111132");
 
         HttpEntity httpEntity = new HttpEntity(headers);
 
-        ResponseEntity<Void> result = restTemplate.exchange(
-                getBasePath() + "/topic/parent/" + parentTopicUUID
-                , HttpMethod.DELETE, httpEntity, Void.class);
+        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent/" + parentTopicUUID,
+            HttpMethod.DELETE, httpEntity, Void.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(parentTopicRepository.findByUuid(parentTopicUUID).isActive()).isFalse();
@@ -252,9 +248,8 @@ public class TopicIntegrationTests {
 
         HttpEntity httpEntity = new HttpEntity(headers);
 
-        ResponseEntity<Void> result = restTemplate.exchange(
-                getBasePath() + "/topic/" + topicUUID
-                , HttpMethod.DELETE, httpEntity, Void.class);
+        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/" + topicUUID, HttpMethod.DELETE,
+            httpEntity, Void.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(parentTopicRepository.findByUuid(parentTopicUUID).isActive()).isTrue();
@@ -270,11 +265,10 @@ public class TopicIntegrationTests {
 
         HttpEntity httpEntity = new HttpEntity(headers);
 
-        ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/topic/parent/" + invalidParentTopicUUID
-                , HttpMethod.DELETE, httpEntity, Void.class);
+        ResponseEntity result = restTemplate.exchange(getBasePath() + "/topic/parent/" + invalidParentTopicUUID,
+            HttpMethod.DELETE, httpEntity, Void.class);
 
-        long activeTopicsAfter= topicRepository.findAllByActiveIsTrue().size();
+        long activeTopicsAfter = topicRepository.findAllByActiveIsTrue().size();
         long activeParentTopicsAfter = parentTopicRepository.findAllByActiveIsTrue().size();
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -289,9 +283,8 @@ public class TopicIntegrationTests {
         String childTopicUUID = "11111111-ffff-1111-1111-111111111135";
         HttpEntity httpEntity = new HttpEntity(headers);
 
-        ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/topic/parent/" + inactiveParentTopicUUID
-                , HttpMethod.PUT, httpEntity, Void.class);
+        ResponseEntity result = restTemplate.exchange(getBasePath() + "/topic/parent/" + inactiveParentTopicUUID,
+            HttpMethod.PUT, httpEntity, Void.class);
 
         ParentTopic parentTopic = parentTopicRepository.findByUuid(inactiveParentTopicUUID);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -309,9 +302,8 @@ public class TopicIntegrationTests {
         long activeParentTopicsBefore = parentTopicRepository.findAllByActiveIsTrue().size();
 
         HttpEntity httpEntity = new HttpEntity(headers);
-        ResponseEntity<Void> result = restTemplate.exchange(
-                getBasePath() + "/topic/parent/" + invalidParentTopicUUID
-                , HttpMethod.PUT, httpEntity, Void.class);
+        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent/" + invalidParentTopicUUID,
+            HttpMethod.PUT, httpEntity, Void.class);
 
         long activeParentTopicsAfter = parentTopicRepository.findAllByActiveIsTrue().size();
 
@@ -326,9 +318,8 @@ public class TopicIntegrationTests {
         ParentTopic parentTopicBefore = parentTopicRepository.findByUuid(parentTopicUUID);
 
         HttpEntity httpEntity = new HttpEntity(headers);
-        ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/topic/parent/" + parentTopicUUID
-                , HttpMethod.PUT, httpEntity, Void.class);
+        ResponseEntity result = restTemplate.exchange(getBasePath() + "/topic/parent/" + parentTopicUUID,
+            HttpMethod.PUT, httpEntity, Void.class);
 
         ParentTopic parentTopicAfter = parentTopicRepository.findByUuid(parentTopicUUID);
 
@@ -344,9 +335,8 @@ public class TopicIntegrationTests {
         UUID inactiveTopicUUID = UUID.fromString("11111111-ffff-1111-1111-111111111134");
 
         HttpEntity httpEntity = new HttpEntity(headers);
-        ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/topic/" + inactiveTopicUUID
-                , HttpMethod.PUT, httpEntity, Void.class);
+        ResponseEntity result = restTemplate.exchange(getBasePath() + "/topic/" + inactiveTopicUUID, HttpMethod.PUT,
+            httpEntity, Void.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(topicRepository.findTopicByUUID(inactiveTopicUUID).isActive()).isEqualTo(true);
@@ -359,9 +349,8 @@ public class TopicIntegrationTests {
         UUID inactiveTopicWithInactiveParentUUID = UUID.fromString("11111111-ffff-1111-1111-111111111135");
 
         HttpEntity httpEntity = new HttpEntity(headers);
-        ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/topic/" + inactiveTopicWithInactiveParentUUID
-                , HttpMethod.PUT, httpEntity, Void.class);
+        ResponseEntity result = restTemplate.exchange(getBasePath() + "/topic/" + inactiveTopicWithInactiveParentUUID,
+            HttpMethod.PUT, httpEntity, Void.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(topicRepository.findTopicByUUID(inactiveTopicWithInactiveParentUUID).isActive()).isEqualTo(false);
@@ -374,9 +363,8 @@ public class TopicIntegrationTests {
         Topic topicBefore = topicRepository.findTopicByUUID(topicUUID);
 
         HttpEntity httpEntity = new HttpEntity(headers);
-        ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/topic/" + topicUUID
-                , HttpMethod.PUT, httpEntity, Void.class);
+        ResponseEntity result = restTemplate.exchange(getBasePath() + "/topic/" + topicUUID, HttpMethod.PUT, httpEntity,
+            Void.class);
 
         Topic topicAfter = topicRepository.findTopicByUUID(topicUUID);
 

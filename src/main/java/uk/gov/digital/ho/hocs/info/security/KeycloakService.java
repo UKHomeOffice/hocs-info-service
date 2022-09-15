@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import javax.ws.rs.core.Response;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.keycloak.admin.client.CreatedResponseUtil;
@@ -37,15 +38,16 @@ import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 public class KeycloakService {
 
     private final TeamRepository teamRepository;
+
     private final Keycloak keycloakClient;
+
     private final String hocsRealmName;
 
     private static final String KEYCLOAK_ERROR_MESSAGE = "errorMessage";
 
-    public KeycloakService(
-            TeamRepository teamRepository,
-            Keycloak keycloakClient,
-            @Value("${keycloak.realm}") String hocsRealmName) {
+    public KeycloakService(TeamRepository teamRepository,
+                           Keycloak keycloakClient,
+                           @Value("${keycloak.realm}") String hocsRealmName) {
         this.teamRepository = teamRepository;
         this.keycloakClient = keycloakClient;
         this.hocsRealmName = hocsRealmName;
@@ -56,12 +58,11 @@ public class KeycloakService {
         List<UserRepresentation> existingUserReps = usersResource.search(createUserDto.getEmail());
 
         if (!existingUserReps.isEmpty()) {
-            log.info("User with email already exists as user {}",
-                existingUserReps.get(0).getId(),
-                value(EVENT, LogEvent.CREATE_USER_FAILED)
-            );
+            log.info("User with email already exists as user {}", existingUserReps.get(0).getId(),
+                value(EVENT, LogEvent.CREATE_USER_FAILED));
 
-            throw new ApplicationExceptions.UserAlreadyExistsException("User with provided email address already exists", LogEvent.CREATE_USER_FAILED);
+            throw new ApplicationExceptions.UserAlreadyExistsException(
+                "User with provided email address already exists", LogEvent.CREATE_USER_FAILED);
         }
 
         UserRepresentation userRepresentation = mapToUserRepresentation(createUserDto);
@@ -97,7 +98,8 @@ public class KeycloakService {
             GroupRepresentation group = hocsRealm.getGroupByPath(teamPath);
             user.joinGroup(group.getId());
         } catch (Exception e) {
-            log.error("Failed to add user {} to team {} for reason: {}, Event: {}", userUUID, teamUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            log.error("Failed to add user {} to team {} for reason: {}, Event: {}", userUUID, teamUUID.toString(),
+                e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }
@@ -110,7 +112,8 @@ public class KeycloakService {
             GroupRepresentation group = hocsRealm.getGroupByPath(teamPath);
             user.leaveGroup(group.getId());
         } catch (Exception e) {
-            log.error("Failed to remove user {} from team {} for reason: {}, Event: {}", userUUID, teamUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            log.error("Failed to remove user {} from team {} for reason: {}, Event: {}", userUUID, teamUUID.toString(),
+                e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }
@@ -124,7 +127,8 @@ public class KeycloakService {
             Response response = hocsRealm.groups().add(teamGroup);
             response.close();
         } catch (Exception e) {
-            log.error("Failed to create group for team {} for reason: {}, Event: {}", teamUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            log.error("Failed to create group for team {} for reason: {}, Event: {}", teamUUID.toString(),
+                e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }
@@ -137,7 +141,8 @@ public class KeycloakService {
             keycloakClient.realm(hocsRealmName).groups().group(id).remove();
 
         } catch (Exception e) {
-            log.error("Failed to delete permission group for with path {} for reason: {}, Event: {}", path, e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            log.error("Failed to delete permission group for with path {} for reason: {}, Event: {}", path,
+                e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }
@@ -152,16 +157,14 @@ public class KeycloakService {
             }
             return teamUUIDs;
         } catch (Exception e) {
-            log.error("Failed to get groups for user {} for reason: {}, Event: {}", userUUID.toString(), e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
+            log.error("Failed to get groups for user {} for reason: {}, Event: {}", userUUID.toString(), e.getMessage(),
+                value(EVENT, KEYCLOAK_FAILURE));
             throw new KeycloakException(e.getMessage(), e);
         }
     }
 
     public List<UserRepresentation> getAllUsers() {
-        var users
-                = keycloakClient.realm(hocsRealmName)
-                    .users()
-                    .list(0, -1);
+        var users = keycloakClient.realm(hocsRealmName).users().list(0, -1);
         log.info("Found {} users in Keycloak", users.size());
 
         return users;
@@ -181,11 +184,10 @@ public class KeycloakService {
         try {
             GroupRepresentation group = keycloakClient.realm(hocsRealmName).getGroupByPath(encodedTeamPath);
 
-            return keycloakClient.realm(hocsRealmName)
-                    .groups().group(group.getId())
-                    .members(0, -1);
+            return keycloakClient.realm(hocsRealmName).groups().group(group.getId()).members(0, -1);
         } catch (javax.ws.rs.NotFoundException e) {
-            log.error("Keycloak has not found users assigned to this team, Not found exception thrown by keycloak: " + e.getMessage());
+            log.error(
+                "Keycloak has not found users assigned to this team, Not found exception thrown by keycloak: " + e.getMessage());
             return Collections.emptyList();
         }
     }
@@ -212,4 +214,5 @@ public class KeycloakService {
         userRepresentation.setEnabled(true);
         return userRepresentation;
     }
+
 }

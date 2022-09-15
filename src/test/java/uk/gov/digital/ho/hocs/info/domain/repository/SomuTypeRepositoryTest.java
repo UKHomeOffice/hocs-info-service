@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 public class SomuTypeRepositoryTest {
 
@@ -65,4 +65,5 @@ public class SomuTypeRepositoryTest {
         assertThat(somuType.getCaseType()).isEqualTo("CaseType5");
         assertThat(somuType.getType()).isEqualTo("Type5");
     }
+
 }

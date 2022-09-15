@@ -17,4 +17,5 @@ public class UpdateStandardLineDto {
 
     @JsonProperty("expires")
     private LocalDate expires;
+
 }

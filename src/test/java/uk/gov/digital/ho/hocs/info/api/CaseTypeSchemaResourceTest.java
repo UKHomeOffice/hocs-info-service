@@ -34,8 +34,7 @@ public class CaseTypeSchemaResourceTest {
     public void shouldReturnStagesForValidCaseType() {
         when(caseTypeSchemaService.getCaseTypeStages(TEST_CASE_TYPE)).thenReturn(getMockStageTypes(5));
 
-        ResponseEntity<List<String>> response =
-                caseTypeSchemaResource.getCaseTypeStages(TEST_CASE_TYPE);
+        ResponseEntity<List<String>> response = caseTypeSchemaResource.getCaseTypeStages(TEST_CASE_TYPE);
 
         verify(caseTypeSchemaService, times(1)).getCaseTypeStages(eq(TEST_CASE_TYPE));
         verifyNoMoreInteractions(caseTypeSchemaService);
@@ -50,8 +49,7 @@ public class CaseTypeSchemaResourceTest {
     public void shouldReturnEmptyStagesForValidCaseType() {
         when(caseTypeSchemaService.getCaseTypeStages(TEST_CASE_TYPE)).thenReturn(getZeroMockStageTypes());
 
-        ResponseEntity<List<String>> response =
-                caseTypeSchemaResource.getCaseTypeStages(TEST_CASE_TYPE);
+        ResponseEntity<List<String>> response = caseTypeSchemaResource.getCaseTypeStages(TEST_CASE_TYPE);
 
         verify(caseTypeSchemaService, times(1)).getCaseTypeStages(eq(TEST_CASE_TYPE));
         verifyNoMoreInteractions(caseTypeSchemaService);
@@ -64,9 +62,9 @@ public class CaseTypeSchemaResourceTest {
 
     @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
     public void shouldThrowExceptionForInvalidCaseType() {
-        when(caseTypeSchemaService.getCaseTypeStages(TEST_CASE_TYPE))
-                .thenThrow(new ApplicationExceptions.EntityNotFoundException(
-                        String.format("CaseType %s does not exist.", TEST_CASE_TYPE)));
+        when(caseTypeSchemaService.getCaseTypeStages(TEST_CASE_TYPE)).thenThrow(
+            new ApplicationExceptions.EntityNotFoundException(
+                String.format("CaseType %s does not exist.", TEST_CASE_TYPE)));
 
         caseTypeSchemaResource.getCaseTypeStages(TEST_CASE_TYPE);
         verifyNoMoreInteractions(caseTypeSchemaResource);
@@ -78,7 +76,7 @@ public class CaseTypeSchemaResourceTest {
 
     private List<String> getMockStageTypes(int amount) {
         List<String> mockStageTypes = new ArrayList<>();
-        for(int i = 0; i < amount; ++i) {
+        for (int i = 0; i < amount; ++i) {
             mockStageTypes.add(String.format("Test_Stage_%d", i));
         }
         return mockStageTypes;

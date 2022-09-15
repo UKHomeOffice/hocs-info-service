@@ -22,39 +22,33 @@ import java.util.List;
 @WebMvcTest(UserResource.class)
 public class UserResourceRestTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-  @MockBean
-  private UserService userService;
+    @MockBean
+    private UserService userService;
 
-  private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
-  @Test
-  public void testCreateUserWithWhitelistedDomains() throws Exception {
-    List<String> whitelistedDomains = List.of("mick@homeoffice.gov.uk");
+    @Test
+    public void testCreateUserWithWhitelistedDomains() throws Exception {
+        List<String> whitelistedDomains = List.of("mick@homeoffice.gov.uk");
 
-    for (String domain :
-            whitelistedDomains) {
-      CreateUserDto user = new CreateUserDto(domain, "firstName", "lastName");
-      mockMvc.perform(post("/user")
-              .content(mapper.writeValueAsString(user))
-              .contentType(APPLICATION_JSON_UTF8)
-      ).andExpect(status().isOk());
+        for (String domain : whitelistedDomains) {
+            CreateUserDto user = new CreateUserDto(domain, "firstName", "lastName");
+            mockMvc.perform(
+                post("/user").content(mapper.writeValueAsString(user)).contentType(APPLICATION_JSON_UTF8)).andExpect(
+                status().isOk());
+        }
     }
-  }
 
-  @Test
-  public void testCreateUserWithNonWhitelistedDomain() throws Exception {
-    CreateUserDto user = new CreateUserDto("mick@test.com", "firstName", "lastName");
-    String res = mockMvc.perform(post("/user")
-        .content(mapper.writeValueAsString(user))
-        .contentType(APPLICATION_JSON_UTF8)
-    )
-        .andExpect(status().isBadRequest())
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-    assertThat(res).isEqualTo("Email domain not supported");
-  }
+    @Test
+    public void testCreateUserWithNonWhitelistedDomain() throws Exception {
+        CreateUserDto user = new CreateUserDto("mick@test.com", "firstName", "lastName");
+        String res = mockMvc.perform(
+            post("/user").content(mapper.writeValueAsString(user)).contentType(APPLICATION_JSON_UTF8)).andExpect(
+            status().isBadRequest()).andReturn().getResponse().getContentAsString();
+        assertThat(res).isEqualTo("Email domain not supported");
+    }
+
 }

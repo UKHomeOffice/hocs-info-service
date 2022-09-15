@@ -21,4 +21,5 @@ public class TeamDtoTest {
         assertThat(teamDto.getDisplayName()).isEqualTo("displayName");
         assertThat(teamDto.getUuid()).isEqualTo(team.getUuid());
     }
+
 }

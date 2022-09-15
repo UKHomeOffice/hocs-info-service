@@ -36,11 +36,9 @@ public class CaseTypeSchemaServiceTest {
 
     @Test
     public void shouldReturnStagesForValidCaseType() {
-        when(caseTypeRepository.findByType(TEST_CASE_TYPE))
-                .thenReturn(new CaseType());
+        when(caseTypeRepository.findByType(TEST_CASE_TYPE)).thenReturn(new CaseType());
 
-        when(caseTypeSchemaRepository.findDistinctStagesByCaseType(TEST_CASE_TYPE))
-                .thenReturn(getMockStageTypes(5));
+        when(caseTypeSchemaRepository.findDistinctStagesByCaseType(TEST_CASE_TYPE)).thenReturn(getMockStageTypes(5));
 
         List<String> stageTypes = caseTypeSchemaService.getCaseTypeStages(TEST_CASE_TYPE);
 
@@ -55,8 +53,7 @@ public class CaseTypeSchemaServiceTest {
 
     @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
     public void shouldThrowExceptionForInvalidCaseType() {
-        when(caseTypeRepository.findByType(TEST_CASE_TYPE))
-                .thenReturn(null);
+        when(caseTypeRepository.findByType(TEST_CASE_TYPE)).thenReturn(null);
 
         caseTypeSchemaService.getCaseTypeStages(TEST_CASE_TYPE);
 
@@ -69,11 +66,9 @@ public class CaseTypeSchemaServiceTest {
 
     @Test
     public void shouldReturnEmptyStagesForValidCaseType() {
-        when(caseTypeRepository.findByType(TEST_CASE_TYPE))
-                .thenReturn(new CaseType());
+        when(caseTypeRepository.findByType(TEST_CASE_TYPE)).thenReturn(new CaseType());
 
-        when(caseTypeSchemaRepository.findDistinctStagesByCaseType(TEST_CASE_TYPE))
-                .thenReturn(getZeroMockStageTypes());
+        when(caseTypeSchemaRepository.findDistinctStagesByCaseType(TEST_CASE_TYPE)).thenReturn(getZeroMockStageTypes());
 
         List<String> stageTypes = caseTypeSchemaService.getCaseTypeStages(TEST_CASE_TYPE);
 
@@ -92,7 +87,7 @@ public class CaseTypeSchemaServiceTest {
 
     private List<String> getMockStageTypes(int amount) {
         List<String> mockStageTypes = new ArrayList<>();
-        for(int i = 0; i < amount; ++i) {
+        for (int i = 0; i < amount; ++i) {
             mockStageTypes.add(String.format("Test_Stage_%d", i));
         }
         return mockStageTypes;

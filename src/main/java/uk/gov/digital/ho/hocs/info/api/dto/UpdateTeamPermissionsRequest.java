@@ -13,11 +13,12 @@ import java.util.Set;
 @EqualsAndHashCode
 public class UpdateTeamPermissionsRequest {
 
-        @JsonProperty("permissions")
-        private Set<PermissionDto> permissions;
+    @JsonProperty("permissions")
+    private Set<PermissionDto> permissions;
 
-        @JsonCreator
-        public UpdateTeamPermissionsRequest(@JsonProperty("permissions") Set<PermissionDto> permissions) {
-                this.permissions = Optional.ofNullable(permissions).orElse(new HashSet<>());
-        }
+    @JsonCreator
+    public UpdateTeamPermissionsRequest(@JsonProperty("permissions") Set<PermissionDto> permissions) {
+        this.permissions = Optional.ofNullable(permissions).orElse(new HashSet<>());
+    }
+
 }

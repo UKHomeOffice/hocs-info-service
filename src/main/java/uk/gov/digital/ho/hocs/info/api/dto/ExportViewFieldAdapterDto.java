@@ -9,7 +9,11 @@ import lombok.Getter;
 public class ExportViewFieldAdapterDto {
 
     private Long id;
+
     private Long parentExportViewFieldId;
+
     private Long sortOrder;
+
     private String type;
+
 }

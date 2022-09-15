@@ -52,11 +52,9 @@ public class Schema implements Serializable {
 
     @Getter
     @OneToMany
-    @JoinTable(
-            name = "secondary_action_screen",
-            joinColumns = @JoinColumn(name = "schema_uuid", referencedColumnName = "uuid"),
-            inverseJoinColumns = @JoinColumn(name = "secondary_action_uuid", referencedColumnName = "uuid")
-    )
+    @JoinTable(name = "secondary_action_screen",
+               joinColumns = @JoinColumn(name = "schema_uuid", referencedColumnName = "uuid"),
+               inverseJoinColumns = @JoinColumn(name = "secondary_action_uuid", referencedColumnName = "uuid"))
     @OrderBy("id")
     private List<SecondaryAction> secondaryActions;
 
@@ -73,9 +71,7 @@ public class Schema implements Serializable {
     private String summary;
 
     public List<Field> getFields() {
-        return fieldScreens.stream()
-                .map(e -> e.getField())
-                .collect(Collectors.toList());
+        return fieldScreens.stream().map(e -> e.getField()).collect(Collectors.toList());
 
     }
 

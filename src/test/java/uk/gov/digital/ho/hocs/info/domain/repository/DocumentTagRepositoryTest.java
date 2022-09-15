@@ -20,9 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 public class DocumentTagRepositoryTest {
+
     @Autowired
     private TestEntityManager entityManager;
 
@@ -31,16 +32,16 @@ public class DocumentTagRepositoryTest {
 
     @Before
     public void setup() {
-        Unit unit = new Unit("Unit 1", "UNIT_1",true);
+        Unit unit = new Unit("Unit 1", "UNIT_1", true);
         this.entityManager.persist(unit);
-        CaseType caseType = new CaseType("displayName","short","TEST",unit.getUuid(),"deadline",false,true, null);
+        CaseType caseType = new CaseType("displayName", "short", "TEST", unit.getUuid(), "deadline", false, true, null);
         this.entityManager.persist(caseType);
         DocumentTag documentTag;
-        documentTag = new DocumentTag(null,UUID.randomUUID(),caseType.getUuid(),"tag3",(short)3);
+        documentTag = new DocumentTag(null, UUID.randomUUID(), caseType.getUuid(), "tag3", (short) 3);
         this.entityManager.persist(documentTag);
-        documentTag = new DocumentTag(null,UUID.randomUUID(),caseType.getUuid(),"tag1",(short)1);
+        documentTag = new DocumentTag(null, UUID.randomUUID(), caseType.getUuid(), "tag1", (short) 1);
         this.entityManager.persist(documentTag);
-        documentTag = new DocumentTag(null,UUID.randomUUID(),caseType.getUuid(),"tag2",(short)2);
+        documentTag = new DocumentTag(null, UUID.randomUUID(), caseType.getUuid(), "tag2", (short) 2);
         this.entityManager.persist(documentTag);
     }
 
@@ -52,4 +53,5 @@ public class DocumentTagRepositoryTest {
         assertThat(documentTags.get(1).getTag()).isEqualTo("tag2");
         assertThat(documentTags.get(2).getTag()).isEqualTo("tag3");
     }
+
 }

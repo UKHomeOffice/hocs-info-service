@@ -22,12 +22,19 @@ import java.util.*;
 public class TopicTeamService {
 
     private final TeamLinkRepository teamLinkRepository;
+
     private final TopicRepository topicRepository;
+
     private final TeamRepository teamRepository;
+
     private final TopicService topicService;
+
     private final TeamService teamService;
+
     private final CaseTypeService caseTypeService;
+
     private final StageTypeService stageTypeService;
+
     private final AuditClient auditClient;
 
     @Autowired
@@ -54,7 +61,8 @@ public class TopicTeamService {
         List<Topic> topics = topicRepository.findTopicsByCaseType(caseType);
         Set<TopicTeam> topicTeams = new HashSet<>();
         topics.forEach(topic -> {
-            Set<TeamLink> teamLinks = teamLinkRepository.findAllByLinkValueAndLinkType(topic.getUuid().toString(), "TOPIC");
+            Set<TeamLink> teamLinks = teamLinkRepository.findAllByLinkValueAndLinkType(topic.getUuid().toString(),
+                "TOPIC");
             Set<Team> teams = new HashSet<>();
             teamLinks.forEach(teamLink -> {
                 teams.add(teamRepository.findByUuid(teamLink.getResponsibleTeamUUID()));
@@ -70,8 +78,10 @@ public class TopicTeamService {
         String caseType = request.getCaseType();
 
         validateTeamTopicStageAndCase(teamUUID, topicUUID, stageType, caseType);
-        TeamLink teamLink = Optional.ofNullable(teamLinkRepository.findByLinkValueAndLinkTypeAndCaseTypeAndStageType(topicUUID.toString(), "TOPIC", caseType, stageType))
-                .orElse(new TeamLink(topicUUID.toString(), "TOPIC", teamUUID, caseType, stageType));
+        TeamLink teamLink = Optional.ofNullable(
+            teamLinkRepository.findByLinkValueAndLinkTypeAndCaseTypeAndStageType(topicUUID.toString(), "TOPIC",
+                caseType, stageType)).orElse(
+            new TeamLink(topicUUID.toString(), "TOPIC", teamUUID, caseType, stageType));
         teamLink.setResponsibleTeamUUID(teamUUID);
         teamLinkRepository.save(teamLink);
         log.info("Added team: {} to topic: {}", teamUUID, topicUUID);
@@ -91,29 +101,31 @@ public class TopicTeamService {
     }
 
     private void validateTopicUUID(UUID topicUUID) {
-        Optional.ofNullable(topicService.getTopic(topicUUID))
-                .orElseThrow(() -> new ApplicationExceptions.TopicUpdateException
-                        ("Unable to add team to topic, topic {} not found.", topicUUID));
+        Optional.ofNullable(topicService.getTopic(topicUUID)).orElseThrow(
+            () -> new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, topic {} not found.",
+                topicUUID));
     }
 
     private void validateStageType(String stageType) {
-        Optional.ofNullable(stageTypeService.getStageType(stageType))
-                .orElseThrow(() -> new ApplicationExceptions.TopicUpdateException
-                        ("Unable to add team to topic, stage type {} not found.", stageType));
+        Optional.ofNullable(stageTypeService.getStageType(stageType)).orElseThrow(
+            () -> new ApplicationExceptions.TopicUpdateException(
+                "Unable to add team to topic, stage type {} not found.", stageType));
     }
 
     private void validateCaseType(String caseType) {
-        Optional.ofNullable(caseTypeService.getCaseType(caseType))
-                .orElseThrow(() -> new ApplicationExceptions.TopicUpdateException
-                        ("Unable to add team to topic, case type {} not found.", caseType));
+        Optional.ofNullable(caseTypeService.getCaseType(caseType)).orElseThrow(
+            () -> new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, case type {} not found.",
+                caseType));
     }
 
     private void validateTeamUUID(UUID teamUUID) {
-        Team team = Optional.ofNullable(teamService.getTeam(teamUUID))
-                .orElseThrow(() -> new ApplicationExceptions.TopicUpdateException
-                        ("Unable to add team to topic, topic already has team {} set for this stage and case type.", teamUUID));
+        Team team = Optional.ofNullable(teamService.getTeam(teamUUID)).orElseThrow(
+            () -> new ApplicationExceptions.TopicUpdateException(
+                "Unable to add team to topic, topic already has team {} set for this stage and case type.", teamUUID));
         if (!team.isActive()) {
-            throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, team {} is inactive.", teamUUID);
+            throw new ApplicationExceptions.TopicUpdateException("Unable to add team to topic, team {} is inactive.",
+                teamUUID);
         }
     }
+
 }

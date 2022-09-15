@@ -50,4 +50,5 @@ public class UnitDto {
         Set<TeamDto> teamDtos = unit.getTeams().stream().map(TeamDto::from).collect(Collectors.toSet());
         return new UnitDto(unit.getDisplayName(), unit.getUuid().toString(), teamDtos, unit.getShortCode());
     }
+
 }

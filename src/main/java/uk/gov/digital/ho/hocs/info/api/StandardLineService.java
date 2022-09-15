@@ -27,18 +27,21 @@ import java.util.stream.Collectors;
 public class StandardLineService {
 
     private final StandardLineRepository standardLineRepository;
+
     private final DocumentClient documentClient;
+
     private final CaseworkClient caseworkClient;
+
     private final TeamService teamService;
+
     private final TopicService topicService;
-    
+
     @Autowired
-    public StandardLineService(
-            StandardLineRepository standardLineRepository,
-            DocumentClient documentClient,
-            CaseworkClient caseworkClient, 
-            TeamService teamService,
-            TopicService topicService) {
+    public StandardLineService(StandardLineRepository standardLineRepository,
+                               DocumentClient documentClient,
+                               CaseworkClient caseworkClient,
+                               TeamService teamService,
+                               TopicService topicService) {
         this.standardLineRepository = standardLineRepository;
         this.documentClient = documentClient;
         this.caseworkClient = caseworkClient;
@@ -49,19 +52,23 @@ public class StandardLineService {
     @Transactional
     void createStandardLine(String displayName, UUID topicUUID, LocalDate expires, String s3URL) {
         log.debug("Creating Standard Lines - {}", displayName);
-        StandardLine standardLine = standardLineRepository.findStandardLinesByTopicAndExpires(topicUUID, LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
+        StandardLine standardLine = standardLineRepository.findStandardLinesByTopicAndExpires(topicUUID,
+            LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
 
         if (standardLine != null) {
             log.debug("Standard Line {} Found for Topic {}, expiring", standardLine.getDisplayName(), topicUUID);
             standardLine.expire();
             standardLineRepository.save(standardLine);
             documentClient.deleteDocument(standardLine.getDocumentUUID());
-            log.info("Set Expiry to now for existing Standard Line - {}, id {}", standardLine.getDisplayName(), standardLine.getUuid());
+            log.info("Set Expiry to now for existing Standard Line - {}, id {}", standardLine.getDisplayName(),
+                standardLine.getUuid());
             caseworkClient.clearCachedStandardLineForTopic(topicUUID);
         }
 
-        StandardLine newStandardLine = new StandardLine(displayName, topicUUID, LocalDateTime.of(expires, LocalTime.MAX.minusHours(1)));
-        UUID documentUUID = documentClient.createDocument(newStandardLine.getUuid(), displayName, s3URL, ManagedDocumentType.STANDARD_LINE);
+        StandardLine newStandardLine = new StandardLine(displayName, topicUUID,
+            LocalDateTime.of(expires, LocalTime.MAX.minusHours(1)));
+        UUID documentUUID = documentClient.createDocument(newStandardLine.getUuid(), displayName, s3URL,
+            ManagedDocumentType.STANDARD_LINE);
         newStandardLine.setDocumentUUID(documentUUID);
         standardLineRepository.save(newStandardLine);
         log.info("Created Standard Line - {}", displayName);
@@ -94,23 +101,25 @@ public class StandardLineService {
             return null;
         }
     }
-    
+
     List<StandardLine> getStandardLinesForUser(UUID userUUID) {
         List<StandardLine> standardLines = new ArrayList<>();
-        
+
         log.debug("Getting teams for user: {} ", userUUID);
-        List<UUID> usersTeamUuids = teamService.getTeamsForUser(userUUID).stream().map(Team::getUuid).collect(Collectors.toList());
-        
+        List<UUID> usersTeamUuids = teamService.getTeamsForUser(userUUID).stream().map(Team::getUuid).collect(
+            Collectors.toList());
+
         if (usersTeamUuids.size() > 0) {
             log.debug("Getting active topics for teams: {} ", usersTeamUuids);
-            List<UUID> topicsUuids = topicService.findActiveTopicsForTeams(usersTeamUuids).stream().map(Topic::getUuid).collect(Collectors.toList());
-            
+            List<UUID> topicsUuids = topicService.findActiveTopicsForTeams(usersTeamUuids).stream().map(
+                Topic::getUuid).collect(Collectors.toList());
+
             if (topicsUuids.size() > 0) {
                 log.debug("Getting standard lines associated for topics: {} ", topicsUuids);
                 standardLines = standardLineRepository.findStandardLinesByTopics(topicsUuids);
             }
         }
-   
+
         log.info("Got {} Standard Lines", standardLines.size());
         return standardLines;
     }
@@ -146,4 +155,5 @@ public class StandardLineService {
         caseworkClient.clearCachedStandardLineForTopic(standardLine.getTopicUUID());
         log.debug("Standard line updated {} ", standardLineUuid);
     }
+
 }

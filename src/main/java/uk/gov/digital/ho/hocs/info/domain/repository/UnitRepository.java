@@ -11,6 +11,7 @@ import java.util.UUID;
 public interface UnitRepository extends CrudRepository<Unit, Long> {
 
     Set<Unit> findAll();
+
     Unit findByUuid(UUID uuid);
 
 }

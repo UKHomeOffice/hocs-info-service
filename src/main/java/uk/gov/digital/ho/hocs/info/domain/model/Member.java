@@ -48,7 +48,7 @@ public class Member implements Serializable {
     @JoinColumn(name = "house_address_uuid", referencedColumnName = "uuid", insertable = false, updatable = false)
     private HouseAddress houseAddress;
 
-    public Member(String house, String fullTitle, UUID houseAddressUUID,String externalReference ) {
+    public Member(String house, String fullTitle, UUID houseAddressUUID, String externalReference) {
         this.house = house;
         this.fullTitle = toListText(fullTitle);
         this.houseAddressUUID = houseAddressUUID;
@@ -64,14 +64,12 @@ public class Member implements Serializable {
     }
 
     private static String toListValue(String value) {
-        return value.replaceAll(" ", "_")
-                .replaceAll("[^a-zA-Z0-9_]+", "")
-                .replaceAll("__", "_")
-                .toUpperCase();
+        return value.replaceAll(" ", "_").replaceAll("[^a-zA-Z0-9_]+", "").replaceAll("__", "_").toUpperCase();
     }
 
-    public void update(String fullTitle){
+    public void update(String fullTitle) {
         this.fullTitle = fullTitle;
         this.updated = LocalDateTime.now();
     }
+
 }

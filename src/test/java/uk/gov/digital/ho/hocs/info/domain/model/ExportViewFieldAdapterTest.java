@@ -12,8 +12,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ExportViewFieldAdapterTest {
 
     private static final Long ADAPTER_ID = 10L;
+
     private static final Long FIELD_ID = 2L;
+
     private static final Long ADAPTER_SORT = 1L;
+
     private static final String ADAPTER_TYPE = "Hidden";
 
     private ExportViewFieldAdapter exportViewFieldAdapter;
@@ -53,4 +56,5 @@ public class ExportViewFieldAdapterTest {
         assertThat(dto.getType()).isEqualTo(ADAPTER_TYPE);
         assertThat(dto.getSortOrder()).isEqualTo(ADAPTER_SORT);
     }
+
 }

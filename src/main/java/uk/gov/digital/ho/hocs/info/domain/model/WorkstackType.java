@@ -30,11 +30,9 @@ public class WorkstackType implements Serializable {
     private String type;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "workstack_column_type",
-            joinColumns = @JoinColumn(name = "workstack_type_type", referencedColumnName = "type"),
-            inverseJoinColumns = @JoinColumn(name = "workstack_column_uuid", referencedColumnName = "uuid")
-    )
+    @JoinTable(name = "workstack_column_type",
+               joinColumns = @JoinColumn(name = "workstack_type_type", referencedColumnName = "type"),
+               inverseJoinColumns = @JoinColumn(name = "workstack_column_uuid", referencedColumnName = "uuid"))
     @OrderColumn(name = "workstack_column_order")
     @ListIndexBase(value = 1)
     private List<WorkstackColumn> workstackColumns;

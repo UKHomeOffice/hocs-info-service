@@ -21,6 +21,7 @@ import static uk.gov.digital.ho.hocs.info.application.LogEvent.*;
 @RestController
 @Slf4j
 public class TeamResource {
+
     private TeamService teamService;
 
     public TeamResource(TeamService teamService) {
@@ -74,7 +75,8 @@ public class TeamResource {
     }
 
     @PutMapping(value = "/team/{teamUUID}/lettername")
-    public ResponseEntity updateTeamLetterName(@PathVariable String teamUUID, @RequestBody UpdateTeamLetterNameRequest team) {
+    public ResponseEntity updateTeamLetterName(@PathVariable String teamUUID,
+                                               @RequestBody UpdateTeamLetterNameRequest team) {
         teamService.updateTeamLetterName(UUID.fromString(teamUUID), team.getLetterName());
         return ResponseEntity.ok().build();
     }
@@ -86,13 +88,15 @@ public class TeamResource {
     }
 
     @PutMapping(value = "/team/{teamUUID}/permissions")
-    public ResponseEntity updateTeamPermissions(@PathVariable String teamUUID, @RequestBody UpdateTeamPermissionsRequest team) {
+    public ResponseEntity updateTeamPermissions(@PathVariable String teamUUID,
+                                                @RequestBody UpdateTeamPermissionsRequest team) {
         teamService.updateTeamPermissions(UUID.fromString(teamUUID), team.getPermissions());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(value = "/team/{teamUUID}/permissions")
-    public ResponseEntity deleteTeamPermissions(@PathVariable String teamUUID, @RequestBody UpdateTeamPermissionsRequest team) {
+    public ResponseEntity deleteTeamPermissions(@PathVariable String teamUUID,
+                                                @RequestBody UpdateTeamPermissionsRequest team) {
         teamService.deleteTeamPermissions(UUID.fromString(teamUUID), team.getPermissions());
         return ResponseEntity.ok().build();
     }
@@ -136,8 +140,8 @@ public class TeamResource {
     public ResponseEntity<Set<TeamDto>> getMoveToAnotherTeamOptions(@PathVariable UUID teamUUID) {
         Team team = teamService.getTeam(teamUUID);
 
-        Set<Team> teams = team.getUnit().isAllowBulkTeamTransfer() ?
-                teamService.findActiveTeamsByUnitUuid(team.getUnit().getUuid()) : Collections.emptySet();
+        Set<Team> teams = team.getUnit().isAllowBulkTeamTransfer() ? teamService.findActiveTeamsByUnitUuid(
+            team.getUnit().getUuid()) : Collections.emptySet();
 
         return ResponseEntity.ok(teams.stream().map(TeamDto::from).collect(Collectors.toSet()));
     }
@@ -154,16 +158,18 @@ public class TeamResource {
         return ResponseEntity.ok(teams.stream().map(TeamDto::from).collect(Collectors.toSet()));
     }
 
-    @GetMapping(value = "/teams", params = {"unit"}, produces = APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/teams", params = { "unit" }, produces = APPLICATION_JSON_UTF8_VALUE)
     ResponseEntity<Set<TeamDto>> getCaseTypes(@RequestParam("unit") String unitShortCode) {
         Set<Team> teams = teamService.getAllActiveTeamsByUnitShortCode(unitShortCode);
         return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
     }
 
     @GetMapping(value = "/teams/descendants/{teamUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<Set<TeamDto>> getAllFirstDescendantTeams(@PathVariable UUID teamUUID) { ;
+    ResponseEntity<Set<TeamDto>> getAllFirstDescendantTeams(@PathVariable UUID teamUUID) {
+        ;
         Set<Team> firstDescendantTeams = teamService.getAllFirstDescendantTeams(teamUUID);
-        return ResponseEntity.ok(firstDescendantTeams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
+        return ResponseEntity.ok(
+            firstDescendantTeams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
     }
 
     @GetMapping(value = "/teams/drafters")
@@ -171,9 +177,11 @@ public class TeamResource {
         Set<Team> teams = teamService.getAllActiveTeams();
         return ResponseEntity.ok(teams.stream().map(TeamDto::fromWithoutPermissions).collect(Collectors.toSet()));
     }
-    
+
     @GetMapping(value = "/team/case/{caseUUID}/topic/{topicUUID}/stage/{stageType}")
-    public ResponseEntity<TeamDto> getActiveTeams(@PathVariable UUID caseUUID, @PathVariable UUID topicUUID, @PathVariable String stageType) {
+    public ResponseEntity<TeamDto> getActiveTeams(@PathVariable UUID caseUUID,
+                                                  @PathVariable UUID topicUUID,
+                                                  @PathVariable String stageType) {
         Team team = teamService.getTeamByTopicAndStage(caseUUID, topicUUID, stageType);
         return ResponseEntity.ok(TeamDto.from(team));
     }
@@ -185,7 +193,8 @@ public class TeamResource {
     }
 
     @GetMapping(value = "/team/stage/{stageType}/text/{text}")
-    public ResponseEntity<TeamDto> getActiveTeamsByLinkValue(@PathVariable String stageType, @PathVariable String text) {
+    public ResponseEntity<TeamDto> getActiveTeamsByLinkValue(@PathVariable String stageType,
+                                                             @PathVariable String text) {
         Team team = teamService.getTeamByStageAndText(stageType, text);
         return ResponseEntity.ok(TeamDto.from(team));
     }
@@ -203,18 +212,19 @@ public class TeamResource {
     }
 
     private static boolean displayNameHasChanged(Team team, PatchTeamDto patchTeamDto) {
-        if (!Objects.isNull(patchTeamDto.getDisplayName())
-                && !patchTeamDto.getDisplayName().equals(team.getDisplayName())) {
+        if (!Objects.isNull(patchTeamDto.getDisplayName()) && !patchTeamDto.getDisplayName().equals(
+            team.getDisplayName())) {
             return true;
         }
         return false;
     }
 
     private static boolean unitUuidHasChanged(Team team, PatchTeamDto patchTeamDto) {
-        if (!Objects.isNull(patchTeamDto.getUnitUuid()) &&
-                !team.getUnit().getUuid().equals(patchTeamDto.getUnitUuid())) {
+        if (!Objects.isNull(patchTeamDto.getUnitUuid()) && !team.getUnit().getUuid().equals(
+            patchTeamDto.getUnitUuid())) {
             return true;
         }
         return false;
     }
+
 }

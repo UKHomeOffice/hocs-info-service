@@ -19,7 +19,6 @@ import uk.gov.digital.ho.hocs.info.api.dto.*;
 import uk.gov.digital.ho.hocs.info.domain.model.NominatedContact;
 import uk.gov.digital.ho.hocs.info.domain.repository.NominatedContactRepository;
 
-
 import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
@@ -31,8 +30,10 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
-@Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
-@ActiveProfiles({"local", "integration"})
+@Sql(scripts = "classpath:afterTest.sql",
+     config = @SqlConfig(transactionMode = ISOLATED),
+     executionPhase = AFTER_TEST_METHOD)
+@ActiveProfiles({ "local", "integration" })
 public class NominatedContactIntegrationTests {
 
     TestRestTemplate restTemplate = new TestRestTemplate();
@@ -40,8 +41,8 @@ public class NominatedContactIntegrationTests {
     @Autowired
     NominatedContactRepository nominatedContactRepository;
 
-
     private final UUID teamUUID = UUID.fromString("08612f06-bae2-4d2f-90d2-2254a68414b8");
+
     private HttpHeaders headers;
 
     @LocalServerPort
@@ -61,9 +62,8 @@ public class NominatedContactIntegrationTests {
 
         HttpEntity httpEntity = new HttpEntity(headers);
         ResponseEntity<Set<NominatedContact>> result = restTemplate.exchange(
-                getBasePath() + "/team/" + teamUUID.toString() + "/contact"
-                , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<Set<NominatedContact>>() {
-                });
+            getBasePath() + "/team/" + teamUUID.toString() + "/contact", HttpMethod.GET, httpEntity,
+            new ParameterizedTypeReference<Set<NominatedContact>>() {});
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody().size()).isEqualTo(2);
@@ -78,8 +78,8 @@ public class NominatedContactIntegrationTests {
         HttpEntity<CreateNominatedContactDto> httpEntity = new HttpEntity(request, headers);
 
         ResponseEntity<CreateNominatedContactResponse> result = restTemplate.exchange(
-                getBasePath() + "/team/" + teamUUID.toString() + "/contact"
-                , HttpMethod.POST, httpEntity, CreateNominatedContactResponse.class);
+            getBasePath() + "/team/" + teamUUID.toString() + "/contact", HttpMethod.POST, httpEntity,
+            CreateNominatedContactResponse.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         UUID uuid = UUID.fromString(result.getBody().getUuid());
@@ -96,8 +96,8 @@ public class NominatedContactIntegrationTests {
         HttpEntity<UpdateNominatedContactDto> httpEntity = new HttpEntity(request);
 
         ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/team/" + "434a4e33-437f-4e6d-8f04-14ea40fdbfa2" + "/contact/" + contactUUID
-                , HttpMethod.PUT, httpEntity, String.class);
+            getBasePath() + "/team/" + "434a4e33-437f-4e6d-8f04-14ea40fdbfa2" + "/contact/" + contactUUID,
+            HttpMethod.PUT, httpEntity, String.class);
 
         NominatedContact contact = nominatedContactRepository.findByUuid(UUID.fromString(contactUUID));
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -113,8 +113,8 @@ public class NominatedContactIntegrationTests {
         HttpEntity httpEntity = new HttpEntity(headers);
 
         ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/team/" + teamUUID.toString() + "/contact/" + contactUUID
-                , HttpMethod.DELETE, httpEntity, String.class);
+            getBasePath() + "/team/" + teamUUID.toString() + "/contact/" + contactUUID, HttpMethod.DELETE, httpEntity,
+            String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(nominatedContactRepository.findByUuid(UUID.fromString(contactUUID))).isNull();
@@ -124,14 +124,13 @@ public class NominatedContactIntegrationTests {
     @Test
     public void shouldReturnErrorWhenTryingToDeleteTheOnlyNominatedContactFromATeam() {
 
-        String teamUUID =  "911adabe-5ab7-4470-8395-6b584a61462d";
+        String teamUUID = "911adabe-5ab7-4470-8395-6b584a61462d";
         String contactUUID = "8bc0e84d-08e0-42f2-9d75-ff7b7c40d9fa";
 
         HttpEntity httpEntity = new HttpEntity(headers);
 
-        ResponseEntity result = restTemplate.exchange(
-                getBasePath() + "/team/" + teamUUID + "/contact/" + contactUUID
-                , HttpMethod.DELETE, httpEntity, String.class);
+        ResponseEntity result = restTemplate.exchange(getBasePath() + "/team/" + teamUUID + "/contact/" + contactUUID,
+            HttpMethod.DELETE, httpEntity, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
         assertThat(nominatedContactRepository.findByUuid(UUID.fromString(contactUUID))).isNotNull();

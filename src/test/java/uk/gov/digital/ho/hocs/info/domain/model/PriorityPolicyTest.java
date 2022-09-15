@@ -9,19 +9,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PriorityPolicyTest {
 
     private Long id = 55L;
+
     private String policyType = "testPolicyType";
+
     private String caseType = "TEST_CASE_TYPE";
+
     private String config = "{\"PropertyA\": \"Valuea\", \"PropertyB\": \"ValueB\"}";
 
     private PriorityPolicy policy;
 
     @Before
-    public void before(){
+    public void before() {
         policy = new PriorityPolicy(id, policyType, caseType, config);
     }
 
     @Test
-    public void toDto(){
+    public void toDto() {
         PriorityPolicyDto dto = policy.toDto();
 
         assertThat(dto).isNotNull();
@@ -31,22 +34,23 @@ public class PriorityPolicyTest {
     }
 
     @Test
-    public void getId(){
+    public void getId() {
         assertThat(policy.getId()).isEqualTo(id);
     }
 
     @Test
-    public void getCaseType(){
+    public void getCaseType() {
         assertThat(policy.getCaseType()).isEqualTo(caseType);
     }
 
     @Test
-    public void getPolicyType(){
+    public void getPolicyType() {
         assertThat(policy.getPolicyType()).isEqualTo(policyType);
     }
 
     @Test
-    public void getConfig(){
+    public void getConfig() {
         assertThat(policy.getConfig()).isEqualTo(config);
     }
+
 }

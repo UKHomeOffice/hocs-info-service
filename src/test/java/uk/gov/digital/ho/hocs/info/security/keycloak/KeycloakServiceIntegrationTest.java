@@ -23,11 +23,11 @@ public class KeycloakServiceIntegrationTest extends BaseKeycloakTest {
 
     @Test
     public void shouldGetAllUsersInTeam() {
-        when(teamRepository.findByUuid(UUID.fromString("00000000-0000-0000-0000-000000000000")))
-                .thenReturn(new Team("", Collections.emptySet()));
+        when(teamRepository.findByUuid(UUID.fromString("00000000-0000-0000-0000-000000000000"))).thenReturn(
+            new Team("", Collections.emptySet()));
 
         List<UserRepresentation> result = service.getUsersForTeam(
-                UUID.fromString("00000000-0000-0000-0000-000000000000"));
+            UUID.fromString("00000000-0000-0000-0000-000000000000"));
 
         assertThat(result).hasSize(110);
     }

@@ -30,10 +30,12 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = { "user.email.whitelist=homeoffice.gov.uk" },
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+                webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
-@Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
-@ActiveProfiles({"local", "integration"})
+@Sql(scripts = "classpath:afterTest.sql",
+     config = @SqlConfig(transactionMode = ISOLATED),
+     executionPhase = AFTER_TEST_METHOD)
+@ActiveProfiles({ "local", "integration" })
 public class SchemaIntegrationTest {
 
     public static final String TEST_SCREEN_SCHEMA = "TEST_SCREEN_SCHEMA";
@@ -65,13 +67,12 @@ public class SchemaIntegrationTest {
 
         HttpEntity<SchemaDto> httpEntity = new HttpEntity<>(headers);
 
-        ResponseEntity<HashMap> result = restTemplate.exchange(
-                "/schema/" + schemaType
-                , HttpMethod.GET, httpEntity, HashMap.class);
-
+        ResponseEntity<HashMap> result = restTemplate.exchange("/schema/" + schemaType, HttpMethod.GET, httpEntity,
+            HashMap.class);
 
         HashMap<String, Object> body = result.getBody();
         assertThat(body.get("uuid")).isEqualTo("f958f77d-b277-408d-bd6f-4a498d3f217f");
         assertThat(((List) body.get("fields")).size()).isEqualTo(2);
     }
+
 }
