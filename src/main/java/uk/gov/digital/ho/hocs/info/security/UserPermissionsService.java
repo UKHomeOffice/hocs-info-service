@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.info.application.RequestData;
+
 import java.nio.BufferUnderflowException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,10 +21,8 @@ public class UserPermissionsService {
     }
 
     public Set<UUID> getUserTeams() {
-        return Arrays.stream(requestData.groupsArray())
-                .map(group -> getUUIDFromBase64(group))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+        return Arrays.stream(requestData.groupsArray()).map(group -> getUUIDFromBase64(group)).filter(
+            Objects::nonNull).collect(Collectors.toSet());
     }
 
     private UUID getUUIDFromBase64(String uuid) {
@@ -36,4 +35,5 @@ public class UserPermissionsService {
             return null;
         }
     }
+
 }

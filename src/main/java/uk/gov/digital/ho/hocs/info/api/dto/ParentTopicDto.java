@@ -18,6 +18,8 @@ public class ParentTopicDto {
     @JsonProperty("value")
     private UUID uuid;
 
-    public static ParentTopicDto from (ParentTopic parentTopic) {
-        return new ParentTopicDto(parentTopic.getDisplayName(), parentTopic.getUuid()); }
+    public static ParentTopicDto from(ParentTopic parentTopic) {
+        return new ParentTopicDto(parentTopic.getDisplayName(), parentTopic.getUuid());
+    }
+
 }

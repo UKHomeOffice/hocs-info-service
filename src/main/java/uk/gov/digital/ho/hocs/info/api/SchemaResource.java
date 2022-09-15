@@ -22,11 +22,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class SchemaResource {
 
     private final SchemaService schemaService;
+
     private final ExtractService extractService;
 
     @Autowired
-    public SchemaResource(SchemaService schemaService,
-                          ExtractService extractService) {
+    public SchemaResource(SchemaService schemaService, ExtractService extractService) {
         this.schemaService = schemaService;
         this.extractService = extractService;
     }
@@ -38,11 +38,9 @@ public class SchemaResource {
         return ResponseEntity.ok(from);
     }
 
-    @GetMapping(value = "/schema/caseType/{caseType}", params = {"stages"}, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<SchemaDto>> getAllSchemasForCaseType(
-            @PathVariable String caseType,
-            @RequestParam("stages") String stages
-    ) {
+    @GetMapping(value = "/schema/caseType/{caseType}", params = { "stages" }, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SchemaDto>> getAllSchemasForCaseType(@PathVariable String caseType,
+                                                                    @RequestParam("stages") String stages) {
         Set<Schema> schemas = schemaService.getAllSchemasForCaseTypeAndStage(caseType, stages);
         return ResponseEntity.ok(schemas.stream().map(SchemaDto::from).collect(Collectors.toList()));
     }
@@ -69,10 +67,13 @@ public class SchemaResource {
     }
 
     @Deprecated(forRemoval = true)
-    @GetMapping(value = "/schema/caseType/{caseType}/permission/{accessLevel}/fields", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<FieldDto>> getFieldsByCaseTypeAndPermissionLevel(@PathVariable String caseType, @PathVariable String accessLevel) {
+    @GetMapping(value = "/schema/caseType/{caseType}/permission/{accessLevel}/fields",
+                produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<FieldDto>> getFieldsByCaseTypeAndPermissionLevel(@PathVariable String caseType,
+                                                                                @PathVariable String accessLevel) {
         AccessLevel requiredLevel = AccessLevel.valueOf(accessLevel);
         List<FieldDto> restrictedFieldList = schemaService.getFieldsByCaseTypePermissionLevel(caseType, requiredLevel);
         return ResponseEntity.ok(restrictedFieldList);
     }
+
 }

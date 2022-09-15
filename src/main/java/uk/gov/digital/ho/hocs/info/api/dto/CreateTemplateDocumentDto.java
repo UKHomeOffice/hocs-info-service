@@ -18,4 +18,5 @@ public class CreateTemplateDocumentDto {
 
     @JsonProperty("s3UntrustedUrl")
     private String s3UntrustedUrl;
+
 }

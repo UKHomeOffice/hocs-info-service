@@ -21,6 +21,8 @@ public class TopicDto {
     @JsonProperty("active")
     private boolean active;
 
-    public static TopicDto from (Topic topic) {
-        return new TopicDto(topic.getDisplayName(), topic.getUuid(), topic.isActive()); }
+    public static TopicDto from(Topic topic) {
+        return new TopicDto(topic.getDisplayName(), topic.getUuid(), topic.isActive());
+    }
+
 }

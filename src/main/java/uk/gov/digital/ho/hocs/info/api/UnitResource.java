@@ -35,7 +35,7 @@ public class UnitResource {
         return ResponseEntity.ok(unit);
     }
 
-    @PostMapping(value = "/unit", produces= APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/unit", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity createUnit(@RequestBody UnitDto unit) {
         unitService.createUnit(unit);
         return ResponseEntity.ok().build();
@@ -46,4 +46,5 @@ public class UnitResource {
         unitService.deleteUnit(unitUUID);
         return ResponseEntity.ok().build();
     }
+
 }

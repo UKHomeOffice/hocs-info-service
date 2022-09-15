@@ -20,4 +20,5 @@ public class KeycloakException extends RuntimeException {
     public Integer getHttpStatus() {
         return httpStatus;
     }
+
 }

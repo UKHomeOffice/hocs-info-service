@@ -24,7 +24,9 @@ public class TopicTeamDto {
     private Set<TeamDto> teams;
 
     public static TopicTeamDto from(TopicTeam topicTeam) {
-        Set<TeamDto> teams = topicTeam.getTeams().stream().map(t->TeamDto.fromWithoutPermissions(t)).collect(Collectors.toSet());
+        Set<TeamDto> teams = topicTeam.getTeams().stream().map(t -> TeamDto.fromWithoutPermissions(t)).collect(
+            Collectors.toSet());
         return new TopicTeamDto(topicTeam.getDisplayName(), topicTeam.getUuid(), teams);
     }
+
 }

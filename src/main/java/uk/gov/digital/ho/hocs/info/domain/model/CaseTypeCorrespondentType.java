@@ -25,4 +25,5 @@ public class CaseTypeCorrespondentType implements Serializable {
 
     @Column(name = "correspondent_type_uuid")
     private UUID correspondentTypeUUID;
+
 }

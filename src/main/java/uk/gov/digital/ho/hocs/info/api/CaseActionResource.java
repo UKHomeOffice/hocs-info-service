@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @RestController
 public class CaseActionResource {
+
     private final CaseTypeService caseTypeService;
 
     @Autowired
@@ -29,4 +30,5 @@ public class CaseActionResource {
         CaseTypeActionDto actionDto = caseTypeService.getCaseTypeActionById(actionId);
         return ResponseEntity.ok(actionDto);
     }
+
 }

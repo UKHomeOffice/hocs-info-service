@@ -11,22 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CaseTypeActionDtoTest {
 
     private static final UUID rand1 = UUID.randomUUID();
+
     private static final UUID rand2 = UUID.randomUUID();
 
-    private static final CaseTypeAction MOCK_ENTITY = new CaseTypeAction(
-            rand1,
-            rand2,
-            "TYPE_1",
-            "ACTION_2",
-            "ACTION_SUBTYPE",
-            "ACTION_LABEL",
-            true,
-            1,
-            "{}",
-            10,
-            LocalDateTime.MIN,
-            LocalDateTime.MIN
-    );
+    private static final CaseTypeAction MOCK_ENTITY = new CaseTypeAction(rand1, rand2, "TYPE_1", "ACTION_2",
+        "ACTION_SUBTYPE", "ACTION_LABEL", true, 1, "{}", 10, LocalDateTime.MIN, LocalDateTime.MIN);
 
     @Test
     public void from() {
@@ -41,4 +30,5 @@ public class CaseTypeActionDtoTest {
         assertEquals(MOCK_ENTITY.getProps(), caseTypeActionDto.getProps());
         assertEquals(MOCK_ENTITY.isActive(), caseTypeActionDto.isActive());
     }
+
 }

@@ -23,8 +23,11 @@ import java.util.UUID;
 public class TopicService {
 
     private final ParentTopicRepository parentTopicRepository;
+
     private final TopicRepository topicRepository;
+
     private final CaseworkClient caseworkClient;
+
     private final AuditClient auditClient;
 
     @Autowired
@@ -82,9 +85,11 @@ public class TopicService {
         } else {
             log.debug("Unable to create parent topic, parent topic with the same name already exists");
             if (parentTopic.isActive()) {
-                throw new ApplicationExceptions.TopicCreationException("Active parent topic already exists with this name");
+                throw new ApplicationExceptions.TopicCreationException(
+                    "Active parent topic already exists with this name");
             } else {
-                throw new ApplicationExceptions.TopicCreationException("Inactive parent topic already exists with this name");
+                throw new ApplicationExceptions.TopicCreationException(
+                    "Inactive parent topic already exists with this name");
             }
         }
     }
@@ -95,7 +100,7 @@ public class TopicService {
         if (!isParentTopicValidAndActive(parentTopicUUID)) {
             log.debug("Unable to create topic, the given parent topic is invalid");
             throw new ApplicationExceptions.TopicCreationException(
-                    "Unable to create topic, the given parent topic is invalid");
+                "Unable to create topic, the given parent topic is invalid");
         } else {
             Topic existingTopic = topicRepository.findTopicByNameAndParentTopic(displayName, parentTopicUUID);
             if (existingTopic == null) {
@@ -106,30 +111,27 @@ public class TopicService {
                 return topic.getUuid();
             } else {
                 if (!existingTopic.isActive()) {
-                    log.debug(
-                            "Reactivating existing inactive topic with this name for this parent");
+                    log.debug("Reactivating existing inactive topic with this name for this parent");
                     this.reactivateTopic(existingTopic.getUuid());
 
                     return existingTopic.getUuid();
                 } else {
-                    log.debug(
-                            "Unable to create topic, active topic with this name already exists for this parent");
+                    log.debug("Unable to create topic, active topic with this name already exists for this parent");
                     throw new ApplicationExceptions.TopicCreationException(
-                            "Topic already exists with this name for the parent topic");
+                        "Topic already exists with this name for the parent topic");
                 }
             }
         }
     }
 
-
     public void deleteParentTopic(UUID parentTopicUUID) {
 
         log.debug("Deleting parent topic: {}", parentTopicUUID);
         ParentTopic parentTopic = parentTopicRepository.findByUuid(parentTopicUUID);
-        if (parentTopic == null){
+        if (parentTopic == null) {
             log.debug("Unable to delete parent topic, UUID: {} does not exist", parentTopicUUID);
             throw new ApplicationExceptions.EntityNotFoundException(
-                    "Unable to delete parent topic, UUID: {} does not exist", parentTopicUUID);
+                "Unable to delete parent topic, UUID: {} does not exist", parentTopicUUID);
         } else {
             Set<Topic> childrenTopics = topicRepository.findAllActiveTopicsByParentTopic(parentTopicUUID);
             if (!childrenTopics.isEmpty()) {
@@ -148,30 +150,29 @@ public class TopicService {
 
         log.debug("Deleting topic: {}", topicUUID);
         Topic topic = topicRepository.findTopicByUUID(topicUUID);
-        if (topic == null){
+        if (topic == null) {
             log.debug("Unable to delete  topic, UUID: {} does not exist", topicUUID);
-            throw new ApplicationExceptions.EntityNotFoundException
-                    ("Unable to delete topic, UUID: {} does not exist", topicUUID);
+            throw new ApplicationExceptions.EntityNotFoundException("Unable to delete topic, UUID: {} does not exist",
+                topicUUID);
         } else {
             setTopicToInactive(topic);
         }
     }
 
-    public void setTopicToInactive(Topic topic){
+    public void setTopicToInactive(Topic topic) {
         topic.setActive(false);
         topicRepository.save(topic);
         log.info("Deleted topic: {}", topic.getDisplayName());
         auditClient.deleteTopicAudit(topic);
     }
 
-
     public void reactivateParentTopic(UUID parentTopicUUID) {
 
         log.debug("Reactivating parent topic: {}", parentTopicUUID);
         ParentTopic parentTopic = parentTopicRepository.findByUuid(parentTopicUUID);
-        if (parentTopic == null){
-            throw new ApplicationExceptions.EntityNotFoundException(
-                    "Parent topic with UUID {} does not exist", parentTopicUUID.toString());
+        if (parentTopic == null) {
+            throw new ApplicationExceptions.EntityNotFoundException("Parent topic with UUID {} does not exist",
+                parentTopicUUID.toString());
         }
         if (parentTopic.isActive()) {
             log.debug("Parent topic is already active");
@@ -187,8 +188,9 @@ public class TopicService {
 
         log.debug("Reactivating topic: {}", topicUUID);
         Topic topic = topicRepository.findTopicByUUID(topicUUID);
-        if (topic == null){
-            throw new ApplicationExceptions.EntityNotFoundException("Topic with UUID {} does not exist", topicUUID.toString());
+        if (topic == null) {
+            throw new ApplicationExceptions.EntityNotFoundException("Topic with UUID {} does not exist",
+                topicUUID.toString());
         }
         ParentTopic parentTopic = parentTopicRepository.findByUuid(topic.getParentTopic());
         if (!parentTopic.isActive()) {
@@ -236,4 +238,5 @@ public class TopicService {
         log.debug("Requesting all active topics for {}", caseType);
         return topicRepository.findAllActiveAssignedTopicsByCaseType(caseType);
     }
+
 }

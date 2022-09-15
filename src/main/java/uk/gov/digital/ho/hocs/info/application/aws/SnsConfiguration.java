@@ -20,11 +20,9 @@ public class SnsConfiguration {
     public AmazonSNSAsync snsClient(@Value("${aws.sns.audit-search.account.access-key}") String accessKey,
                                     @Value("${aws.sns.audit-search.account.secret-key}") String secretKey,
                                     @Value("${aws.sns.config.region}") String region) {
-        return AmazonSNSAsyncClientBuilder.standard()
-                .withRegion(region)
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-                .withClientConfiguration(new ClientConfiguration())
-                .build();
+        return AmazonSNSAsyncClientBuilder.standard().withRegion(region).withCredentials(
+            new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey))).withClientConfiguration(
+            new ClientConfiguration()).build();
     }
 
 }

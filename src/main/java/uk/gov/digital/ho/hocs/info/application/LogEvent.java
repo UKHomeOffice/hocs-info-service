@@ -28,6 +28,8 @@ public enum LogEvent {
     AUDIT_FAILED,
     USER_REMOVED_FROM_TEAM,
     MEMBERS_API_EMPTY_RECORDS;
+
     public static final String EVENT = "event_id";
+
     public static final String EXCEPTION = "exception";
 }

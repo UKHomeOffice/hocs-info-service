@@ -107,4 +107,5 @@ public class SomuTypeServiceTest {
         verify(somuTypeRepository).save(somuType);
         verifyNoMoreInteractions(somuTypeRepository);
     }
+
 }

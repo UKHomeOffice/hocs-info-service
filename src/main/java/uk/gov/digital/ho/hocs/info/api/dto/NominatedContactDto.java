@@ -13,7 +13,8 @@ public class NominatedContactDto {
     @JsonProperty("emailAddress")
     String emailAddress;
 
-    public static NominatedContactDto from(NominatedContact nominatedContact){
+    public static NominatedContactDto from(NominatedContact nominatedContact) {
         return new NominatedContactDto(nominatedContact.getEmailAddress());
     }
+
 }

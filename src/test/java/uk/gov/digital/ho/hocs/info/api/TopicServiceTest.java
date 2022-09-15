@@ -41,6 +41,7 @@ public class TopicServiceTest {
     private TopicService topicService;
 
     private final UUID uuid = UUID.randomUUID();
+
     private final UUID parentUuid = UUID.randomUUID();
 
     @Before
@@ -122,8 +123,7 @@ public class TopicServiceTest {
         verifyNoMoreInteractions(parentTopicRepository);
     }
 
-
-    @Test (expected = ApplicationExceptions.TopicCreationException.class)
+    @Test(expected = ApplicationExceptions.TopicCreationException.class)
     public void shouldNotCreateParentTopicWhenOneExistsWithGivenName() {
 
         ParentTopic parentTopic = new ParentTopic("ParentTopic");
@@ -142,14 +142,14 @@ public class TopicServiceTest {
 
         when(parentTopicRepository.findByUuid(any())).thenReturn(new ParentTopic("ParentTopic"));
 
-        topicService.createTopic(request, UUID.randomUUID() );
+        topicService.createTopic(request, UUID.randomUUID());
 
         verify(topicRepository, times(1)).findTopicByNameAndParentTopic(any(), any());
         verify(topicRepository, times(1)).save(any());
         verifyNoMoreInteractions(topicRepository);
     }
 
-    @Test (expected = ApplicationExceptions.TopicCreationException.class)
+    @Test(expected = ApplicationExceptions.TopicCreationException.class)
     public void shouldNotCreateTopicWithNonexistentParent() {
 
         CreateTopicDto request = new CreateTopicDto("Topic");
@@ -161,7 +161,7 @@ public class TopicServiceTest {
         verifyNoMoreInteractions(topicRepository);
     }
 
-    @Test (expected = ApplicationExceptions.TopicCreationException.class)
+    @Test(expected = ApplicationExceptions.TopicCreationException.class)
     public void shouldNotCreateTopicWithInactiveParent() {
 
         CreateTopicDto request = new CreateTopicDto("Topic");
@@ -174,8 +174,7 @@ public class TopicServiceTest {
         verifyNoMoreInteractions(topicRepository);
     }
 
-
-    @Test (expected = ApplicationExceptions.TopicCreationException.class)
+    @Test(expected = ApplicationExceptions.TopicCreationException.class)
     public void shouldNotCreateTopicWhenParentAlreadyHasTopicWithGivenName() {
         CreateTopicDto request = new CreateTopicDto("Topic");
         ParentTopic parentTopic = new ParentTopic("ParentTopic", false);
@@ -196,8 +195,7 @@ public class TopicServiceTest {
         verifyNoMoreInteractions(topicRepository);
     }
 
-
-    @Test (expected = ApplicationExceptions.EntityNotFoundException.class)
+    @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
     public void shouldNotDeleteTopicWithInvalidUUID() {
         when(topicRepository.findTopicByUUID(any())).thenReturn(null);
 
@@ -240,9 +238,8 @@ public class TopicServiceTest {
         verifyNoMoreInteractions(topicRepository);
     }
 
-
     @Test
-    public void shouldReactivateTopicWithActiveParent(){
+    public void shouldReactivateTopicWithActiveParent() {
         Topic inactive_topic = new Topic(1L, "topic", UUID.randomUUID(), UUID.randomUUID(), false);
 
         when(topicRepository.findTopicByUUID(any())).thenReturn(inactive_topic);
@@ -260,7 +257,7 @@ public class TopicServiceTest {
     }
 
     @Test(expected = ApplicationExceptions.TopicUpdateException.class)
-    public void shouldNotReactivateTopicWithInactiveParent(){
+    public void shouldNotReactivateTopicWithInactiveParent() {
         Topic inactive_topic = new Topic(1L, "topic", UUID.randomUUID(), UUID.randomUUID(), false);
 
         when(topicRepository.findTopicByUUID(any())).thenReturn(inactive_topic);
@@ -271,7 +268,7 @@ public class TopicServiceTest {
     }
 
     @Test
-    public void shouldReactivateInactiveParentTopic(){
+    public void shouldReactivateInactiveParentTopic() {
 
         when(parentTopicRepository.findByUuid(any())).thenReturn(new ParentTopic("parent topic", false));
         topicService.reactivateParentTopic(UUID.randomUUID());
@@ -283,7 +280,7 @@ public class TopicServiceTest {
     }
 
     @Test
-    public void shouldNotChangeActiveParentTopicWhenReactivated(){
+    public void shouldNotChangeActiveParentTopicWhenReactivated() {
 
         when(parentTopicRepository.findByUuid(any())).thenReturn(new ParentTopic("parent topic", true));
         topicService.reactivateParentTopic(UUID.randomUUID());
@@ -297,7 +294,8 @@ public class TopicServiceTest {
     public void shouldReturnTopicsForCaseType() {
         UUID caseUUID = UUID.randomUUID();
         var topics = getTopics();
-        GetCaseworkCaseDataResponse getCaseworkCaseDataResponse = new GetCaseworkCaseDataResponse(caseUUID, ZonedDateTime.now(), "", "", new HashMap<>(), UUID.randomUUID(), UUID.randomUUID());
+        GetCaseworkCaseDataResponse getCaseworkCaseDataResponse = new GetCaseworkCaseDataResponse(caseUUID,
+            ZonedDateTime.now(), "", "", new HashMap<>(), UUID.randomUUID(), UUID.randomUUID());
         when(caseworkClient.getCase(any())).thenReturn(getCaseworkCaseDataResponse);
 
         when(topicRepository.findAllActiveAssignedTopicsByCaseType(any())).thenReturn(topics);
@@ -345,4 +343,5 @@ public class TopicServiceTest {
             add(new Topic("Topic2", UUID.randomUUID()));
         }};
     }
+
 }

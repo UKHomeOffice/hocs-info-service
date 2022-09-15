@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles({"local", "integration"})
+@ActiveProfiles({ "local", "integration" })
 public class NotifyClientTest extends BaseAwsTest {
 
     @Captor
@@ -80,12 +80,12 @@ public class NotifyClientTest extends BaseAwsTest {
     }
 
     @Test
-    public void shouldSetHeaders()  {
-        Map<String, MessageAttributeValue> expectedHeaders = Map.of(
-                RequestData.CORRELATION_ID_HEADER, new SqsStringMessageAttributeValue(requestData.correlationId()),
-                RequestData.USER_ID_HEADER, new SqsStringMessageAttributeValue(requestData.userId()),
-                RequestData.USERNAME_HEADER, new SqsStringMessageAttributeValue(requestData.username()),
-                RequestData.GROUP_HEADER, new SqsStringMessageAttributeValue(requestData.groups()));
+    public void shouldSetHeaders() {
+        Map<String, MessageAttributeValue> expectedHeaders = Map.of(RequestData.CORRELATION_ID_HEADER,
+            new SqsStringMessageAttributeValue(requestData.correlationId()), RequestData.USER_ID_HEADER,
+            new SqsStringMessageAttributeValue(requestData.userId()), RequestData.USERNAME_HEADER,
+            new SqsStringMessageAttributeValue(requestData.username()), RequestData.GROUP_HEADER,
+            new SqsStringMessageAttributeValue(requestData.groups()));
 
         UUID teamUUID = UUID.randomUUID();
         String oldDisplayName = "TEST";

@@ -11,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @javax.persistence.Entity
 @Table(name = "team")
-@EqualsAndHashCode(of = {"uuid"})
+@EqualsAndHashCode(of = { "uuid" })
 public class Team implements Serializable {
 
     public Team(String displayName, boolean active) {
@@ -88,4 +88,5 @@ public class Team implements Serializable {
     public void deletePermissions(Set<Permission> newPermissions) {
         newPermissions.forEach(this::deletePermission);
     }
+
 }

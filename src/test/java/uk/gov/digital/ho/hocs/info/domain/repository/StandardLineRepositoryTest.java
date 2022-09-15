@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
+
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -16,10 +17,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 public class StandardLineRepositoryTest {
-    
+
     @Autowired
     private TestEntityManager entityManager;
 
@@ -27,6 +28,7 @@ public class StandardLineRepositoryTest {
     private StandardLineRepository repository;
 
     private final UUID topicUUID = UUID.randomUUID();
+
     private final UUID documentUuid = UUID.randomUUID();
 
     @Test()
@@ -40,7 +42,7 @@ public class StandardLineRepositoryTest {
         entityManager.persist(topic1);
         entityManager.persist(standardLine1);
         entityManager.persist(standardLine2);
-        
+
         var standardLines = repository.findAllStandardLines();
         assertThat(standardLines).isNotNull();
         assertThat(standardLines.size()).isEqualTo(2);
@@ -80,18 +82,17 @@ public class StandardLineRepositoryTest {
         var standardLine2 = new StandardLine("Test", UUID.randomUUID(), LocalDateTime.now().plusDays(1));
         var standardLine3 = new StandardLine("Test", topicUUID, LocalDateTime.now().minusDays(1));
         var standardLine4 = new StandardLine("Test", UUID.randomUUID(), LocalDateTime.now().minusDays(1));
-        
-        var listStandardLines = 
-                List.of(standardLine1, standardLine2, standardLine3, standardLine4);
-        
+
+        var listStandardLines = List.of(standardLine1, standardLine2, standardLine3, standardLine4);
+
         listStandardLines.forEach(standardLine -> {
             standardLine.setDocumentUUID(documentUuid);
             entityManager.persist(standardLine);
         });
-        
+
         var standardLine = repository.findStandardLinesByTopicAndExpires(topicUUID, LocalDateTime.now());
         assertThat(standardLine).isNotNull();
-        assertThat(standardLine).isEqualTo(standardLine1); 
+        assertThat(standardLine).isEqualTo(standardLine1);
     }
 
     @Test()
@@ -103,8 +104,7 @@ public class StandardLineRepositoryTest {
         var standardLine4 = new StandardLine("Test", UUID.randomUUID(), LocalDateTime.now().minusDays(1));
 
         var listUuid = List.of(topicUUID, uuid);
-        var listStandardLines =
-                List.of(standardLine1, standardLine2, standardLine3, standardLine4);
+        var listStandardLines = List.of(standardLine1, standardLine2, standardLine3, standardLine4);
 
         listStandardLines.forEach(standardLine -> {
             standardLine.setDocumentUUID(documentUuid);
@@ -116,6 +116,5 @@ public class StandardLineRepositoryTest {
         assertThat(standardLines.size()).isEqualTo(3);
         assertThat(standardLines.containsAll(List.of(standardLine1, standardLine2, standardLine3))).isTrue();
     }
-
 
 }

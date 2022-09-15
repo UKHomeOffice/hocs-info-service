@@ -30,16 +30,25 @@ import static uk.gov.digital.ho.hocs.info.application.LogEvent.MEMBERS_API_EMPTY
 public class ListConsumerService {
 
     private static final String HOUSE_LORDS = "lords/";
+
     private static final String HOUSE_COMMONS = "commons/";
+
     public static final String COUNTRY_NAME_PATH = "$.*.item[0].name";
 
     private final String apiUkParliament;
+
     private final String apiScottishParliament;
+
     private final String apiNorthernIrelandAssembly;
+
     private final String apiWelshParliament;
+
     private final String countriesJsonFilename;
+
     private final String territoriesJsonFilename;
+
     private final HouseAddressRepository houseAddressRepository;
+
     private final RestTemplate restTemplate;
 
     @Autowired
@@ -66,17 +75,14 @@ public class ListConsumerService {
         try {
             final HouseAddress houseAddress = retrieveHouseAddress(HouseCodes.IRISH_ASSEMBLY);
 
-            NorthernIrishMembers northernIrishMembers =
-                    getDataFromAPI(apiNorthernIrelandAssembly, MediaType.APPLICATION_XML, NorthernIrishMembers.class);
+            NorthernIrishMembers northernIrishMembers = getDataFromAPI(apiNorthernIrelandAssembly,
+                MediaType.APPLICATION_XML, NorthernIrishMembers.class);
 
             if (northernIrishMembers.getMembers() != null) {
-                return northernIrishMembers.getMembers()
-                        .stream().map(m ->
-                                new Member(House.HOUSE_NORTHERN_IRISH_ASSEMBLY.getDisplayValue(),
-                                        m.getFullDisplayName() + " MLA",
-                                        houseAddress.getUuid(),
-                                        "NI" + m.getPersonId()))
-                        .collect(Collectors.toSet());
+                return northernIrishMembers.getMembers().stream().map(
+                    m -> new Member(House.HOUSE_NORTHERN_IRISH_ASSEMBLY.getDisplayValue(),
+                        m.getFullDisplayName() + " MLA", houseAddress.getUuid(), "NI" + m.getPersonId())).collect(
+                    Collectors.toSet());
             }
             log.info("Northern Ireland members API returned an empty set", value(EVENT, MEMBERS_API_EMPTY_RECORDS));
             return Collections.emptySet();
@@ -92,16 +98,13 @@ public class ListConsumerService {
         try {
             final HouseAddress houseAddress = retrieveHouseAddress(HouseCodes.SCOTTISH_PARLIAMENT);
 
-            ScottishMember[] scottishMembers = getDataFromAPI(apiScottishParliament, MediaType.APPLICATION_JSON, ScottishMember[].class);
+            ScottishMember[] scottishMembers = getDataFromAPI(apiScottishParliament, MediaType.APPLICATION_JSON,
+                ScottishMember[].class);
 
             if (scottishMembers != null && scottishMembers.length > 0) {
-                return Arrays.stream(scottishMembers)
-                        .map(m ->
-                                new Member(House.HOUSE_SCOTTISH_PARLIAMENT.getDisplayValue(),
-                                        m.getName()+" MSP",
-                                        houseAddress.getUuid(),
-                                        "SC"+m.getPersonId()))
-                        .collect(Collectors.toSet());
+                return Arrays.stream(scottishMembers).map(
+                    m -> new Member(House.HOUSE_SCOTTISH_PARLIAMENT.getDisplayValue(), m.getName() + " MSP",
+                        houseAddress.getUuid(), "SC" + m.getPersonId())).collect(Collectors.toSet());
             }
             log.info("Scottish Parliament members API returned an empty set", value(EVENT, MEMBERS_API_EMPTY_RECORDS));
             return Collections.emptySet();
@@ -116,16 +119,13 @@ public class ListConsumerService {
         try {
             final HouseAddress houseAddress = retrieveHouseAddress(HouseCodes.HOUSE_OF_COMMONS);
 
-            UKMembers houseOfCommomsMembers = getDataFromAPI(getFormattedUkEndpoint(HOUSE_COMMONS), MediaType.APPLICATION_XML, UKMembers.class);
+            UKMembers houseOfCommomsMembers = getDataFromAPI(getFormattedUkEndpoint(HOUSE_COMMONS),
+                MediaType.APPLICATION_XML, UKMembers.class);
 
             if (houseOfCommomsMembers.getMembers() != null) {
-                return houseOfCommomsMembers.getMembers()
-                        .stream().map(m ->
-                                new Member(House.HOUSE_COMMONS.getDisplayValue(),
-                                        m.getFullTitle(),
-                                        houseAddress.getUuid(),
-                                        "CO" + m.getMemberId()))
-                        .collect(Collectors.toSet());
+                return houseOfCommomsMembers.getMembers().stream().map(
+                    m -> new Member(House.HOUSE_COMMONS.getDisplayValue(), m.getFullTitle(), houseAddress.getUuid(),
+                        "CO" + m.getMemberId())).collect(Collectors.toSet());
             }
             log.info("House of Commons members API returned an empty set", value(EVENT, MEMBERS_API_EMPTY_RECORDS));
             return Collections.emptySet();
@@ -140,16 +140,13 @@ public class ListConsumerService {
         try {
             final HouseAddress houseAddress = retrieveHouseAddress(HouseCodes.HOUSE_OF_LORDS);
 
-            UKMembers houseOfLordsMembers = getDataFromAPI(getFormattedUkEndpoint(HOUSE_LORDS), MediaType.APPLICATION_XML, UKMembers.class);
+            UKMembers houseOfLordsMembers = getDataFromAPI(getFormattedUkEndpoint(HOUSE_LORDS),
+                MediaType.APPLICATION_XML, UKMembers.class);
 
             if (houseOfLordsMembers.getMembers() != null) {
-                return houseOfLordsMembers.getMembers()
-                        .stream().map(m ->
-                                new Member(House.HOUSE_LORDS.getDisplayValue(),
-                                        m.getFullTitle(),
-                                        houseAddress.getUuid(),
-                                        "LO" + m.getMemberId()))
-                        .collect(Collectors.toSet());
+                return houseOfLordsMembers.getMembers().stream().map(
+                    m -> new Member(House.HOUSE_LORDS.getDisplayValue(), m.getFullTitle(), houseAddress.getUuid(),
+                        "LO" + m.getMemberId())).collect(Collectors.toSet());
             }
             log.info("House of Lords members API returned an empty set", value(EVENT, MEMBERS_API_EMPTY_RECORDS));
             return Collections.emptySet();
@@ -167,22 +164,15 @@ public class ListConsumerService {
             WelshWards welshWards = getDataFromAPI(apiWelshParliament, MediaType.APPLICATION_XML, WelshWards.class);
 
             if (welshWards.getWards() != null) {
-                Set<WelshMembers> welshMembers = welshWards.getWards().stream()
-                        .map(WelshWard::getMembers)
-                        .collect(Collectors.toSet());
+                Set<WelshMembers> welshMembers = welshWards.getWards().stream().map(WelshWard::getMembers).collect(
+                    Collectors.toSet());
 
-                Set<WelshMember> welshMemberSet = welshMembers.stream()
-                        .map(WelshMembers::getMembers)
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toSet());
+                Set<WelshMember> welshMemberSet = welshMembers.stream().map(WelshMembers::getMembers).flatMap(
+                    Collection::stream).collect(Collectors.toSet());
 
-                return welshMemberSet.stream()
-                        .map(m ->
-                                new Member(House.HOUSE_WELSH_ASSEMBLY.getDisplayValue(),
-                                        m.getName(),
-                                        houseAddress.getUuid(),
-                                        "WE"+m.getId()))
-                        .collect(Collectors.toSet());
+                return welshMemberSet.stream().map(
+                    m -> new Member(House.HOUSE_WELSH_ASSEMBLY.getDisplayValue(), m.getName(), houseAddress.getUuid(),
+                        "WE" + m.getId())).collect(Collectors.toSet());
             }
             log.info("Welsh Parliament members API returned an empty set", value(EVENT, MEMBERS_API_EMPTY_RECORDS));
             return Collections.emptySet();
@@ -206,10 +196,7 @@ public class ListConsumerService {
         InputStream jsonStream = inputStreamFromClasspath(fileName);
         DocumentContext ctx = JsonPath.parse(jsonStream);
         List<String> territoryStrings = ctx.read(COUNTRY_NAME_PATH);
-        return territoryStrings
-                .stream()
-                .map(name -> new Country(name, isCountry))
-                .collect(Collectors.toSet());
+        return territoryStrings.stream().map(name -> new Country(name, isCountry)).collect(Collectors.toSet());
     }
 
     private static InputStream inputStreamFromClasspath(String path) {
@@ -223,13 +210,14 @@ public class ListConsumerService {
 
         ResponseEntity<T> response = null;
         try {
-            log.info("Attempting to hit endpoint {}, returning type {} of class {}", apiEndpoint, mediaType, returnClass.getName());
+            log.info("Attempting to hit endpoint {}, returning type {} of class {}", apiEndpoint, mediaType,
+                returnClass.getName());
             response = restTemplate.exchange(apiEndpoint, HttpMethod.GET, entity, returnClass);
             log.info("Response to endpoint {} is {}", apiEndpoint, response);
         } catch (Exception e) {
             log.info("exchange call exception : " + e.getMessage());
-            throw new ApplicationExceptions.IngestException("ListConsumerService exchange exception : " + e.getMessage() + " endpoint : " +
-                    apiEndpoint + " headers : " + headers.toString() + " media type : " +  mediaType.toString());
+            throw new ApplicationExceptions.IngestException(
+                "ListConsumerService exchange exception : " + e.getMessage() + " endpoint : " + apiEndpoint + " headers : " + headers.toString() + " media type : " + mediaType.toString());
         }
         return response.getBody();
     }
@@ -243,8 +231,9 @@ public class ListConsumerService {
 
         if (houseAddress == null) {
             throw new ApplicationExceptions.EntityNotFoundException(
-                    String.format("House address for code %s could not be found.", houseCode.getHouseCode()));
+                String.format("House address for code %s could not be found.", houseCode.getHouseCode()));
         }
         return houseAddress;
     }
+
 }

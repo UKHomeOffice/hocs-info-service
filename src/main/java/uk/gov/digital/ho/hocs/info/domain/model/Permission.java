@@ -9,7 +9,7 @@ import java.io.Serializable;
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 @javax.persistence.Entity
 @Table(name = "permission")
-@EqualsAndHashCode(of = {"accessLevel", "caseType"})
+@EqualsAndHashCode(of = { "accessLevel", "caseType" })
 public class Permission implements Serializable {
 
     public Permission(AccessLevel accessLevel, Team team, CaseType caseType) {
@@ -38,6 +38,5 @@ public class Permission implements Serializable {
     @Column(name = "access_level")
     @Enumerated(EnumType.STRING)
     private AccessLevel accessLevel;
-
 
 }

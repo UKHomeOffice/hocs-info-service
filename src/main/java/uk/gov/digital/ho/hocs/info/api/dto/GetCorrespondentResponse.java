@@ -22,4 +22,5 @@ public class GetCorrespondentResponse {
     public static GetCorrespondentResponse from(StandardLine standardLine) {
         return new GetCorrespondentResponse(standardLine.getDisplayName(), standardLine.getUuid());
     }
+
 }

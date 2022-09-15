@@ -10,15 +10,16 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class GetMembersAddressResponseTest {
 
     UUID uuid = UUID.randomUUID();
+
     LocalDateTime localDateTime = LocalDateTime.of(2018, 1, 1, 12, 01);
 
     @Test
     public void from() {
-        HouseAddress houseAddress = new HouseAddress(1l, uuid, "Lords", "LOR", "address1", "address2", "address3", "s1 1dj", "United Kingdom", LocalDate.of(2017, 1, 1), LocalDate.of(2017, 1, 1));
+        HouseAddress houseAddress = new HouseAddress(1l, uuid, "Lords", "LOR", "address1", "address2", "address3",
+            "s1 1dj", "United Kingdom", LocalDate.of(2017, 1, 1), LocalDate.of(2017, 1, 1));
         Member member = new Member(1l, "Lords", "Bob", "REF1", uuid, localDateTime, false, uuid, houseAddress);
 
         GetMembersAddressResponse getMembersAddressResponse = GetMembersAddressResponse.from(member);
@@ -34,8 +35,6 @@ public class GetMembersAddressResponseTest {
         assertThat(getMembersAddressResponse.getEmail()).isNullOrEmpty();
         assertThat(getMembersAddressResponse.getReference()).isNullOrEmpty();
 
-
-
-
     }
+
 }

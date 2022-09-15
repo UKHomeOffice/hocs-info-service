@@ -25,7 +25,7 @@ spec:
                     secretKeyRef:
                       name: ui-casework-creds
                       key: plaintext
-              command: ["/bin/sh", "-c"]
+              command: [ "/bin/sh", "-c" ]
               args:
                 - http_status=$( wget --no-check-certificate --spider -S "https://${HOCS_BASICAUTH}@hocs-info-service.{{.KUBE_NAMESPACE}}.svc.cluster.local/admin/member/refresh" 2>&1 | grep "HTTP/" | awk '{print $2}' ); if [[ $http_status -eq 200 ]]; then exit 0; else exit 1; fi
           restartPolicy: OnFailure

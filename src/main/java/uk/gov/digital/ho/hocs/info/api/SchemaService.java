@@ -24,15 +24,13 @@ import java.util.stream.Stream;
 public class SchemaService {
 
     private final FieldRepository fieldRepository;
+
     private final SchemaRepository schemaRepository;
+
     private final ObjectMapper mapper;
 
     @Autowired
-    public SchemaService(
-            FieldRepository fieldRepository,
-            SchemaRepository schemaRepository,
-            ObjectMapper mapper
-    ) {
+    public SchemaService(FieldRepository fieldRepository, SchemaRepository schemaRepository, ObjectMapper mapper) {
         this.fieldRepository = fieldRepository;
         this.schemaRepository = schemaRepository;
         this.mapper = mapper;
@@ -77,7 +75,7 @@ public class SchemaService {
     public List<Field> getExtractOnlyFields() {
         Schema extractOnlySchema = schemaRepository.findExtractOnlySchema();
 
-        if(extractOnlySchema != null){
+        if (extractOnlySchema != null) {
             log.debug("Getting extract only fields.");
             return extractOnlySchema.getFields().stream().filter(Field::isReporting).collect(Collectors.toList());
         }
@@ -98,7 +96,8 @@ public class SchemaService {
         log.debug("Getting all Fields for schema {}", schemaType);
         List<Field> fields = fieldRepository.findAllBySchemaType(schemaType);
         log.debug("Got {} Fields for Schema {}", fields.size(), schemaType);
-        return fields.stream().map(field -> FieldDto.fromWithDecoratedProps(field, mapper)).collect(Collectors.toList());
+        return fields.stream().map(field -> FieldDto.fromWithDecoratedProps(field, mapper)).collect(
+            Collectors.toList());
     }
 
     @Deprecated(forRemoval = true)
@@ -109,4 +108,5 @@ public class SchemaService {
         log.info("Returning {} fields with accessLevel {} for caseType {}", fields.size(), accessLevel, caseType);
         return fields.stream().map(FieldDto::from).collect(Collectors.toList());
     }
+
 }

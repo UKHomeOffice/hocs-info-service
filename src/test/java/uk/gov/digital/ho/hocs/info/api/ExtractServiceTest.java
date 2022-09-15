@@ -23,11 +23,17 @@ public class ExtractServiceTest {
     private ExtractService service;
 
     private static final String CASE_TYPE = "CASE_TYPE";
+
     private static final String FIELD_1 = "Field1";
+
     private static final String FIELD_2 = "Field2";
+
     private static final String FIELD_3 = "Field3";
+
     private static final String FIELD_4 = "Field4";
+
     private static final String FIELD_5 = "Field5";
+
     private static final String FIELD_6 = "Field6";
 
     @Before
@@ -53,14 +59,9 @@ public class ExtractServiceTest {
     }
 
     private void mockFields() {
-        List<Field> fields = List.of(
-                buildTestField(1L, FIELD_1),
-                buildTestField(3L, FIELD_3),
-                buildTestField(2L, FIELD_2),
-                buildTestField(5L, FIELD_5),
-                buildTestField(4L, FIELD_4),
-                buildTestField(6L, FIELD_6)
-        );
+        List<Field> fields = List.of(buildTestField(1L, FIELD_1), buildTestField(3L, FIELD_3),
+            buildTestField(2L, FIELD_2), buildTestField(5L, FIELD_5), buildTestField(4L, FIELD_4),
+            buildTestField(6L, FIELD_6));
 
         when(schemaService.getExtractOnlyFields()).thenReturn(Collections.emptyList());
         when(schemaService.getAllReportingFieldsForCaseType(CASE_TYPE)).thenReturn(fields.stream());
@@ -69,4 +70,5 @@ public class ExtractServiceTest {
     private Field buildTestField(Long id, String fieldName) {
         return new Field(id, null, "", fieldName, "", "", "", true, true, true, AccessLevel.READ, null);
     }
+
 }

@@ -20,10 +20,9 @@ public class CaseDetailsFieldService {
         this.caseDetailsFieldRepository = caseDetailsFieldRepository;
     }
 
-
     public List<CaseDetailsFieldDto> getCaseDetailsFieldsByCaseType(String caseType) {
-        return caseDetailsFieldRepository.findByCaseTypeOrderBySortOrder(caseType).stream().map(CaseDetailsFieldDto::from).collect(Collectors.toList());
+        return caseDetailsFieldRepository.findByCaseTypeOrderBySortOrder(caseType).stream().map(
+            CaseDetailsFieldDto::from).collect(Collectors.toList());
     }
-
 
 }

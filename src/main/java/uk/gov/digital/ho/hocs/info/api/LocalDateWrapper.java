@@ -5,4 +5,5 @@ import java.time.LocalDate;
 public interface LocalDateWrapper {
 
     LocalDate now();
+
 }

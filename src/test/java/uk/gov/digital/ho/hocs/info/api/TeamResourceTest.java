@@ -37,9 +37,13 @@ public class TeamResourceTest {
     }
 
     private UUID userUUID1 = UUID.randomUUID();
+
     private UUID userUUID2 = UUID.randomUUID();
+
     private UUID userUUID3 = UUID.randomUUID();
+
     private UUID teamUUID = UUID.randomUUID();
+
     private UUID caseUUID = UUID.randomUUID();
 
     @Test
@@ -47,7 +51,7 @@ public class TeamResourceTest {
         doNothing().when(teamService).addUsersToTeam(List.of(userUUID1, userUUID2), teamUUID);
 
         ResponseEntity result = teamResource.addUserToGroup(teamUUID.toString(),
-                List.of(userUUID1.toString(), userUUID2.toString()));
+            List.of(userUUID1.toString(), userUUID2.toString()));
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(teamService).addUsersToTeam(List.of(userUUID1, userUUID2), teamUUID);
         verifyNoMoreInteractions(teamService);
@@ -65,9 +69,7 @@ public class TeamResourceTest {
     @Test(expected = ApplicationExceptions.TeamDeleteException.class)
     public void shouldThrowTeamDeleteExceptionWhenDeleteATeamWithActiveParentTopics() {
 
-        doThrow(ApplicationExceptions.TeamDeleteException.class)
-                .when(teamService)
-                .deleteTeam(teamUUID);
+        doThrow(ApplicationExceptions.TeamDeleteException.class).when(teamService).deleteTeam(teamUUID);
 
         teamResource.deleteTeam(teamUUID.toString());
     }
@@ -240,7 +242,7 @@ public class TeamResourceTest {
 
         verify(teamService).patchTeam(teamUuid, patchTeamDto);
     }
-    
+
     @Test
     public void shouldUpdateTeamLetterName() {
         UUID teamUUID = UUID.randomUUID();
@@ -340,8 +342,7 @@ public class TeamResourceTest {
         Set<Team> teams = Set.of(new Team(UUID.randomUUID().toString(), true));
         when(teamService.getAllFirstDescendantTeams(teamUuid)).thenReturn(teams);
 
-        ResponseEntity<Set<TeamDto>> response = teamResource
-                .getAllFirstDescendantTeams(teamUuid);
+        ResponseEntity<Set<TeamDto>> response = teamResource.getAllFirstDescendantTeams(teamUuid);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().iterator().next().getUuid()).isEqualTo(teams.iterator().next().getUuid());
@@ -423,4 +424,5 @@ public class TeamResourceTest {
         verify(teamService).getTeam(team.getUuid());
         verifyNoMoreInteractions(teamService);
     }
+
 }

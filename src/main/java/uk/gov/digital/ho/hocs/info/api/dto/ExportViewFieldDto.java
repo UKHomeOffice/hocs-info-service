@@ -12,8 +12,13 @@ import java.util.List;
 public class ExportViewFieldDto {
 
     private Long id;
+
     private Long parentExportViewId;
+
     private Long sortOrder;
+
     private String displayName;
+
     private List<ExportViewFieldAdapterDto> adapters;
+
 }

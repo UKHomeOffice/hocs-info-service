@@ -38,14 +38,17 @@ public class CorrespondentTypeResource {
 
     @GetMapping(value = "/correspondentType/{caseType}/selectable", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<GetCorrespondentTypeResponse> getSelectableTypesByCaseType(@PathVariable String caseType) {
-        Set<CorrespondentType> correspondentTypes = correspondentTypeService.getSelectableCorrespondentTypesByCaseType(caseType);
+        Set<CorrespondentType> correspondentTypes = correspondentTypeService.getSelectableCorrespondentTypesByCaseType(
+            caseType);
         GetCorrespondentTypeResponse response = GetCorrespondentTypeResponse.from(correspondentTypes);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping(value = "/correspondentType", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<CreateCorrespondentTypeResponse> createCorrespondentType(@RequestBody CreateCorrespondentTypeDto createCorrespondentTypeDto) {
-        CorrespondentType correspondentType = correspondentTypeService.createCorrespondentType(createCorrespondentTypeDto.getDisplayName(), createCorrespondentTypeDto.getType());
+    public ResponseEntity<CreateCorrespondentTypeResponse> createCorrespondentType(
+        @RequestBody CreateCorrespondentTypeDto createCorrespondentTypeDto) {
+        CorrespondentType correspondentType = correspondentTypeService.createCorrespondentType(
+            createCorrespondentTypeDto.getDisplayName(), createCorrespondentTypeDto.getType());
         return ResponseEntity.ok(CreateCorrespondentTypeResponse.from(correspondentType));
     }
 

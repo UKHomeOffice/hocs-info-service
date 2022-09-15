@@ -32,7 +32,6 @@ public class ExportViewFieldAdapter implements Serializable {
     @Column(name = "type", updatable = false, insertable = false)
     private String type;
 
-
     public ExportViewFieldAdapterDto toDto() {
         return new ExportViewFieldAdapterDto(id, parentExportViewFieldId, sortOrder, type);
     }

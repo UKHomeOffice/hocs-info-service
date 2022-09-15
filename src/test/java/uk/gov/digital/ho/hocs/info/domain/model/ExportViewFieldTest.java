@@ -14,20 +14,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ExportViewFieldTest {
 
     private static final Long ADAPTER_ID = 10L;
+
     private static final Long FIELD_ID = 2L;
+
     private static final String FIELD_DISPLAY_NAME = "FieldA";
+
     private static final Long VIEW_ID = 15L;
+
     private static final Long ADAPTER_SORT = 1L;
+
     private static final Long FIELD_SORT = 100L;
+
     private static final String ADAPTER_TYPE = "Hidden";
 
     private ExportViewField exportViewField;
+
     private ExportViewFieldAdapter exportViewFieldAdapter;
 
     @Before
     public void before() {
         exportViewFieldAdapter = new ExportViewFieldAdapter(ADAPTER_ID, FIELD_ID, ADAPTER_SORT, ADAPTER_TYPE);
-        exportViewField = new ExportViewField(FIELD_ID, VIEW_ID, FIELD_SORT, FIELD_DISPLAY_NAME, List.of(exportViewFieldAdapter));
+        exportViewField = new ExportViewField(FIELD_ID, VIEW_ID, FIELD_SORT, FIELD_DISPLAY_NAME,
+            List.of(exportViewFieldAdapter));
     }
 
     @Test
@@ -69,4 +77,5 @@ public class ExportViewFieldTest {
         assertThat(dto.getAdapters().size()).isEqualTo(1);
         assertThat(dto.getAdapters().get(0).getId()).isEqualTo(ADAPTER_ID);
     }
+
 }

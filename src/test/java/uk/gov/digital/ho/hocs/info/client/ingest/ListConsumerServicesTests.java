@@ -30,27 +30,19 @@ public class ListConsumerServicesTests {
     @Mock
     private RestTemplate restTemplate;
 
-
     private ListConsumerService listConsumerService;
 
     @Before
     public void setUp() {
-        this.listConsumerService =
-                new ListConsumerService("Test1",
-                        "Test2",
-                        "Test3",
-                        "Test4",
-                        "countries-list.json",
-                        "territories-list.json",
-                        houseAddressRepository,
-                        restTemplate);
+        this.listConsumerService = new ListConsumerService("Test1", "Test2", "Test3", "Test4", "countries-list.json",
+            "territories-list.json", houseAddressRepository, restTemplate);
     }
 
     @Test
     public void getDataFromAPI_whenRestTemplateThrowsException_shouldReturnEmptyCollection() {
         when(houseAddressRepository.findByHouseCode(any())).thenReturn(new HouseAddress());
-        when(restTemplate.exchange(eq("Test3"), eq(HttpMethod.GET), any(), eq(NorthernIrishMembers.class)))
-                .thenThrow(new RestClientException("Test"));
+        when(restTemplate.exchange(eq("Test3"), eq(HttpMethod.GET), any(), eq(NorthernIrishMembers.class))).thenThrow(
+            new RestClientException("Test"));
 
         Set<Member> members = listConsumerService.createFromIrishAssemblyAPI();
 
@@ -75,15 +67,11 @@ public class ListConsumerServicesTests {
 
         NorthernIrishMembers northernIrishMembers = new NorthernIrishMembers();
 
-        ResponseEntity<?> responseEntity = new ResponseEntity<>(
-                northernIrishMembers,
-                header,
-                HttpStatus.OK
-        );
+        ResponseEntity<?> responseEntity = new ResponseEntity<>(northernIrishMembers, header, HttpStatus.OK);
 
         when(houseAddressRepository.findByHouseCode(any())).thenReturn(new HouseAddress());
-        when(restTemplate.exchange(eq("Test3"), eq(HttpMethod.GET), any(), eq(NorthernIrishMembers.class)))
-                .thenReturn((ResponseEntity<NorthernIrishMembers>) responseEntity);
+        when(restTemplate.exchange(eq("Test3"), eq(HttpMethod.GET), any(), eq(NorthernIrishMembers.class))).thenReturn(
+            (ResponseEntity<NorthernIrishMembers>) responseEntity);
 
         Set<Member> members = listConsumerService.createFromIrishAssemblyAPI();
 
@@ -97,15 +85,11 @@ public class ListConsumerServicesTests {
 
         UKMembers ukMembers = new UKMembers();
 
-        ResponseEntity<?> responseEntity = new ResponseEntity<>(
-                ukMembers,
-                header,
-                HttpStatus.OK
-        );
+        ResponseEntity<?> responseEntity = new ResponseEntity<>(ukMembers, header, HttpStatus.OK);
 
         when(houseAddressRepository.findByHouseCode(any())).thenReturn(new HouseAddress());
-        when(restTemplate.exchange(eq("Test1"), eq(HttpMethod.GET), any(), eq(UKMembers.class)))
-                .thenReturn((ResponseEntity<UKMembers>) responseEntity);
+        when(restTemplate.exchange(eq("Test1"), eq(HttpMethod.GET), any(), eq(UKMembers.class))).thenReturn(
+            (ResponseEntity<UKMembers>) responseEntity);
 
         Set<Member> members = listConsumerService.createCommonsFromUKParliamentAPI();
 
@@ -119,15 +103,11 @@ public class ListConsumerServicesTests {
 
         UKMembers ukMembers = new UKMembers();
 
-        ResponseEntity<?> responseEntity = new ResponseEntity<>(
-                ukMembers,
-                header,
-                HttpStatus.OK
-        );
+        ResponseEntity<?> responseEntity = new ResponseEntity<>(ukMembers, header, HttpStatus.OK);
 
         when(houseAddressRepository.findByHouseCode(any())).thenReturn(new HouseAddress());
-        when(restTemplate.exchange(eq("Test1"), eq(HttpMethod.GET), any(), eq(UKMembers.class)))
-                .thenReturn((ResponseEntity<UKMembers>) responseEntity);
+        when(restTemplate.exchange(eq("Test1"), eq(HttpMethod.GET), any(), eq(UKMembers.class))).thenReturn(
+            (ResponseEntity<UKMembers>) responseEntity);
 
         Set<Member> members = listConsumerService.createLordsFromUKParliamentAPI();
 
@@ -141,15 +121,11 @@ public class ListConsumerServicesTests {
 
         WelshWards welshWards = new WelshWards();
 
-        ResponseEntity<?> responseEntity = new ResponseEntity<>(
-                welshWards,
-                header,
-                HttpStatus.OK
-        );
+        ResponseEntity<?> responseEntity = new ResponseEntity<>(welshWards, header, HttpStatus.OK);
 
         when(houseAddressRepository.findByHouseCode(any())).thenReturn(new HouseAddress());
-        when(restTemplate.exchange(eq("Test4"), eq(HttpMethod.GET), any(), eq(WelshWards.class)))
-                .thenReturn((ResponseEntity<WelshWards>) responseEntity);
+        when(restTemplate.exchange(eq("Test4"), eq(HttpMethod.GET), any(), eq(WelshWards.class))).thenReturn(
+            (ResponseEntity<WelshWards>) responseEntity);
 
         Set<Member> members = listConsumerService.createFromWelshParliamentAPI();
 
@@ -163,15 +139,11 @@ public class ListConsumerServicesTests {
 
         ScottishMember[] scottishMembers = new ScottishMember[0];
 
-        ResponseEntity<?> responseEntity = new ResponseEntity<>(
-                scottishMembers,
-                header,
-                HttpStatus.OK
-        );
+        ResponseEntity<?> responseEntity = new ResponseEntity<>(scottishMembers, header, HttpStatus.OK);
 
         when(houseAddressRepository.findByHouseCode(any())).thenReturn(new HouseAddress());
-        when(restTemplate.exchange(eq("Test2"), eq(HttpMethod.GET), any(), eq(ScottishMember[].class)))
-                .thenReturn((ResponseEntity<ScottishMember[]>) responseEntity);
+        when(restTemplate.exchange(eq("Test2"), eq(HttpMethod.GET), any(), eq(ScottishMember[].class))).thenReturn(
+            (ResponseEntity<ScottishMember[]>) responseEntity);
 
         Set<Member> members = listConsumerService.createFromScottishParliamentAPI();
 
@@ -193,4 +165,5 @@ public class ListConsumerServicesTests {
         assertEquals(79, countries.size());
         assertTrue(countries.contains(expected));
     }
+
 }

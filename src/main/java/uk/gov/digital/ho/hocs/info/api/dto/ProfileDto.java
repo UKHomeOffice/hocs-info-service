@@ -12,13 +12,16 @@ import java.util.stream.Collectors;
 public class ProfileDto {
 
     private String profileName;
+
     private boolean summaryDeadlineEnabled;
+
     private List<SearchFieldDto> searchFields;
 
-
     public static ProfileDto from(Profile profile) {
-        List<SearchFieldDto> searchFields = profile.getSearchFields().stream().map(SearchFieldDto::from).collect(Collectors.toList());
+        List<SearchFieldDto> searchFields = profile.getSearchFields().stream().map(SearchFieldDto::from).collect(
+            Collectors.toList());
         return new ProfileDto(profile.getProfileName(), profile.isSummaryDeadlinesEnabled(), searchFields);
 
     }
+
 }

@@ -16,7 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-
 @RunWith(MockitoJUnitRunner.class)
 public class CorrespondentTypeServiceTest {
 
@@ -27,7 +26,6 @@ public class CorrespondentTypeServiceTest {
     private AuditClient auditClient;
 
     private CorrespondentTypeService correspondentTypeService;
-
 
     @Before
     public void setUp() {
@@ -57,7 +55,7 @@ public class CorrespondentTypeServiceTest {
     @Test
     public void shouldCreateCorrespondentType() {
 
-        CorrespondentType correspondentType = correspondentTypeService.createCorrespondentType("name","NAME");
+        CorrespondentType correspondentType = correspondentTypeService.createCorrespondentType("name", "NAME");
 
         assertThat(correspondentType).isNotNull();
         verify(correspondentTypeRepository, times(1)).save(any());
@@ -68,14 +66,15 @@ public class CorrespondentTypeServiceTest {
     @Test(expected = ApplicationExceptions.EntityCreationException.class)
     public void shouldThrowExceptionWhenCreatingCorrespondentTypeWithNoDisplayName() {
 
-        correspondentTypeService.createCorrespondentType(null,"NAME");
+        correspondentTypeService.createCorrespondentType(null, "NAME");
 
     }
 
     @Test
     public void shouldNotCreateCorrespondentTypeWithNoDisplayName() {
 
-        try { correspondentTypeService.createCorrespondentType( "Name", null);
+        try {
+            correspondentTypeService.createCorrespondentType("Name", null);
         } catch (ApplicationExceptions.EntityCreationException e) {
             // Do nothing.
         }
@@ -85,14 +84,15 @@ public class CorrespondentTypeServiceTest {
     @Test(expected = ApplicationExceptions.EntityCreationException.class)
     public void shouldThrowExceptionWhenCreatingCorrespondentTypeWithNoType() {
 
-        correspondentTypeService.createCorrespondentType(null,"NAME");
+        correspondentTypeService.createCorrespondentType(null, "NAME");
 
     }
 
     @Test
     public void shouldNotCreateCorrespondentTypeWithNoType() {
 
-        try { correspondentTypeService.createCorrespondentType("Name", null);
+        try {
+            correspondentTypeService.createCorrespondentType("Name", null);
         } catch (ApplicationExceptions.EntityCreationException e) {
             // Do nothing.
         }

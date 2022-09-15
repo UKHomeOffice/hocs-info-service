@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class UnitTest {
 
     @Test
@@ -39,4 +38,5 @@ public class UnitTest {
         assertThat(unit.getTeams()).doesNotContain(team2);
 
     }
+
 }

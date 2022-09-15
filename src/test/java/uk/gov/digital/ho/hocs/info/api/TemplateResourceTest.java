@@ -21,6 +21,7 @@ import static org.mockito.Mockito.*;
 public class TemplateResourceTest {
 
     private static final String DISPLAY_NAME = "display";
+
     private static final String CASE_TYPE = "MIN";
 
     @Mock
@@ -38,8 +39,7 @@ public class TemplateResourceTest {
 
         when(templateService.getActiveTemplates()).thenReturn(List.of(new Template(DISPLAY_NAME, CASE_TYPE)));
 
-        ResponseEntity<List<TemplateDto>> response =
-                templateResource.getTemplates();
+        ResponseEntity<List<TemplateDto>> response = templateResource.getTemplates();
 
         verify(templateService).getActiveTemplates();
         verifyNoMoreInteractions(templateService);
@@ -52,8 +52,7 @@ public class TemplateResourceTest {
         UUID templateUUID = UUID.randomUUID();
         when(templateService.getTemplate(templateUUID)).thenReturn(new Template(DISPLAY_NAME, CASE_TYPE));
 
-        ResponseEntity<TemplateDto> response =
-                templateResource.getTemplate(templateUUID);
+        ResponseEntity<TemplateDto> response = templateResource.getTemplate(templateUUID);
 
         verify(templateService).getTemplate(templateUUID);
         verifyNoMoreInteractions(templateService);
@@ -66,10 +65,10 @@ public class TemplateResourceTest {
     @Test
     public void shouldReturnTemplatesForRequestedCaseType() {
 
-        when(templateService.getTemplatesForCaseType(CASE_TYPE)).thenReturn(List.of(new Template(DISPLAY_NAME, CASE_TYPE)));
+        when(templateService.getTemplatesForCaseType(CASE_TYPE)).thenReturn(
+            List.of(new Template(DISPLAY_NAME, CASE_TYPE)));
 
-        ResponseEntity<List<TemplateDto>> response =
-                templateResource.getTemplatesForCaseType(CASE_TYPE);
+        ResponseEntity<List<TemplateDto>> response = templateResource.getTemplatesForCaseType(CASE_TYPE);
 
         verify(templateService).getTemplatesForCaseType(CASE_TYPE);
         verifyNoMoreInteractions(templateService);
@@ -81,8 +80,7 @@ public class TemplateResourceTest {
     public void shouldCreateTemplateForCaseType() {
         CreateTemplateDocumentDto createTemplateDocumentDto = new CreateTemplateDocumentDto();
 
-        ResponseEntity response =
-                templateResource.createTemplate(createTemplateDocumentDto);
+        ResponseEntity response = templateResource.createTemplate(createTemplateDocumentDto);
 
         verify(templateService).createTemplate(createTemplateDocumentDto);
         verifyNoMoreInteractions(templateService);
@@ -93,12 +91,12 @@ public class TemplateResourceTest {
     @Test
     public void shouldDeleteTemplate() {
         UUID uuid = UUID.randomUUID();
-        ResponseEntity response =
-                templateResource.deleteTemplate(uuid);
+        ResponseEntity response = templateResource.deleteTemplate(uuid);
 
         verify(templateService).deleteTemplate(uuid);
         verifyNoMoreInteractions(templateService);
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
 }

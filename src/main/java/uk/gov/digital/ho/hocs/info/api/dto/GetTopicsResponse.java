@@ -21,4 +21,5 @@ public class GetTopicsResponse {
         List<TopicDto> topicDto = topics.stream().map(TopicDto::from).collect(Collectors.toList());
         return new GetTopicsResponse(topicDto);
     }
+
 }

@@ -19,18 +19,17 @@ public class GetAllTopicsResponse {
     List<ParentTopicAndTopicDto> parentTopicAndTopicDtos;
 
     public static GetAllTopicsResponse from(List<ParentTopic> parentTopics) {
-        List<ParentTopicAndTopicDto> parentTopicAndTopicDtos = parentTopics
-                .stream()
-                .map(ParentTopicAndTopicDto::from)
-                .collect(Collectors.toList());
+        List<ParentTopicAndTopicDto> parentTopicAndTopicDtos = parentTopics.stream().map(
+            ParentTopicAndTopicDto::from).collect(Collectors.toList());
         return new GetAllTopicsResponse(parentTopicAndTopicDtos);
     }
 
-    public static GetAllTopicsResponse fromTopicWithFilteredChildren(List<ParentTopic> parentTopics, List<Topic> filteredTopics) {
-        List<ParentTopicAndTopicDto> parentTopicAndTopicDtos = parentTopics
-                .stream()
-                .map(pt -> ParentTopicAndTopicDto.fromTopicWithFilteredChildren(pt, filteredTopics))
-                .collect(Collectors.toList());
+    public static GetAllTopicsResponse fromTopicWithFilteredChildren(List<ParentTopic> parentTopics,
+                                                                     List<Topic> filteredTopics) {
+        List<ParentTopicAndTopicDto> parentTopicAndTopicDtos = parentTopics.stream().map(
+            pt -> ParentTopicAndTopicDto.fromTopicWithFilteredChildren(pt, filteredTopics)).collect(
+            Collectors.toList());
         return new GetAllTopicsResponse(parentTopicAndTopicDtos);
     }
+
 }

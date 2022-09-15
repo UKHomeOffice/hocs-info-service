@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TemplateDtoTest {
 
     private UUID uuid = UUID.randomUUID();
+
     private UUID documentUUID = UUID.randomUUID();
 
     @Test
@@ -23,4 +24,5 @@ public class TemplateDtoTest {
         assertThat(templateDto.getDocumentUUID()).isEqualTo(documentUUID);
         assertThat(templateDto.getCaseType()).isEqualTo("MIN");
     }
+
 }

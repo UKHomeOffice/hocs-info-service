@@ -12,10 +12,12 @@ import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 public class PermissionDto {
 
     @JsonCreator
-    public PermissionDto(@JsonProperty("caseTypeCode") String caseTypeCode, @JsonProperty("accessLevel") AccessLevel accessLevel) {
+    public PermissionDto(@JsonProperty("caseTypeCode") String caseTypeCode,
+                         @JsonProperty("accessLevel") AccessLevel accessLevel) {
         this.caseTypeCode = caseTypeCode;
         this.accessLevel = accessLevel;
     }
+
     @JsonProperty("caseTypeCode")
     private String caseTypeCode;
 
@@ -24,6 +26,7 @@ public class PermissionDto {
 
     public static PermissionDto from(Permission permission) {
         return new PermissionDto(permission.getCaseType().getType(),
-                AccessLevel.from(permission.getAccessLevel().getLevel()));
+            AccessLevel.from(permission.getAccessLevel().getLevel()));
     }
+
 }

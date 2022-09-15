@@ -19,4 +19,5 @@ public interface CountryRepository extends CrudRepository<Country, String> {
     @Modifying
     @Query(value = "UPDATE country SET deleted = TRUE", nativeQuery = true)
     void deleteAll();
+
 }

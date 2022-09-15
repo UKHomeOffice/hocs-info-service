@@ -11,15 +11,22 @@ import org.keycloak.representations.idm.UserRepresentation;
 public class UserDto {
 
     private String id;
+
     private String username;
+
     private String email;
+
     private String firstName;
+
     private String lastName;
+
     private boolean enabled;
 
     public static UserDto from(UserRepresentation user) {
-        return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getFirstName(), user.getLastName(), user.isEnabled());
+        return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getFirstName(), user.getLastName(),
+            user.isEnabled());
     }
+
 }
 
 

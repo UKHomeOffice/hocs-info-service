@@ -54,16 +54,9 @@ public class FieldDto {
     public static FieldDto from(final Field field) {
         final FieldDto childField = field.getChild() != null ? FieldDto.from(field.getChild()) : null;
 
-        return new FieldDto(field.getUuid(),
-                field.getComponent(),
-                field.getValidation(),
-                field.getName(),
-                field.getLabel(),
-                field.getProps(),
-                field.isSummary(),
-                field.isActive(),
-                field.getAccessLevel(),
-                childField);
+        return new FieldDto(field.getUuid(), field.getComponent(), field.getValidation(), field.getName(),
+            field.getLabel(), field.getProps(), field.isSummary(), field.isActive(), field.getAccessLevel(),
+            childField);
     }
 
     @Deprecated(forRemoval = true)
@@ -88,15 +81,8 @@ public class FieldDto {
             }
         }
 
-        return new FieldDto(field.getUuid(),
-                field.getComponent(),
-                field.getValidation(),
-                field.getName(),
-                field.getLabel(),
-                props,
-                field.isSummary(),
-                field.isActive(),
-                field.getAccessLevel(),
-                childField);
+        return new FieldDto(field.getUuid(), field.getComponent(), field.getValidation(), field.getName(),
+            field.getLabel(), props, field.isSummary(), field.isActive(), field.getAccessLevel(), childField);
     }
+
 }

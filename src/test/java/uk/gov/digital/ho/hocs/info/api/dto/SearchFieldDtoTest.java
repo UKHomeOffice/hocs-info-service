@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import uk.gov.digital.ho.hocs.info.domain.model.SearchField;
 
-
 public class SearchFieldDtoTest {
 
     @Test
@@ -15,7 +14,8 @@ public class SearchFieldDtoTest {
         String searchFieldValidation = "validationRuleC";
         String searchFieldProps = "props";
 
-        SearchField searchField = new SearchField(10L, profileName, searchFieldDisplayName, searchFieldComponent, searchFieldValidation, searchFieldProps);
+        SearchField searchField = new SearchField(10L, profileName, searchFieldDisplayName, searchFieldComponent,
+            searchFieldValidation, searchFieldProps);
 
         SearchFieldDto dto = SearchFieldDto.from(searchField);
 
@@ -25,4 +25,5 @@ public class SearchFieldDtoTest {
         Assert.assertEquals("Search field props do not match", searchFieldProps, dto.getProps());
 
     }
+
 }

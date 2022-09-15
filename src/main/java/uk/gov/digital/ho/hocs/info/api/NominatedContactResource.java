@@ -30,22 +30,28 @@ public class NominatedContactResource {
     }
 
     @PostMapping(value = "/team/{teamUUID}/contact", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<CreateNominatedContactResponse> createNominatedContact(@PathVariable UUID teamUUID, @RequestBody CreateNominatedContactDto createNominatedContactDto){
-        NominatedContact nominatedContact = nominatedContactService.createNominatedContact(teamUUID, createNominatedContactDto.getEmailAddress());
+    public ResponseEntity<CreateNominatedContactResponse> createNominatedContact(@PathVariable UUID teamUUID,
+                                                                                 @RequestBody
+                                                                                 CreateNominatedContactDto createNominatedContactDto) {
+        NominatedContact nominatedContact = nominatedContactService.createNominatedContact(teamUUID,
+            createNominatedContactDto.getEmailAddress());
         UUID uuid = nominatedContact.getUuid();
         CreateNominatedContactResponse response = new CreateNominatedContactResponse(uuid.toString());
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping(value="/team/{teamUUID}/contact/{nominatedContactUUID}")
-    public ResponseEntity updateNominatedContact(@PathVariable UUID nominatedContactUUID, @RequestBody UpdateNominatedContactDto updateNominatedContactDto){
-        nominatedContactService.updateNominatedContact(nominatedContactUUID, updateNominatedContactDto.getEmailAddress());
+    @PutMapping(value = "/team/{teamUUID}/contact/{nominatedContactUUID}")
+    public ResponseEntity updateNominatedContact(@PathVariable UUID nominatedContactUUID,
+                                                 @RequestBody UpdateNominatedContactDto updateNominatedContactDto) {
+        nominatedContactService.updateNominatedContact(nominatedContactUUID,
+            updateNominatedContactDto.getEmailAddress());
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping(value="/team/{teamUUID}/contact/{nominatedContactUUID}")
-    public ResponseEntity deleteNominatedContact(@PathVariable UUID teamUUID, @PathVariable UUID nominatedContactUUID){
+    @DeleteMapping(value = "/team/{teamUUID}/contact/{nominatedContactUUID}")
+    public ResponseEntity deleteNominatedContact(@PathVariable UUID teamUUID, @PathVariable UUID nominatedContactUUID) {
         nominatedContactService.deleteNominatedContact(teamUUID, nominatedContactUUID);
         return ResponseEntity.ok().build();
     }
+
 }

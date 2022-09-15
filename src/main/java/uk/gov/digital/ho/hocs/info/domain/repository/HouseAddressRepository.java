@@ -8,4 +8,5 @@ import uk.gov.digital.ho.hocs.info.domain.model.HouseAddress;
 public interface HouseAddressRepository extends CrudRepository<HouseAddress, String> {
 
     HouseAddress findByHouseCode(String houseCode);
+
 }

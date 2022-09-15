@@ -15,10 +15,11 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile({"local"})
+@Profile({ "local" })
 public class LocalStackConfiguration {
 
     private final AWSCredentialsProvider awsCredentialsProvider;
+
     private final AwsClientBuilder.EndpointConfiguration endpoint;
 
     public LocalStackConfiguration(@Value("${localstack.base-url}") String baseUrl,
@@ -30,21 +31,15 @@ public class LocalStackConfiguration {
     @Primary
     @Bean
     public AmazonSQSAsync sqsClient() {
-        return AmazonSQSAsyncClientBuilder
-                .standard()
-                .withCredentials(awsCredentialsProvider)
-                .withEndpointConfiguration(endpoint)
-                .build();
+        return AmazonSQSAsyncClientBuilder.standard().withCredentials(awsCredentialsProvider).withEndpointConfiguration(
+            endpoint).build();
     }
 
     @Primary
     @Bean
     public AmazonSNSAsync snsClient() {
-        return AmazonSNSAsyncClientBuilder
-                .standard()
-                .withCredentials(awsCredentialsProvider)
-                .withEndpointConfiguration(endpoint)
-                .build();
+        return AmazonSNSAsyncClientBuilder.standard().withCredentials(awsCredentialsProvider).withEndpointConfiguration(
+            endpoint).build();
     }
 
 }

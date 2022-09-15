@@ -30,12 +30,19 @@ import static uk.gov.digital.ho.hocs.info.application.LogEvent.*;
 public class TeamService {
 
     private TeamRepository teamRepository;
+
     private KeycloakService keycloakService;
+
     private UnitRepository unitRepository;
+
     private CaseTypeService caseTypeService;
+
     private ParentTopicRepository parentTopicRepository;
+
     private AuditClient auditClient;
+
     private CaseworkClient caseworkClient;
+
     private final NotifyClient notifyClient;
 
     public TeamService(TeamRepository teamRepository,
@@ -128,7 +135,8 @@ public class TeamService {
             log.info("Got Team for Topic {} and Stage {}", topicUUID, stageType);
             return team;
         } else {
-            throw new ApplicationExceptions.EntityNotFoundException("Team not found for Topic %s and Stage %s", topicUUID, stageType);
+            throw new ApplicationExceptions.EntityNotFoundException("Team not found for Topic %s and Stage %s",
+                topicUUID, stageType);
         }
     }
 
@@ -145,7 +153,8 @@ public class TeamService {
             log.info("Got Team for Stage {} and Text {}", stageType, text);
             return team;
         } else {
-            throw new ApplicationExceptions.EntityNotFoundException("Team not found for Stage %s and Text %s", stageType, text);
+            throw new ApplicationExceptions.EntityNotFoundException("Team not found for Stage %s and Text %s",
+                stageType, text);
         }
     }
 
@@ -170,14 +179,13 @@ public class TeamService {
             keycloakService.createTeamGroupIfNotExists(team.getUuid());
 
             throw new ApplicationExceptions.EntityAlreadyExistsException(
-                    "Team: " + newTeam.getDisplayName() + " already exists."
-            );
+                "Team: " + newTeam.getDisplayName() + " already exists.");
         }
         keycloakService.createTeamGroupIfNotExists(team.getUuid());
         auditClient.createTeamAudit(team);
-        log.info("Team with UUID {} created in Unit {}", team.getUuid().toString(), unit.getShortCode(), value(EVENT, TEAM_CREATED));
+        log.info("Team with UUID {} created in Unit {}", team.getUuid().toString(), unit.getShortCode(),
+            value(EVENT, TEAM_CREATED));
         return team;
-
 
     }
 
@@ -189,8 +197,7 @@ public class TeamService {
         if (teamWithName != null) {
             log.debug("Team {} already exists with name, not renaming team {}.", displayName, teamUUID);
             throw new ApplicationExceptions.EntityAlreadyExistsException(
-                    String.format("Team with name %s already exists.", displayName)
-            );
+                String.format("Team with name %s already exists.", displayName));
         }
 
         Team team = getTeam(teamUUID);
@@ -198,18 +205,19 @@ public class TeamService {
         team.setDisplayName(displayName);
         auditClient.renameTeamAudit(team);
         notifyClient.sendTeamRenameEmail(teamUUID, oldTeamName);
-        log.info("Team with UUID {} name updated to {}.", team.getUuid().toString(), displayName, value(EVENT, TEAM_RENAMED));
+        log.info("Team with UUID {} name updated to {}.", team.getUuid().toString(), displayName,
+            value(EVENT, TEAM_RENAMED));
     }
 
     @Transactional
     public void setTeamActiveFlag(UUID teamUUID, Boolean active) {
         log.debug("Updating Team {} activation", teamUUID);
 
-        if(teamUUID == null) {
+        if (teamUUID == null) {
             throw new IllegalArgumentException("Parameter 'teamUuid' cannot be null");
         }
 
-        if(active == null) {
+        if (active == null) {
             throw new IllegalArgumentException("Parameter 'teamUuid' active be null");
         }
 
@@ -217,8 +225,8 @@ public class TeamService {
         team.setActive(active);
         auditClient.setTeamActivationFlag(team);
         notifyClient.sendTeamActiveStatusEmail(teamUUID, active);
-        log.info("Team with UUID {} active flag set to {}.",
-                team.getUuid().toString(), active, value(EVENT, TEAM_ACTIVE_FLAG_SET));
+        log.info("Team with UUID {} active flag set to {}.", team.getUuid().toString(), active,
+            value(EVENT, TEAM_ACTIVE_FLAG_SET));
     }
 
     @Transactional
@@ -227,7 +235,8 @@ public class TeamService {
         Team team = getTeam(teamUUID);
         team.setLetterName(newLetterName);
         auditClient.renameTeamAudit(team);
-        log.info("Team with UUID {} letter name updated to {}", team.getUuid().toString(), newLetterName, value(EVENT, TEAM_RENAMED));
+        log.info("Team with UUID {} letter name updated to {}", team.getUuid().toString(), newLetterName,
+            value(EVENT, TEAM_RENAMED));
     }
 
     public void addUsersToTeam(List<UUID> userUUIDs, UUID teamUUID) {
@@ -237,7 +246,8 @@ public class TeamService {
         createKeyCloakMappings(teamUUID, userUUIDs);
 
         auditClient.addUsersToTeamAudit(userUuidList, team);
-        log.info("Added users with UUIDs {} to team with UUID {}", userUuidList, team.getUuid().toString(), value(EVENT, USERS_ADDED_TO_TEAM));
+        log.info("Added users with UUIDs {} to team with UUID {}", userUuidList, team.getUuid().toString(),
+            value(EVENT, USERS_ADDED_TO_TEAM));
     }
 
     @Transactional
@@ -269,7 +279,8 @@ public class TeamService {
         newUnit.addTeam(team);
 
         auditClient.moveToNewUnitAudit(teamUUID.toString(), oldUnit.getShortCode(), newUnit.getShortCode());
-        log.info("Moved team {} from Unit {} to Unit {}", teamUUID.toString(), oldUnit.getShortCode(), newUnit.getShortCode(), value(EVENT, TEAM_ADDED_TO_UNIT));
+        log.info("Moved team {} from Unit {} to Unit {}", teamUUID.toString(), oldUnit.getShortCode(),
+            newUnit.getShortCode(), value(EVENT, TEAM_ADDED_TO_UNIT));
     }
 
     public void updateTeamPermissions(UUID teamUUID, Set<PermissionDto> permissionsDto) {
@@ -305,7 +316,8 @@ public class TeamService {
         } else {
             String msg = "Unable to delete team as active parent topic are assigned to team";
             log.error(msg, value(EVENT, TEAM_DELETED_FAILURE));
-            throw new ApplicationExceptions.TeamDeleteException(msg, TeamDeleteActiveParentTopicsDto.from(parentTopics, msg));
+            throw new ApplicationExceptions.TeamDeleteException(msg,
+                TeamDeleteActiveParentTopicsDto.from(parentTopics, msg));
         }
     }
 
@@ -319,13 +331,11 @@ public class TeamService {
         return permissions;
     }
 
-
     private void createKeyCloakMappings(UUID teamUUID, List<UUID> userUUIDs) {
         keycloakService.createTeamGroupIfNotExists(teamUUID);
 
         userUUIDs.forEach(userUuid -> keycloakService.addUserToTeam(userUuid, teamUUID));
     }
-
 
     @Transactional
     public void removeUserFromTeam(UUID userUUID, UUID teamUUID) {
@@ -334,9 +344,11 @@ public class TeamService {
         if (caseworkClient.getCasesForUser(userUUID, teamUUID).isEmpty()) {
             keycloakService.removeUserFromTeam(userUUID, teamUUID);
             auditClient.removeUserFromTeamAudit(userUUID, teamUUID);
-            log.info("Removed user with UUID {} from team with UUID {}", userUUID.toString(), teamUUID.toString(), value(EVENT, USER_REMOVED_FROM_TEAM));
+            log.info("Removed user with UUID {} from team with UUID {}", userUUID.toString(), teamUUID.toString(),
+                value(EVENT, USER_REMOVED_FROM_TEAM));
         } else {
-            throw new ApplicationExceptions.UserRemoveException("Unable to remove user {} from team {} as user has assigned cases", userUUID, teamUUID);
+            throw new ApplicationExceptions.UserRemoveException(
+                "Unable to remove user {} from team {} as user has assigned cases", userUUID, teamUUID);
         }
     }
 
@@ -346,26 +358,24 @@ public class TeamService {
     }
 
     private Boolean displayNameHasChanged(Team team, PatchTeamDto patchTeamDto) {
-        if (patchTeamDto.getDisplayName() != null
-                && !patchTeamDto.getDisplayName().equals(team.getDisplayName())) {
+        if (patchTeamDto.getDisplayName() != null && !patchTeamDto.getDisplayName().equals(team.getDisplayName())) {
             return true;
         }
         return false;
     }
 
     private Boolean unitUuidHasChanged(Team team, PatchTeamDto patchTeamDto) {
-        if (patchTeamDto.getUnitUuid() != null &&
-                !team.getUnit().getUuid().equals(patchTeamDto.getUnitUuid())) {
+        if (patchTeamDto.getUnitUuid() != null && !team.getUnit().getUuid().equals(patchTeamDto.getUnitUuid())) {
             return true;
         }
         return false;
     }
 
     private Boolean teamActiveFlagHasChanged(Team team, PatchTeamDto patchTeamDto) {
-        if (patchTeamDto.getActive() != null &&
-                team.isActive() != patchTeamDto.getActive()) {
+        if (patchTeamDto.getActive() != null && team.isActive() != patchTeamDto.getActive()) {
             return true;
         }
         return false;
     }
+
 }

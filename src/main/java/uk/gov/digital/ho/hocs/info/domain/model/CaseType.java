@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@EqualsAndHashCode(of = {"type"})
+@EqualsAndHashCode(of = { "type" })
 public class CaseType implements Serializable {
 
     @Id
@@ -51,10 +51,17 @@ public class CaseType implements Serializable {
     private String previousCaseType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "deadline_stage", referencedColumnName = "type", insertable=false, updatable=false)
+    @JoinColumn(name = "deadline_stage", referencedColumnName = "type", insertable = false, updatable = false)
     private StageTypeEntity deadlineStageEntity;
 
-    public CaseType(String displayName, String shortCode, String type, UUID unitUUID, String deadlineStage, boolean bulk, boolean active, String previousCaseType) {
+    public CaseType(String displayName,
+                    String shortCode,
+                    String type,
+                    UUID unitUUID,
+                    String deadlineStage,
+                    boolean bulk,
+                    boolean active,
+                    String previousCaseType) {
         this.uuid = UUID.randomUUID();
         this.displayName = displayName;
         this.shortCode = shortCode;
@@ -65,7 +72,14 @@ public class CaseType implements Serializable {
         this.active = active;
         this.previousCaseType = previousCaseType;
     }
-    public CaseType(String displayName, String shortCode, String type, String deadlineStage, boolean bulk, boolean active, String previousCaseType) {
+
+    public CaseType(String displayName,
+                    String shortCode,
+                    String type,
+                    String deadlineStage,
+                    boolean bulk,
+                    boolean active,
+                    String previousCaseType) {
         this.uuid = UUID.randomUUID();
         this.displayName = displayName;
         this.shortCode = shortCode;
@@ -76,4 +90,5 @@ public class CaseType implements Serializable {
         this.active = active;
         this.previousCaseType = previousCaseType;
     }
+
 }

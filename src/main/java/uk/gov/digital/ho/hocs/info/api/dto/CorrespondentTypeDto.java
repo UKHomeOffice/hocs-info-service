@@ -23,10 +23,8 @@ public class CorrespondentTypeDto {
     private String type;
 
     public static CorrespondentTypeDto from(CorrespondentType correspondentType) {
-        return new CorrespondentTypeDto(
-                correspondentType.getUuid(),
-                correspondentType.getDisplayName(),
-                correspondentType.getType());
+        return new CorrespondentTypeDto(correspondentType.getUuid(), correspondentType.getDisplayName(),
+            correspondentType.getType());
     }
 
 }

@@ -14,7 +14,9 @@ import java.util.Set;
 @Service
 @Slf4j
 public class CountryService {
+
     private final CountryRepository countryRepository;
+
     private final ListConsumerService listConsumerService;
 
     @Autowired
@@ -35,9 +37,7 @@ public class CountryService {
         countryRepository.deleteAll();
         updateCountry(listConsumerService.createFromCountryFile());
         updateCountry(listConsumerService.createFromTerritoryFile());
-        List<Country> customEntries = List.of(
-                new Country("Unknown", true),
-                new Country("Netherlands Antilles", false));
+        List<Country> customEntries = List.of(new Country("Unknown", true), new Country("Netherlands Antilles", false));
         updateCountry(customEntries);
         log.info("Finished Updating Countries/Territories List");
     }
@@ -57,4 +57,5 @@ public class CountryService {
             }
         });
     }
+
 }

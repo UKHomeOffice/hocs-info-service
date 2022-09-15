@@ -17,4 +17,5 @@ public class TopicTeam extends Topic {
     private String displayName;
 
     private Set<Team> teams;
+
 }

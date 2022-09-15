@@ -23,4 +23,5 @@ public class RefreshCountries {
         log.info("Refresh countries start");
         countryService.updateWebCountryList();
     }
+
 }

@@ -21,7 +21,9 @@ public class TeamDeleteActiveParentTopicsDto {
     List<ParentTopicDto> parentTopicDto;
 
     public static TeamDeleteActiveParentTopicsDto from(List<ParentTopic> parentTopics, String errorMessage) {
-        List<ParentTopicDto> parentTopicDto = parentTopics.stream().map(ParentTopicDto::from).collect(Collectors.toList());
-        return new TeamDeleteActiveParentTopicsDto(errorMessage,parentTopicDto);
+        List<ParentTopicDto> parentTopicDto = parentTopics.stream().map(ParentTopicDto::from).collect(
+            Collectors.toList());
+        return new TeamDeleteActiveParentTopicsDto(errorMessage, parentTopicDto);
     }
+
 }

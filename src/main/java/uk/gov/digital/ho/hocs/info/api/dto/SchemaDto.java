@@ -47,9 +47,12 @@ public class SchemaDto {
 
     public static SchemaDto from(Schema schema) {
         List<FieldDto> fieldDtos = schema.getFields().stream().map(FieldDto::from).collect(Collectors.toList());
-        List<SecondaryActionDto> secondaryActionsDtos = schema.getSecondaryActions().stream().map(SecondaryActionDto::from).collect(Collectors.toList());
+        List<SecondaryActionDto> secondaryActionsDtos = schema.getSecondaryActions().stream().map(
+            SecondaryActionDto::from).collect(Collectors.toList());
 
-        return new SchemaDto(schema.getUuid(), schema.getStageType(), schema.getType(), schema.getTitle(), schema.getActionLabel(),
-                schema.isActive(), fieldDtos, secondaryActionsDtos, schema.getProps(), schema.getValidation(), schema.getSummary());
+        return new SchemaDto(schema.getUuid(), schema.getStageType(), schema.getType(), schema.getTitle(),
+            schema.getActionLabel(), schema.isActive(), fieldDtos, secondaryActionsDtos, schema.getProps(),
+            schema.getValidation(), schema.getSummary());
     }
+
 }

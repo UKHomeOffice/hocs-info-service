@@ -32,5 +32,4 @@ public class Profile implements Serializable {
     @JoinColumn(name = "profile_name", referencedColumnName = "profile_name")
     private List<SearchField> searchFields;
 
-
 }

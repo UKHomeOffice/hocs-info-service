@@ -38,5 +38,4 @@ public class GetCaseworkCaseDataResponse {
     @JsonProperty("primaryCorrespondentUUID")
     private UUID primaryCorrespondent;
 
-
 }

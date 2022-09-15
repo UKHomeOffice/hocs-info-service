@@ -23,8 +23,8 @@ public class EntityResourceTest {
 
     @Mock
     protected EntityService entityService;
-    private EntityResource entityResource;
 
+    private EntityResource entityResource;
 
     @Before
     public void before() {
@@ -36,7 +36,8 @@ public class EntityResourceTest {
         String caseType = "C1";
         String simpleName = "name123";
         String data = "{ title: 'Title 321' }";
-        Set<Entity> entitiesToReturn = Set.of(new Entity(1L, UUID.randomUUID(), simpleName, data, UUID.randomUUID(), true, 10));
+        Set<Entity> entitiesToReturn = Set.of(
+            new Entity(1L, UUID.randomUUID(), simpleName, data, UUID.randomUUID(), true, 10));
 
         when(entityService.getBySimpleName("caseType", caseType, "summary")).thenReturn(entitiesToReturn);
 
@@ -159,7 +160,7 @@ public class EntityResourceTest {
     }
 
     @Test
-    public void deleteEntity(){
+    public void deleteEntity() {
         String uuid = UUID.randomUUID().toString();
         String listName = "L1";
 
@@ -170,4 +171,5 @@ public class EntityResourceTest {
         verify(entityService).deleteEntity(listName, uuid);
         verifyNoMoreInteractions(entityService);
     }
+
 }

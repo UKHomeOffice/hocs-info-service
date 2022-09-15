@@ -62,8 +62,8 @@ class EntityResource {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping(value="/entity/list/{listName}")
-    public ResponseEntity deleteEntity(@PathVariable String listName, @RequestBody String entityUUID){
+    @DeleteMapping(value = "/entity/list/{listName}")
+    public ResponseEntity deleteEntity(@PathVariable String listName, @RequestBody String entityUUID) {
         entityService.deleteEntity(listName, entityUUID);
         return ResponseEntity.ok().build();
     }

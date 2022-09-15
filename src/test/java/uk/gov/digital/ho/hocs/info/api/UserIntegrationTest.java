@@ -3,7 +3,9 @@ package uk.gov.digital.ho.hocs.info.api;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
+
 import org.apache.http.entity.ContentType;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -53,8 +55,8 @@ public class UserIntegrationTest extends BaseKeycloakTest {
         var createUserDto = new CreateUserDto("1@example.com", "A", "B");
 
         HttpEntity<CreateUserDto> httpEntity = new HttpEntity<>(createUserDto, headers);
-        ResponseEntity<CreateUserResponse> postResponse = restTemplate.exchange(
-            getBasePath() + "/user", HttpMethod.POST, httpEntity, CreateUserResponse.class);
+        ResponseEntity<CreateUserResponse> postResponse = restTemplate.exchange(getBasePath() + "/user",
+            HttpMethod.POST, httpEntity, CreateUserResponse.class);
         CreateUserResponse createUserResponse = postResponse.getBody();
 
         assertThat(createUserResponse).isNotNull();
@@ -78,10 +80,9 @@ public class UserIntegrationTest extends BaseKeycloakTest {
         // the existing tests are using a real Keycloak instance rather than a mock
         // so create the user first and then trying adding a duplicate to trigger the error
         HttpEntity<CreateUserDto> httpEntity = new HttpEntity<>(createUserDto, headers);
-        restTemplate.exchange(
-                getBasePath() + "/user", HttpMethod.POST, httpEntity, CreateUserResponse.class);
-        ResponseEntity<Void> postResponse = restTemplate.exchange(
-                getBasePath() + "/user", HttpMethod.POST, httpEntity, Void.class);
+        restTemplate.exchange(getBasePath() + "/user", HttpMethod.POST, httpEntity, CreateUserResponse.class);
+        ResponseEntity<Void> postResponse = restTemplate.exchange(getBasePath() + "/user", HttpMethod.POST, httpEntity,
+            Void.class);
 
         assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
@@ -92,15 +93,15 @@ public class UserIntegrationTest extends BaseKeycloakTest {
         var createUserDto = new CreateUserDto("1@example.com", "A", "B");
 
         HttpEntity<CreateUserDto> httpEntity = new HttpEntity<>(createUserDto, headers);
-        ResponseEntity<CreateUserResponse> postResponse = restTemplate.exchange(
-            getBasePath() + "/user", HttpMethod.POST, httpEntity, CreateUserResponse.class);
+        ResponseEntity<CreateUserResponse> postResponse = restTemplate.exchange(getBasePath() + "/user",
+            HttpMethod.POST, httpEntity, CreateUserResponse.class);
         CreateUserResponse createUserResponse = postResponse.getBody();
 
         //update
         UpdateUserDto updateUserDto = new UpdateUserDto("A1", "B1", false);
         HttpEntity<UpdateUserDto> httpEntity2 = new HttpEntity<>(updateUserDto, headers);
-        restTemplate.exchange(
-            getBasePath() + "/user/" + createUserResponse.getUserUUID(), HttpMethod.PUT, httpEntity2, String.class);
+        restTemplate.exchange(getBasePath() + "/user/" + createUserResponse.getUserUUID(), HttpMethod.PUT, httpEntity2,
+            String.class);
 
         //get
         ResponseEntity<UserDto> getResponse = restTemplate.exchange(
@@ -115,4 +116,5 @@ public class UserIntegrationTest extends BaseKeycloakTest {
     private String getBasePath() {
         return "http://localhost:" + port;
     }
+
 }

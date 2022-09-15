@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 public class CountryRepositoryTest {
 
@@ -61,4 +61,5 @@ public class CountryRepositoryTest {
 
         assertThat(repository.findAllActiveCountrys().size()).isEqualTo(0);
     }
+
 }

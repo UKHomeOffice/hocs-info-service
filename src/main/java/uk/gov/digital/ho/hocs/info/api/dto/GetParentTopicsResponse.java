@@ -18,7 +18,9 @@ public class GetParentTopicsResponse {
     List<ParentTopicDto> parentTopicDto;
 
     public static GetParentTopicsResponse from(List<ParentTopic> parentTopics) {
-        List<ParentTopicDto> parentTopicDto = parentTopics.stream().map(ParentTopicDto::from).collect(Collectors.toList());
+        List<ParentTopicDto> parentTopicDto = parentTopics.stream().map(ParentTopicDto::from).collect(
+            Collectors.toList());
         return new GetParentTopicsResponse(parentTopicDto);
     }
+
 }

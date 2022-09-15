@@ -43,7 +43,6 @@ public class MemberServiceTest {
         verifyNoMoreInteractions(memberRepository);
     }
 
-
     @Test
     public void shouldUpdateOneMemberFromEachOfTheSixParliamentApis() {
 
@@ -62,7 +61,9 @@ public class MemberServiceTest {
 
     @Test
     public void shouldReturnMemberWithAddress() {
-        when(memberRepository.findByUuid(any())).thenReturn(new Member(1L, "commons", "member1 title", "ext1", UUID.randomUUID(), LocalDateTime.now(), false, UUID.randomUUID(), new HouseAddress()));
+        when(memberRepository.findByUuid(any())).thenReturn(
+            new Member(1L, "commons", "member1 title", "ext1", UUID.randomUUID(), LocalDateTime.now(), false,
+                UUID.randomUUID(), new HouseAddress()));
 
         memberService.getMember(any());
         verify(memberRepository, times(1)).findByUuid(any());
@@ -71,13 +72,13 @@ public class MemberServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenMemberNotFound()  {
+    public void shouldThrowExceptionWhenMemberNotFound() {
         UUID uuid = UUID.randomUUID();
         when(memberRepository.findByUuid(uuid)).thenReturn(null);
         try {
             memberService.getMember(uuid);
         } catch (ApplicationExceptions.EntityNotFoundException e) {
-           assert(e.getLocalizedMessage().equals("Could not find member " + uuid));
+            assert (e.getLocalizedMessage().equals("Could not find member " + uuid));
         }
     }
 

@@ -4,6 +4,7 @@ import com.amazonaws.services.sns.model.MessageAttributeValue;
 import org.springframework.util.StringUtils;
 
 public class SnsStringMessageAttributeValue extends MessageAttributeValue {
+
     private static final String type = "String";
 
     public SnsStringMessageAttributeValue(String value) {
@@ -14,4 +15,5 @@ public class SnsStringMessageAttributeValue extends MessageAttributeValue {
         this.setDataType(type);
         this.setStringValue(value);
     }
+
 }

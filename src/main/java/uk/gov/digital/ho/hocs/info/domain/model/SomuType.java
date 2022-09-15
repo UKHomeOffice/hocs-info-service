@@ -44,4 +44,5 @@ public class SomuType {
         this.schema = schema;
         this.active = active;
     }
+
 }

@@ -25,10 +25,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 public class EntityRepositoryTest {
 
-    private final EntityList entityList =
-            new EntityList(UUID.randomUUID(), "Test Name", "TEST_NAME", true);
+    private final EntityList entityList = new EntityList(UUID.randomUUID(), "Test Name", "TEST_NAME", true);
+
     @Autowired
     private TestEntityManager entityManager;
+
     @Autowired
     private EntityRepository repository;
 
@@ -44,16 +45,15 @@ public class EntityRepositoryTest {
 
     @Test()
     public void shouldReturnList_bySortOrder() {
-        List<Entity> entities = List.of(
-                new Entity(UUID.randomUUID(), "simple", "{}", entityList.getUuid(), true, 20),
-                new Entity(UUID.randomUUID(), "simple2", "{}", entityList.getUuid(), true, 10)
-        );
+        List<Entity> entities = List.of(new Entity(UUID.randomUUID(), "simple", "{}", entityList.getUuid(), true, 20),
+            new Entity(UUID.randomUUID(), "simple2", "{}", entityList.getUuid(), true, 10));
 
         entities.forEach(entityManager::persistAndFlush);
 
         List<Entity> fetchedEntities = repository.findByEntityListSimpleName(entityList.getSimpleName());
 
         assertThat(fetchedEntities).isEqualTo(
-                entities.stream().sorted(Comparator.comparing(Entity::getSortOrder)).collect(Collectors.toList()));
+            entities.stream().sorted(Comparator.comparing(Entity::getSortOrder)).collect(Collectors.toList()));
     }
+
 }

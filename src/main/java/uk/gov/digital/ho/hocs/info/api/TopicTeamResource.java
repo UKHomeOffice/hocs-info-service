@@ -35,7 +35,9 @@ public class TopicTeamResource {
     }
 
     @PostMapping(value = "/topic/{topicUUID}/team/{teamUUID}")
-    public ResponseEntity addTeamToTopic(@PathVariable UUID topicUUID, @PathVariable UUID teamUUID, @RequestBody AddTeamToTopicDto request) {
+    public ResponseEntity addTeamToTopic(@PathVariable UUID topicUUID,
+                                         @PathVariable UUID teamUUID,
+                                         @RequestBody AddTeamToTopicDto request) {
         log.info("Adding team () to topic {}", teamUUID, topicUUID);
         topicTeamService.addTeamToTopic(topicUUID, teamUUID, request);
         return ResponseEntity.ok().build();
@@ -45,4 +47,5 @@ public class TopicTeamResource {
     public ResponseEntity<List<SimpleMapItem>> getTopicToTeamMappingByStageType(@PathVariable String stageType) {
         return ResponseEntity.ok(topicTeamService.getTopicToTeamMappingByStageType(stageType));
     }
+
 }

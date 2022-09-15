@@ -4,7 +4,9 @@ import uk.gov.digital.ho.hocs.info.application.LogEvent;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDeleteActiveParentTopicsDto;
 
 public interface ApplicationExceptions {
+
     class EntityCreationException extends RuntimeException {
+
         private final LogEvent event;
 
         public EntityCreationException(String msg, LogEvent event, Object... args) {
@@ -20,9 +22,11 @@ public interface ApplicationExceptions {
         public LogEvent getEvent() {
             return event;
         }
+
     }
 
     class EntityPermissionException extends RuntimeException {
+
         private final LogEvent event;
 
         public EntityPermissionException(String msg, LogEvent event, Object... args) {
@@ -38,9 +42,11 @@ public interface ApplicationExceptions {
         public LogEvent getEvent() {
             return event;
         }
+
     }
 
     class CorrespondentCreationException extends RuntimeException {
+
         private final LogEvent event;
 
         public CorrespondentCreationException(String msg, LogEvent event, Object... args) {
@@ -56,9 +62,11 @@ public interface ApplicationExceptions {
         public LogEvent getEvent() {
             return event;
         }
+
     }
 
     class EntityNotFoundException extends RuntimeException {
+
         private final LogEvent event;
 
         public EntityNotFoundException(String msg, LogEvent event, Object... args) {
@@ -74,9 +82,11 @@ public interface ApplicationExceptions {
         public LogEvent getEvent() {
             return event;
         }
+
     }
 
     class ResourceException extends RuntimeException {
+
         private final LogEvent event;
 
         ResourceException(String msg, LogEvent event, Object... args) {
@@ -87,6 +97,7 @@ public interface ApplicationExceptions {
         public LogEvent getEvent() {
             return event;
         }
+
     }
 
     class ResourceNotFoundException extends ResourceException {
@@ -106,6 +117,7 @@ public interface ApplicationExceptions {
     }
 
     class EntityAlreadyExistsException extends RuntimeException {
+
         private final LogEvent event;
 
         public EntityAlreadyExistsException(String msg, LogEvent event, Object... args) {
@@ -125,12 +137,15 @@ public interface ApplicationExceptions {
     }
 
     class UserAlreadyExistsException extends EntityAlreadyExistsException {
+
         public UserAlreadyExistsException(String msg, LogEvent event, Object... args) {
             super(msg, event, args);
         }
+
     }
 
     class IngestException extends RuntimeException {
+
         private final LogEvent event;
 
         public IngestException(String msg, LogEvent event, Object... args) {
@@ -150,17 +165,21 @@ public interface ApplicationExceptions {
     }
 
     class TeamDeleteException extends RuntimeException {
+
         private final LogEvent event;
 
         private final TeamDeleteActiveParentTopicsDto teamDeleteActiveParentTopicsDto;
 
-        public TeamDeleteException(TeamDeleteActiveParentTopicsDto teamDeleteActiveParentTopicsDto,String msg, LogEvent event, Object... args) {
+        public TeamDeleteException(TeamDeleteActiveParentTopicsDto teamDeleteActiveParentTopicsDto,
+                                   String msg,
+                                   LogEvent event,
+                                   Object... args) {
             super(String.format(msg, args));
             this.event = event;
             this.teamDeleteActiveParentTopicsDto = teamDeleteActiveParentTopicsDto;
         }
 
-        public TeamDeleteException(String msg,TeamDeleteActiveParentTopicsDto teamDeleteActiveParentTopicsDto) {
+        public TeamDeleteException(String msg, TeamDeleteActiveParentTopicsDto teamDeleteActiveParentTopicsDto) {
             super(msg);
             this.event = LogEvent.UNCAUGHT_EXCEPTION;
             this.teamDeleteActiveParentTopicsDto = teamDeleteActiveParentTopicsDto;
@@ -177,7 +196,8 @@ public interface ApplicationExceptions {
 
     }
 
-    class UnitDeleteException extends RuntimeException{
+    class UnitDeleteException extends RuntimeException {
+
         private final LogEvent event;
 
         public UnitDeleteException(String msg, LogEvent event, Object... args) {
@@ -193,9 +213,11 @@ public interface ApplicationExceptions {
         public LogEvent getEvent() {
             return event;
         }
+
     }
 
     class UserRemoveException extends RuntimeException {
+
         private final LogEvent event;
 
         public UserRemoveException(String msg, LogEvent event, Object... args) {
@@ -211,9 +233,11 @@ public interface ApplicationExceptions {
         public LogEvent getEvent() {
             return event;
         }
+
     }
 
-    class NominatedContactDeleteException extends RuntimeException{
+    class NominatedContactDeleteException extends RuntimeException {
+
         private final LogEvent event;
 
         public NominatedContactDeleteException(String msg, LogEvent event, Object... args) {
@@ -229,9 +253,11 @@ public interface ApplicationExceptions {
         public LogEvent getEvent() {
             return event;
         }
+
     }
 
     class TopicCreationException extends RuntimeException {
+
         private final LogEvent event;
 
         public TopicCreationException(String msg, LogEvent event, Object... args) {
@@ -247,8 +273,8 @@ public interface ApplicationExceptions {
         public LogEvent getEvent() {
             return event;
         }
-    }
 
+    }
 
     class TopicUpdateException extends RuntimeException {
 
@@ -263,9 +289,11 @@ public interface ApplicationExceptions {
             super(msg);
             this.event = LogEvent.UNCAUGHT_EXCEPTION;
         }
+
         public LogEvent getEvent() {
             return event;
         }
+
     }
 
 }

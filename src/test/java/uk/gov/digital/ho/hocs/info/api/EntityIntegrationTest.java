@@ -25,15 +25,20 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "classpath:beforeTest.sql", config = @SqlConfig(transactionMode = ISOLATED))
-@Sql(scripts = "classpath:afterTest.sql", config = @SqlConfig(transactionMode = ISOLATED), executionPhase = AFTER_TEST_METHOD)
-@ActiveProfiles({"local", "integration"})
+@Sql(scripts = "classpath:afterTest.sql",
+     config = @SqlConfig(transactionMode = ISOLATED),
+     executionPhase = AFTER_TEST_METHOD)
+@ActiveProfiles({ "local", "integration" })
 public class EntityIntegrationTest {
 
     TestRestTemplate restTemplate = new TestRestTemplate();
+
     @LocalServerPort
     int port;
+
     @Autowired
     ObjectMapper mapper;
+
     private HttpHeaders headers;
 
     @Before
@@ -51,8 +56,7 @@ public class EntityIntegrationTest {
 
         // when
         ResponseEntity<TestEntityDto> entityResponse = restTemplate.exchange(
-                getBasePath() + "/entity/simpleName/TEST_ENTITY_2", HttpMethod.GET, httpEntity,
-                TestEntityDto.class);
+            getBasePath() + "/entity/simpleName/TEST_ENTITY_2", HttpMethod.GET, httpEntity, TestEntityDto.class);
 
         // then
         assertThat(entityResponse).isNotNull();
@@ -67,12 +71,8 @@ public class EntityIntegrationTest {
 
     @Test
     public void shouldReturn404WhenWhenActionIdNotExist() {
-        ResponseEntity<Void> response = restTemplate.exchange(
-                getBasePath() + "/entity/simpleName/NON_EXISTANT_ENTITY" ,
-                HttpMethod.GET,
-                new HttpEntity<>(headers),
-                Void.class
-        );
+        ResponseEntity<Void> response = restTemplate.exchange(getBasePath() + "/entity/simpleName/NON_EXISTANT_ENTITY",
+            HttpMethod.GET, new HttpEntity<>(headers), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 
@@ -85,7 +85,9 @@ public class EntityIntegrationTest {
     public static class TestEntityDto {
 
         private String simpleName;
+
         private String uuid;
+
         private HashMap<String, String> data;
 
         public String getSimpleName() {
@@ -111,5 +113,7 @@ public class EntityIntegrationTest {
         public void setData(HashMap<String, String> data) {
             this.data = data;
         }
+
     }
+
 }

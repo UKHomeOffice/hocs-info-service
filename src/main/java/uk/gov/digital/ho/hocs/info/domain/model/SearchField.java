@@ -38,5 +38,4 @@ public class SearchField implements Serializable {
     @Column(name = "props")
     private String props;
 
-
 }

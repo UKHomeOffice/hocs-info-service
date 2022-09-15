@@ -16,6 +16,7 @@ import static org.mockito.Mockito.mock;
 
 @RunWith(SpringRunner.class)
 public class EmailDomainValidatorTest {
+
     @Mock
     private final EmailDomainWhitelisted emailDomainWhitelisted = mock(EmailDomainWhitelisted.class);
 
@@ -32,43 +33,38 @@ public class EmailDomainValidatorTest {
     }
 
     @Test
-    public void whenEmailAddressIsValidButUppercase_ShouldReturnTrue(){
-        assertThat(emailDomainValidator.isValid("test@EXAMPLE.COM", constraintValidatorContext))
-                .isTrue();
+    public void whenEmailAddressIsValidButUppercase_ShouldReturnTrue() {
+        assertThat(emailDomainValidator.isValid("test@EXAMPLE.COM", constraintValidatorContext)).isTrue();
     }
 
     @Test
-    public void whenEmailAddressIsValidButSecondInList_ShouldReturnTrue(){
-        assertThat(emailDomainValidator.isValid("test@example.org", constraintValidatorContext))
-                .isTrue();
+    public void whenEmailAddressIsValidButSecondInList_ShouldReturnTrue() {
+        assertThat(emailDomainValidator.isValid("test@example.org", constraintValidatorContext)).isTrue();
     }
 
     @Test
-    public void whenEmailAddressIsValidButNotInList_ShouldReturnFalse(){
-        assertThat(emailDomainValidator.isValid("test@test.com", constraintValidatorContext))
-                .isFalse();
+    public void whenEmailAddressIsValidButNotInList_ShouldReturnFalse() {
+        assertThat(emailDomainValidator.isValid("test@test.com", constraintValidatorContext)).isFalse();
     }
 
     @Test
-    public void whenSubdomainEmailAddressIsValidButNotInList_ShouldReturnFalse(){
-        assertThat(emailDomainValidator.isValid("test@sub.example.com", constraintValidatorContext))
-                .isFalse();
+    public void whenSubdomainEmailAddressIsValidButNotInList_ShouldReturnFalse() {
+        assertThat(emailDomainValidator.isValid("test@sub.example.com", constraintValidatorContext)).isFalse();
     }
 
     @Test
-    public void whenPrefixedDomainEmailAddressIsValidButNotInList_ShouldReturnFalse(){
-        assertThat(emailDomainValidator.isValid("test@notexample.com", constraintValidatorContext))
-                .isFalse();
-    }
-    @Test
-    public void whenEmailAddressIsNull_ShouldReturnFalse(){
-        assertThat(emailDomainValidator.isValid(null, constraintValidatorContext))
-                .isFalse();
+    public void whenPrefixedDomainEmailAddressIsValidButNotInList_ShouldReturnFalse() {
+        assertThat(emailDomainValidator.isValid("test@notexample.com", constraintValidatorContext)).isFalse();
     }
 
     @Test
-    public void whenEmailAddressIsEmpty_ShouldReturnFalse(){
-        assertThat(emailDomainValidator.isValid("", constraintValidatorContext))
-                .isFalse();
+    public void whenEmailAddressIsNull_ShouldReturnFalse() {
+        assertThat(emailDomainValidator.isValid(null, constraintValidatorContext)).isFalse();
     }
+
+    @Test
+    public void whenEmailAddressIsEmpty_ShouldReturnFalse() {
+        assertThat(emailDomainValidator.isValid("", constraintValidatorContext)).isFalse();
+    }
+
 }

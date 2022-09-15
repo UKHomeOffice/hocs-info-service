@@ -8,4 +8,5 @@ import java.util.List;
 public interface CaseDetailsFieldRepository extends CrudRepository<CaseDetailsField, Long> {
 
     List<CaseDetailsField> findByCaseTypeOrderBySortOrder(String caseType);
+
 }

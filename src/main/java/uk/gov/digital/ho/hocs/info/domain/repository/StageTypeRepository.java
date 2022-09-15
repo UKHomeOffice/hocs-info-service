@@ -11,6 +11,9 @@ import java.util.UUID;
 public interface StageTypeRepository extends CrudRepository<StageTypeEntity, String> {
 
     StageTypeEntity findByType(String type);
+
     Set<StageTypeEntity> findAllByCaseTypeUUID(UUID caseTypeUUID);
+
     Set<StageTypeEntity> findAllBy();
+
 }

@@ -41,4 +41,5 @@ public class MemberResource {
         Integer rowsProcessed = memberService.updateWebMemberLists();
         return ResponseEntity.ok().body("Rows processed : " + rowsProcessed);
     }
+
 }

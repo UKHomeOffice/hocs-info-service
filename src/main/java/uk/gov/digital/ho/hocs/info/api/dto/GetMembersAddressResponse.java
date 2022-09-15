@@ -6,10 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.domain.model.Member;
 
-@AllArgsConstructor(access =  AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 
 public class GetMembersAddressResponse {
+
     @JsonProperty("type")
     String type;
 
@@ -44,19 +45,11 @@ public class GetMembersAddressResponse {
     String externalKey;
 
     public static GetMembersAddressResponse from(Member member) {
-        return new GetMembersAddressResponse(
-                "MEMBER",
-                member.getFullTitle(),
-                member.getHouseAddress().getPostcode(),
-                member.getHouseAddress().getAddress1(),
-                member.getHouseAddress().getAddress2(),
-                member.getHouseAddress().getAddress3(),
-                member.getHouseAddress().getCountry(),
-                "",
-                "",
-                "",
-                member.getExternalReference()
-        );
+        return new GetMembersAddressResponse("MEMBER", member.getFullTitle(), member.getHouseAddress().getPostcode(),
+            member.getHouseAddress().getAddress1(), member.getHouseAddress().getAddress2(),
+            member.getHouseAddress().getAddress3(), member.getHouseAddress().getCountry(), "", "", "",
+            member.getExternalReference());
     }
+
 }
 

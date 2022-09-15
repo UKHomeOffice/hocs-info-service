@@ -34,6 +34,7 @@ public class SchemaServiceTest {
     ObjectMapper mapper;
 
     private SchemaService service;
+
     private final Field field = new Field("", "Field1", "", "", "", true, AccessLevel.READ, null);
 
     @Before
@@ -57,17 +58,17 @@ public class SchemaServiceTest {
     @Test
     public void getExtractOnlyFields() {
 
-        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true, AccessLevel.READ, null);
-        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true, AccessLevel.READ, null);
+        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true,
+            AccessLevel.READ, null);
+        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true,
+            AccessLevel.READ, null);
         UUID schemaUUID = UUID.randomUUID();
 
+        List<FieldScreen> fields = List.of(new FieldScreen(schemaUUID, field1.getUuid(), 1L, field1),
+            new FieldScreen(schemaUUID, field2.getUuid(), 2L, field2));
 
-        List<FieldScreen> fields = List.of(
-                new FieldScreen(schemaUUID, field1.getUuid(), 1L, field1),
-                new FieldScreen(schemaUUID, field2.getUuid(), 2L, field2));
-
-
-        Schema testSchema = new Schema(20L, schemaUUID, "type", "schemaTitle", "save", true, "stageType", fields, null, null, null, null);
+        Schema testSchema = new Schema(20L, schemaUUID, "type", "schemaTitle", "save", true, "stageType", fields, null,
+            null, null, null);
 
         when(schemaRepository.findExtractOnlySchema()).thenReturn(testSchema);
 
@@ -102,23 +103,27 @@ public class SchemaServiceTest {
     public void getAllReportingFieldsForCaseType() {
         String caseType = "TYPE1";
 
-        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true,AccessLevel.READ,null);
-        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true,AccessLevel.READ,null);
-        Field field3 = new Field(12L, UUID.randomUUID(), "component", "Field3", "label", "", "", false, true, true,AccessLevel.READ,null);
-        Field field4 = new Field(13L, UUID.randomUUID(), "component", "Field4", "label", "", "", false, false, true,AccessLevel.READ,null);
+        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true,
+            AccessLevel.READ, null);
+        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true,
+            AccessLevel.READ, null);
+        Field field3 = new Field(12L, UUID.randomUUID(), "component", "Field3", "label", "", "", false, true, true,
+            AccessLevel.READ, null);
+        Field field4 = new Field(13L, UUID.randomUUID(), "component", "Field4", "label", "", "", false, false, true,
+            AccessLevel.READ, null);
 
         UUID schema1UUID = UUID.randomUUID();
         UUID schema2UUID = UUID.randomUUID();
 
-        List<FieldScreen> fields1 = List.of(
-                new FieldScreen(schema1UUID, field1.getUuid(), 1L, field1),
-                new FieldScreen(schema1UUID, field2.getUuid(), 2L, field2));
-        List<FieldScreen> fields2 = List.of(
-                new FieldScreen(schema2UUID, field3.getUuid(), 1L, field3),
-                new FieldScreen(schema2UUID, field4.getUuid(), 2L, field4));
+        List<FieldScreen> fields1 = List.of(new FieldScreen(schema1UUID, field1.getUuid(), 1L, field1),
+            new FieldScreen(schema1UUID, field2.getUuid(), 2L, field2));
+        List<FieldScreen> fields2 = List.of(new FieldScreen(schema2UUID, field3.getUuid(), 1L, field3),
+            new FieldScreen(schema2UUID, field4.getUuid(), 2L, field4));
 
-        Schema schema1 = new Schema(21L, UUID.randomUUID(), "type1", "schemaTitle1", "save", true, "stageType", fields1, null, null, null, null);
-        Schema schema2 = new Schema(22L, UUID.randomUUID(), "type2", "schemaTitle2", "save", true, "stageType", fields2, null, null, null, null);
+        Schema schema1 = new Schema(21L, UUID.randomUUID(), "type1", "schemaTitle1", "save", true, "stageType", fields1,
+            null, null, null, null);
+        Schema schema2 = new Schema(22L, UUID.randomUUID(), "type2", "schemaTitle2", "save", true, "stageType", fields2,
+            null, null, null, null);
 
         when(schemaRepository.findAllActiveFormsByCaseType(caseType)).thenReturn(Set.of(schema1, schema2));
 
@@ -149,7 +154,8 @@ public class SchemaServiceTest {
     public void getSchemaByType() {
         String type = "TEST_TYPE";
         UUID uuid = UUID.randomUUID();
-        Schema testSchema = new Schema(1L, uuid, type, "schemaTitle", "save", true, "stageType", null, null, null, null, null);
+        Schema testSchema = new Schema(1L, uuid, type, "schemaTitle", "save", true, "stageType", null, null, null, null,
+            null);
 
         when(schemaRepository.findByType(type)).thenReturn(testSchema);
 
@@ -213,10 +219,11 @@ public class SchemaServiceTest {
         Field field = new Field("component", "Field1", "label", "", "", true, AccessLevel.RESTRICTED_OWNER, null);
         List<Field> fieldList = List.of(field);
 
-        when(fieldRepository.findAllByAccessLevelAndCaseType(eq(caseType),eq(accessLevel.toString()))).thenReturn(fieldList);
+        when(fieldRepository.findAllByAccessLevelAndCaseType(eq(caseType), eq(accessLevel.toString()))).thenReturn(
+            fieldList);
 
         // When
-        List<FieldDto> result  = service.getFieldsByCaseTypePermissionLevel(caseType,accessLevel);
+        List<FieldDto> result = service.getFieldsByCaseTypePermissionLevel(caseType, accessLevel);
 
         // Then
         assertThat(result).isNotNull();

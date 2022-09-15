@@ -14,9 +14,11 @@ public class TeamTest {
         Team team = new Team("Team 1", true);
 
         Permission permission1 = new Permission(AccessLevel.OWNER, team,
-                new CaseType(1L,UUID.randomUUID(), "MIN", "type","a1", UUID.randomUUID(), "DCU_MIN_DISPATCH", true,true, null, null));
+            new CaseType(1L, UUID.randomUUID(), "MIN", "type", "a1", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true,
+                null, null));
         Permission permission2 = new Permission(AccessLevel.OWNER, team,
-                new CaseType(1L,UUID.randomUUID(), "MIN", "type","a1", UUID.randomUUID(),"DCU_MIN_DISPATCH",  true, true, null, null));
+            new CaseType(1L, UUID.randomUUID(), "MIN", "type", "a1", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true,
+                null, null));
 
         assertThat(team.getPermissions().size()).isEqualTo(0);
         team.addPermission(permission1);

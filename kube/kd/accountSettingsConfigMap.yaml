@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: account-settings
 data:
-  ALLOWED_EMAIL_DOMAINS: {{ .ALLOWED_EMAIL_DOMAINS }}
+  ALLOWED_EMAIL_DOMAINS: { { .ALLOWED_EMAIL_DOMAINS } }

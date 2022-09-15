@@ -17,7 +17,8 @@ public class FieldDtoTest {
         String fieldProps = "{}";
         boolean fieldSummary = false;
 
-        Field field = new Field(fieldComponent,fieldName,fieldLabel,fieldValidation,fieldProps,fieldSummary, AccessLevel.READ,null);
+        Field field = new Field(fieldComponent, fieldName, fieldLabel, fieldValidation, fieldProps, fieldSummary,
+            AccessLevel.READ, null);
 
         FieldDto dto = FieldDto.from(field);
 
@@ -39,7 +40,8 @@ public class FieldDtoTest {
         String fieldProps = "{\"choices\":[{\"label\":\"TestLabel\",\"value\":\"TestValue\"}],\"label\":\"test field\",\"name\":\"testField\"}";
         boolean fieldSummary = false;
 
-        Field field = new Field(fieldComponent,fieldName,fieldLabel,fieldValidation,fieldProps,fieldSummary, AccessLevel.READ,null);
+        Field field = new Field(fieldComponent, fieldName, fieldLabel, fieldValidation, fieldProps, fieldSummary,
+            AccessLevel.READ, null);
         ObjectMapper mapper = new ObjectMapper();
         FieldDto dto = FieldDto.fromWithDecoratedProps(field, mapper);
 
@@ -51,4 +53,5 @@ public class FieldDtoTest {
         Assert.assertEquals("Field summary do not match", fieldSummary, dto.isSummary());
         Assert.assertNull("Field child do not match", dto.getChild());
     }
+
 }

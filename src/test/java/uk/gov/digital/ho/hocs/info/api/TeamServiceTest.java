@@ -57,15 +57,8 @@ public class TeamServiceTest {
 
     @Before
     public void setUp() {
-        this.teamService = new TeamService(
-                teamRepository,
-                unitRepository,
-                caseTypeService,
-                parentTopicRepository,
-                keycloakService,
-                auditClient,
-                caseworkClient,
-                notifyClient);
+        this.teamService = new TeamService(teamRepository, unitRepository, caseTypeService, parentTopicRepository,
+            keycloakService, auditClient, caseworkClient, notifyClient);
     }
 
     private UUID team1UUID = UUID.randomUUID();
@@ -182,8 +175,7 @@ public class TeamServiceTest {
         Unit unit = new Unit("UNIT1", "UNIT1", true);
         unit.addTeam(team);
 
-        TeamDto teamDto = new TeamDto("TEAM 1", null,
-                UUID.randomUUID(), true, new HashSet<>(), null);
+        TeamDto teamDto = new TeamDto("TEAM 1", null, UUID.randomUUID(), true, new HashSet<>(), null);
         when(unitRepository.findByUuid(unit.getUuid())).thenReturn(unit);
 
         try {
@@ -293,7 +285,8 @@ public class TeamServiceTest {
 
         Set<Permission> permissions = new HashSet<>();
         Unit unit = new Unit("a unit", "UNIT", true);
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null, null);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(),
+            "DCU_MIN_DISPATCH", true, true, null, null);
         Permission permission = new Permission(AccessLevel.OWNER, null, caseType);
         permissions.add(permission);
         Team team = new Team("a team", true);
@@ -342,7 +335,8 @@ public class TeamServiceTest {
         Team team = new Team("a team", true);
         team.setUnit(unit);
 
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null, null);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(),
+            "DCU_MIN_DISPATCH", true, true, null, null);
 
         when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
         when(caseTypeService.getCaseType(any())).thenReturn(caseType);
@@ -367,7 +361,8 @@ public class TeamServiceTest {
         Unit unit = new Unit("a unit", "UNIT", true);
         Team team = new Team("a team", true);
         team.setUnit(unit);
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null, null);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(),
+            "DCU_MIN_DISPATCH", true, true, null, null);
         permissions.add(new Permission(AccessLevel.READ, team, caseType));
         permissions.add(new Permission(AccessLevel.OWNER, team, caseType));
         team.addPermissions(permissions);
@@ -383,7 +378,6 @@ public class TeamServiceTest {
         teamService.deleteTeamPermissions(team.getUuid(), permissionDtoSet);
         assertThat(team.getPermissions().size()).isEqualTo(1);
 
-
         verify(teamRepository, times(1)).findByUuid(team.getUuid());
         verifyNoMoreInteractions(teamRepository);
     }
@@ -396,7 +390,8 @@ public class TeamServiceTest {
         Unit unit = new Unit("a unit", "UNIT", true);
         Team team = new Team("a team", true);
         team.setUnit(unit);
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null, null);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(),
+            "DCU_MIN_DISPATCH", true, true, null, null);
         permissions.add(new Permission(AccessLevel.READ, team, caseType));
         permissions.add(new Permission(AccessLevel.OWNER, team, caseType));
         team.addPermissions(permissions);
@@ -412,7 +407,6 @@ public class TeamServiceTest {
         assertThat(team.getPermissions().size()).isEqualTo(2);
         teamService.deleteTeamPermissions(team1UUID, permissionDtoSet);
         assertThat(team.getPermissions().size()).isEqualTo(0);
-
 
         verify(teamRepository, times(1)).findByUuid(team1UUID);
         verifyNoMoreInteractions(teamRepository);
@@ -465,7 +459,6 @@ public class TeamServiceTest {
         verify(auditClient, times(1)).renameTeamAudit(team);
     }
 
-
     @Test
     public void ShouldAuditAddUserToTeam() {
         UUID userUUID1 = UUID.randomUUID();
@@ -473,7 +466,8 @@ public class TeamServiceTest {
 
         Set<Permission> permissions = new HashSet<>();
         Unit unit = new Unit("a unit", "UNIT", true);
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null, null);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(),
+            "DCU_MIN_DISPATCH", true, true, null, null);
         Permission permission = new Permission(AccessLevel.OWNER, null, caseType);
         permissions.add(permission);
         Team team = new Team("a team", true);
@@ -522,14 +516,14 @@ public class TeamServiceTest {
 
     }
 
-
     @Test
     public void ShouldAuditUpdateTeamPermissions() {
         Unit unit = new Unit("a unit", "UNIT", true);
         Team team = new Team("a team", true);
         team.setUnit(unit);
 
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null, null);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(),
+            "DCU_MIN_DISPATCH", true, true, null, null);
 
         when(teamRepository.findByUuid(team.getUuid())).thenReturn(team);
         when(caseTypeService.getCaseType(any())).thenReturn(caseType);
@@ -551,7 +545,8 @@ public class TeamServiceTest {
         Team team = new Team("a team", true);
         team.addPermissions(permissions);
         team.setUnit(unit);
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null, null);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(),
+            "DCU_MIN_DISPATCH", true, true, null, null);
         permissions.add(new Permission(AccessLevel.READ, team, caseType));
         permissions.add(new Permission(AccessLevel.OWNER, team, caseType));
 
@@ -609,7 +604,8 @@ public class TeamServiceTest {
     }
 
     private List<Team> getAllTeams() {
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null, null);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(),
+            "DCU_MIN_DISPATCH", true, true, null, null);
         Set<Permission> permissions = new HashSet<Permission>() {{
             add(new Permission(AccessLevel.OWNER, null, caseType));
             add(new Permission(AccessLevel.OWNER, null, caseType));
@@ -623,7 +619,8 @@ public class TeamServiceTest {
     }
 
     private List<Team> getTeams() {
-        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(), "DCU_MIN_DISPATCH", true, true, null, null);
+        CaseType caseType = new CaseType(1L, UUID.randomUUID(), "MIN", "a1", "MIN", UUID.randomUUID(),
+            "DCU_MIN_DISPATCH", true, true, null, null);
         Set<Permission> permissions = new HashSet<Permission>() {{
             add(new Permission(AccessLevel.OWNER, null, caseType));
             add(new Permission(AccessLevel.OWNER, null, caseType));
@@ -814,8 +811,7 @@ public class TeamServiceTest {
         teamService.patchTeam(teamUuid, request);
 
         verify(teamRepository, times(2)).findByUuid(teamUuid);
-        verify(auditClient, times(1))
-                .moveToNewUnitAudit(teamUuid.toString(), "UNIT1", "UNIT2");
+        verify(auditClient, times(1)).moveToNewUnitAudit(teamUuid.toString(), "UNIT1", "UNIT2");
 
         verify(team, times(2)).getUnit();
 
@@ -827,4 +823,5 @@ public class TeamServiceTest {
 
         verifyNoMoreInteractions(auditClient, teamRepository, team);
     }
+
 }

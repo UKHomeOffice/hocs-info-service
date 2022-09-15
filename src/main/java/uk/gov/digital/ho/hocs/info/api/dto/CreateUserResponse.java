@@ -12,4 +12,5 @@ public class CreateUserResponse {
 
     @JsonProperty("userUUID")
     String userUUID;
+
 }

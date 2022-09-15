@@ -21,4 +21,5 @@ public class GetUnitsResponse {
         Set<UnitDto> unitDtos = units.stream().map(UnitDto::from).collect(Collectors.toSet());
         return new GetUnitsResponse(unitDtos);
     }
+
 }

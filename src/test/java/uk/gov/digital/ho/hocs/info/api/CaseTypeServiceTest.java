@@ -56,18 +56,27 @@ public class CaseTypeServiceTest {
     private CaseActionTypeRepository caseActionTypeRepository;
 
     private CaseTypeService caseTypeService;
-    private Set<UUID> team = new HashSet<UUID>() {{  add(UUID.fromString("74c79583-1375-494c-9883-f574e7e36541"));}};
+
+    private Set<UUID> team = new HashSet<UUID>() {{add(UUID.fromString("74c79583-1375-494c-9883-f574e7e36541"));}};
+
     Set<String> teamString = team.stream().map(uuid -> uuid.toString()).collect(Collectors.toSet());
-    private Set<UUID> teams = new HashSet<UUID>() {{ add(UUID.fromString("74c79583-1375-494c-9883-f574e7e36541"));
-                                                add(UUID.fromString("8b532de4-4915-4783-a19a-c79fd6754d5c"));}};
+
+    private Set<UUID> teams = new HashSet<UUID>() {{
+        add(UUID.fromString("74c79583-1375-494c-9883-f574e7e36541"));
+        add(UUID.fromString("8b532de4-4915-4783-a19a-c79fd6754d5c"));
+    }};
+
     Set<String> teamsString = teams.stream().map(uuid -> uuid.toString()).collect(Collectors.toSet());
+
     private UUID unitUUID = UUID.randomUUID();
 
     private static final String CASE_TYPE = "CaseType1";
 
     @Before
     public void setUp() {
-        this.caseTypeService = new CaseTypeService(caseTypeRepository,caseTabRepository,documentTagRepository,holidayDateRepository, caseActionTypeRepository, stageTypeService,userPermissionsService, localDateWrapper);
+        this.caseTypeService = new CaseTypeService(caseTypeRepository, caseTabRepository, documentTagRepository,
+            holidayDateRepository, caseActionTypeRepository, stageTypeService, userPermissionsService,
+            localDateWrapper);
     }
 
     @Test
@@ -95,7 +104,6 @@ public class CaseTypeServiceTest {
         assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "TRO", "DCU Treat Official", unitUUID);
         assetCaseTypeDtoContainsCorrectElements(caseTypeDtos, "DTEN", "DCU Number 10", unitUUID);
     }
-
 
     @Test
     public void shouldGetCaseTypesMultipleTeamsRequested() {
@@ -131,7 +139,6 @@ public class CaseTypeServiceTest {
         assetCaseTypeDtoDoesNotContainElement(caseTypeDtos, "DTEN", "DCU Number 10", unitUUID);
     }
 
-
     @Test
     public void shouldGetBulkCaseTypesMultipleTeamRequested() {
         when(userPermissionsService.getUserTeams()).thenReturn(teams);
@@ -154,7 +161,8 @@ public class CaseTypeServiceTest {
     @Test
     public void shouldCreateNewCaseTypeInRepository() {
 
-        CreateCaseTypeDto caseType = new CreateCaseTypeDto("New Case Type", "c1", "NEW",true,true,"STAGE_ONE", "PREV");
+        CreateCaseTypeDto caseType = new CreateCaseTypeDto("New Case Type", "c1", "NEW", true, true, "STAGE_ONE",
+            "PREV");
 
         CaseType response = mock(CaseType.class);
         when(caseTypeRepository.save(any(CaseType.class))).thenReturn(response);
@@ -165,10 +173,10 @@ public class CaseTypeServiceTest {
     }
 
     @Test
-    public void shouldGetDocumentTagsForCaseType(){
+    public void shouldGetDocumentTagsForCaseType() {
         List<DocumentTag> documentTags = new ArrayList<>();
-        documentTags.add((new DocumentTag(null,null,null,"First",(short)1)));
-        documentTags.add((new DocumentTag(null,null,null,"Second",(short)2)));
+        documentTags.add((new DocumentTag(null, null, null, "First", (short) 1)));
+        documentTags.add((new DocumentTag(null, null, null, "Second", (short) 2)));
         when(documentTagRepository.findByCaseType("TEST")).thenReturn(documentTags);
 
         List<String> tags = caseTypeService.getDocumentTagsForCaseType("TEST");
@@ -180,50 +188,77 @@ public class CaseTypeServiceTest {
         verifyNoMoreInteractions(documentTagRepository);
     }
 
-    private void checkNoMoreInteractions(){
-        verifyNoMoreInteractions(caseTypeRepository, documentTagRepository, holidayDateRepository, stageTypeService, userPermissionsService, localDateWrapper);
+    private void checkNoMoreInteractions() {
+        verifyNoMoreInteractions(caseTypeRepository, documentTagRepository, holidayDateRepository, stageTypeService,
+            userPermissionsService, localDateWrapper);
     }
 
-    private void assetCaseTypeDtoContainsCorrectElements(Set<CaseType> caseTypeDtos, String CaseType, String DisplayName, UUID tenant) {
-        uk.gov.digital.ho.hocs.info.domain.model.CaseType result1 = caseTypeDtos.stream().filter(x -> CaseType.equals(x.getType())).findAny().orElse(null);
+    private void assetCaseTypeDtoContainsCorrectElements(Set<CaseType> caseTypeDtos,
+                                                         String CaseType,
+                                                         String DisplayName,
+                                                         UUID tenant) {
+        uk.gov.digital.ho.hocs.info.domain.model.CaseType result1 = caseTypeDtos.stream().filter(
+            x -> CaseType.equals(x.getType())).findAny().orElse(null);
         assertThat(result1).isNotNull();
         assertThat(result1.getDisplayName()).isEqualTo(DisplayName);
         assertThat(result1.getUnitUUID()).isEqualTo(tenant);
     }
 
-    private void assetCaseTypeDtoDoesNotContainElement(Set<CaseType> caseTypeDtos, String CaseType, String DisplayName, UUID tenant) {
-        uk.gov.digital.ho.hocs.info.domain.model.CaseType result1 = caseTypeDtos.stream().filter(x -> CaseType.equals(x.getType())).findAny().orElse(null);
+    private void assetCaseTypeDtoDoesNotContainElement(Set<CaseType> caseTypeDtos,
+                                                       String CaseType,
+                                                       String DisplayName,
+                                                       UUID tenant) {
+        uk.gov.digital.ho.hocs.info.domain.model.CaseType result1 = caseTypeDtos.stream().filter(
+            x -> CaseType.equals(x.getType())).findAny().orElse(null);
         assertThat(result1).isNull();
     }
 
     private Set<CaseType> getDCUCaseType() {
-        return new HashSet<>(Arrays.asList(new CaseType(1L, UUID.randomUUID(), "DCU Ministerial","11", "MIN", unitUUID,"DCU_MIN_DISPATCH", true, true, null, null),
-                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","12", "TRO", unitUUID,"DCU_TRO_DISPATCH", true, true, null, null),
-                new CaseType(3L,UUID.randomUUID(), "DCU Number 10","13", "DTEN", unitUUID,"DCU_DTEN_DISPATCH",  true, true, null, null)));
+        return new HashSet<>(Arrays.asList(
+            new CaseType(1L, UUID.randomUUID(), "DCU Ministerial", "11", "MIN", unitUUID, "DCU_MIN_DISPATCH", true,
+                true, null, null),
+            new CaseType(2L, UUID.randomUUID(), "DCU Treat Official", "12", "TRO", unitUUID, "DCU_TRO_DISPATCH", true,
+                true, null, null),
+            new CaseType(3L, UUID.randomUUID(), "DCU Number 10", "13", "DTEN", unitUUID, "DCU_DTEN_DISPATCH", true,
+                true, null, null)));
     }
 
     private Set<CaseType> getDCUCaseTypeBulk() {
-        return new HashSet<>(Arrays.asList(new CaseType(1L, UUID.randomUUID(), "DCU Ministerial","21", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true, null, null),
-                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","22", "TRO", unitUUID,"DCU_MIN_DISPATCH",  true, true, null, null)));
+        return new HashSet<>(Arrays.asList(
+            new CaseType(1L, UUID.randomUUID(), "DCU Ministerial", "21", "MIN", unitUUID, "DCU_MIN_DISPATCH", true,
+                true, null, null),
+            new CaseType(2L, UUID.randomUUID(), "DCU Treat Official", "22", "TRO", unitUUID, "DCU_MIN_DISPATCH", true,
+                true, null, null)));
     }
 
     private HashSet<CaseType> getDCUAndUKVICaseType() {
         return new HashSet<>(Arrays.asList(
-                new CaseType(1L,UUID.randomUUID(), "DCU Ministerial","31", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true, null, null),
-                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","32", "TRO", unitUUID,"DCU_TRO_DISPATCH",  true, true, null, null),
-                new CaseType(3L,UUID.randomUUID(), "DCU Number 10","33", "DTEN", unitUUID,"DCU_DTEN_DISPATCH",  true, true, null, null),
-                new CaseType(1L,UUID.randomUUID(), "UKVI B REF","34", "IMCB", unitUUID,"DCU_IMCB_DISPATCH",  true, true, null, null),
-                new CaseType(2L,UUID.randomUUID(), "UKVI Ministerial REF","35", "IMCM", unitUUID,"DCU_IMCM_DISPATCH", true, true, null, null),
-                new CaseType(3L,UUID.randomUUID(), "UKVI Number 10","36",  "UTEN",unitUUID,"DCU_UTEN_DISPATCH",  true, true, null, null)));
+            new CaseType(1L, UUID.randomUUID(), "DCU Ministerial", "31", "MIN", unitUUID, "DCU_MIN_DISPATCH", true,
+                true, null, null),
+            new CaseType(2L, UUID.randomUUID(), "DCU Treat Official", "32", "TRO", unitUUID, "DCU_TRO_DISPATCH", true,
+                true, null, null),
+            new CaseType(3L, UUID.randomUUID(), "DCU Number 10", "33", "DTEN", unitUUID, "DCU_DTEN_DISPATCH", true,
+                true, null, null),
+            new CaseType(1L, UUID.randomUUID(), "UKVI B REF", "34", "IMCB", unitUUID, "DCU_IMCB_DISPATCH", true, true,
+                null, null),
+            new CaseType(2L, UUID.randomUUID(), "UKVI Ministerial REF", "35", "IMCM", unitUUID, "DCU_IMCM_DISPATCH",
+                true, true, null, null),
+            new CaseType(3L, UUID.randomUUID(), "UKVI Number 10", "36", "UTEN", unitUUID, "DCU_UTEN_DISPATCH", true,
+                true, null, null)));
     }
 
     private HashSet<CaseType> getDCUAndUKVICaseTypeBulk() {
         return new HashSet<>(Arrays.asList(
-                new CaseType(1L,UUID.randomUUID(), "DCU Ministerial","41", "MIN", unitUUID,"DCU_MIN_DISPATCH",  true, true, null, null),
-                new CaseType(2L,UUID.randomUUID(), "DCU Treat Official","42", "TRO", unitUUID,"DCU_TRO_DISPATCH",  true, true, null, null),
-                new CaseType(1L,UUID.randomUUID(), "UKVI B REF","43", "IMCB", unitUUID,"DCU_IMCB_DISPATCH",  true, true, null, null),
-                new CaseType(2L,UUID.randomUUID(), "UKVI Ministerial REF","44", "IMCM", unitUUID,"DCU_IMCM_DISPATCH",  true, true, null, null),
-                new CaseType(3L,UUID.randomUUID(), "UKVI Number 10","45", "UTEN", unitUUID, "DCU_UTEN_DISPATCH", true, true, null, null)));
+            new CaseType(1L, UUID.randomUUID(), "DCU Ministerial", "41", "MIN", unitUUID, "DCU_MIN_DISPATCH", true,
+                true, null, null),
+            new CaseType(2L, UUID.randomUUID(), "DCU Treat Official", "42", "TRO", unitUUID, "DCU_TRO_DISPATCH", true,
+                true, null, null),
+            new CaseType(1L, UUID.randomUUID(), "UKVI B REF", "43", "IMCB", unitUUID, "DCU_IMCB_DISPATCH", true, true,
+                null, null),
+            new CaseType(2L, UUID.randomUUID(), "UKVI Ministerial REF", "44", "IMCM", unitUUID, "DCU_IMCM_DISPATCH",
+                true, true, null, null),
+            new CaseType(3L, UUID.randomUUID(), "UKVI Number 10", "45", "UTEN", unitUUID, "DCU_UTEN_DISPATCH", true,
+                true, null, null)));
     }
 
     @Test
@@ -235,40 +270,17 @@ public class CaseTypeServiceTest {
         UUID rand3 = UUID.randomUUID();
         UUID rand4 = UUID.randomUUID();
 
-        CaseTypeAction mockCaseActionType1 = new CaseTypeAction(
-                rand1,
-                rand2,
-                "CaseType1",
-                "ACTION_2",
-                "ACTION_SUBTYPE",
-                "ACTION_LABEL",
-                true,
-                1,
-                "{}",
-                10,
-                LocalDateTime.MIN,
-                LocalDateTime.MIN
-        );
+        CaseTypeAction mockCaseActionType1 = new CaseTypeAction(rand1, rand2, "CaseType1", "ACTION_2", "ACTION_SUBTYPE",
+            "ACTION_LABEL", true, 1, "{}", 10, LocalDateTime.MIN, LocalDateTime.MIN);
 
-        CaseTypeAction mockCaseActionType2 = new CaseTypeAction(
-                rand3,
-                rand4,
-                "CaseType1",
-                "ACTION_2",
-                "ACTION_SUBTYPE",
-                "ACTION_LABEL",
-                true,
-                1,
-                "{}",
-                20,
-                LocalDateTime.MIN,
-                LocalDateTime.MIN
-        );
+        CaseTypeAction mockCaseActionType2 = new CaseTypeAction(rand3, rand4, "CaseType1", "ACTION_2", "ACTION_SUBTYPE",
+            "ACTION_LABEL", true, 1, "{}", 20, LocalDateTime.MIN, LocalDateTime.MIN);
 
         CaseTypeActionDto expectedCaseTypeDto1 = CaseTypeActionDto.from(mockCaseActionType1);
         CaseTypeActionDto expectedCaseTypeDto2 = CaseTypeActionDto.from(mockCaseActionType2);
 
-        when(caseActionTypeRepository.findAllByCaseTypeAndActiveIsTrue(CASE_TYPE)).thenReturn(List.of(mockCaseActionType1, mockCaseActionType2));
+        when(caseActionTypeRepository.findAllByCaseTypeAndActiveIsTrue(CASE_TYPE)).thenReturn(
+            List.of(mockCaseActionType1, mockCaseActionType2));
 
         // WHEN
         List<CaseTypeActionDto> output = caseTypeService.getCaseActionsByCaseType(CASE_TYPE);
@@ -295,20 +307,8 @@ public class CaseTypeServiceTest {
         UUID requestedActionId = UUID.randomUUID();
         UUID rand2 = UUID.randomUUID();
 
-        CaseTypeAction mockCaseActionType1 = new CaseTypeAction(
-                requestedActionId,
-                rand2,
-                "CaseType1",
-                "ACTION_2",
-                "ACTION_SUBTYPE",
-                "ACTION_LABEL",
-                true,
-                1,
-                "{}",
-                10,
-                LocalDateTime.MIN,
-                LocalDateTime.MIN
-        );
+        CaseTypeAction mockCaseActionType1 = new CaseTypeAction(requestedActionId, rand2, "CaseType1", "ACTION_2",
+            "ACTION_SUBTYPE", "ACTION_LABEL", true, 1, "{}", 10, LocalDateTime.MIN, LocalDateTime.MIN);
 
         when(caseActionTypeRepository.findByUuid(requestedActionId)).thenReturn(mockCaseActionType1);
 
@@ -320,41 +320,17 @@ public class CaseTypeServiceTest {
 
     @Test
     public void shouldReturnListOfAllCaseTypeActions() {
-        CaseTypeAction mockCaseActionType1 = new CaseTypeAction(
-                UUID.randomUUID(),
-                UUID.randomUUID(),
-                "CaseType1",
-                "ACTION_1",
-                "ACTION_SUBTYPE",
-                "ACTION_LABEL_1",
-                true,
-                1,
-                "{}",
-                10,
-                LocalDateTime.MIN,
-                LocalDateTime.MIN
-        );
-        CaseTypeAction mockCaseActionType2 = new CaseTypeAction(
-                UUID.randomUUID(),
-                UUID.randomUUID(),
-                "CaseType2",
-                "ACTION_2",
-                "ACTION_SUBTYPE",
-                "ACTION_LABEL_2",
-                true,
-                1,
-                "{}",
-                10,
-                LocalDateTime.MIN,
-                LocalDateTime.MIN
-        );
+        CaseTypeAction mockCaseActionType1 = new CaseTypeAction(UUID.randomUUID(), UUID.randomUUID(), "CaseType1",
+            "ACTION_1", "ACTION_SUBTYPE", "ACTION_LABEL_1", true, 1, "{}", 10, LocalDateTime.MIN, LocalDateTime.MIN);
+        CaseTypeAction mockCaseActionType2 = new CaseTypeAction(UUID.randomUUID(), UUID.randomUUID(), "CaseType2",
+            "ACTION_2", "ACTION_SUBTYPE", "ACTION_LABEL_2", true, 1, "{}", 10, LocalDateTime.MIN, LocalDateTime.MIN);
 
         List<CaseTypeAction> caseTypeActionList = new LinkedList<>();
         caseTypeActionList.add(mockCaseActionType1);
         caseTypeActionList.add(mockCaseActionType2);
 
         when(caseActionTypeRepository.findAll()).thenReturn(caseTypeActionList);
-        List<CaseTypeActionDto> output  = caseTypeService.getAllCaseActions();
+        List<CaseTypeActionDto> output = caseTypeService.getAllCaseActions();
 
         assertThat(output.size()).isEqualTo(2);
     }
@@ -365,7 +341,7 @@ public class CaseTypeServiceTest {
         List<CaseTypeAction> caseTypeActionList = new LinkedList<>();
 
         when(caseActionTypeRepository.findAll()).thenReturn(caseTypeActionList);
-        List<CaseTypeActionDto> output  = caseTypeService.getAllCaseActions();
+        List<CaseTypeActionDto> output = caseTypeService.getAllCaseActions();
 
         assertThat(output.size()).isEqualTo(0);
     }
@@ -373,8 +349,8 @@ public class CaseTypeServiceTest {
     @Test
     public void shouldReturnCaseConfigForCaseType() {
         String type = "COMP";
-        CaseTab caseTab1 = new CaseTab(UUID.randomUUID(),"documents", "Documents", "DOCUMENTS");
-        CaseTab caseTab2 = new CaseTab(UUID.randomUUID(),"summary", "Summary", "SUMMARY");
+        CaseTab caseTab1 = new CaseTab(UUID.randomUUID(), "documents", "Documents", "DOCUMENTS");
+        CaseTab caseTab2 = new CaseTab(UUID.randomUUID(), "summary", "Summary", "SUMMARY");
         List<CaseTab> tabs = Arrays.asList(caseTab1, caseTab2);
 
         when(caseTabRepository.findTabsByType(type)).thenReturn(tabs);
@@ -383,5 +359,6 @@ public class CaseTypeServiceTest {
         assertEquals(type, caseConfig.getType());
         assertEquals(tabs, caseConfig.getTabs());
     }
+
 }
 

@@ -17,6 +17,7 @@ import java.util.Set;
 public class CorrespondentTypeService {
 
     private final CorrespondentTypeRepository correspondentTypeRepository;
+
     private final AuditClient auditClient;
 
     @Autowired
@@ -56,12 +57,15 @@ public class CorrespondentTypeService {
         return correspondentType;
     }
 
-    private void validateInput(String displayName, String type){
-        if(!StringUtils.hasText(displayName)) {
-            throw new ApplicationExceptions.EntityCreationException("Cannot create Correspondent Type of Type: %s, with no display name", type);
+    private void validateInput(String displayName, String type) {
+        if (!StringUtils.hasText(displayName)) {
+            throw new ApplicationExceptions.EntityCreationException(
+                "Cannot create Correspondent Type of Type: %s, with no display name", type);
         }
-        if(!StringUtils.hasText(type)) {
-            throw new ApplicationExceptions.EntityCreationException("Cannot create Correspondent Type of Display Name: %s, with no type", displayName);
+        if (!StringUtils.hasText(type)) {
+            throw new ApplicationExceptions.EntityCreationException(
+                "Cannot create Correspondent Type of Display Name: %s, with no type", displayName);
         }
     }
+
 }

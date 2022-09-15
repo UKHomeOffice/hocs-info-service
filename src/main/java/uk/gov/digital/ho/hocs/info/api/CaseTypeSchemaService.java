@@ -14,6 +14,7 @@ import java.util.List;
 public class CaseTypeSchemaService {
 
     private final CaseTypeSchemaRepository caseTypeSchemaRepository;
+
     private final CaseTypeRepository caseTypeRepository;
 
     @Autowired

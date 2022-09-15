@@ -11,11 +11,12 @@ public class CorrespondentTypeDtoTest {
 
     @Test
     public void shouldBuildCorrespondentTypeDTOFromCorrespondentObject() {
-        CorrespondentType correspondentType = new CorrespondentType(1L, UUID.randomUUID(),"Name","MIN");
+        CorrespondentType correspondentType = new CorrespondentType(1L, UUID.randomUUID(), "Name", "MIN");
 
         CorrespondentTypeDto correspondentTypeDto = CorrespondentTypeDto.from(correspondentType);
 
         assertThat(correspondentTypeDto.getDisplayName()).isEqualTo("Name");
         assertThat(correspondentTypeDto.getType()).isEqualTo("MIN");
     }
+
 }

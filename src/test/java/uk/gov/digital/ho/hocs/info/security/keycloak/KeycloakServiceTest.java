@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FilterInputStream;
 import java.net.URI;
+
 import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -159,8 +160,7 @@ public class KeycloakServiceTest {
         when(keycloakClient.realm(HOCS_REALM)).thenReturn(hocsRealm);
         when(hocsRealm.users().get(userUUIDString).groups()).thenThrow(mockException);
 
-        assertThatThrownBy(() -> service.getGroupsForUser(userUUID))
-                .isInstanceOf(KeycloakException.class);
+        assertThatThrownBy(() -> service.getGroupsForUser(userUUID)).isInstanceOf(KeycloakException.class);
         verify(keycloakClient).realm(HOCS_REALM);
         verifyNoMoreInteractions(keycloakClient);
     }
@@ -185,9 +185,8 @@ public class KeycloakServiceTest {
 
         when(teamRepository.findByUuid(teamUUID)).thenReturn(null);
 
-        assertThatThrownBy(() -> service.getUsersForTeam(teamUUID))
-                .isInstanceOf(ApplicationExceptions.EntityNotFoundException.class)
-                .hasMessage("Team not found for UUID %s", teamUUID);
+        assertThatThrownBy(() -> service.getUsersForTeam(teamUUID)).isInstanceOf(
+            ApplicationExceptions.EntityNotFoundException.class).hasMessage("Team not found for UUID %s", teamUUID);
     }
 
     private List<UserRepresentation> createUserBatch(int batchNum, int usersToCreate) {
@@ -248,9 +247,8 @@ public class KeycloakServiceTest {
         when(usersResource.create(any())).thenReturn(response);
 
         //when & then
-        assertThatThrownBy(() -> service.createUser(createUserDto))
-                .isInstanceOf(KeycloakException.class)
-                .hasMessage(errorMessage);
+        assertThatThrownBy(() -> service.createUser(createUserDto)).isInstanceOf(KeycloakException.class).hasMessage(
+            errorMessage);
     }
 
     @Test
@@ -278,4 +276,5 @@ public class KeycloakServiceTest {
         assertThat(newUserRepresentation.getLastName()).isEqualTo(updateUserDto.getLastName());
         assertThat(newUserRepresentation.isEnabled()).isEqualTo(updateUserDto.getEnabled());
     }
+
 }

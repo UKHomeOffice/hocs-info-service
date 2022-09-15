@@ -37,15 +37,10 @@ public class StageTypeDto {
 
     public static StageTypeDto from(StageTypeEntity stageTypeEntity) {
 
-        return new StageTypeDto(
-                stageTypeEntity.getDisplayName(),
-                stageTypeEntity.getType(),
-                stageTypeEntity.getDisplayName(),
-                stageTypeEntity.getShortCode(),
-                stageTypeEntity.getType(),
-                stageTypeEntity.getDeadline(),
-                stageTypeEntity.getDeadlineWarning(),
-                stageTypeEntity.getDisplayStageOrder());
+        return new StageTypeDto(stageTypeEntity.getDisplayName(), stageTypeEntity.getType(),
+            stageTypeEntity.getDisplayName(), stageTypeEntity.getShortCode(), stageTypeEntity.getType(),
+            stageTypeEntity.getDeadline(), stageTypeEntity.getDeadlineWarning(),
+            stageTypeEntity.getDisplayStageOrder());
     }
 
 }

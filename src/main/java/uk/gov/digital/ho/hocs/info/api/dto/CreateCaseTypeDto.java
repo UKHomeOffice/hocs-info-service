@@ -28,4 +28,5 @@ public class CreateCaseTypeDto {
 
     @JsonProperty("previousCaseType")
     private String previousCaseType;
+
 }

@@ -18,6 +18,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.StageTypeRepository;
 public class StageTypeService {
 
     private final StageTypeRepository stageTypeRepository;
+
     private final HolidayDateRepository holidayDateRepository;
 
     @Autowired
@@ -47,7 +48,6 @@ public class StageTypeService {
         return canDisplayContributions;
     }
 
-
     Set<StageTypeEntity> getAllStageTypesByCaseType(UUID caseTypeUUID) {
         log.debug("Getting all StageTypes for caseType {}", caseTypeUUID);
         Set<StageTypeEntity> stageTypes = stageTypeRepository.findAllByCaseTypeUUID(caseTypeUUID);
@@ -55,14 +55,15 @@ public class StageTypeService {
         return stageTypes;
     }
 
-     StageTypeEntity getStageType(String type) {
-         log.debug("Getting StageType for type {}", type);
-         StageTypeEntity stageType = stageTypeRepository.findByType(type);
-        if(stageType != null) {
+    StageTypeEntity getStageType(String type) {
+        log.debug("Getting StageType for type {}", type);
+        StageTypeEntity stageType = stageTypeRepository.findByType(type);
+        if (stageType != null) {
             log.info("Got StageType {} for type {}", stageType.getUuid(), type);
             return stageType;
-        } else{
+        } else {
             throw new ApplicationExceptions.EntityNotFoundException("StageType for type %s was not found", type);
         }
     }
+
 }

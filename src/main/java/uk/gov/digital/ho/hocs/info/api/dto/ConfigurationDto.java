@@ -8,7 +8,6 @@ import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.domain.model.Configuration;
 import uk.gov.digital.ho.hocs.info.domain.model.Profile;
 
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,18 +40,14 @@ public class ConfigurationDto {
     private String readOnlyCaseViewAdapter;
 
     public static ConfigurationDto from(Configuration configuration) {
-        List<WorkstackTypeDto> workstackTypeColumns = configuration.getWorkstackTypes().stream().map(WorkstackTypeDto::from).collect(Collectors.toList());
-        List<ProfileDto> profileDtos = configuration.getProfiles().stream().map(ProfileDto::from).collect(Collectors.toList());
+        List<WorkstackTypeDto> workstackTypeColumns = configuration.getWorkstackTypes().stream().map(
+            WorkstackTypeDto::from).collect(Collectors.toList());
+        List<ProfileDto> profileDtos = configuration.getProfiles().stream().map(ProfileDto::from).collect(
+            Collectors.toList());
 
-        return new ConfigurationDto(
-                configuration.getDisplayName(),
-                configuration.isBulkCreateEnabled(),
-                configuration.isViewStandardLinesEnabled(),
-                configuration.isDeadlinesEnabled(),
-                workstackTypeColumns,
-                profileDtos,
-                configuration.isAutoCreateAndAllocateEnabled(),
-                configuration.getReadOnlyCaseViewAdapter());
+        return new ConfigurationDto(configuration.getDisplayName(), configuration.isBulkCreateEnabled(),
+            configuration.isViewStandardLinesEnabled(), configuration.isDeadlinesEnabled(), workstackTypeColumns,
+            profileDtos, configuration.isAutoCreateAndAllocateEnabled(), configuration.getReadOnlyCaseViewAdapter());
     }
 
 }

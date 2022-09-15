@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 public class CorrespondentTypeRepositoryTest {
 
@@ -28,13 +28,16 @@ public class CorrespondentTypeRepositoryTest {
     private CorrespondentTypeRepository repository;
 
     UUID unitUUID;
+
     UUID caseTypeUUID;
+
     UUID correspondentTypeUUID;
 
     @Before
     public void setup() {
-        Unit unit = new Unit("Unit 1", "UNIT_1",true);
-        CaseType caseType = new CaseType(null,UUID.randomUUID(),"TEST","a5","CASE_TYPE",unit.getUuid(),"TEST", true, true, null, null);
+        Unit unit = new Unit("Unit 1", "UNIT_1", true);
+        CaseType caseType = new CaseType(null, UUID.randomUUID(), "TEST", "a5", "CASE_TYPE", unit.getUuid(), "TEST",
+            true, true, null, null);
         entityManager.persistAndFlush(unit);
         entityManager.persistAndFlush(caseType);
         CorrespondentType correspondentType = new CorrespondentType(null, UUID.randomUUID(), "Test", "TEST");
@@ -42,7 +45,8 @@ public class CorrespondentTypeRepositoryTest {
         unitUUID = unit.getUuid();
         caseTypeUUID = caseType.getUuid();
         correspondentTypeUUID = correspondentType.getUuid();
-        CaseTypeCorrespondentType caseTypeCorrespondentType = new CaseTypeCorrespondentType(null, caseTypeUUID, correspondentTypeUUID);
+        CaseTypeCorrespondentType caseTypeCorrespondentType = new CaseTypeCorrespondentType(null, caseTypeUUID,
+            correspondentTypeUUID);
         entityManager.persistAndFlush(caseTypeCorrespondentType);
     }
 
@@ -56,4 +60,5 @@ public class CorrespondentTypeRepositoryTest {
         assertThat(correspondentTypes.get(0).getType()).isEqualTo("TEST");
         assertThat(correspondentTypes.size()).isEqualTo(1);
     }
+
 }

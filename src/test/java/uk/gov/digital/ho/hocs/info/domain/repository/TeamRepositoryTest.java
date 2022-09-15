@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
+
 import javax.persistence.PersistenceException;
 import java.util.*;
 
@@ -18,10 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 public class TeamRepositoryTest {
-
 
     @Autowired
     private TestEntityManager entityManager;
@@ -30,23 +30,27 @@ public class TeamRepositoryTest {
     private TeamRepository repository;
 
     UUID unitUUID;
+
     UUID teamUUID;
+
     UUID topicUUID;
 
     @Before
     public void setup() {
-        Unit unit = new Unit("Unit 1", "UNIT_1",true);
-        CaseType caseType = new CaseType(null,UUID.randomUUID(),"TEST","a5","TEST",unit.getUuid(),"TEST", true, true, null, null);
+        Unit unit = new Unit("Unit 1", "UNIT_1", true);
+        CaseType caseType = new CaseType(null, UUID.randomUUID(), "TEST", "a5", "TEST", unit.getUuid(), "TEST", true,
+            true, null, null);
         entityManager.persistAndFlush(unit);
         entityManager.persistAndFlush(caseType);
-        Set<Permission> permissions = new HashSet<Permission>(){{
-            add(new Permission(AccessLevel.OWNER,null, caseType));
+        Set<Permission> permissions = new HashSet<Permission>() {{
+            add(new Permission(AccessLevel.OWNER, null, caseType));
         }};
         Team team = new Team("a team", permissions);
         team.setActive(true);
         unit.addTeam(team);
         this.entityManager.persist(unit);
-        StageTypeEntity stage = new StageTypeEntity(UUID.randomUUID(),"Stage","c","stageType",caseType.getUuid(),1,1,1,true,team,false);
+        StageTypeEntity stage = new StageTypeEntity(UUID.randomUUID(), "Stage", "c", "stageType", caseType.getUuid(), 1,
+            1, 1, true, team, false);
         entityManager.persistAndFlush(stage);
         TeamLink teamLink = new TeamLink("linkValue", "TEXT", team.getUuid(), "TEST", "stageType");
         entityManager.persistAndFlush(teamLink);
@@ -97,15 +101,16 @@ public class TeamRepositoryTest {
     public void addPermissionsShouldBeIdempotent() {
         Team team = repository.findByUuid(teamUUID);
         assertThat(team.getPermissions().size()).isEqualTo(1);
-        CaseType caseType = new CaseType(null,UUID.randomUUID(),"TEST","c7","TEST", UUID.randomUUID(),"TEST", true, true, null, null);
-        team.addPermission(new Permission(AccessLevel.OWNER,null, caseType));
+        CaseType caseType = new CaseType(null, UUID.randomUUID(), "TEST", "c7", "TEST", UUID.randomUUID(), "TEST", true,
+            true, null, null);
+        team.addPermission(new Permission(AccessLevel.OWNER, null, caseType));
         assertThat(team.getPermissions().size()).isEqualTo(1);
 
     }
 
     @Test()
     public void shouldFindByStageAndText() {
-        Team team = repository.findByStageAndText("stageType","linkValue");
+        Team team = repository.findByStageAndText("stageType", "linkValue");
 
         assertThat(team).isNotNull();
         assertThat(team.getUuid()).isEqualTo(teamUUID);

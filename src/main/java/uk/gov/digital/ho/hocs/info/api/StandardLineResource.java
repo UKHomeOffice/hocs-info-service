@@ -59,23 +59,27 @@ public class StandardLineResource {
     @GetMapping(value = "/user/{userUUID}/standardLine", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<List<GetStandardLineResponse>> getStandardLinesForUser(@PathVariable UUID userUUID) {
         List<StandardLine> standardLines = standardLineService.getStandardLinesForUser(userUUID);
-        return ResponseEntity.ok(standardLines.stream().map(GetStandardLineResponse::from).collect(Collectors.toList()));
+        return ResponseEntity.ok(
+            standardLines.stream().map(GetStandardLineResponse::from).collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/standardLine/all", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<List<GetStandardLineResponse>> getAllStandardLines() {
         List<StandardLine> standardLines = standardLineService.getAllStandardLines();
-        return ResponseEntity.ok(standardLines.stream().map(GetStandardLineResponse::from).collect(Collectors.toList()));
+        return ResponseEntity.ok(
+            standardLines.stream().map(GetStandardLineResponse::from).collect(Collectors.toList()));
     }
 
     @PostMapping(value = "/standardLine", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createStandardLine(@RequestBody CreateStandardLineDocumentDto request) {
-        standardLineService.createStandardLine(request.getDisplayName(), request.getTopicUUID(), request.getExpires(), request.getS3UntrustedUrl());
+        standardLineService.createStandardLine(request.getDisplayName(), request.getTopicUUID(), request.getExpires(),
+            request.getS3UntrustedUrl());
         return ResponseEntity.ok().build();
     }
 
     @PutMapping(value = "/standardLine/{standardLineUuid}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> updateStandardLine(@PathVariable UUID standardLineUuid, @RequestBody UpdateStandardLineDto request) {
+    public ResponseEntity<Void> updateStandardLine(@PathVariable UUID standardLineUuid,
+                                                   @RequestBody UpdateStandardLineDto request) {
         standardLineService.updateStandardLine(standardLineUuid, request);
         return ResponseEntity.ok().build();
     }
@@ -91,4 +95,5 @@ public class StandardLineResource {
         standardLineService.deleteStandardLine(standardLineUuid);
         return ResponseEntity.ok().build();
     }
+
 }

@@ -21,6 +21,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 public class TopicResource {
 
     private final TopicService topicService;
+
     private final ParentTopicRepository parentTopicRepository;
 
     @Autowired
@@ -65,24 +66,24 @@ public class TopicResource {
     }
 
     @GetMapping(value = "/topics", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Set<TopicDto>> getTopics () {
+    public ResponseEntity<Set<TopicDto>> getTopics() {
         log.info("requesting all topics");
         List<Topic> topics = topicService.getTopics();
-        return ResponseEntity.ok(topics.stream().map(t->TopicDto.from(t)).collect(Collectors.toSet()));
+        return ResponseEntity.ok(topics.stream().map(t -> TopicDto.from(t)).collect(Collectors.toSet()));
     }
 
     @GetMapping(value = "/topics/active", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Set<TopicDto>> getActiveTopics () {
+    public ResponseEntity<Set<TopicDto>> getActiveTopics() {
         log.info("requesting all active topics");
         List<Topic> topics = topicService.getActiveTopics();
-        return ResponseEntity.ok(topics.stream().map(t->TopicDto.from(t)).collect(Collectors.toSet()));
+        return ResponseEntity.ok(topics.stream().map(t -> TopicDto.from(t)).collect(Collectors.toSet()));
     }
 
     @GetMapping(value = "/topic/parents", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Set<ParentTopicDto>> getParentTopics () {
+    public ResponseEntity<Set<ParentTopicDto>> getParentTopics() {
         log.info("requesting all parent topics");
         List<ParentTopic> parentTopics = topicService.getAllParentTopics();
-        return ResponseEntity.ok(parentTopics.stream().map(t->ParentTopicDto.from(t)).collect(Collectors.toSet()));
+        return ResponseEntity.ok(parentTopics.stream().map(t -> ParentTopicDto.from(t)).collect(Collectors.toSet()));
     }
 
     @PostMapping(value = "/topic/parent", produces = APPLICATION_JSON_UTF8_VALUE)
@@ -93,7 +94,8 @@ public class TopicResource {
     }
 
     @PostMapping(value = "/topic/parent/{parentTopicUUID}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<CreateTopicResponse> createTopic(@RequestBody CreateTopicDto request, @PathVariable UUID parentTopicUUID) {
+    public ResponseEntity<CreateTopicResponse> createTopic(@RequestBody CreateTopicDto request,
+                                                           @PathVariable UUID parentTopicUUID) {
         log.info("Creating new topic {}", request.getDisplayName());
         UUID topicUUID = topicService.createTopic(request, parentTopicUUID);
         return ResponseEntity.ok(new CreateTopicResponse(topicUUID.toString()));
@@ -112,14 +114,15 @@ public class TopicResource {
     }
 
     @PutMapping(value = "/topic/parent/{parentTopicUUID}")
-    public ResponseEntity reactivateParentTopic(@PathVariable UUID parentTopicUUID){
+    public ResponseEntity reactivateParentTopic(@PathVariable UUID parentTopicUUID) {
         topicService.reactivateParentTopic(parentTopicUUID);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping(value = "/topic/{topicUUID}")
-    public ResponseEntity reactivateTopic(@PathVariable UUID topicUUID){
+    public ResponseEntity reactivateTopic(@PathVariable UUID topicUUID) {
         topicService.reactivateTopic(topicUUID);
         return ResponseEntity.ok().build();
     }
+
 }

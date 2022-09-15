@@ -30,7 +30,8 @@ public class KeyCloakConfiguration {
                                    @Value("${keycloak.client.id}") String clientId) {
 
         if (StringUtils.isEmpty(serverUrl)) {
-            throw new BeanCreationException("Failed to create Keycloak client bean. Need non-blank value for serverUrl");
+            throw new BeanCreationException(
+                "Failed to create Keycloak client bean. Need non-blank value for serverUrl");
         }
         if (StringUtils.isEmpty(realm)) {
             throw new BeanCreationException("Failed to create Keycloak client bean. Need non-blank value for realm");
@@ -45,15 +46,9 @@ public class KeyCloakConfiguration {
             throw new BeanCreationException("Failed to create Keycloak client bean. Need non-blank value for clientId");
         }
 
-        return KeycloakBuilder.builder()
-                .serverUrl(serverUrl)
-                .realm(realm)
-                .username(username)
-                .password(password)
-                .clientId(clientId)
-                .resteasyClient(new ResteasyClientBuilder().httpEngine(
-                        new ApacheHttpClient43Engine(httpClient))
-                        .build())
-                .build();
+        return KeycloakBuilder.builder().serverUrl(serverUrl).realm(realm).username(username).password(
+            password).clientId(clientId).resteasyClient(
+            new ResteasyClientBuilder().httpEngine(new ApacheHttpClient43Engine(httpClient)).build()).build();
     }
+
 }

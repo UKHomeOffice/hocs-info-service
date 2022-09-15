@@ -63,7 +63,8 @@ public class TopicTeamResourceTest {
         List<SimpleMapItem> mockItems = List.of(mock(SimpleMapItem.class), mock(SimpleMapItem.class));
         when(topicTeamService.getTopicToTeamMappingByStageType(testStageString)).thenReturn(mockItems);
 
-        ResponseEntity<List<SimpleMapItem>> response = topicTeamResource.getTopicToTeamMappingByStageType(testStageString);
+        ResponseEntity<List<SimpleMapItem>> response = topicTeamResource.getTopicToTeamMappingByStageType(
+            testStageString);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -73,4 +74,5 @@ public class TopicTeamResourceTest {
         verify(topicTeamService).getTopicToTeamMappingByStageType(testStageString);
         verifyNoMoreInteractions(topicTeamService);
     }
+
 }

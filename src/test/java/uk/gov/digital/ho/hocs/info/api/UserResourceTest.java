@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,8 +41,8 @@ public class UserResourceTest {
         String user1UUID = UUID.randomUUID().toString();
         String user2UUID = UUID.randomUUID().toString();
         List<UserDto> users = new ArrayList<>();
-        UserDto user1 =  new UserDto(user1UUID,"some user", "user1@noemail.com","FirstName", "LastName", true);
-        UserDto user2 =  new UserDto(user2UUID,"some user2", "user2@noemail.com","FirstName2", "LastName2", true);
+        UserDto user1 = new UserDto(user1UUID, "some user", "user1@noemail.com", "FirstName", "LastName", true);
+        UserDto user2 = new UserDto(user2UUID, "some user2", "user2@noemail.com", "FirstName2", "LastName2", true);
         users.addAll(Stream.of(user1, user2).collect(Collectors.toList()));
 
         when(userService.getAllUsers()).thenReturn(users);
@@ -55,7 +56,8 @@ public class UserResourceTest {
     public void shouldGetUserByUUID() {
 
         UUID userUUID = UUID.randomUUID();
-        UserDto user =  new UserDto(userUUID.toString(),"some user", "user1@noemail.com","FirstName", "LastName", true);
+        UserDto user = new UserDto(userUUID.toString(), "some user", "user1@noemail.com", "FirstName", "LastName",
+            true);
 
         when(userService.getUserByUUID(userUUID)).thenReturn(user);
 
@@ -70,10 +72,9 @@ public class UserResourceTest {
         UUID teamUUID = UUID.randomUUID();
 
         List<UserDto> users = new ArrayList<>();
-        UserDto user1 =  new UserDto(user1UUID,"some user", "user1@noemail.com","FirstName", "LastName", true);
-        UserDto user2 =  new UserDto(user2UUID,"some user2", "user2@noemail.com","FirstName2", "LastName2", true);
+        UserDto user1 = new UserDto(user1UUID, "some user", "user1@noemail.com", "FirstName", "LastName", true);
+        UserDto user2 = new UserDto(user2UUID, "some user2", "user2@noemail.com", "FirstName2", "LastName2", true);
         users.addAll(Stream.of(user1, user2).collect(Collectors.toList()));
-
 
         when(userService.getUsersForTeam(teamUUID)).thenReturn(users);
 
@@ -86,7 +87,8 @@ public class UserResourceTest {
     public void shouldGetUserForTeam() {
         UUID teamUUID = UUID.randomUUID();
         UUID userUUID = UUID.randomUUID();
-        UserDto user =  new UserDto(userUUID.toString(),"some user", "user1@noemail.com","FirstName", "LastName", true);
+        UserDto user = new UserDto(userUUID.toString(), "some user", "user1@noemail.com", "FirstName", "LastName",
+            true);
         when(userService.getUserForTeam(teamUUID, userUUID)).thenReturn(user);
 
         ResponseEntity<UserDto> result = userResource.getUserForTeam(teamUUID, userUUID);
@@ -125,4 +127,5 @@ public class UserResourceTest {
         verify(userService).updateUser(userUUID, updateUserDto);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
 }

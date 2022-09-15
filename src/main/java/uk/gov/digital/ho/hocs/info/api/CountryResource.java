@@ -34,4 +34,5 @@ public class CountryResource {
         countryService.updateWebCountryList();
         return ResponseEntity.ok("Success");
     }
+
 }

@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,7 +34,7 @@ public class CorrespondentType implements Serializable {
     @Column(name = "type")
     private String type;
 
-    public CorrespondentType(String displayName, String type){
+    public CorrespondentType(String displayName, String type) {
         this.uuid = UUID.randomUUID();
         this.displayName = displayName;
         this.type = type;

@@ -49,18 +49,21 @@ public class EntityService {
 
         if (entityListUUID != null) {
             Optional<Entity> existingEntity = entityRepository.findBySimpleNameAndEntityListUUID(
-                    entityDto.getSimpleName(), UUID.fromString(entityListUUID));
+                entityDto.getSimpleName(), UUID.fromString(entityListUUID));
 
             if (existingEntity.isPresent()) {
-                throw new ApplicationExceptions.EntityAlreadyExistsException("entity with this simple name already exists!");
+                throw new ApplicationExceptions.EntityAlreadyExistsException(
+                    "entity with this simple name already exists!");
             }
         } else {
             throw new ApplicationExceptions.EntityNotFoundException("EntityList not found for: %s ", listName);
         }
 
-        Entity newEntity = new Entity(null, UUID.randomUUID(), entityDto.getSimpleName(), entityDto.getData(), UUID.fromString(entityListUUID), true, 10);
+        Entity newEntity = new Entity(null, UUID.randomUUID(), entityDto.getSimpleName(), entityDto.getData(),
+            UUID.fromString(entityListUUID), true, 10);
 
-        log.info("Creating entity {} with data: {}, simpleName: {}", newEntity.getUuid(), newEntity.getData(), newEntity.getSimpleName());
+        log.info("Creating entity {} with data: {}, simpleName: {}", newEntity.getUuid(), newEntity.getData(),
+            newEntity.getSimpleName());
         entityRepository.save(newEntity);
 
     }
@@ -70,9 +73,9 @@ public class EntityService {
     }
 
     public Entity getEntityBySimpleName(String simpleName) throws Exception {
-        return entityRepository.findBySimpleName(simpleName)
-                .orElseThrow(() -> new ApplicationExceptions.EntityNotFoundException
-                        ("Entity with simpleName " + simpleName + " not found."));
+        return entityRepository.findBySimpleName(simpleName).orElseThrow(
+            () -> new ApplicationExceptions.EntityNotFoundException(
+                "Entity with simpleName " + simpleName + " not found."));
     }
 
     public void updateEntity(String listName, EntityDto entityDto) {
@@ -80,37 +83,41 @@ public class EntityService {
 
         Entity entity = entityRepository.findByUuid(UUID.fromString(entityDto.getUuid()));
 
-        if (StringUtils.isNotEmpty(entityListUUID) && entity.getEntityListUUID().equals(UUID.fromString(entityListUUID))) {
-            List<Entity> existingEntities = entityRepository.findByDataAndEntityListUUID(
-                    entityDto.getData(), UUID.fromString(entityListUUID));
+        if (StringUtils.isNotEmpty(entityListUUID) && entity.getEntityListUUID().equals(
+            UUID.fromString(entityListUUID))) {
+            List<Entity> existingEntities = entityRepository.findByDataAndEntityListUUID(entityDto.getData(),
+                UUID.fromString(entityListUUID));
 
-            existingEntities = existingEntities
-                    .stream()
-                    .filter(e -> !Objects.equals(e.getUuid(), UUID.fromString(entityDto.getUuid())))
-                    .collect(Collectors.toList());
+            existingEntities = existingEntities.stream().filter(
+                e -> !Objects.equals(e.getUuid(), UUID.fromString(entityDto.getUuid()))).collect(Collectors.toList());
 
             if (!existingEntities.isEmpty()) {
                 throw new ApplicationExceptions.EntityAlreadyExistsException(
-                        String.format("entity with simple name: %s already exists", existingEntities.get(0).getSimpleName()));
+                    String.format("entity with simple name: %s already exists",
+                        existingEntities.get(0).getSimpleName()));
             }
 
             log.info("Updating entity {} with values data: {}", entity.getUuid(), entityDto.getData());
             entity.update(entityDto);
             entityRepository.save(entity);
         } else {
-            throw new ApplicationExceptions.EntityNotFoundException("Entity %s not found for entity list: %s, cannot update! ", entityDto.getUuid(), listName);
+            throw new ApplicationExceptions.EntityNotFoundException(
+                "Entity %s not found for entity list: %s, cannot update! ", entityDto.getUuid(), listName);
         }
     }
 
-    public void deleteEntity(String listName, String entityUUID){
+    public void deleteEntity(String listName, String entityUUID) {
         String entityListUUID = entityRepository.findEntityListUUIDBySimpleName(listName);
 
         Entity entity = entityRepository.findByUuid(UUID.fromString(entityUUID));
 
-        if (StringUtils.isNotEmpty(entityListUUID) && entity.getEntityListUUID().equals(UUID.fromString(entityListUUID))) {
+        if (StringUtils.isNotEmpty(entityListUUID) && entity.getEntityListUUID().equals(
+            UUID.fromString(entityListUUID))) {
             entityRepository.delete(entity);
         } else {
-            throw new ApplicationExceptions.EntityNotFoundException("Entity %s not found for entity list: %s, cannot delete! ", entityUUID, listName);
+            throw new ApplicationExceptions.EntityNotFoundException(
+                "Entity %s not found for entity list: %s, cannot delete! ", entityUUID, listName);
         }
     }
+
 }

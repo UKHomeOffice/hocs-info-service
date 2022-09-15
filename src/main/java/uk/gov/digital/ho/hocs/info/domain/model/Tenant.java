@@ -1,6 +1,5 @@
 package uk.gov.digital.ho.hocs.info.domain.model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,4 +21,5 @@ public class Tenant implements Serializable {
     @Column(name = "display_name")
     @Getter
     private String displayName;
+
 }

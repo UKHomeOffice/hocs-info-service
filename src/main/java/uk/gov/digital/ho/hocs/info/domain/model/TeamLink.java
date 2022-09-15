@@ -46,6 +46,7 @@ public class TeamLink implements Serializable {
         this.caseType = caseType;
         this.stageType = stageType;
     }
+
 }
 
 

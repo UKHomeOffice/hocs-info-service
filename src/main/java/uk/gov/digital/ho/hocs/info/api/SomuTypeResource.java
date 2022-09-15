@@ -30,7 +30,8 @@ public class SomuTypeResource {
     }
 
     @GetMapping(value = "/somuType/{caseType}/{type}", produces = APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<SomuTypeDto> getSomuTypeForCaseTypeAndType(@PathVariable String caseType, @PathVariable String type) {
+    ResponseEntity<SomuTypeDto> getSomuTypeForCaseTypeAndType(@PathVariable String caseType,
+                                                              @PathVariable String type) {
         SomuType somuType = somuTypeService.getSomuTypeForCaseTypeAndType(caseType, type);
         return ResponseEntity.ok(SomuTypeDto.from(somuType));
     }
@@ -43,7 +44,9 @@ public class SomuTypeResource {
 
     @PostMapping(value = "/somuType", produces = APPLICATION_JSON_UTF8_VALUE)
     ResponseEntity<SomuTypeDto> upsertSomuTypeForCaseTypeAndType(@RequestBody CreateSomuTypeDto somuTypeDto) {
-        SomuType somuType = somuTypeService.upsertSomuTypeForCaseTypeAndType(somuTypeDto.getCaseType(), somuTypeDto.getType(), somuTypeDto.getSchema(), somuTypeDto.getActive());
+        SomuType somuType = somuTypeService.upsertSomuTypeForCaseTypeAndType(somuTypeDto.getCaseType(),
+            somuTypeDto.getType(), somuTypeDto.getSchema(), somuTypeDto.getActive());
         return ResponseEntity.ok(SomuTypeDto.from(somuType));
     }
+
 }

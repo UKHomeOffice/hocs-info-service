@@ -59,6 +59,7 @@ public class Unit implements Serializable {
         team.setUnit(this);
         teams.add(team);
     }
+
     public void removeTeam(UUID teamUUID) {
         teams.removeIf(team -> team.getUuid() == teamUUID);
 

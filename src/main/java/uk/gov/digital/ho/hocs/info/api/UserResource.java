@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.info.api;
 
 import javax.validation.Valid;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,8 @@ public class UserResource {
     }
 
     @GetMapping(value = "/case/{caseUUID}/stage/{stageUUID}/team/members")
-    public ResponseEntity<List<UserDto>> getUsersForTeamByStage(@PathVariable UUID caseUUID, @PathVariable UUID stageUUID) {
+    public ResponseEntity<List<UserDto>> getUsersForTeamByStage(@PathVariable UUID caseUUID,
+                                                                @PathVariable UUID stageUUID) {
         List<UserDto> users = userService.getUsersForTeamByStage(caseUUID, stageUUID);
         return ResponseEntity.ok(users);
     }
@@ -64,4 +66,5 @@ public class UserResource {
         userService.updateUser(userUUID, updateUserDto);
         return ResponseEntity.ok().build();
     }
+
 }

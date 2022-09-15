@@ -23,7 +23,6 @@ public class CaseDetailsFieldResourceTest {
 
     private final String caseType = "Type1";
 
-
     @Before
     public void setUp() {
         caseDetailsFieldResource = new CaseDetailsFieldResource(caseDetailsFieldService);
@@ -44,7 +43,8 @@ public class CaseDetailsFieldResourceTest {
 
         when(caseDetailsFieldService.getCaseDetailsFieldsByCaseType(caseType)).thenReturn(List.of(fieldA, fieldB));
 
-        ResponseEntity<List<CaseDetailsFieldDto>> result = caseDetailsFieldResource.getCaseDetailsFieldsByCaseType(caseType);
+        ResponseEntity<List<CaseDetailsFieldDto>> result = caseDetailsFieldResource.getCaseDetailsFieldsByCaseType(
+            caseType);
 
         Assert.assertEquals("Status code incorrect", 200, result.getStatusCode().value());
         Assert.assertNotNull("Body should be defined", result.getBody());
@@ -65,7 +65,8 @@ public class CaseDetailsFieldResourceTest {
 
         when(caseDetailsFieldService.getCaseDetailsFieldsByCaseType(caseType)).thenReturn(List.of());
 
-        ResponseEntity<List<CaseDetailsFieldDto>> result = caseDetailsFieldResource.getCaseDetailsFieldsByCaseType(caseType);
+        ResponseEntity<List<CaseDetailsFieldDto>> result = caseDetailsFieldResource.getCaseDetailsFieldsByCaseType(
+            caseType);
 
         Assert.assertEquals("Status code incorrect", 200, result.getStatusCode().value());
         Assert.assertNotNull("Body should be defined", result.getBody());
@@ -78,7 +79,8 @@ public class CaseDetailsFieldResourceTest {
     @Test(expected = IllegalArgumentException.class)
     public void getCaseDetailsFieldsByCaseType_throwsException() {
 
-        when(caseDetailsFieldService.getCaseDetailsFieldsByCaseType(caseType)).thenThrow(new IllegalArgumentException("Test Exception"));
+        when(caseDetailsFieldService.getCaseDetailsFieldsByCaseType(caseType)).thenThrow(
+            new IllegalArgumentException("Test Exception"));
 
         caseDetailsFieldResource.getCaseDetailsFieldsByCaseType(caseType);
 

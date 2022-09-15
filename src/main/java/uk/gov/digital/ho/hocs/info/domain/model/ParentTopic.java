@@ -48,4 +48,5 @@ public class ParentTopic implements Serializable {
         this.uuid = UUID.randomUUID();
         this.active = active;
     }
+
 }

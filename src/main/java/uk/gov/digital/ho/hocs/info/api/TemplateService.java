@@ -19,7 +19,9 @@ import java.util.UUID;
 public class TemplateService {
 
     private final TemplateRepository templateRepository;
+
     private final DocumentClient documentClient;
+
     private final CaseworkClient caseworkClient;
 
     @Autowired
@@ -35,13 +37,15 @@ public class TemplateService {
         log.debug("Creating Template {} for CaseType {} ", request.getDisplayName(), request.getCaseType());
 
         Template newTemplate = new Template(request.getDisplayName(), request.getCaseType());
-        UUID templateDocumentUUID = documentClient.createDocument(newTemplate.getUuid(), request.getDisplayName(), request.getS3UntrustedUrl(), ManagedDocumentType.TEMPLATE);
+        UUID templateDocumentUUID = documentClient.createDocument(newTemplate.getUuid(), request.getDisplayName(),
+            request.getS3UntrustedUrl(), ManagedDocumentType.TEMPLATE);
         newTemplate.setDocumentUUID(templateDocumentUUID);
         templateRepository.save(newTemplate);
 
         caseworkClient.clearCachedTemplateForCaseType(request.getCaseType());
 
-        log.info("Created Template {} for CaseType {} with uuid {} ", request.getDisplayName(), request.getCaseType(), newTemplate.getUuid());
+        log.info("Created Template {} for CaseType {} with uuid {} ", request.getDisplayName(), request.getCaseType(),
+            newTemplate.getUuid());
     }
 
     public void deleteTemplate(UUID uuid) {

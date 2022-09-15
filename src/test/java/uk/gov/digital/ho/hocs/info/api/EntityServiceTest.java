@@ -24,8 +24,8 @@ public class EntityServiceTest {
 
     @Mock
     protected EntityRepository entityRepository;
-    private EntityService entityService;
 
+    private EntityService entityService;
 
     @Before
     public void before() {
@@ -66,14 +66,7 @@ public class EntityServiceTest {
         // given
         String simpleName = "TEST_ENTITY";
 
-        Entity expectedEntity = new Entity(
-                UUID.randomUUID(),
-                simpleName,
-                "{}",
-                UUID.randomUUID(),
-                true,
-                0);
-
+        Entity expectedEntity = new Entity(UUID.randomUUID(), simpleName, "{}", UUID.randomUUID(), true, 0);
 
         when(entityRepository.findBySimpleName(simpleName)).thenReturn(Optional.of(expectedEntity));
 
@@ -138,7 +131,6 @@ public class EntityServiceTest {
         verifyNoMoreInteractions(entityRepository);
     }
 
-
     @Test
     public void createEntity() {
         String listName = "L1";
@@ -164,7 +156,6 @@ public class EntityServiceTest {
         assertThat(capturedEntity.getData()).isEqualTo(data);
         assertThat(capturedEntity.isActive()).isTrue();
 
-
     }
 
     @Test(expected = ApplicationExceptions.EntityAlreadyExistsException.class)
@@ -176,11 +167,10 @@ public class EntityServiceTest {
         EntityDto entityDto = new EntityDto(simpleName, uuid, data);
         UUID listUUID = UUID.randomUUID();
 
-        when(entityRepository.findEntityListUUIDBySimpleName(listName))
-                .thenReturn(listUUID.toString());
+        when(entityRepository.findEntityListUUIDBySimpleName(listName)).thenReturn(listUUID.toString());
 
-        when(entityRepository.findBySimpleNameAndEntityListUUID(simpleName, listUUID))
-               .thenReturn(Optional.of(new Entity()));
+        when(entityRepository.findBySimpleNameAndEntityListUUID(simpleName, listUUID)).thenReturn(
+            Optional.of(new Entity()));
 
         entityService.createEntity(listName, entityDto);
 
@@ -201,7 +191,7 @@ public class EntityServiceTest {
     }
 
     @Test
-    public void getEntity(){
+    public void getEntity() {
         UUID testUUID = UUID.randomUUID();
 
         entityService.getEntity(testUUID.toString());
@@ -253,7 +243,6 @@ public class EntityServiceTest {
         when(entityRepository.findEntityListUUIDBySimpleName(listName)).thenReturn(listUUID.toString());
 
         entityService.updateEntity(listName, entityDto);
-
 
     }
 

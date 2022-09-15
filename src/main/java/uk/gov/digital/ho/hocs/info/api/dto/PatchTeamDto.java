@@ -20,4 +20,5 @@ public class PatchTeamDto {
 
     @JsonProperty("active")
     private Boolean active;
+
 }

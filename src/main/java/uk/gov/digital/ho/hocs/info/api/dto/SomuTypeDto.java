@@ -13,7 +13,7 @@ public class SomuTypeDto {
 
     @JsonProperty("uuid")
     private UUID uuid;
-    
+
     @JsonProperty("caseType")
     private String caseType;
 
@@ -27,11 +27,8 @@ public class SomuTypeDto {
     private boolean active;
 
     public static SomuTypeDto from(SomuType somuType) {
-        return new SomuTypeDto(
-                somuType.getUuid(),
-                somuType.getCaseType(),
-                somuType.getType(),
-                somuType.getSchema(),
-                somuType.isActive());
+        return new SomuTypeDto(somuType.getUuid(), somuType.getCaseType(), somuType.getType(), somuType.getSchema(),
+            somuType.isActive());
     }
+
 }
