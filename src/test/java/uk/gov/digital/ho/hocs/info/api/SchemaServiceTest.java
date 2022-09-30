@@ -9,16 +9,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.FieldDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.Field;
-import uk.gov.digital.ho.hocs.info.domain.model.FieldScreen;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 import uk.gov.digital.ho.hocs.info.domain.repository.FieldRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.SchemaRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
@@ -57,101 +54,6 @@ public class SchemaServiceTest {
 
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.toArray()[0]).isEqualTo(field);
-    }
-
-    @Test
-    public void getExtractOnlyFields() {
-
-        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true,
-            null);
-        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true,
-            null);
-        UUID schemaUUID = UUID.randomUUID();
-
-        List<FieldScreen> fields = List.of(new FieldScreen(schemaUUID, field1.getUuid(), 1L, field1),
-            new FieldScreen(schemaUUID, field2.getUuid(), 2L, field2));
-
-        Schema testSchema = new Schema(20L, schemaUUID, "type", "schemaTitle", "save", true, "stageType", fields, null,
-            null, null, null);
-
-        when(schemaRepository.findExtractOnlySchema()).thenReturn(testSchema);
-
-        List<Field> results = service.getExtractOnlyFields();
-
-        assertThat(results.size()).isEqualTo(1);
-        assertThat(results.get(0).getId()).isEqualTo(11L);
-
-        verify(schemaRepository).findExtractOnlySchema();
-
-        verifyNoMoreInteractions(fieldRepository, schemaRepository);
-
-    }
-
-    @Test
-    public void getExtractOnlyFields_NullSchema() {
-
-        when(schemaRepository.findExtractOnlySchema()).thenReturn(null);
-
-        List<Field> results = service.getExtractOnlyFields();
-
-        assertThat(results).isNotNull();
-        assertThat(results.size()).isEqualTo(0);
-
-        verify(schemaRepository).findExtractOnlySchema();
-
-        verifyNoMoreInteractions(fieldRepository, schemaRepository);
-
-    }
-
-    @Test
-    public void getAllReportingFieldsForCaseType() {
-        String caseType = "TYPE1";
-
-        Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true,
-            null);
-        Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true,
-            null);
-        Field field3 = new Field(12L, UUID.randomUUID(), "component", "Field3", "label", "", "", false, true, true,
-            null);
-        Field field4 = new Field(13L, UUID.randomUUID(), "component", "Field4", "label", "", "", false, false, true,
-            null);
-
-        UUID schema1UUID = UUID.randomUUID();
-        UUID schema2UUID = UUID.randomUUID();
-
-        List<FieldScreen> fields1 = List.of(new FieldScreen(schema1UUID, field1.getUuid(), 1L, field1),
-            new FieldScreen(schema1UUID, field2.getUuid(), 2L, field2));
-        List<FieldScreen> fields2 = List.of(new FieldScreen(schema2UUID, field3.getUuid(), 1L, field3),
-            new FieldScreen(schema2UUID, field4.getUuid(), 2L, field4));
-
-        Schema schema1 = new Schema(21L, UUID.randomUUID(), "type1", "schemaTitle1", "save", true, "stageType", fields1,
-            null, null, null, null);
-        Schema schema2 = new Schema(22L, UUID.randomUUID(), "type2", "schemaTitle2", "save", true, "stageType", fields2,
-            null, null, null, null);
-
-        when(schemaRepository.findAllActiveFormsByCaseType(caseType)).thenReturn(Set.of(schema1, schema2));
-
-        List<Field> results = service.getAllReportingFieldsForCaseType(caseType).collect(Collectors.toList());
-
-        assertThat(results).isNotNull();
-        assertThat(results.size()).isEqualTo(2);
-
-        if (results.get(0).getId().equals(11L)) {
-            assertThat(results.get(0).getId()).isEqualTo(11L);
-            assertThat(results.get(0).getName()).isEqualTo("Field2");
-            assertThat(results.get(1).getId()).isEqualTo(12L);
-            assertThat(results.get(1).getName()).isEqualTo("Field3");
-
-        } else {
-            assertThat(results.get(0).getId()).isEqualTo(12L);
-            assertThat(results.get(0).getName()).isEqualTo("Field3");
-            assertThat(results.get(1).getId()).isEqualTo(11L);
-            assertThat(results.get(1).getName()).isEqualTo("Field2");
-        }
-
-        verify(schemaRepository).findAllActiveFormsByCaseType(caseType);
-
-        verifyNoMoreInteractions(fieldRepository, schemaRepository);
     }
 
     @Test

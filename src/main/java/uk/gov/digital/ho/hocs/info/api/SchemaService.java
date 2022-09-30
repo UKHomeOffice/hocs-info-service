@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -48,38 +47,11 @@ public class SchemaService {
     }
 
     @Deprecated(forRemoval = true)
-    Set<Schema> getAllSchemasForCaseType(String caseType) {
-        log.debug("Getting all Forms for CaseType {}", caseType);
-        Set<Schema> caseTypeSchemas = schemaRepository.findAllActiveFormsByCaseType(caseType);
-        log.info("Got {} Forms for CaseType {}", caseTypeSchemas.size(), caseType);
-        return caseTypeSchemas;
-    }
-
-    @Deprecated(forRemoval = true)
     List<Field> getAllSummaryFieldsForCaseType(String caseType) {
         log.debug("Getting all summary fields CaseType {}", caseType);
         List<Field> summaryFields = fieldRepository.findAllSummaryFields(caseType);
         log.info("Got {} summary fields for CaseType {}", summaryFields.size(), caseType);
         return summaryFields;
-    }
-
-    @Deprecated(forRemoval = true)
-    public Stream<Field> getAllReportingFieldsForCaseType(String caseType) {
-        Set<Schema> caseTypeSchemas = getAllSchemasForCaseType(caseType);
-        log.debug("Filtering to reporting only.");
-        return caseTypeSchemas.stream().flatMap(f -> f.getFields().stream()).filter(Field::isReporting);
-    }
-
-    @Deprecated(forRemoval = true)
-    public List<Field> getExtractOnlyFields() {
-        Schema extractOnlySchema = schemaRepository.findExtractOnlySchema();
-
-        if (extractOnlySchema != null) {
-            log.debug("Getting extract only fields.");
-            return extractOnlySchema.getFields().stream().filter(Field::isReporting).collect(Collectors.toList());
-        }
-
-        return new ArrayList<>();
     }
 
     @Deprecated(forRemoval = true)

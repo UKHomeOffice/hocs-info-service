@@ -84,13 +84,12 @@ VALUES ('f958f77d-b277-408d-bd6f-4a498d3f217f',
         '{}',
         '{}');
 
-INSERT INTO info.field ("uuid", "component", "name", "label", "validation", "summary", "report_extract", "active", "props", child_field)
+INSERT INTO info.field ("uuid", "component", "name", "label", "validation", "summary", "active", "props", child_field)
 VALUES ('782a75de-ce06-4d31-95eb-87e42234f396',
         'text-area',
         'TEST_TEXT_FIELD',
         'Test text field',
         '[ "required" ]',
-        false,
         false,
         true,
         '{}',
@@ -99,7 +98,7 @@ VALUES ('782a75de-ce06-4d31-95eb-87e42234f396',
         'review-field',
         'TEST_REVIEW_FIELD',
         null,
-        '[]'::jsonb, true, false, true,
+        '[]'::jsonb, true, true,
         '{"direction": "TEST_DIRECTION"}'::jsonb,
         '782a75de-ce06-4d31-95eb-87e42234f396');
 

@@ -22,12 +22,9 @@ public class SchemaResource {
 
     private final SchemaService schemaService;
 
-    private final ExtractService extractService;
-
     @Autowired
-    public SchemaResource(SchemaService schemaService, ExtractService extractService) {
+    public SchemaResource(SchemaService schemaService) {
         this.schemaService = schemaService;
-        this.extractService = extractService;
     }
 
     @GetMapping(value = "/schema/{type}", produces = APPLICATION_JSON_VALUE)
@@ -50,13 +47,6 @@ public class SchemaResource {
     public ResponseEntity<List<FieldDto>> getAllSummaryFieldsForCaseType(@PathVariable String caseType) {
         List<Field> fields = schemaService.getAllSummaryFieldsForCaseType(caseType);
         return ResponseEntity.ok(fields.stream().map(FieldDto::from).collect(Collectors.toList()));
-    }
-
-    @Deprecated(forRemoval = true)
-    @GetMapping(value = "/schema/caseType/{caseType}/reporting", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<String>> getAllReportingFieldsForCaseType(@PathVariable String caseType) {
-        List<String> fields = extractService.getAllReportingFieldsForCaseType(caseType);
-        return ResponseEntity.ok(fields);
     }
 
     @Deprecated(forRemoval = true)
