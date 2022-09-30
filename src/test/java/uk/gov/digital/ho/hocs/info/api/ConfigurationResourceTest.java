@@ -8,15 +8,18 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.api.dto.ConfigurationDto;
-import uk.gov.digital.ho.hocs.info.api.dto.SearchFieldDto;
-import uk.gov.digital.ho.hocs.info.domain.model.*;
+import uk.gov.digital.ho.hocs.info.domain.model.Configuration;
+import uk.gov.digital.ho.hocs.info.domain.model.Profile;
+import uk.gov.digital.ho.hocs.info.domain.model.WorkstackColumn;
+import uk.gov.digital.ho.hocs.info.domain.model.WorkstackType;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigurationResourceTest {
@@ -42,9 +45,7 @@ public class ConfigurationResourceTest {
         List<WorkstackType> workstackTypes = Arrays.asList(
             new WorkstackType(10L, systemName, "some_type", workstackColumns));
 
-        List<SearchField> searchFields = Arrays.asList(
-            new SearchField(10L, "system", "name", "component", "validationRules", "properties"));
-        List<Profile> profiles = Arrays.asList(new Profile("testProfile", "system", true, searchFields));
+        List<Profile> profiles = Arrays.asList(new Profile("testProfile", "system", true));
 
         String readOnlyCaseViewAdapter = "Adapter";
         when(configurationService.getConfiguration("system")).thenReturn(
@@ -84,14 +85,6 @@ public class ConfigurationResourceTest {
             result.getBody().getProfiles().get(0).getProfileName());
         Assert.assertEquals("Profile summaryDeadlinesEnabled name do not match", true,
             result.getBody().getProfiles().get(0).isSummaryDeadlineEnabled());
-        List<SearchFieldDto> resultSearchFields = result.getBody().getProfiles().get(0).getSearchFields();
-        Assert.assertEquals("There should be 1 search field", 1, resultSearchFields.size());
-        Assert.assertEquals("Search field name do not match", "name", resultSearchFields.get(0).getName());
-        Assert.assertEquals("Search field component do not match", "component",
-            resultSearchFields.get(0).getComponent());
-        Assert.assertEquals("Search field validation do not match", "validationRules",
-            resultSearchFields.get(0).getValidation());
-        Assert.assertEquals("Search field props do not match", "properties", resultSearchFields.get(0).getProps());
 
         verify(configurationService).getConfiguration(systemName);
         verifyNoMoreInteractions(configurationService);

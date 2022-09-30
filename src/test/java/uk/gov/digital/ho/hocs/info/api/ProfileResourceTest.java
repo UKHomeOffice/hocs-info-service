@@ -9,13 +9,20 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.info.api.dto.ProfileDto;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
 import uk.gov.digital.ho.hocs.info.domain.model.Profile;
-import uk.gov.digital.ho.hocs.info.domain.model.SearchField;
 import uk.gov.digital.ho.hocs.info.domain.repository.ProfileRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProfileResourceTest {
@@ -76,9 +83,7 @@ public class ProfileResourceTest {
     public void getProfileForCaseType() {
         String caseType = "C1";
 
-        List<SearchField> searchFields = Arrays.asList(
-            new SearchField(10L, "system", "name", "component", "validationRules", "properties"));
-        Profile profile = new Profile("testProfile", "system", true, searchFields);
+        Profile profile = new Profile("testProfile", "system", true);
 
         when(profileRepository.findByCaseTypeAndSystemName(caseType, "system")).thenReturn(profile);
 
@@ -88,7 +93,6 @@ public class ProfileResourceTest {
         assertThat(response.getStatusCodeValue()).isEqualTo(200);
         assertThat(response.getBody().getProfileName()).isEqualTo("testProfile");
         assertThat(response.getBody().isSummaryDeadlineEnabled()).isTrue();
-        assertThat(response.getBody().getSearchFields().size()).isOne();
 
         verify(profileRepository).findByCaseTypeAndSystemName(caseType, "system");
         verifyNoMoreInteractions(caseTypeService, profileRepository);

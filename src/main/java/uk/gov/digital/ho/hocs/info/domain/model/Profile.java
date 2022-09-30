@@ -5,9 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.List;
 
 @javax.persistence.Entity
 @Table(name = "profile")
@@ -26,10 +27,5 @@ public class Profile implements Serializable {
 
     @Column(name = "summary_deadlines_enabled")
     private boolean summaryDeadlinesEnabled;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OrderBy("id")
-    @JoinColumn(name = "profile_name", referencedColumnName = "profile_name")
-    private List<SearchField> searchFields;
 
 }
