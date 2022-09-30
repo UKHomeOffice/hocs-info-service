@@ -8,25 +8,35 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.api.dto.CaseTypeActionDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateCaseTypeDto;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
-import uk.gov.digital.ho.hocs.info.domain.model.*;
+import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
+import uk.gov.digital.ho.hocs.info.domain.model.CaseTypeAction;
+import uk.gov.digital.ho.hocs.info.domain.model.DocumentTag;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseActionTypeRepository;
-import uk.gov.digital.ho.hocs.info.domain.repository.CaseTabRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseTypeRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.DocumentTagRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.HolidayDateRepository;
 import uk.gov.digital.ho.hocs.info.security.UserPermissionsService;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseTypeServiceTest {
@@ -35,22 +45,13 @@ public class CaseTypeServiceTest {
     private CaseTypeRepository caseTypeRepository;
 
     @Mock
-    private CaseTabRepository caseTabRepository;
-
-    @Mock
     private DocumentTagRepository documentTagRepository;
 
     @Mock
     private HolidayDateRepository holidayDateRepository;
 
     @Mock
-    private StageTypeService stageTypeService;
-
-    @Mock
     private UserPermissionsService userPermissionsService;
-
-    @Mock
-    private LocalDateWrapper localDateWrapper;
 
     @Mock
     private CaseActionTypeRepository caseActionTypeRepository;
@@ -74,9 +75,8 @@ public class CaseTypeServiceTest {
 
     @Before
     public void setUp() {
-        this.caseTypeService = new CaseTypeService(caseTypeRepository, caseTabRepository, documentTagRepository,
-            holidayDateRepository, caseActionTypeRepository, stageTypeService, userPermissionsService,
-            localDateWrapper);
+        this.caseTypeService = new CaseTypeService(caseTypeRepository, documentTagRepository, holidayDateRepository,
+            caseActionTypeRepository, userPermissionsService);
     }
 
     @Test
@@ -189,8 +189,8 @@ public class CaseTypeServiceTest {
     }
 
     private void checkNoMoreInteractions() {
-        verifyNoMoreInteractions(caseTypeRepository, documentTagRepository, holidayDateRepository, stageTypeService,
-            userPermissionsService, localDateWrapper);
+        verifyNoMoreInteractions(caseTypeRepository, documentTagRepository, holidayDateRepository,
+            userPermissionsService);
     }
 
     private void assetCaseTypeDtoContainsCorrectElements(Set<CaseType> caseTypeDtos,
@@ -337,7 +337,6 @@ public class CaseTypeServiceTest {
 
     @Test
     public void shouldReturnEmptyListOfAllCaseTypeActions() {
-
         List<CaseTypeAction> caseTypeActionList = new LinkedList<>();
 
         when(caseActionTypeRepository.findAll()).thenReturn(caseTypeActionList);
@@ -346,19 +345,4 @@ public class CaseTypeServiceTest {
         assertThat(output.size()).isEqualTo(0);
     }
 
-    @Test
-    public void shouldReturnCaseConfigForCaseType() {
-        String type = "COMP";
-        CaseTab caseTab1 = new CaseTab(UUID.randomUUID(), "documents", "Documents", "DOCUMENTS");
-        CaseTab caseTab2 = new CaseTab(UUID.randomUUID(), "summary", "Summary", "SUMMARY");
-        List<CaseTab> tabs = Arrays.asList(caseTab1, caseTab2);
-
-        when(caseTabRepository.findTabsByType(type)).thenReturn(tabs);
-        CaseConfig caseConfig = caseTypeService.getCaseConfig(type);
-
-        assertEquals(type, caseConfig.getType());
-        assertEquals(tabs, caseConfig.getTabs());
-    }
-
 }
-
