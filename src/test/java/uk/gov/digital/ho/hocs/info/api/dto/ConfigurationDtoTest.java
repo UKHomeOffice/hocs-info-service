@@ -2,7 +2,10 @@ package uk.gov.digital.ho.hocs.info.api.dto;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.gov.digital.ho.hocs.info.domain.model.*;
+import uk.gov.digital.ho.hocs.info.domain.model.Configuration;
+import uk.gov.digital.ho.hocs.info.domain.model.Profile;
+import uk.gov.digital.ho.hocs.info.domain.model.WorkstackColumn;
+import uk.gov.digital.ho.hocs.info.domain.model.WorkstackType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,11 +26,6 @@ public class ConfigurationDtoTest {
         String columnHeaderClassName = "some css header name";
         String columnSortStrategy = "TestSortStrategy";
 
-        String searchFieldDisplayName = "Field";
-        String searchFieldComponent = "checkbox";
-        String searchFieldValidation = "validationRuleC";
-        String searchFieldProps = "props";
-
         String profileName = "Profile1";
 
         String workstackType = "SomeType";
@@ -39,11 +37,7 @@ public class ConfigurationDtoTest {
         List<WorkstackType> workstackTypes = Arrays.asList(
             new WorkstackType(10L, systemName, workstackType, workstackColumns));
 
-        List<SearchField> searchFields = Arrays.asList(
-            new SearchField(10L, systemName, searchFieldDisplayName, searchFieldComponent, searchFieldValidation,
-                searchFieldProps));
-
-        List<Profile> profiles = Arrays.asList(new Profile(profileName, systemName, false, searchFields));
+        List<Profile> profiles = Arrays.asList(new Profile(profileName, systemName, false));
 
         String readOnlyCaseViewAdapter = "Adapter";
         Configuration configuration = new Configuration(systemName, systemDisplayName, true, true, true, workstackTypes,
@@ -81,17 +75,6 @@ public class ConfigurationDtoTest {
         Assert.assertEquals("Profile name do not match", profileName, dto.getProfiles().get(0).getProfileName());
         Assert.assertEquals("Profile summaryDeadlinesEnabled name do not match", false,
             dto.getProfiles().get(0).isSummaryDeadlineEnabled());
-        List<SearchFieldDto> resultSearchFields = dto.getProfiles().get(0).getSearchFields();
-
-        Assert.assertEquals("There should be 1 search field", 1, resultSearchFields.size());
-        Assert.assertEquals("Search field name do not match", searchFieldDisplayName,
-            resultSearchFields.get(0).getName());
-        Assert.assertEquals("Search field component do not match", searchFieldComponent,
-            resultSearchFields.get(0).getComponent());
-        Assert.assertEquals("Search field validation do not match", searchFieldValidation,
-            resultSearchFields.get(0).getValidation());
-        Assert.assertEquals("Search field props do not match", searchFieldProps, resultSearchFields.get(0).getProps());
-
     }
 
 }

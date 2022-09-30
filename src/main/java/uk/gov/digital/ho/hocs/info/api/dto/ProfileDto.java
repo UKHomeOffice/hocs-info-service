@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.domain.model.Profile;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @AllArgsConstructor()
 @Getter
 public class ProfileDto {
@@ -15,13 +12,8 @@ public class ProfileDto {
 
     private boolean summaryDeadlineEnabled;
 
-    private List<SearchFieldDto> searchFields;
-
     public static ProfileDto from(Profile profile) {
-        List<SearchFieldDto> searchFields = profile.getSearchFields().stream().map(SearchFieldDto::from).collect(
-            Collectors.toList());
-        return new ProfileDto(profile.getProfileName(), profile.isSummaryDeadlinesEnabled(), searchFields);
-
+        return new ProfileDto(profile.getProfileName(), profile.isSummaryDeadlinesEnabled());
     }
 
 }
