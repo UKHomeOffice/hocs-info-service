@@ -47,14 +47,6 @@ public class SchemaService {
     }
 
     @Deprecated(forRemoval = true)
-    List<Field> getAllSummaryFieldsForCaseType(String caseType) {
-        log.debug("Getting all summary fields CaseType {}", caseType);
-        List<Field> summaryFields = fieldRepository.findAllSummaryFields(caseType);
-        log.info("Got {} summary fields for CaseType {}", summaryFields.size(), caseType);
-        return summaryFields;
-    }
-
-    @Deprecated(forRemoval = true)
     Set<Schema> getAllSchemasForCaseTypeAndStage(String caseType, String stages) {
         log.debug("Getting all Forms for stages {} and CaseType {}", stages, caseType);
         List<String> stagesList = new ArrayList<>(Arrays.asList(stages.split(",")));

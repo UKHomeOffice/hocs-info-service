@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class SchemaServiceTest {
 
-    private final Field field = new Field("", "Field1", "", "", "", true, null);
+    private final Field field = new Field("", "Field1", "", "", "", null);
 
     @Mock
     ObjectMapper mapper;
@@ -41,19 +41,6 @@ public class SchemaServiceTest {
     @Before
     public void setup() {
         service = new SchemaService(fieldRepository, schemaRepository, mapper);
-    }
-
-    @Test
-    public void shouldGetAllStageTypes() {
-        List<Field> fields = new ArrayList<>() {{
-            add(field);
-        }};
-        when(fieldRepository.findAllSummaryFields("CASE_TYPE")).thenReturn(fields);
-
-        List<Field> result = service.getAllSummaryFieldsForCaseType("CASE_TYPE");
-
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result.toArray()[0]).isEqualTo(field);
     }
 
     @Test

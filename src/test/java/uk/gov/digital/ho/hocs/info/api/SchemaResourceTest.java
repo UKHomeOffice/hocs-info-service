@@ -32,26 +32,11 @@ public class SchemaResourceTest {
         schemaResource = new SchemaResource(schemaService);
     }
 
-    @Test
-    public void shouldGetAllSummaryFieldsForCaseType() {
-        Field childField = new Field("component", "childField", "label", "", "", true, null);
-        Field field = new Field("component", "Field1", "label", "", "", true, childField);
-        List<Field> fields = new ArrayList<>();
-        fields.add(field);
-        when(schemaService.getAllSummaryFieldsForCaseType("CASE_TYPE")).thenReturn(fields);
-
-        ResponseEntity<List<FieldDto>> result = schemaResource.getAllSummaryFieldsForCaseType("CASE_TYPE");
-        assertThat(result.getBody()).isNotNull();
-        assertThat(result.getBody().size()).isEqualTo(1);
-        assertThat(result.getBody().get(0).getName()).isEqualTo("Field1");
-        assertThat(result.getBody().get(0).getChild().getUuid()).isEqualTo(childField.getUuid());
-
-    }
 
     @Test
     public void shouldGetAllFieldsBySchemaType() {
-        Field childField = new Field("component", "childField", "label", "", "", true, null);
-        Field field = new Field("component", "Field1", "label", "", "", true, childField);
+        Field childField = new Field("component", "childField", "label", "", "", null);
+        Field field = new Field("component", "Field1", "label", "", "", childField);
 
         FieldDto fieldDto = FieldDto.fromWithDecoratedProps(field, mapper);
         List<FieldDto> fieldDtos = new ArrayList<>();

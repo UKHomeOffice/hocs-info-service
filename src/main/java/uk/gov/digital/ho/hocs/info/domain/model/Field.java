@@ -52,10 +52,6 @@ public class Field implements Serializable {
     private String props;
 
     @Getter
-    @Column(name = "summary")
-    private boolean summary;
-
-    @Getter
     @Column(name = "active")
     private boolean active = true;
 
@@ -69,7 +65,6 @@ public class Field implements Serializable {
                  String label,
                  String validation,
                  String props,
-                 boolean summary,
                  Field child) {
         this.uuid = UUID.randomUUID();
         this.component = component;
@@ -77,7 +72,6 @@ public class Field implements Serializable {
         this.label = label;
         this.validation = validation;
         this.props = props;
-        this.summary = summary;
         this.child = child;
     }
 

@@ -37,9 +37,6 @@ public class FieldDto {
     @JsonRawValue
     private String props;
 
-    @JsonProperty("summary")
-    private boolean summary;
-
     @JsonProperty("active")
     private boolean active;
 
@@ -51,7 +48,7 @@ public class FieldDto {
         final FieldDto childField = field.getChild() != null ? FieldDto.from(field.getChild()) : null;
 
         return new FieldDto(field.getUuid(), field.getComponent(), field.getValidation(), field.getName(),
-            field.getLabel(), field.getProps(), field.isSummary(), field.isActive(), childField);
+            field.getLabel(), field.getProps(), field.isActive(), childField);
     }
 
     @Deprecated(forRemoval = true)
@@ -77,7 +74,7 @@ public class FieldDto {
         }
 
         return new FieldDto(field.getUuid(), field.getComponent(), field.getValidation(), field.getName(),
-            field.getLabel(), props, field.isSummary(), field.isActive(), childField);
+            field.getLabel(), props, field.isActive(), childField);
     }
 
 }

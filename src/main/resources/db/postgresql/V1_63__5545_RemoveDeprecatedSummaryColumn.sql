@@ -1,0 +1,2 @@
+ALTER TABLE field
+DROP COLUMN summary;
