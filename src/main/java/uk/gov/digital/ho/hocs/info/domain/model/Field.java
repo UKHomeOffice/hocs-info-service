@@ -3,9 +3,15 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -58,11 +64,6 @@ public class Field implements Serializable {
     private boolean active = true;
 
     @Getter
-    @Column(name = "access_level")
-    @Enumerated(EnumType.STRING)
-    private AccessLevel accessLevel;
-
-    @Getter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "child_field", referencedColumnName = "uuid")
     private Field child = null;
@@ -73,7 +74,6 @@ public class Field implements Serializable {
                  String validation,
                  String props,
                  boolean summary,
-                 AccessLevel accessLevel,
                  Field child) {
         this.uuid = UUID.randomUUID();
         this.component = component;
@@ -83,7 +83,6 @@ public class Field implements Serializable {
         this.props = props;
         this.summary = summary;
         this.child = child;
-        this.accessLevel = accessLevel;
     }
 
 }

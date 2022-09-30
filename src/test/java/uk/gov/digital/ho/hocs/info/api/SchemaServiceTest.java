@@ -13,16 +13,25 @@ import uk.gov.digital.ho.hocs.info.domain.model.FieldScreen;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 import uk.gov.digital.ho.hocs.info.domain.repository.FieldRepository;
 import uk.gov.digital.ho.hocs.info.domain.repository.SchemaRepository;
-import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SchemaServiceTest {
+
+    private final Field field = new Field("", "Field1", "", "", "", true, null);
+
+    @Mock
+    ObjectMapper mapper;
 
     @Mock
     private FieldRepository fieldRepository;
@@ -30,12 +39,7 @@ public class SchemaServiceTest {
     @Mock
     private SchemaRepository schemaRepository;
 
-    @Mock
-    ObjectMapper mapper;
-
     private SchemaService service;
-
-    private final Field field = new Field("", "Field1", "", "", "", true, AccessLevel.READ, null);
 
     @Before
     public void setup() {
@@ -59,9 +63,9 @@ public class SchemaServiceTest {
     public void getExtractOnlyFields() {
 
         Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true,
-            AccessLevel.READ, null);
+            null);
         Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true,
-            AccessLevel.READ, null);
+            null);
         UUID schemaUUID = UUID.randomUUID();
 
         List<FieldScreen> fields = List.of(new FieldScreen(schemaUUID, field1.getUuid(), 1L, field1),
@@ -104,13 +108,13 @@ public class SchemaServiceTest {
         String caseType = "TYPE1";
 
         Field field1 = new Field(10L, UUID.randomUUID(), "component", "Field1", "label", "", "", false, false, true,
-            AccessLevel.READ, null);
+            null);
         Field field2 = new Field(11L, UUID.randomUUID(), "component", "Field2", "label", "", "", false, true, true,
-            AccessLevel.READ, null);
+            null);
         Field field3 = new Field(12L, UUID.randomUUID(), "component", "Field3", "label", "", "", false, true, true,
-            AccessLevel.READ, null);
+            null);
         Field field4 = new Field(13L, UUID.randomUUID(), "component", "Field4", "label", "", "", false, false, true,
-            AccessLevel.READ, null);
+            null);
 
         UUID schema1UUID = UUID.randomUUID();
         UUID schema2UUID = UUID.randomUUID();
@@ -208,27 +212,6 @@ public class SchemaServiceTest {
 
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0).getName()).isEqualTo(field.getName());
-    }
-
-    @Test
-    public void shouldGetAllFieldsOfPermissionLevelForCaseType() {
-
-        // Given
-        AccessLevel accessLevel = AccessLevel.RESTRICTED_OWNER;
-        String caseType = "SOME_CASE_TYPE";
-        Field field = new Field("component", "Field1", "label", "", "", true, AccessLevel.RESTRICTED_OWNER, null);
-        List<Field> fieldList = List.of(field);
-
-        when(fieldRepository.findAllByAccessLevelAndCaseType(eq(caseType), eq(accessLevel.toString()))).thenReturn(
-            fieldList);
-
-        // When
-        List<FieldDto> result = service.getFieldsByCaseTypePermissionLevel(caseType, accessLevel);
-
-        // Then
-        assertThat(result).isNotNull();
-        assertThat(result.get(0)).isInstanceOf(FieldDto.class);
-        assertThat(result.get(0).getAccessLevel().getLevel()).isEqualTo(accessLevel.getLevel());
     }
 
 }

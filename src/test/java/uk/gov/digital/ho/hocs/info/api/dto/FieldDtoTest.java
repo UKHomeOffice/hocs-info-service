@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import uk.gov.digital.ho.hocs.info.domain.model.Field;
-import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 public class FieldDtoTest {
 
@@ -17,8 +16,7 @@ public class FieldDtoTest {
         String fieldProps = "{}";
         boolean fieldSummary = false;
 
-        Field field = new Field(fieldComponent, fieldName, fieldLabel, fieldValidation, fieldProps, fieldSummary,
-            AccessLevel.READ, null);
+        Field field = new Field(fieldComponent, fieldName, fieldLabel, fieldValidation, fieldProps, fieldSummary, null);
 
         FieldDto dto = FieldDto.from(field);
 
@@ -40,8 +38,7 @@ public class FieldDtoTest {
         String fieldProps = "{\"choices\":[{\"label\":\"TestLabel\",\"value\":\"TestValue\"}],\"label\":\"test field\",\"name\":\"testField\"}";
         boolean fieldSummary = false;
 
-        Field field = new Field(fieldComponent, fieldName, fieldLabel, fieldValidation, fieldProps, fieldSummary,
-            AccessLevel.READ, null);
+        Field field = new Field(fieldComponent, fieldName, fieldLabel, fieldValidation, fieldProps, fieldSummary, null);
         ObjectMapper mapper = new ObjectMapper();
         FieldDto dto = FieldDto.fromWithDecoratedProps(field, mapper);
 
