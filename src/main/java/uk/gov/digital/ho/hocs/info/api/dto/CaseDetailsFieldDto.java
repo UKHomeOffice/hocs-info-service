@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseDetailsField;
 
+@Deprecated(forRemoval = true)
 @AllArgsConstructor()
 @Getter
 public class CaseDetailsFieldDto {

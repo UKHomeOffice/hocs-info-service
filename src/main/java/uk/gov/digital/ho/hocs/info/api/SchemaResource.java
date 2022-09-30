@@ -38,6 +38,7 @@ public class SchemaResource {
         return ResponseEntity.ok(from);
     }
 
+    @Deprecated(forRemoval = true)
     @GetMapping(value = "/schema/caseType/{caseType}", params = { "stages" }, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SchemaDto>> getAllSchemasForCaseType(@PathVariable String caseType,
                                                                     @RequestParam("stages") String stages) {
