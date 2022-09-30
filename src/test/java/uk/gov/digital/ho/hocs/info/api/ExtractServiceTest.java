@@ -6,13 +6,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.domain.model.Field;
-import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExtractServiceTest {
@@ -68,7 +68,7 @@ public class ExtractServiceTest {
     }
 
     private Field buildTestField(Long id, String fieldName) {
-        return new Field(id, null, "", fieldName, "", "", "", true, true, true, AccessLevel.READ, null);
+        return new Field(id, null, "", fieldName, "", "", "", true, true, true, null);
     }
 
 }

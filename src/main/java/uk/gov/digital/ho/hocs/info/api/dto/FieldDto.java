@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -44,9 +43,6 @@ public class FieldDto {
     @JsonProperty("active")
     private boolean active;
 
-    @JsonProperty("accessLevel")
-    private AccessLevel accessLevel;
-
     @JsonProperty("child")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private FieldDto child;
@@ -55,8 +51,7 @@ public class FieldDto {
         final FieldDto childField = field.getChild() != null ? FieldDto.from(field.getChild()) : null;
 
         return new FieldDto(field.getUuid(), field.getComponent(), field.getValidation(), field.getName(),
-            field.getLabel(), field.getProps(), field.isSummary(), field.isActive(), field.getAccessLevel(),
-            childField);
+            field.getLabel(), field.getProps(), field.isSummary(), field.isActive(), childField);
     }
 
     @Deprecated(forRemoval = true)
@@ -82,7 +77,7 @@ public class FieldDto {
         }
 
         return new FieldDto(field.getUuid(), field.getComponent(), field.getValidation(), field.getName(),
-            field.getLabel(), props, field.isSummary(), field.isActive(), field.getAccessLevel(), childField);
+            field.getLabel(), props, field.isSummary(), field.isActive(), childField);
     }
 
 }

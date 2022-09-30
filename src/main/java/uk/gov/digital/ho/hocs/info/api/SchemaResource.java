@@ -10,7 +10,6 @@ import uk.gov.digital.ho.hocs.info.api.dto.FieldDto;
 import uk.gov.digital.ho.hocs.info.api.dto.SchemaDto;
 import uk.gov.digital.ho.hocs.info.domain.model.Field;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
-import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
 import java.util.List;
 import java.util.Set;
@@ -65,16 +64,6 @@ public class SchemaResource {
     public ResponseEntity<List<FieldDto>> getFieldsBySchemaType(@PathVariable String schemaType) {
         List<FieldDto> fields = schemaService.getFieldsBySchemaType(schemaType);
         return ResponseEntity.ok(fields);
-    }
-
-    @Deprecated(forRemoval = true)
-    @GetMapping(value = "/schema/caseType/{caseType}/permission/{accessLevel}/fields",
-                produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<FieldDto>> getFieldsByCaseTypeAndPermissionLevel(@PathVariable String caseType,
-                                                                                @PathVariable String accessLevel) {
-        AccessLevel requiredLevel = AccessLevel.valueOf(accessLevel);
-        List<FieldDto> restrictedFieldList = schemaService.getFieldsByCaseTypePermissionLevel(caseType, requiredLevel);
-        return ResponseEntity.ok(restrictedFieldList);
     }
 
 }
