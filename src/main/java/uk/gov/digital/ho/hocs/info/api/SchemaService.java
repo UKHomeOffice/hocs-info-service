@@ -83,6 +83,7 @@ public class SchemaService {
         return new ArrayList<>();
     }
 
+    @Deprecated(forRemoval = true)
     Set<Schema> getAllSchemasForCaseTypeAndStage(String caseType, String stages) {
         log.debug("Getting all Forms for stages {} and CaseType {}", stages, caseType);
         List<String> stagesList = new ArrayList<>(Arrays.asList(stages.split(",")));

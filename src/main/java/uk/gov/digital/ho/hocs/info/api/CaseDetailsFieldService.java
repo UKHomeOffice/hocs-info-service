@@ -9,6 +9,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.CaseDetailsFieldRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Deprecated(forRemoval = true)
 @Service
 @Slf4j
 public class CaseDetailsFieldService {

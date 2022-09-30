@@ -12,6 +12,7 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
+@Deprecated(forRemoval = true)
 @RestController
 @Slf4j
 public class CaseDetailsFieldResource {
