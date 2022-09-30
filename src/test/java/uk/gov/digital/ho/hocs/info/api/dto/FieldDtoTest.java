@@ -14,9 +14,8 @@ public class FieldDtoTest {
         String fieldLabel = "test field";
         String fieldValidation = "[]";
         String fieldProps = "{}";
-        boolean fieldSummary = false;
 
-        Field field = new Field(fieldComponent, fieldName, fieldLabel, fieldValidation, fieldProps, fieldSummary, null);
+        Field field = new Field(fieldComponent, fieldName, fieldLabel, fieldValidation, fieldProps, null);
 
         FieldDto dto = FieldDto.from(field);
 
@@ -25,7 +24,6 @@ public class FieldDtoTest {
         Assert.assertEquals("Field label do not match", fieldLabel, dto.getLabel());
         Assert.assertEquals("Field validation do not match", fieldValidation, dto.getValidation());
         Assert.assertEquals("Field props do not match", fieldProps, dto.getProps());
-        Assert.assertEquals("Field summary do not match", fieldSummary, dto.isSummary());
         Assert.assertNull("Field child do not match", dto.getChild());
     }
 
@@ -36,9 +34,8 @@ public class FieldDtoTest {
         String fieldLabel = "test field";
         String fieldValidation = "[]";
         String fieldProps = "{\"choices\":[{\"label\":\"TestLabel\",\"value\":\"TestValue\"}],\"label\":\"test field\",\"name\":\"testField\"}";
-        boolean fieldSummary = false;
 
-        Field field = new Field(fieldComponent, fieldName, fieldLabel, fieldValidation, fieldProps, fieldSummary, null);
+        Field field = new Field(fieldComponent, fieldName, fieldLabel, fieldValidation, fieldProps, null);
         ObjectMapper mapper = new ObjectMapper();
         FieldDto dto = FieldDto.fromWithDecoratedProps(field, mapper);
 
@@ -47,7 +44,6 @@ public class FieldDtoTest {
         Assert.assertEquals("Field label do not match", fieldLabel, dto.getLabel());
         Assert.assertEquals("Field validation do not match", fieldValidation, dto.getValidation());
         Assert.assertEquals("Field props do not match", fieldProps, dto.getProps());
-        Assert.assertEquals("Field summary do not match", fieldSummary, dto.isSummary());
         Assert.assertNull("Field child do not match", dto.getChild());
     }
 

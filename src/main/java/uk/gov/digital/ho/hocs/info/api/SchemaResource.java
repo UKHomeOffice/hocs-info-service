@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.digital.ho.hocs.info.api.dto.FieldDto;
 import uk.gov.digital.ho.hocs.info.api.dto.SchemaDto;
-import uk.gov.digital.ho.hocs.info.domain.model.Field;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 
 import java.util.List;
@@ -40,13 +39,6 @@ public class SchemaResource {
                                                                     @RequestParam("stages") String stages) {
         Set<Schema> schemas = schemaService.getAllSchemasForCaseTypeAndStage(caseType, stages);
         return ResponseEntity.ok(schemas.stream().map(SchemaDto::from).collect(Collectors.toList()));
-    }
-
-    @Deprecated(forRemoval = true)
-    @GetMapping(value = "/schema/caseType/{caseType}/summary", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<FieldDto>> getAllSummaryFieldsForCaseType(@PathVariable String caseType) {
-        List<Field> fields = schemaService.getAllSummaryFieldsForCaseType(caseType);
-        return ResponseEntity.ok(fields.stream().map(FieldDto::from).collect(Collectors.toList()));
     }
 
     @Deprecated(forRemoval = true)
