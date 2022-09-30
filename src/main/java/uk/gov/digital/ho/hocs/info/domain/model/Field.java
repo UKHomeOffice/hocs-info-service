@@ -56,10 +56,6 @@ public class Field implements Serializable {
     private boolean summary;
 
     @Getter
-    @Column(name = "report_extract")
-    private boolean reporting;
-
-    @Getter
     @Column(name = "active")
     private boolean active = true;
 
