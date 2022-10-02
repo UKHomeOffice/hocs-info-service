@@ -1,7 +1,10 @@
 package uk.gov.digital.ho.hocs.info.api.dto;
 
-import com.fasterxml.jackson.annotation.*;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRawValue;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import uk.gov.digital.ho.hocs.info.domain.model.Schema;
 
 import java.util.List;
@@ -10,6 +13,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@Deprecated(forRemoval = true)
 public class SchemaDto {
 
     @JsonProperty("uuid")

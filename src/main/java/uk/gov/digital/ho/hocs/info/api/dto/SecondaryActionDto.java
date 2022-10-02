@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@Deprecated(forRemoval = true)
 public class SecondaryActionDto {
 
     @JsonProperty("uuid")

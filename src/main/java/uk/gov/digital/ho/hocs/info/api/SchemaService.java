@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Deprecated(forRemoval = true)
 public class SchemaService {
 
     private final FieldRepository fieldRepository;
@@ -46,7 +47,6 @@ public class SchemaService {
         }
     }
 
-    @Deprecated(forRemoval = true)
     Set<Schema> getAllSchemasForCaseTypeAndStage(String caseType, String stages) {
         log.debug("Getting all Forms for stages {} and CaseType {}", stages, caseType);
         List<String> stagesList = new ArrayList<>(Arrays.asList(stages.split(",")));
@@ -55,7 +55,6 @@ public class SchemaService {
         return caseTypeSchemas;
     }
 
-    @Deprecated(forRemoval = true)
     public List<FieldDto> getFieldsBySchemaType(String schemaType) {
         log.debug("Getting all Fields for schema {}", schemaType);
         List<Field> fields = fieldRepository.findAllBySchemaType(schemaType);

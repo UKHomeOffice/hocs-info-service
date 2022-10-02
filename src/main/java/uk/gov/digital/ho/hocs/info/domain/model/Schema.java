@@ -4,7 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +23,7 @@ import java.util.stream.Collectors;
 @Table(name = "screen_schema")
 @NoArgsConstructor
 @AllArgsConstructor
+@Deprecated(forRemoval = true)
 public class Schema implements Serializable {
 
     @Id
