@@ -17,6 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 @Getter
 @Slf4j
+@Deprecated(forRemoval = true)
 public class FieldDto {
 
     @JsonProperty("uuid")
@@ -51,7 +52,6 @@ public class FieldDto {
             field.getLabel(), field.getProps(), field.isActive(), childField);
     }
 
-    @Deprecated(forRemoval = true)
     public static FieldDto fromWithDecoratedProps(final Field field, ObjectMapper mapper) {
         final FieldDto childField = field.getChild() != null ? FieldDto.from(field.getChild()) : null;
 

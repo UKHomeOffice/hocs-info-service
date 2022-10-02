@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
+@Deprecated(forRemoval = true)
 public class SchemaResource {
 
     private final SchemaService schemaService;
@@ -33,7 +34,6 @@ public class SchemaResource {
         return ResponseEntity.ok(from);
     }
 
-    @Deprecated(forRemoval = true)
     @GetMapping(value = "/schema/caseType/{caseType}", params = { "stages" }, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SchemaDto>> getAllSchemasForCaseType(@PathVariable String caseType,
                                                                     @RequestParam("stages") String stages) {
@@ -41,7 +41,6 @@ public class SchemaResource {
         return ResponseEntity.ok(schemas.stream().map(SchemaDto::from).collect(Collectors.toList()));
     }
 
-    @Deprecated(forRemoval = true)
     @GetMapping(value = "/schema/{schemaType}/fields", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FieldDto>> getFieldsBySchemaType(@PathVariable String schemaType) {
         List<FieldDto> fields = schemaService.getFieldsBySchemaType(schemaType);
