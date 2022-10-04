@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @RestController
+@Deprecated(forRemoval = true)
 public class ProfileResource {
 
     private final CaseTypeService caseTypeService;

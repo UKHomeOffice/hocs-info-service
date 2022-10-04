@@ -58,6 +58,7 @@ public class CaseTypeResource {
         return ResponseEntity.ok(CaseTypeDto.from(caseType));
     }
 
+    @Deprecated(forRemoval = true)
     @GetMapping(value = "/caseType/{caseType}/documentTags", produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<String>> getDocumentTags(@PathVariable String caseType) {
         List<String> documentTags = caseTypeService.getDocumentTagsForCaseType(caseType);
