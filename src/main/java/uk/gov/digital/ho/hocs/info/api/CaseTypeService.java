@@ -90,6 +90,7 @@ public class CaseTypeService {
         }
     }
 
+    @Deprecated(forRemoval = true)
     List<String> getDocumentTagsForCaseType(String caseType) {
         log.debug("Getting all document tags for caseType {}", caseType);
         List<DocumentTag> documentTags = documentTagRepository.findByCaseType(caseType);
