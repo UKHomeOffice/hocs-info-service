@@ -1,0 +1,30 @@
+---
+deployment:
+  annotations:
+    downscaler/downtime: "Mon-Sun 00:00-07:45 Europe/London,Mon-Sun 18:05-24:00 Europe/London"
+
+truststore:
+  resources:
+    requests:
+      cpu: 50m
+
+data:
+  enabled: true
+  image:
+    name: hocs-data
+  resources:
+    requests:
+      cpu: 50m
+app:
+  env:
+    allowedDomains: 'digital.homeoffice.gov.uk,homeoffice.gov.uk,hmpo.gov.uk,cluster2security.gov.uk,combatingdrugs.gov.uk,gro.gov.uk'
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      cpu: 50m
+      memory: 512Mi
+
+members:
+  enabled: true
+  refresh: '0 8 * * *'

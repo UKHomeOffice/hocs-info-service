@@ -1,83 +1,50 @@
 ---
 kind: pipeline
 type: kubernetes
-name: deploy
+name: deploy tag
 trigger:
   event:
-    - promote
-  target:
-    exclude:
-      - restart*
+    - tag
+  branch:
+    - main
+depends_on:
+  - tag data
+concurrency:
+  limit: 1
 
 steps:
-  - name: fetch and checkout
-    image: alpine/git
+  - name: checkout
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.1.0
     commands:
       - git fetch --tags
-      - git checkout $${VERSION}
+      - git checkout ${DRONE_TAG}
+      - git submodule update --init --recursive
 
-  - name: deploy to cs-qa
-    image: quay.io/ukhomeofficedigital/kd
+  - &deploy
+    name: cs-dev
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.1.0
     environment:
-      ENVIRONMENT: cs-qa
+      CHART_NAME: hocs-info-service
+      CHART_VERSION: ^1.0.0
+      KUBE_CLUSTER: acp-notprod
+      KUBE_NAMESPACE: cs-dev
+      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       KUBE_TOKEN:
-        from_secret: hocs_info_service_cs_qa
+        from_secret: cs_notprod
+      VERSION: ${DRONE_TAG}
     commands:
-      - cd kube
-      - ./deploy.sh
+      - ./ci/helm/helm-chart-deploy.sh --values ./helm/hocs-info-service.yaml
     depends_on:
-      - fetch and checkout
-    when:
-      target:
-        - release
+      - checkout
 
-  - name: deploy to wcs-qa
-    image: quay.io/ukhomeofficedigital/kd
+  - <<: *deploy
+    name: wcs-dev
     environment:
-      ENVIRONMENT: wcs-qa
-      KUBE_TOKEN:
-        from_secret: hocs_info_service_wcs_qa
+      KUBE_NAMESPACE: wcs-dev
     commands:
-      - cd kube
-      - ./deploy.sh
+      - ./ci/helm/helm-chart-deploy.sh --values ./helm/hocs-info-service.yaml --values ./helm/hocs-info-service-wcs.yaml
     depends_on:
-      - fetch and checkout
-    when:
-      target:
-        - release
-
-  - name: deployment to not-prod
-    image: quay.io/ukhomeofficedigital/kd
-    environment:
-      ENVIRONMENT: ${DRONE_DEPLOY_TO}
-      KUBE_TOKEN:
-        from_secret: hocs_info_service_${DRONE_DEPLOY_TO/-/_}
-    commands:
-      - cd kube
-      - ./deploy.sh
-    depends_on:
-      - fetch and checkout
-    when:
-      target:
-        exclude:
-          - release
-          - "*-prod"
-
-  - name: deploy to prod
-    image: quay.io/ukhomeofficedigital/kd
-    environment:
-      ENVIRONMENT: ${DRONE_DEPLOY_TO}
-      KUBE_TOKEN:
-        from_secret: hocs_info_service_${DRONE_DEPLOY_TO/-/_}
-    commands:
-      - cd kube
-      - ./deploy.sh
-    depends_on:
-      - fetch and checkout
-    when:
-      target:
-        - "*-prod"
-
+      - cs-dev
 ---
 kind: pipeline
 type: kubernetes
@@ -128,46 +95,3 @@ steps:
         - UKHomeOffice/hocs-data-wcs@main
     depends_on:
       - env-file
-
----
-kind: pipeline
-type: kubernetes
-name: deploy tag
-trigger:
-  event:
-    - tag
-  branch:
-    - main
-depends_on:
-  - tag data
-concurrency:
-  limit: 1
-
-steps:
-  - name: deploy to cs-dev
-    image: quay.io/ukhomeofficedigital/kd
-    commands:
-      - cd kube
-      - ./deploy.sh
-    environment:
-      ENVIRONMENT: cs-dev
-      KUBE_TOKEN:
-        from_secret: hocs_info_service_cs_dev
-      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      VERSION: "${DRONE_TAG}"
-    depends_on:
-      - clone
-
-  - name: deploy to wcs-dev
-    image: quay.io/ukhomeofficedigital/kd
-    commands:
-      - cd kube
-      - ./deploy.sh
-    environment:
-      ENVIRONMENT: wcs-dev
-      KUBE_TOKEN:
-        from_secret: hocs_info_service_wcs_dev
-      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      VERSION: "${DRONE_TAG}"
-    depends_on:
-      - clone
