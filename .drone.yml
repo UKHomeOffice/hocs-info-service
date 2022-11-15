@@ -1,53 +1,6 @@
 ---
 kind: pipeline
 type: kubernetes
-name: deploy tag
-trigger:
-  event:
-    - tag
-  branch:
-    - main
-depends_on:
-  - tag data
-concurrency:
-  limit: 1
-
-steps:
-  - name: checkout
-    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.1.0
-    commands:
-      - git fetch --tags
-      - git checkout ${DRONE_TAG}
-      - git submodule update --init --recursive
-
-  - &deploy
-    name: cs-dev
-    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.1.0
-    environment:
-      CHART_NAME: hocs-info-service
-      CHART_VERSION: ^1.0.0
-      KUBE_CLUSTER: acp-notprod
-      KUBE_NAMESPACE: cs-dev
-      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      KUBE_TOKEN:
-        from_secret: cs_notprod
-      VERSION: ${DRONE_TAG}
-    commands:
-      - ./ci/helm/helm-chart-deploy.sh --values ./helm/hocs-info-service.yaml
-    depends_on:
-      - checkout
-
-  - <<: *deploy
-    name: wcs-dev
-    environment:
-      KUBE_NAMESPACE: wcs-dev
-    commands:
-      - ./ci/helm/helm-chart-deploy.sh --values ./helm/hocs-info-service.yaml --values ./helm/hocs-info-service-wcs.yaml
-    depends_on:
-      - cs-dev
----
-kind: pipeline
-type: kubernetes
 name: tag data
 trigger:
   event:
@@ -95,3 +48,50 @@ steps:
         - UKHomeOffice/hocs-data-wcs@main
     depends_on:
       - env-file
+---
+kind: pipeline
+type: kubernetes
+name: deploy tag
+trigger:
+  event:
+    - tag
+  branch:
+    - main
+depends_on:
+  - tag data
+concurrency:
+  limit: 1
+
+steps:
+  - name: checkout
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.1.0
+    commands:
+      - git fetch --tags
+      - git checkout ${DRONE_TAG}
+      - git submodule update --init --recursive
+
+  - &deploy
+    name: cs-dev
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.1.0
+    environment:
+      CHART_NAME: hocs-info-service
+      CHART_VERSION: ^1.0.0
+      KUBE_CLUSTER: acp-notprod
+      KUBE_NAMESPACE: cs-dev
+      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+      KUBE_TOKEN:
+        from_secret: cs_notprod
+      VERSION: ${DRONE_TAG}
+    commands:
+      - ./ci/helm/helm-chart-deploy.sh --values ./helm/hocs-info-service.yaml
+    depends_on:
+      - checkout
+
+  - <<: *deploy
+    name: wcs-dev
+    environment:
+      KUBE_NAMESPACE: wcs-dev
+    commands:
+      - ./ci/helm/helm-chart-deploy.sh --values ./helm/hocs-info-service.yaml --values ./helm/hocs-info-service-wcs.yaml
+    depends_on:
+      - cs-dev
