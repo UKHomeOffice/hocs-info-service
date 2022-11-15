@@ -1,50 +1,53 @@
 ---
 kind: pipeline
 type: kubernetes
-name: deploy tag
+name: tag data
 trigger:
   event:
     - tag
   branch:
     - main
-depends_on:
-  - tag data
-concurrency:
-  limit: 1
+
+clone:
+  disable: true
 
 steps:
-  - name: checkout
-    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.1.0
+  - name: env-file
+    image: alpine:latest
     commands:
-      - git fetch --tags
-      - git checkout ${DRONE_TAG}
-      - git submodule update --init --recursive
+      - echo HOCS_INFO_SERVICE_DATA_VERSION=$${DRONE_TAG} > info-service-data-version.env
 
-  - &deploy
-    name: cs-dev
-    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.1.0
-    environment:
-      CHART_NAME: hocs-info-service
-      CHART_VERSION: ^1.0.0
-      KUBE_CLUSTER: acp-notprod
-      KUBE_NAMESPACE: cs-dev
-      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      KUBE_TOKEN:
-        from_secret: cs_notprod
-      VERSION: ${DRONE_TAG}
-    commands:
-      - ./ci/helm/helm-chart-deploy.sh --values ./helm/hocs-info-service.yaml
+  - name: CS downstream build
+    image: plugins/downstream
+    settings:
+      server: https://drone-gh.acp.homeoffice.gov.uk
+      deploy: cs-qa
+      fork: false
+      last_successful: true
+      token:
+        from_secret: DRONE_TOKEN
+      params:
+        - info-service-data-version.env
+      repositories:
+        - UKHomeOffice/hocs-data@main
     depends_on:
-      - checkout
+      - env-file
 
-  - <<: *deploy
-    name: wcs-dev
-    environment:
-      KUBE_NAMESPACE: wcs-dev
-    commands:
-      - ./ci/helm/helm-chart-deploy.sh --values ./helm/hocs-info-service.yaml --values ./helm/hocs-info-service-wcs.yaml
+  - name: WCS downstream build
+    image: plugins/downstream
+    settings:
+      server: https://drone-gh.acp.homeoffice.gov.uk
+      deploy: wcs-qa
+      fork: false
+      last_successful: true
+      token:
+        from_secret: DRONE_TOKEN
+      params:
+        - info-service-data-version.env
+      repositories:
+        - UKHomeOffice/hocs-data-wcs@main
     depends_on:
-      - cs-dev
+      - env-file
 ---
 kind: pipeline
 type: kubernetes
