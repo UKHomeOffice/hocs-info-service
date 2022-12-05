@@ -30,7 +30,7 @@ dependencies {
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
 
-    implementation 'org.apache.httpcomponents:httpmime:4.5.13'
+    implementation 'org.apache.httpcomponents:httpmime:4.5.14'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.1'
     implementation "org.keycloak:keycloak-admin-client:${keycloakVersion}"
