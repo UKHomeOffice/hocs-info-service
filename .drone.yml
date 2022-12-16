@@ -75,7 +75,7 @@ steps:
     image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.1.0
     environment:
       CHART_NAME: hocs-info-service
-      CHART_VERSION: ^1.0.0
+      CHART_VERSION: ^2.0.0
       KUBE_CLUSTER: acp-notprod
       KUBE_NAMESPACE: cs-dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
