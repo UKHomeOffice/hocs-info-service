@@ -62,7 +62,6 @@ public class StandardLineService {
             documentClient.deleteDocument(standardLine.getDocumentUUID());
             log.info("Set Expiry to now for existing Standard Line - {}, id {}", standardLine.getDisplayName(),
                 standardLine.getUuid());
-            caseworkClient.clearCachedStandardLineForTopic(topicUUID);
         }
 
         StandardLine newStandardLine = new StandardLine(displayName, topicUUID,
@@ -137,7 +136,6 @@ public class StandardLineService {
         StandardLine standardLine = standardLineRepository.findByUuid(standardLineUuid);
         standardLineRepository.delete(standardLine);
         documentClient.deleteDocument(standardLine.getDocumentUUID());
-        caseworkClient.clearCachedStandardLineForTopic(standardLine.getTopicUUID());
         log.debug("Standard line deleted {} ", standardLineUuid);
     }
 
@@ -152,7 +150,6 @@ public class StandardLineService {
         StandardLine standardLine = standardLineRepository.findByUuid(standardLineUuid);
         standardLine.update(request);
         standardLineRepository.save(standardLine);
-        caseworkClient.clearCachedStandardLineForTopic(standardLine.getTopicUUID());
         log.debug("Standard line updated {} ", standardLineUuid);
     }
 

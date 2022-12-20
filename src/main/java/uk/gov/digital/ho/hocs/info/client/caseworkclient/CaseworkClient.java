@@ -81,12 +81,4 @@ public class CaseworkClient {
         }
     }
 
-    public void clearCachedStandardLineForTopic(UUID topicUUID) {
-        ResponseEntity<String> response = restHelper.post(serviceBaseURL,
-            String.format("/topic/%s/clearCachedStandardLine", topicUUID), null, String.class);
-        if (response.getStatusCodeValue() == 200) {
-            log.info("Cleared cached standard line for Topic: {}", topicUUID);
-        }
-    }
-
 }

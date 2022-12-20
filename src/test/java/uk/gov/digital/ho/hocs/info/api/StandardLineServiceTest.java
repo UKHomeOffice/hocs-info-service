@@ -125,7 +125,6 @@ public class StandardLineServiceTest {
         verify(documentClient).deleteDocument(standardLine.getDocumentUUID());
         verifyNoMoreInteractions(standardLineRepository);
         verifyNoMoreInteractions(documentClient);
-        verify(caseworkClient).clearCachedStandardLineForTopic(uuid);
         verifyNoMoreInteractions(caseworkClient);
     }
 
@@ -174,18 +173,15 @@ public class StandardLineServiceTest {
     @Test
     public void deleteStandardLine() {
         StandardLine standardLineMock = mock(StandardLine.class);
-        when(standardLineMock.getTopicUUID()).thenReturn(topicUUID);
         when(standardLineMock.getDocumentUUID()).thenReturn(documentUUID);
         when(standardLineRepository.findByUuid(standardLineUUID)).thenReturn(standardLineMock);
 
         standardLineService.deleteStandardLine(standardLineUUID);
 
-        verify(standardLineMock).getTopicUUID();
         verify(standardLineMock).getDocumentUUID();
         verify(standardLineRepository).findByUuid(standardLineUUID);
         verify(standardLineRepository).delete(standardLineMock);
         verify(documentClient).deleteDocument(documentUUID);
-        verify(caseworkClient).clearCachedStandardLineForTopic(topicUUID);
 
         checkNoMoreInteractions();
 
@@ -194,17 +190,14 @@ public class StandardLineServiceTest {
     @Test
     public void updateStandardLine() {
         StandardLine standardLineMock = mock(StandardLine.class);
-        when(standardLineMock.getTopicUUID()).thenReturn(topicUUID);
         UpdateStandardLineDto updateStandardLineDto = new UpdateStandardLineDto("NewDN", LocalDate.now().plusDays(10));
         when(standardLineRepository.findByUuid(standardLineUUID)).thenReturn(standardLineMock);
 
         standardLineService.updateStandardLine(standardLineUUID, updateStandardLineDto);
 
         verify(standardLineMock).update(updateStandardLineDto);
-        verify(standardLineMock).getTopicUUID();
         verify(standardLineRepository).findByUuid(standardLineUUID);
         verify(standardLineRepository).save(standardLineMock);
-        verify(caseworkClient).clearCachedStandardLineForTopic(topicUUID);
         checkNoMoreInteractions();
 
     }
