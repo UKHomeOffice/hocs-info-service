@@ -42,8 +42,6 @@ public class TemplateService {
         newTemplate.setDocumentUUID(templateDocumentUUID);
         templateRepository.save(newTemplate);
 
-        caseworkClient.clearCachedTemplateForCaseType(request.getCaseType());
-
         log.info("Created Template {} for CaseType {} with uuid {} ", request.getDisplayName(), request.getCaseType(),
             newTemplate.getUuid());
     }
@@ -57,7 +55,6 @@ public class TemplateService {
             templateRepository.save(template);
             documentClient.deleteDocument(template.getDocumentUUID());
             log.info("Set Deleted to True for Template - {}, id {}", template.getDisplayName(), template.getUuid());
-            caseworkClient.clearCachedTemplateForCaseType(template.getCaseType());
         }
     }
 

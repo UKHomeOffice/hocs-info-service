@@ -79,7 +79,6 @@ public class TemplateServiceTest {
         verify(documentClient).createDocument(any(UUID.class), eq(DISPLAY_NAME), eq("URL"),
             eq(ManagedDocumentType.TEMPLATE));
         verify(templateRepository).save(any());
-        verify(caseworkClient).clearCachedTemplateForCaseType(CASE_TYPE);
         verifyNoMoreInteractions(templateRepository, documentClient, caseworkClient);
 
     }
@@ -97,8 +96,6 @@ public class TemplateServiceTest {
         verify(templateRepository).findActiveTemplateByUuid(templateUUID);
         verify(templateRepository).save(any());
         verify(documentClient).deleteDocument(documentUUID);
-        verify(caseworkClient).clearCachedTemplateForCaseType(CASE_TYPE);
-
         verifyNoMoreInteractions(templateRepository, documentClient, caseworkClient);
 
     }
