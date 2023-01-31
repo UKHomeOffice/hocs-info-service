@@ -55,7 +55,7 @@ dependencies {
     testImplementation 'org.assertj:assertj-core'
 
 
-    testImplementation 'org.mockito:mockito-inline:5.1.0'
+    testImplementation 'org.mockito:mockito-inline:5.1.1'
 }
 
 jar {
