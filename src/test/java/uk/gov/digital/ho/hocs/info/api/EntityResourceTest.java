@@ -64,7 +64,7 @@ public class EntityResourceTest {
         Entity entity2 = new Entity(2L, UUID.randomUUID(), simpleName2, data2, UUID.randomUUID(), true, 10);
         List<Entity> entitiesToReturn = List.of(entity1, entity2);
 
-        when(entityService.getByEntityListName(listName)).thenReturn(entitiesToReturn);
+        when(entityService.getByEntityListNameAndActive(listName, false)).thenReturn(entitiesToReturn);
 
         ResponseEntity<List<EntityDto>> result = entityResource.getEntitiesForListName(listName, false);
 
@@ -77,7 +77,7 @@ public class EntityResourceTest {
         assertThat(result.getBody().get(1).getSimpleName()).isEqualTo(simpleName2);
         assertThat(result.getBody().get(1).getData()).isEqualTo(data2);
 
-        verify(entityService).getByEntityListName(listName);
+        verify(entityService).getByEntityListNameAndActive(listName, false);
         verifyNoMoreInteractions(entityService);
     }
 
