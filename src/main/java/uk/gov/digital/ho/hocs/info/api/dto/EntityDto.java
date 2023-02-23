@@ -18,9 +18,15 @@ public class EntityDto {
     @JsonRawValue
     private String data;
 
+    private Boolean active;
+
     public static EntityDto from(Entity entity) {
-        return new EntityDto(entity.getSimpleName(), entity.getUuid() != null ? entity.getUuid().toString() : null,
-            entity.getData());
+        return new EntityDto(
+            entity.getSimpleName(),
+            entity.getUuid() != null ? entity.getUuid().toString() : null,
+            entity.getData(),
+            entity.isActive()
+        );
     }
 
 }
