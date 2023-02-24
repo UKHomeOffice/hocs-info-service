@@ -125,7 +125,7 @@ public class EntityServiceTest {
         verifyNoMoreInteractions(entityRepository);
     }
 
-    @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
+    @Test(expected = ApplicationExceptions.EntityListNotFoundException.class)
     public void getByEntityListName_nullList() {
         entityService.getByEntityListName(null);
         verifyNoMoreInteractions(entityRepository);
