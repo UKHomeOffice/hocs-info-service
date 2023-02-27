@@ -43,18 +43,6 @@ public class EntityService {
         }
     }
 
-    public List<Entity> getByEntityListNameAndActive(String listName, Boolean activeOnly) {
-        if (listName != null) {
-            if (activeOnly) {
-                return entityRepository.findByEntityListSimpleName(listName);
-            } else {
-                return entityRepository.findAllByEntityListSimpleName(listName);
-            }
-        } else {
-            throw new ApplicationExceptions.EntityListNotFoundException("Entity list name was null");
-        }
-    }
-
     public void createEntity(String listName, EntityDto entityDto) {
 
         String entityListUUID = entityRepository.findEntityListUUIDBySimpleName(listName);

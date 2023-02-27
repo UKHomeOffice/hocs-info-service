@@ -33,10 +33,8 @@ class EntityResource {
     }
 
     @GetMapping(value = "/entity/list/{name}", produces = APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<List<EntityDto>> getEntitiesForListName(@PathVariable String name,
-                                                                  @RequestParam(name = "activeOnly", defaultValue = "true")
-                                                                  Boolean activeOnly) {
-        List<Entity> entities = entityService.getByEntityListNameAndActive(name, activeOnly);
+    public ResponseEntity<List<EntityDto>> getEntitiesForListName(@PathVariable String name) {
+        List<Entity> entities = entityService.getByEntityListName(name);
         return ResponseEntity.ok(entities.stream().map(EntityDto::from).collect(Collectors.toList()));
     }
 

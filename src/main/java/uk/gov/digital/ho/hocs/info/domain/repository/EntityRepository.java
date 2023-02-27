@@ -17,13 +17,9 @@ public interface EntityRepository extends CrudRepository<Entity, Long> {
            nativeQuery = true)
     Set<Entity> findBySimpleName(String owner, String ownerType, String list);
 
-    @Query(value = "select e.* from entity e\n" + "                  join entity_list el on el.uuid = e.entity_list_uuid\n" + " where el.simple_name = ?1" + " and e.active = TRUE" + " order by e.sort_order",
-           nativeQuery = true)
-    List<Entity> findByEntityListSimpleName(String listSimpleName);
-
     @Query(value = "select e.* from entity e\n" + "join entity_list el on el.uuid = e.entity_list_uuid\n" + " where el.simple_name = ?1" + " order by e.sort_order",
            nativeQuery = true)
-    List<Entity> findAllByEntityListSimpleName(String listSimpleName);
+    List<Entity> findByEntityListSimpleName(String listSimpleName);
 
     @Query(value = "select Cast(el.uuid as varchar) id from entity_list el where el.simple_name = ?1",
            nativeQuery = true)
