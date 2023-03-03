@@ -85,6 +85,26 @@ public interface ApplicationExceptions {
 
     }
 
+    class EntityListNotFoundException extends RuntimeException {
+
+        private final LogEvent event;
+
+        public EntityListNotFoundException(String msg, LogEvent event, Object... args) {
+            super(String.format(msg, args));
+            this.event = event;
+        }
+
+        public EntityListNotFoundException(String msg, Object... args) {
+            super(String.format(msg, args));
+            this.event = LogEvent.UNCAUGHT_EXCEPTION;
+        }
+
+        public LogEvent getEvent() {
+            return event;
+        }
+
+    }
+
     class ResourceException extends RuntimeException {
 
         private final LogEvent event;

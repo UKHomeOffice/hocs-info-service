@@ -87,7 +87,7 @@ public class EntityResourceTest {
         String simpleName = "name";
         String uuid = UUID.randomUUID().toString();
         String data = "data";
-        EntityDto entityDto = new EntityDto(simpleName, uuid, data);
+        EntityDto entityDto = new EntityDto(simpleName, uuid, data, true);
 
         ResponseEntity<String> response = entityResource.createEntity(listName, entityDto);
         assertThat(response).isNotNull();
@@ -149,7 +149,7 @@ public class EntityResourceTest {
         String simpleName = "name";
         String uuid = UUID.randomUUID().toString();
         String data = "data";
-        EntityDto entityDto = new EntityDto(simpleName, uuid, data);
+        EntityDto entityDto = new EntityDto(simpleName, uuid, data, true);
 
         ResponseEntity<String> response = entityResource.updateEntity(listName, entityDto);
         assertThat(response).isNotNull();

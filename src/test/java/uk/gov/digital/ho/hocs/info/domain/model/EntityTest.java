@@ -34,7 +34,7 @@ public class EntityTest {
         String newSimpleName = "name";
         String newUuid = UUID.randomUUID().toString();
         String newData = "data";
-        EntityDto entityDto = new EntityDto(newSimpleName, newUuid, newData);
+        EntityDto entityDto = new EntityDto(newSimpleName, newUuid, newData, active);
 
         entity.update(entityDto);
 
