@@ -64,7 +64,7 @@ concurrency:
 
 steps:
   - name: checkout
-    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.1.0
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.1.1
     commands:
       - git fetch --tags
       - git checkout ${DRONE_TAG}
@@ -72,7 +72,7 @@ steps:
 
   - &deploy
     name: cs-dev
-    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.1.0
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.1.1
     environment:
       CHART_NAME: hocs-info-service
       CHART_VERSION: ^2.0.0

@@ -39,7 +39,7 @@ public class EntityService {
         if (listName != null) {
             return entityRepository.findByEntityListSimpleName(listName);
         } else {
-            throw new ApplicationExceptions.EntityNotFoundException("listName was null!");
+            throw new ApplicationExceptions.EntityListNotFoundException("Entity list name was null");
         }
     }
 

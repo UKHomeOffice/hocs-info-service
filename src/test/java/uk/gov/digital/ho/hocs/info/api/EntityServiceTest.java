@@ -125,7 +125,7 @@ public class EntityServiceTest {
         verifyNoMoreInteractions(entityRepository);
     }
 
-    @Test(expected = ApplicationExceptions.EntityNotFoundException.class)
+    @Test(expected = ApplicationExceptions.EntityListNotFoundException.class)
     public void getByEntityListName_nullList() {
         entityService.getByEntityListName(null);
         verifyNoMoreInteractions(entityRepository);
@@ -138,7 +138,7 @@ public class EntityServiceTest {
         String uuid = UUID.randomUUID().toString();
         String listUUID = UUID.randomUUID().toString();
         String data = "data";
-        EntityDto entityDto = new EntityDto(simpleName, uuid, data);
+        EntityDto entityDto = new EntityDto(simpleName, uuid, data, true);
         ArgumentCaptor<Entity> argumentCaptor = ArgumentCaptor.forClass(Entity.class);
 
         when(entityRepository.findEntityListUUIDBySimpleName(listName)).thenReturn(listUUID);
@@ -164,7 +164,7 @@ public class EntityServiceTest {
         String simpleName = "name";
         String uuid = UUID.randomUUID().toString();
         String data = "data";
-        EntityDto entityDto = new EntityDto(simpleName, uuid, data);
+        EntityDto entityDto = new EntityDto(simpleName, uuid, data, true);
         UUID listUUID = UUID.randomUUID();
 
         when(entityRepository.findEntityListUUIDBySimpleName(listName)).thenReturn(listUUID.toString());
@@ -182,7 +182,7 @@ public class EntityServiceTest {
         String simpleName = "name";
         String uuid = UUID.randomUUID().toString();
         String data = "data";
-        EntityDto entityDto = new EntityDto(simpleName, uuid, data);
+        EntityDto entityDto = new EntityDto(simpleName, uuid, data, true);
 
         when(entityRepository.findEntityListUUIDBySimpleName(listName)).thenReturn(null);
 
@@ -207,7 +207,7 @@ public class EntityServiceTest {
         UUID uuid = UUID.randomUUID();
         UUID listUUID = UUID.randomUUID();
         String data = "data";
-        EntityDto entityDto = new EntityDto(simpleName, uuid.toString(), data);
+        EntityDto entityDto = new EntityDto(simpleName, uuid.toString(), data, true);
 
         Entity mockEntity = mock(Entity.class);
 
@@ -234,7 +234,7 @@ public class EntityServiceTest {
         UUID uuid = UUID.randomUUID();
         UUID listUUID = UUID.randomUUID();
         String data = "data";
-        EntityDto entityDto = new EntityDto(simpleName, uuid.toString(), data);
+        EntityDto entityDto = new EntityDto(simpleName, uuid.toString(), data, true);
 
         Entity mockEntity = mock(Entity.class);
 
@@ -256,7 +256,7 @@ public class EntityServiceTest {
         String data = "{ title: 'Title' }";
         UUID listUUID = UUID.randomUUID();
 
-        EntityDto entity1Dto = new EntityDto(simpleName1, uuid1.toString(), data);
+        EntityDto entity1Dto = new EntityDto(simpleName1, uuid1.toString(), data, true);
         Entity entity2 = new Entity(2L, uuid2, simpleName2, data, listUUID, true, 10);
 
         List<Entity> entitiesToReturn = List.of(entity2);
