@@ -11,14 +11,12 @@ import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
 import uk.gov.digital.ho.hocs.info.domain.model.StageTypeEntity;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StageTypeResourceTest {
@@ -42,7 +40,7 @@ public class StageTypeResourceTest {
     public void shouldGetStageTypes() {
         StageTypeEntity stage = new StageTypeEntity(1L, UUID.randomUUID(), "stage name", "111", "STAGE_TYPE",
             UUID.randomUUID(), 1, 1, 1, true, team, false);
-        Set<StageTypeEntity> stages = new HashSet<StageTypeEntity>() {{
+        Set<StageTypeEntity> stages = new HashSet<>() {{
             add(stage);
         }};
         when(stageTypeService.getAllStageTypes()).thenReturn(stages);
@@ -76,6 +74,23 @@ public class StageTypeResourceTest {
         assertThat(stageTypeDto.getShortCode()).isEqualTo("111");
         assertThat(stageTypeDto.getType()).isEqualTo("STAGE_TYPE");
 
+    }
+
+    @Test
+    public void shouldGetStageTypeByType() {
+        UUID stageUuid = UUID.randomUUID();
+        String stageType = "STAGE_TYPE";
+        StageTypeEntity stage = new StageTypeEntity(1L, stageUuid, "stage name", "111", stageType, UUID.randomUUID(),
+            1, 1, 1, true, team, false);
+
+        when(stageTypeService.getStageType(stageType)).thenReturn(stage);
+
+        ResponseEntity<StageTypeDto> result = service.getStageTypeByType(stageType);
+
+        StageTypeDto stageTypeDto = result.getBody();
+        assertThat(stageTypeDto.getType()).isEqualTo(stageType);
+        assertThat(stageTypeDto.getDisplayName()).isEqualTo("stage name");
+        assertThat(stageTypeDto.getShortCode()).isEqualTo("111");
     }
 
     @Test

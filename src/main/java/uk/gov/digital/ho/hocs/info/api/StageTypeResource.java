@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.digital.ho.hocs.info.api.dto.StageTypeDto;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDto;
@@ -13,8 +12,6 @@ import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.model.StageTypeEntity;
 import uk.gov.digital.ho.hocs.info.domain.model.Team;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -57,6 +54,11 @@ public class StageTypeResource {
             }
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping(value = "/stageType/type/{type}", produces = APPLICATION_JSON_VALUE)
+    ResponseEntity<StageTypeDto> getStageTypeByType(@PathVariable String type) {
+        return ResponseEntity.ok(StageTypeDto.from(stageTypeService.getStageType(type)));
     }
 
     @GetMapping(value = "/stages/caseType/{caseType}", produces = APPLICATION_JSON_VALUE)
