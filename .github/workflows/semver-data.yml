@@ -45,7 +45,7 @@ jobs:
 
       - name: Calculate metadata
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: 'quay.io/ukhomeofficedigital/hocs-info-service'
           tags: |
