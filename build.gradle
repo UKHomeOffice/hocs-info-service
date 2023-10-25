@@ -7,7 +7,7 @@ plugins {
 }
 
 def keycloakVersion = '15.0.2'
-def lombokVersion = '1.18.28'
+def lombokVersion = '1.18.30'
 
 group = 'uk.gov.digital.ho.hocs'
 sourceCompatibility = JavaVersion.VERSION_17
