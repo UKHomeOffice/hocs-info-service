@@ -10,7 +10,7 @@ import uk.gov.digital.ho.hocs.info.api.dto.CaseDetailsFieldDto;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseDetailsField;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseDetailsFieldRepository;
 
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 import java.util.List;
 
 import static org.mockito.Mockito.*;

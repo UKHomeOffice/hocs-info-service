@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;

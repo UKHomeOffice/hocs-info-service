@@ -3,11 +3,11 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 import lombok.*;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "permission")
 @EqualsAndHashCode(of = { "accessLevel", "caseType" })
 public class Permission implements Serializable {

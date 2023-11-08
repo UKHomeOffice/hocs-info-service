@@ -5,12 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uk.gov.digital.ho.hocs.info.api.dto.EntityDto;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "entity")
 public class Entity {
 

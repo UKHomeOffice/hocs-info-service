@@ -17,7 +17,7 @@ import uk.gov.digital.ho.hocs.info.domain.model.Team;
 import uk.gov.digital.ho.hocs.info.domain.model.Unit;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -2,14 +2,14 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "team")
 @EqualsAndHashCode(of = { "uuid" })
 public class Team implements Serializable {

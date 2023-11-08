@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "workstack_column")
 @NoArgsConstructor
 @AllArgsConstructor

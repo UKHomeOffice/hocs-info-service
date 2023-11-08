@@ -6,13 +6,13 @@ import lombok.Setter;
 import org.springframework.util.StringUtils;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateStandardLineDto;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
 
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "standard_line")
 @NoArgsConstructor
 public class StandardLine implements Serializable {

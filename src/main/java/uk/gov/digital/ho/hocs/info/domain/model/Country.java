@@ -2,10 +2,10 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "country")
 @AllArgsConstructor
 @NoArgsConstructor

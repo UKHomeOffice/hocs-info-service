@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.ListIndexBase;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "workstack_type")
 @NoArgsConstructor
 @AllArgsConstructor

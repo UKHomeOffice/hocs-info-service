@@ -29,8 +29,8 @@ import uk.gov.digital.ho.hocs.info.security.Base64UUID;
 import uk.gov.digital.ho.hocs.info.security.KeycloakException;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

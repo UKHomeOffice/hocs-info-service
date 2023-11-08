@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "tenant")
 @AllArgsConstructor
 @NoArgsConstructor
