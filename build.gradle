@@ -40,6 +40,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
     implementation 'com.jayway.jsonpath:json-path:2.8.0'
     implementation 'jakarta.json:jakarta.json-api:2.1.1'
+    implementation group: 'org.eclipse.parsson', name: 'parsson', version: '1.1.5'
 
     // This should be kept in line with the data Dockerfile versions
     implementation 'org.flywaydb:flyway-core:9.19.3'
