@@ -18,7 +18,8 @@ public interface ProfileRepository extends CrudRepository<Profile, String> {
            nativeQuery = true)
     List<String> findAllProfileNamesByCaseTypesAndSystemName(Collection<String> caseTypes, String systemName);
 
-    @Query(value = "SELECT DISTINCT * FROM profile p JOIN case_type_profile ctp on p.profile_name = ctp.profile_name WHERE ctp.case_type = ?1 and p.parent_system_name = ?2",
+    //@Query(value = "SELECT DISTINCT * FROM profile p JOIN case_type_profile ctp on p.profile_name = ctp.profile_name WHERE ctp.case_type = ?1 and p.parent_system_name = ?2",
+    @Query(value = "SELECT DISTINCT p.profile_name, p.parent_system_name, p.summary_deadlines_enabled, ctp.case_type FROM profile p JOIN case_type_profile ctp on p.profile_name = ctp.profile_name WHERE ctp.case_type = ?1 and p.parent_system_name = ?2",
            nativeQuery = true)
     Profile findByCaseTypeAndSystemName(String caseType, String systemName);
 
