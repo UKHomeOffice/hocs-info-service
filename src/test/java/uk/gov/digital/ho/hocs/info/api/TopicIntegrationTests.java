@@ -89,7 +89,7 @@ public class TopicIntegrationTests {
         CreateParentTopicDto request = new CreateParentTopicDto("test parent topic 100");
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent/", HttpMethod.POST,
+        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent", HttpMethod.POST,
             httpEntity, Void.class);
 
         long numberOfTopicsAfter = parentTopicRepository.count();
@@ -107,7 +107,7 @@ public class TopicIntegrationTests {
         CreateParentTopicDto request = new CreateParentTopicDto("test inactive parent topic 102");
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent/", HttpMethod.POST,
+        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent", HttpMethod.POST,
             httpEntity, Void.class);
 
         long numberOfTopicsAfter = parentTopicRepository.count();
