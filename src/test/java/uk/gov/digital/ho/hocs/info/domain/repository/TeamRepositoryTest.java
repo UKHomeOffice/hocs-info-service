@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.domain.repository;
 
+import jakarta.persistence.PersistenceException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,11 +10,21 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.digital.ho.hocs.info.domain.model.*;
+import uk.gov.digital.ho.hocs.info.domain.model.CaseType;
+import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
+import uk.gov.digital.ho.hocs.info.domain.model.Permission;
+import uk.gov.digital.ho.hocs.info.domain.model.StageTypeEntity;
+import uk.gov.digital.ho.hocs.info.domain.model.Team;
+import uk.gov.digital.ho.hocs.info.domain.model.TeamLink;
+import uk.gov.digital.ho.hocs.info.domain.model.Topic;
+import uk.gov.digital.ho.hocs.info.domain.model.Unit;
 import uk.gov.digital.ho.hocs.info.security.AccessLevel;
 
-import javax.persistence.PersistenceException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

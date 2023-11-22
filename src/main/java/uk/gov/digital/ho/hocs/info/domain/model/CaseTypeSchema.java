@@ -1,14 +1,18 @@
 package uk.gov.digital.ho.hocs.info.domain.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "case_type_schema")
 @NoArgsConstructor
 @Getter
