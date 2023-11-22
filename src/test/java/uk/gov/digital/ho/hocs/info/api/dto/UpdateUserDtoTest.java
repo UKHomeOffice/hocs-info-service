@@ -1,15 +1,15 @@
 package uk.gov.digital.ho.hocs.info.api.dto;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Set;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UpdateUserDtoTest {
 

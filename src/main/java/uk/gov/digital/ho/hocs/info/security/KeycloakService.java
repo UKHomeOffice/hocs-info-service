@@ -1,19 +1,6 @@
 package uk.gov.digital.ho.hocs.info.security;
 
-import static net.logstash.logback.argument.StructuredArguments.value;
-import static uk.gov.digital.ho.hocs.info.application.LogEvent.EVENT;
-import static uk.gov.digital.ho.hocs.info.application.LogEvent.KEYCLOAK_FAILURE;
-
-import java.io.FilterInputStream;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 import jakarta.ws.rs.core.Response;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.keycloak.admin.client.CreatedResponseUtil;
@@ -32,6 +19,19 @@ import uk.gov.digital.ho.hocs.info.api.dto.UpdateUserDto;
 import uk.gov.digital.ho.hocs.info.application.LogEvent;
 import uk.gov.digital.ho.hocs.info.domain.exception.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
+
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import static net.logstash.logback.argument.StructuredArguments.value;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.EVENT;
+import static uk.gov.digital.ho.hocs.info.application.LogEvent.KEYCLOAK_FAILURE;
 
 @Service
 @Slf4j

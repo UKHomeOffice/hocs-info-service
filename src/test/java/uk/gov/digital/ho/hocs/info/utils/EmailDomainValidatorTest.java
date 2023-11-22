@@ -1,13 +1,12 @@
 package uk.gov.digital.ho.hocs.info.utils;
 
+import jakarta.validation.ConstraintValidatorContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.List;
 

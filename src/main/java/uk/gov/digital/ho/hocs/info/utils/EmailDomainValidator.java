@@ -1,14 +1,12 @@
 package uk.gov.digital.ho.hocs.info.utils;
 
-import static java.util.Arrays.asList;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 @Component
 public class EmailDomainValidator implements ConstraintValidator<EmailDomainWhitelisted, String> {

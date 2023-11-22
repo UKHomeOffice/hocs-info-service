@@ -1,15 +1,13 @@
 package uk.gov.digital.ho.hocs.info.domain.model;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.Column;
 import java.io.Serializable;
 import java.util.UUID;
 
-//@Entity
-//Table(name = "member")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
