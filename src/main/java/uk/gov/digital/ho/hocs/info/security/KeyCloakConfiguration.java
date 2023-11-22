@@ -51,7 +51,6 @@ public class KeyCloakConfiguration {
 
         return KeycloakBuilder.builder().serverUrl(serverUrl).realm(realm).username(username).password(
             password).clientId(clientId).resteasyClient(
-            //new ResteasyClientBuilder().httpEngine(new ApacheHttpClient43Engine(httpClient)).build()).build();
         ((ResteasyClientBuilder) ClientBuilder.newBuilder()).httpEngine(engine).build()).build();
     }
 
