@@ -1,16 +1,20 @@
 package uk.gov.digital.ho.hocs.info.domain.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uk.gov.digital.ho.hocs.info.api.dto.EntityDto;
 
-import javax.persistence.*;
 import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "entity")
 public class Entity {
 

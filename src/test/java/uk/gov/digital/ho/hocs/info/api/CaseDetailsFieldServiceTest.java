@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.info.api;
 
+import jakarta.persistence.PersistenceException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,10 +11,11 @@ import uk.gov.digital.ho.hocs.info.api.dto.CaseDetailsFieldDto;
 import uk.gov.digital.ho.hocs.info.domain.model.CaseDetailsField;
 import uk.gov.digital.ho.hocs.info.domain.repository.CaseDetailsFieldRepository;
 
-import javax.persistence.PersistenceException;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseDetailsFieldServiceTest {

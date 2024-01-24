@@ -1,10 +1,7 @@
 package uk.gov.digital.ho.hocs.info.security.keycloak;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.FilterInputStream;
-import java.net.URI;
-
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.core.Response;
 import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,8 +26,10 @@ import uk.gov.digital.ho.hocs.info.security.Base64UUID;
 import uk.gov.digital.ho.hocs.info.security.KeycloakException;
 import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.Response;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.FilterInputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +38,12 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KeycloakServiceTest {

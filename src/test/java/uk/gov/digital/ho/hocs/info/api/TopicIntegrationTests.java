@@ -7,13 +7,20 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.*;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.digital.ho.hocs.info.api.dto.*;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateParentTopicDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateParentTopicResponse;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateTopicDto;
+import uk.gov.digital.ho.hocs.info.api.dto.CreateTopicResponse;
 import uk.gov.digital.ho.hocs.info.domain.model.ParentTopic;
 import uk.gov.digital.ho.hocs.info.domain.model.Topic;
 import uk.gov.digital.ho.hocs.info.domain.repository.ParentTopicRepository;
@@ -89,7 +96,7 @@ public class TopicIntegrationTests {
         CreateParentTopicDto request = new CreateParentTopicDto("test parent topic 100");
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent/", HttpMethod.POST,
+        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent", HttpMethod.POST,
             httpEntity, Void.class);
 
         long numberOfTopicsAfter = parentTopicRepository.count();
@@ -107,7 +114,7 @@ public class TopicIntegrationTests {
         CreateParentTopicDto request = new CreateParentTopicDto("test inactive parent topic 102");
 
         HttpEntity httpEntity = new HttpEntity(request, headers);
-        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent/", HttpMethod.POST,
+        ResponseEntity<Void> result = restTemplate.exchange(getBasePath() + "/topic/parent", HttpMethod.POST,
             httpEntity, Void.class);
 
         long numberOfTopicsAfter = parentTopicRepository.count();

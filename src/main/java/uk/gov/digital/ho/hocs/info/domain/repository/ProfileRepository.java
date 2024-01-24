@@ -18,7 +18,8 @@ public interface ProfileRepository extends CrudRepository<Profile, String> {
            nativeQuery = true)
     List<String> findAllProfileNamesByCaseTypesAndSystemName(Collection<String> caseTypes, String systemName);
 
-    @Query(value = "SELECT DISTINCT * FROM profile p JOIN case_type_profile ctp on p.profile_name = ctp.profile_name WHERE ctp.case_type = ?1 and p.parent_system_name = ?2",
+    //Hibernate 6.X makes the query fail if 2 tables share same column name hence better to add column names to this query
+    @Query(value = "SELECT DISTINCT p.profile_name, p.parent_system_name, p.summary_deadlines_enabled, ctp.case_type FROM profile p JOIN case_type_profile ctp on p.profile_name = ctp.profile_name WHERE ctp.case_type = ?1 and p.parent_system_name = ?2",
            nativeQuery = true)
     Profile findByCaseTypeAndSystemName(String caseType, String systemName);
 
