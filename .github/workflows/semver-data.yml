@@ -37,7 +37,7 @@ jobs:
 
       - name: Calculate SemVer value
         id: calculate
-        uses: UKHomeOffice/semver-calculate-action@v1
+        uses: UKHomeOffice/semver-calculate-action@v2
         with:
           increment: ${{ github.event.inputs.increment }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
