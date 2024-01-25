@@ -1,7 +1,5 @@
 package uk.gov.digital.ho.hocs.info.security;
 
-import jakarta.ws.rs.client.ClientBuilder;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient43Engine;
@@ -15,16 +13,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
 @Configuration
-@Slf4j
 public class KeyCloakConfiguration {
 
     private HttpClient httpClient;
-    private ApacheHttpClient43Engine engine;
 
     @Autowired
     public KeyCloakConfiguration(HttpClient httpClient) {
         this.httpClient = httpClient;
-        this.engine = new ApacheHttpClient43Engine(httpClient);
     }
 
     @Bean
@@ -51,13 +46,9 @@ public class KeyCloakConfiguration {
             throw new BeanCreationException("Failed to create Keycloak client bean. Need non-blank value for clientId");
         }
 
-        log.info("Keycloak initialization - Serverurl: {}, realm: {}, username: {}, clientId: {}", serverUrl, realm, username, clientId) ;
-
         return KeycloakBuilder.builder().serverUrl(serverUrl).realm(realm).username(username).password(
             password).clientId(clientId).resteasyClient(
-        ((ResteasyClientBuilder) ClientBuilder.newBuilder()).httpEngine(engine).build()).build();
-
-
+            new ResteasyClientBuilder().httpEngine(new ApacheHttpClient43Engine(httpClient)).build()).build();
     }
 
 }

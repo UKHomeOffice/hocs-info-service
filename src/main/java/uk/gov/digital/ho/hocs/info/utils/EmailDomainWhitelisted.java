@@ -1,7 +1,7 @@
 package uk.gov.digital.ho.hocs.info.utils;
 
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
