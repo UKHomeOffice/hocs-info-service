@@ -1,6 +1,6 @@
 package uk.gov.digital.ho.hocs.info.api;
 
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

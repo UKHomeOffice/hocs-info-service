@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-@jakarta.persistence.Entity
+@javax.persistence.Entity
 @Table(name = "exemption_date")
 @NoArgsConstructor
 @AllArgsConstructor

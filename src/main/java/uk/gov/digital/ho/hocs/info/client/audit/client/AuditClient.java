@@ -15,8 +15,8 @@ import uk.gov.digital.ho.hocs.info.client.audit.client.dto.CreateAuditRequest;
 import uk.gov.digital.ho.hocs.info.client.audit.client.dto.EventType;
 import uk.gov.digital.ho.hocs.info.domain.model.*;
 
-import jakarta.json.Json;
-import jakarta.json.JsonArrayBuilder;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
