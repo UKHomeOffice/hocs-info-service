@@ -3,18 +3,17 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
-//import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDef;
 import uk.gov.digital.ho.hocs.info.domain.model.enums.BankHolidayRegion;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.*;
 import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Convert(attributeName = "pgsql_enum", converter = org.hibernate.type.EnumType.class)
+@TypeDef(name = "pgsql_enum", typeClass = org.hibernate.type.EnumType.class)
 @Table(name = "case_type_bank_holiday_region")
 public class CaseTypeBankHolidayRegion {
 
@@ -29,8 +28,9 @@ public class CaseTypeBankHolidayRegion {
     private UUID caseTypeUuid;
 
     @Getter
+    @Enumerated(EnumType.STRING)
     @Column(name = "region")
-    @Enumerated(EnumType.ORDINAL)
+    @Type(type = "pgsql_enum")
     private BankHolidayRegion region;
 
     public CaseTypeBankHolidayRegion(UUID caseTypeUuid, String region) {

@@ -1,6 +1,6 @@
 package uk.gov.digital.ho.hocs.info.domain.repository;
 
-import jakarta.persistence.PersistenceException;
+import javax.persistence.PersistenceException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
