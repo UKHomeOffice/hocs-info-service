@@ -1,6 +1,6 @@
 package uk.gov.digital.ho.hocs.info.security;
 
-import jakarta.ws.rs.core.Response;
+import javax.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.keycloak.admin.client.CreatedResponseUtil;
@@ -185,7 +185,7 @@ public class KeycloakService {
             GroupRepresentation group = keycloakClient.realm(hocsRealmName).getGroupByPath(encodedTeamPath);
 
             return keycloakClient.realm(hocsRealmName).groups().group(group.getId()).members(0, -1);
-        } catch (jakarta.ws.rs.NotFoundException e) {
+        } catch (javax.ws.rs.NotFoundException e) {
             log.error(
                 "Keycloak has not found users assigned to this team, Not found exception thrown by keycloak: " + e.getMessage());
             return Collections.emptyList();

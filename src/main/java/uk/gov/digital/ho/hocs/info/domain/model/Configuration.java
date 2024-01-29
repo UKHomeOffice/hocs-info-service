@@ -2,14 +2,14 @@ package uk.gov.digital.ho.hocs.info.domain.model;
 
 import lombok.*;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 @AllArgsConstructor()
 @NoArgsConstructor()
 @Getter
-@jakarta.persistence.Entity
+@javax.persistence.Entity
 @Table(name = "system_configuration")
 @EqualsAndHashCode(of = { "systemName" })
 @ToString
