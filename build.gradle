@@ -42,7 +42,7 @@ dependencies {
     implementation 'javax.json:javax.json-api:1.1.4'
 
     // This should be kept in line with the data Dockerfile versions
-    implementation 'org.flywaydb:flyway-core:9.20.0'
+    implementation 'org.flywaydb:flyway-core:10.7.1'
     runtimeOnly 'org.hsqldb:hsqldb'
     runtimeOnly 'org.postgresql:postgresql:42.6.0'
 
