@@ -1,6 +1,6 @@
 package uk.gov.digital.ho.hocs.info.utils;
 
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidatorContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
