@@ -1,6 +1,6 @@
 package uk.gov.digital.ho.hocs.info.api.dto;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

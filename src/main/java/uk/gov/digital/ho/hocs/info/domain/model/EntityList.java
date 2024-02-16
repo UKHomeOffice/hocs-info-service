@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "entity_list")
 public class EntityList {
 

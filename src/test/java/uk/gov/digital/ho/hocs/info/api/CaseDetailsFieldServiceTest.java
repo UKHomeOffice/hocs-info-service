@@ -1,6 +1,6 @@
 package uk.gov.digital.ho.hocs.info.api;
 
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
