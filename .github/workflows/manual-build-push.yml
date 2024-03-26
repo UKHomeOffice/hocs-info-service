@@ -14,7 +14,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        ref: ${{ inputs.tag }}
+        with:
+          ref: ${{ inputs.tag }}
 
       - name: Build project
         uses: UKHomeOffice/sas-github-workflows/.github/actions/gradle-build-project@v2
