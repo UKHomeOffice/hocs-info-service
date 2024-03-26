@@ -20,6 +20,7 @@ jobs:
       - name: Build project
         uses: UKHomeOffice/sas-github-workflows/.github/actions/gradle-build-project@v2
         with:
+          java_version: 17
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish image to Quay.io
