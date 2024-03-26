@@ -5,8 +5,6 @@ name: tag data
 trigger:
   event:
     - tag
-  branch:
-    - main
 
 clone:
   disable: true
