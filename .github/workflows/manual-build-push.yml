@@ -1,0 +1,31 @@
+name: Manual build and push
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Git Tag
+        required: true
+        type: string
+
+jobs:
+  build_and_push:
+    name: Build and push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        ref: ${{ inputs.tag }}
+
+      - name: Build project
+        uses: UKHomeOffice/sas-github-workflows/.github/actions/gradle-build-project@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish image to Quay.io
+        uses: UKHomeOffice/sas-github-workflows/.github/actions/docker-publish@v2
+        with:
+          username: ${{ secrets.DOCKER_USER_NAME || secrets.QUAY_ROBOT_USER_NAME }}
+          password: ${{ secrets.DOCKER_PASSWORD || secrets.QUAY_ROBOT_TOKEN }}
+          tag: ${{ inputs.tag }}
+          tag_latest: false
+          image: quay.io/ukhomeofficedigital/hocs-info-service
