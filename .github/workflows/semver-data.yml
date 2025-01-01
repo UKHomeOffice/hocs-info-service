@@ -65,7 +65,7 @@ jobs:
           PACKAGE_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Build container
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           cache-from: type=gha
