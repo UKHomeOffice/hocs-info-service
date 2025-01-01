@@ -45,7 +45,7 @@ dependencies {
     // This should be kept in line with the data Dockerfile versions
     implementation 'org.flywaydb:flyway-core:9.19.3'
     runtimeOnly 'org.hsqldb:hsqldb'
-    runtimeOnly 'org.postgresql:postgresql:42.6.0'
+    runtimeOnly 'org.postgresql:postgresql:42.7.4'
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
