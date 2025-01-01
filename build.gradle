@@ -27,7 +27,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-json'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation "com.amazonaws:aws-java-sdk-sns:1.12.472"
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
+    implementation 'net.logstash.logback:logstash-logback-encoder:8.0'
 
     implementation 'org.apache.httpcomponents:httpmime:4.5.14'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
