@@ -62,7 +62,7 @@ public class EntityServiceTest {
     }
 
     @Test
-    public void getEntityBySimpleName() throws Exception {
+    public void getEntityBySimpleName() {
         // given
         String simpleName = "TEST_ENTITY";
 
@@ -148,6 +148,34 @@ public class EntityServiceTest {
         verify(entityRepository).save(argumentCaptor.capture());
         verify(entityRepository).findEntityListUUIDBySimpleName(listName);
         verify(entityRepository).findBySimpleNameAndEntityListUUID(simpleName, UUID.fromString(listUUID));
+        verifyNoMoreInteractions(entityRepository);
+
+        Entity capturedEntity = argumentCaptor.getValue();
+        assertThat(capturedEntity).isNotNull();
+        assertThat(capturedEntity.getSimpleName()).isEqualTo(simpleName);
+        assertThat(capturedEntity.getData()).isEqualTo(data);
+        assertThat(capturedEntity.isActive()).isTrue();
+
+    }
+
+    @Test
+    public void createEntityAndResort() {
+        String listName = "L1";
+        String simpleName = "name";
+        String uuid = UUID.randomUUID().toString();
+        String listUUID = UUID.randomUUID().toString();
+        String data = "data";
+        EntityDto entityDto = new EntityDto(simpleName, uuid, data, true);
+        ArgumentCaptor<Entity> argumentCaptor = ArgumentCaptor.forClass(Entity.class);
+
+        when(entityRepository.findEntityListUUIDBySimpleName(listName)).thenReturn(listUUID);
+
+        entityService.createEntity(listName, entityDto, true);
+
+        verify(entityRepository).save(argumentCaptor.capture());
+        verify(entityRepository).findEntityListUUIDBySimpleName(listName);
+        verify(entityRepository).findBySimpleNameAndEntityListUUID(simpleName, UUID.fromString(listUUID));
+        verify(entityRepository).resortByTitle();
         verifyNoMoreInteractions(entityRepository);
 
         Entity capturedEntity = argumentCaptor.getValue();
