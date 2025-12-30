@@ -1,9 +1,10 @@
 package uk.gov.digital.ho.hocs.info.api;
 
-import io.micrometer.core.instrument.util.StringUtils;
+import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.info.api.dto.EntityDto;
 import uk.gov.digital.ho.hocs.info.domain.model.Entity;
 import uk.gov.digital.ho.hocs.info.domain.repository.EntityRepository;
@@ -14,7 +15,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -43,7 +43,13 @@ public class EntityService {
         }
     }
 
+    @Transactional
     public void createEntity(String listName, EntityDto entityDto) {
+        createEntity(listName, entityDto, false);
+    }
+
+    @Transactional
+    public void createEntity(String listName, EntityDto entityDto, boolean resort) {
 
         String entityListUUID = entityRepository.findEntityListUUIDBySimpleName(listName);
 
@@ -66,13 +72,16 @@ public class EntityService {
             newEntity.getSimpleName());
         entityRepository.save(newEntity);
 
+        if (resort) {
+            entityRepository.resortByTitle();
+        }
     }
 
     public Entity getEntity(String uuid) {
         return entityRepository.findByUuid(UUID.fromString(uuid));
     }
 
-    public Entity getEntityBySimpleName(String simpleName) throws Exception {
+    public Entity getEntityBySimpleName(String simpleName) {
         return entityRepository.findBySimpleName(simpleName).orElseThrow(
             () -> new ApplicationExceptions.EntityNotFoundException(
                 "Entity with simpleName " + simpleName + " not found."));
@@ -89,7 +98,7 @@ public class EntityService {
                 UUID.fromString(entityListUUID));
 
             existingEntities = existingEntities.stream().filter(
-                e -> !Objects.equals(e.getUuid(), UUID.fromString(entityDto.getUuid()))).collect(Collectors.toList());
+                e -> !Objects.equals(e.getUuid(), UUID.fromString(entityDto.getUuid()))).toList();
 
             if (!existingEntities.isEmpty()) {
                 throw new ApplicationExceptions.EntityAlreadyExistsException(

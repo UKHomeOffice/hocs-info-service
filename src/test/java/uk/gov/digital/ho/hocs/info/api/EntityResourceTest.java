@@ -44,7 +44,7 @@ public class EntityResourceTest {
         ResponseEntity<GetCaseSummaryFieldsResponse> result = entityResource.getCaseSummary(caseType);
 
         assertThat(result).isNotNull();
-        assertThat(result.getStatusCodeValue()).isEqualTo(200);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isNotNull();
         assertThat(result.getBody().getFields().size()).isEqualTo(1);
         assertThat(result.getBody().getFields().iterator().next()).isEqualTo(simpleName);
@@ -69,7 +69,7 @@ public class EntityResourceTest {
         ResponseEntity<List<EntityDto>> result = entityResource.getEntitiesForListName(listName);
 
         assertThat(result).isNotNull();
-        assertThat(result.getStatusCodeValue()).isEqualTo(200);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isNotNull();
         assertThat(result.getBody().size()).isEqualTo(2);
         assertThat(result.getBody().get(0).getSimpleName()).isEqualTo(simpleName1);
@@ -89,11 +89,27 @@ public class EntityResourceTest {
         String data = "data";
         EntityDto entityDto = new EntityDto(simpleName, uuid, data, true);
 
-        ResponseEntity<String> response = entityResource.createEntity(listName, entityDto);
+        ResponseEntity<String> response = entityResource.createEntity(listName, entityDto, false);
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        verify(entityService).createEntity(listName, entityDto);
+        verify(entityService).createEntity(listName, entityDto, false);
+        verifyNoMoreInteractions(entityService);
+    }
+
+    @Test
+    public void createEntityAndResort() {
+        String listName = "L1";
+        String simpleName = "name";
+        String uuid = UUID.randomUUID().toString();
+        String data = "data";
+        EntityDto entityDto = new EntityDto(simpleName, uuid, data, true);
+
+        ResponseEntity<String> response = entityResource.createEntity(listName, entityDto, true);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        verify(entityService).createEntity(listName, entityDto, true);
         verifyNoMoreInteractions(entityService);
     }
 
@@ -112,6 +128,7 @@ public class EntityResourceTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        //noinspection DataFlowIssue - NPE would cause test to fail if UUID is missing
         assertThat(response.getBody().getUuid()).isEqualTo(uuid.toString());
         assertThat(response.getBody().getSimpleName()).isEqualTo(simpleName);
         assertThat(response.getBody().getData()).isEqualTo(data);
@@ -121,9 +138,7 @@ public class EntityResourceTest {
     }
 
     @Test
-    public void getEntityBySimpleName() throws Exception {
-        String testUUID = UUID.randomUUID().toString();
-
+    public void getEntityBySimpleName() {
         String simpleName = "name123";
         String data = "{ title: 'Title 321' }";
         UUID uuid = UUID.randomUUID();
@@ -135,6 +150,7 @@ public class EntityResourceTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        //noinspection DataFlowIssue - NPE would cause test to fail if UUID is missing
         assertThat(response.getBody().getUuid()).isEqualTo(uuid.toString());
         assertThat(response.getBody().getSimpleName()).isEqualTo(simpleName);
         assertThat(response.getBody().getData()).isEqualTo(data);
