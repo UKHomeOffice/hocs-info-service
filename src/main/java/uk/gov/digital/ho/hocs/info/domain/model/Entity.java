@@ -65,6 +65,7 @@ public class Entity {
           @TODO Investigate switching how entity list management is performed and potential to use UUIDs instead
          */
         this.data = entityDto.getData();
+        this.active = entityDto.isActive();
     }
 
 }
