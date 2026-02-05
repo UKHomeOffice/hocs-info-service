@@ -22,6 +22,7 @@ import uk.gov.digital.ho.hocs.info.domain.repository.TeamRepository;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -164,10 +165,23 @@ public class KeycloakService {
     }
 
     public List<UserRepresentation> getAllUsers() {
-        var users = keycloakClient.realm(hocsRealmName).users().list(0, -1);
-        log.info("Found {} users in Keycloak", users.size());
+        int first = 0;
+        int max = 100;
+        List<UserRepresentation> allUsers = new ArrayList<>();
 
-        return users;
+        do {
+            var page = keycloakClient.realm(hocsRealmName).users().list(first, max);
+            allUsers.addAll(page);
+            first += max;
+
+            if(page.size() < max) {
+                break;
+            }
+        } while (true);
+
+        log.info("Found {} users in Keycloak", allUsers.size());
+
+        return allUsers;
     }
 
     public UserRepresentation getUserFromUUID(UUID userUUID) {
@@ -184,7 +198,23 @@ public class KeycloakService {
         try {
             GroupRepresentation group = keycloakClient.realm(hocsRealmName).getGroupByPath(encodedTeamPath);
 
-            return keycloakClient.realm(hocsRealmName).groups().group(group.getId()).members(0, -1);
+            int first = 0;
+            int max = 100;
+            List<UserRepresentation> groupUsers = new ArrayList<>();
+
+            do {
+                var page = keycloakClient.realm(hocsRealmName).groups().group(group.getId()).members(first, max);
+                groupUsers.addAll(page);
+                first += max;
+
+                if(page.size() < max) {
+                    break;
+                }
+            } while (true);
+
+            log.info("Found {} users for group {} in Keycloak", groupUsers.size(), teamUUID);
+
+            return groupUsers;
         } catch (jakarta.ws.rs.NotFoundException e) {
             log.error(
                 "Keycloak has not found users assigned to this team, Not found exception thrown by keycloak: " + e.getMessage());
