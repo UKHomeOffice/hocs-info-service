@@ -41,7 +41,7 @@ public class ListConsumerService {
 
     private final String apiNorthernIrelandAssembly;
 
-    private final String apiWelshParliament;
+    private final String apiWelshSenedd;
 
     private final String countriesJsonFilename;
 
@@ -55,7 +55,7 @@ public class ListConsumerService {
     public ListConsumerService(@Value("${api.uk.parliament}") String apiUkParliament,
                                @Value("${api.scottish.parliament}") String apiScottishParliament,
                                @Value("${api.ni.assembly}") String apiNorthernIrelandAssembly,
-                               @Value("${api.welsh.assembly}") String apiWelshParliament,
+                               @Value("${api.welsh.senedd}") String apiWelshSenedd,
                                @Value("${country.json.filename}") String countriesJsonFilename,
                                @Value("${territory.json.filename}") String territoriesJsonFilename,
                                HouseAddressRepository houseAddressRepository,
@@ -63,7 +63,7 @@ public class ListConsumerService {
         this.apiUkParliament = apiUkParliament;
         this.apiScottishParliament = apiScottishParliament;
         this.apiNorthernIrelandAssembly = apiNorthernIrelandAssembly;
-        this.apiWelshParliament = apiWelshParliament;
+        this.apiWelshSenedd = apiWelshSenedd;
         this.countriesJsonFilename = countriesJsonFilename;
         this.territoriesJsonFilename = territoriesJsonFilename;
         this.houseAddressRepository = houseAddressRepository;
@@ -159,9 +159,9 @@ public class ListConsumerService {
     public Set<Member> createFromWelshParliamentAPI() {
         log.info("Updating Welsh Parliament");
         try {
-            final HouseAddress houseAddress = retrieveHouseAddress(HouseCodes.WELSH_ASSEMBLY);
+            final HouseAddress houseAddress = retrieveHouseAddress(HouseCodes.WELSH_SENEDD);
 
-            WelshWards welshWards = getDataFromAPI(apiWelshParliament, MediaType.APPLICATION_XML, WelshWards.class);
+            WelshWards welshWards = getDataFromAPI(apiWelshSenedd, MediaType.APPLICATION_XML, WelshWards.class);
 
             if (welshWards.getWards() != null) {
                 Set<WelshMembers> welshMembers = welshWards.getWards().stream().map(WelshWard::getMembers).collect(
@@ -208,18 +208,18 @@ public class ListConsumerService {
         headers.setAccept(Collections.singletonList(mediaType));
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 
-        ResponseEntity<T> response = null;
         try {
             log.info("Attempting to hit endpoint {}, returning type {} of class {}", apiEndpoint, mediaType,
                 returnClass.getName());
-            response = restTemplate.exchange(apiEndpoint, HttpMethod.GET, entity, returnClass);
+            ResponseEntity<T> response = restTemplate.exchange(apiEndpoint, HttpMethod.GET, entity, returnClass);
             log.info("Response to endpoint {} is {}", apiEndpoint, response);
+
+            return response.getBody();
         } catch (Exception e) {
-            log.info("exchange call exception : " + e.getMessage());
+            log.info("exchange call exception : {}", e.getMessage());
             throw new ApplicationExceptions.IngestException(
-                "ListConsumerService exchange exception : " + e.getMessage() + " endpoint : " + apiEndpoint + " headers : " + headers.toString() + " media type : " + mediaType.toString());
+                "ListConsumerService exchange exception : " + e.getMessage() + " endpoint : " + apiEndpoint + " headers : " + headers + " media type : " + mediaType.toString());
         }
-        return response.getBody();
     }
 
     private String getFormattedUkEndpoint(@NonNull final String house) {

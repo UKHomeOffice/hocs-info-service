@@ -8,7 +8,7 @@ public enum HouseCodes {
     HOUSE_OF_COMMONS("HC"),
     HOUSE_OF_LORDS("HL"),
     SCOTTISH_PARLIAMENT("SP"),
-    WELSH_ASSEMBLY("WA");
+    WELSH_SENEDD("WA");
 
     @Getter
     private final String houseCode;
