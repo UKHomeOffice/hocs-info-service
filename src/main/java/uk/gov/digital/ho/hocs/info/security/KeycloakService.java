@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static net.logstash.logback.argument.StructuredArguments.value;
 import static uk.gov.digital.ho.hocs.info.application.LogEvent.EVENT;
@@ -182,6 +183,16 @@ public class KeycloakService {
         log.info("Found {} users in Keycloak", allUsers.size());
 
         return allUsers;
+    }
+
+    public Stream<UserRepresentation> streamAllUsers() {
+        final int max = 100;
+        UsersResource usersResource = keycloakClient.realm(hocsRealmName).users();
+
+        return Stream.iterate(0, first -> first + max)
+                     .map(first -> usersResource.list(first, max))
+                     .takeWhile(page -> !page.isEmpty())
+                     .flatMap(List::stream);
     }
 
     public UserRepresentation getUserFromUUID(UUID userUUID) {

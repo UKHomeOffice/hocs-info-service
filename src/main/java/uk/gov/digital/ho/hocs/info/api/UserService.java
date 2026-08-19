@@ -13,6 +13,7 @@ import uk.gov.digital.ho.hocs.info.security.KeycloakService;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -39,6 +40,11 @@ public class UserService {
             Collectors.toList());
         log.info("Found {} users", users.size());
         return users;
+    }
+
+    public Stream<UserDto> streamAllUsers() {
+        log.info("Streaming users from Keycloak");
+        return keycloakService.streamAllUsers().map(UserDto::from);
     }
 
     public CreateUserResponse createUser(CreateUserDto createUserDto) {
