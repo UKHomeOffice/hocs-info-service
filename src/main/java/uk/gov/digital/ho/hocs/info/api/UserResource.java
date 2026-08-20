@@ -1,20 +1,23 @@
 package uk.gov.digital.ho.hocs.info.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserResponse;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateUserDto;
 import uk.gov.digital.ho.hocs.info.api.dto.UserDto;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
@@ -22,15 +25,30 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class UserResource {
 
     private final UserService userService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public UserResource(UserService userService) {
+    public UserResource(UserService userService, ObjectMapper objectMapper) {
         this.userService = userService;
+        this.objectMapper = objectMapper;
     }
 
-    @GetMapping(value = "/users")
-    public ResponseEntity<List<UserDto>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    @GetMapping(value = "/users", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<StreamingResponseBody> getAllUsers() {
+        StreamingResponseBody responseBody = outputStream -> {
+            try (Stream<UserDto> users = userService.streamAllUsers();
+                 var jsonGenerator = objectMapper.getFactory().createGenerator(outputStream)) {
+                jsonGenerator.writeStartArray();
+                Iterator<UserDto> iterator = users.iterator();
+                while (iterator.hasNext()) {
+                    jsonGenerator.writeObject(iterator.next());
+                    jsonGenerator.flush();
+                }
+                jsonGenerator.writeEndArray();
+            }
+        };
+
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping(value = "/user/{userUUID}")
