@@ -68,8 +68,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=hocs-info-service-docker
+          cache-to: type=gha,scope=hocs-info-service-docker,mode=max,ignore-error=true
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
