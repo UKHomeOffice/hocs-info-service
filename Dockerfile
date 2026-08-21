@@ -1,4 +1,4 @@
-FROM quay.io/ukhomeofficedigital/hocs-base-image:4.1.6 as builder
+FROM quay.io/ukhomeofficedigital/hocs-base-image:4.1.6 AS builder
 
 WORKDIR /builder
 

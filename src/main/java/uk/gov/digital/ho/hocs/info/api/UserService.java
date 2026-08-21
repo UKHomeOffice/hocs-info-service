@@ -19,16 +19,18 @@ import java.util.stream.Stream;
 @Slf4j
 public class UserService {
 
-    private KeycloakService keycloakService;
+    private final KeycloakService keycloakService;
 
-    private CaseworkClient caseworkClient;
+    private final CaseworkClient caseworkClient;
 
-    private StageTypeService stageTypeService;
+    private final StageTypeService stageTypeService;
 
     @Autowired
-    public UserService(KeycloakService keycloakService,
-                       CaseworkClient caseworkClient,
-                       StageTypeService stageTypeService) {
+    public UserService(
+        KeycloakService keycloakService,
+        CaseworkClient caseworkClient,
+        StageTypeService stageTypeService
+    ) {
         this.keycloakService = keycloakService;
         this.caseworkClient = caseworkClient;
         this.stageTypeService = stageTypeService;
@@ -36,9 +38,16 @@ public class UserService {
 
     public List<UserDto> getAllUsers() {
         log.info("Retrieving all users from Keycloak");
-        List<UserDto> users = keycloakService.getAllUsers().stream().map(user -> UserDto.from(user)).collect(
-            Collectors.toList());
+
+        List<UserDto> users =
+            keycloakService
+                .getAllUsers()
+                .stream()
+                .map(UserDto::from)
+                .collect(Collectors.toList());
+
         log.info("Found {} users", users.size());
+
         return users;
     }
 
@@ -60,19 +69,20 @@ public class UserService {
     }
 
     public List<UserDto> getUsersForTeam(UUID teamUUID) {
-        return keycloakService.getUsersForTeam(teamUUID).stream().map(user -> UserDto.from(user)).collect(
-            Collectors.toList());
+        return keycloakService
+            .getUsersForTeam(teamUUID)
+            .stream()
+            .map(UserDto::from)
+            .collect(Collectors.toList());
     }
 
     public UserDto getUserForTeam(UUID teamUUID, UUID userUUID) {
         String userId = userUUID.toString();
-        List<UserDto> users = getUsersForTeam(teamUUID);
-        for (UserDto user : users) {
-            if (user.getId().equals(userId)) {
-                return user;
-            }
-        }
-        return null;
+        return getUsersForTeam(teamUUID)
+            .stream()
+            .filter(user -> user.getId().equals(userId))
+            .findFirst()
+            .orElse(null);
     }
 
     public List<UserDto> getUsersForTeamByStage(UUID caseUUID, UUID stageUUID) {
