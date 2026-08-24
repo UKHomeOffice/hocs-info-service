@@ -10,6 +10,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.info.application.RequestData;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -65,6 +66,20 @@ public class RequestDataTest {
         requestData.preHandle(mockHttpServletRequest, mockHttpServletResponse, mockHandler);
 
         assertThat(requestData.username()).isEqualTo("some username");
+    }
+
+    @Test
+    public void shouldWriteUsernameToResponseHeaders() {
+        when(mockHttpServletRequest.getHeader("X-Correlation-Id")).thenReturn("some correlation id");
+        when(mockHttpServletRequest.getHeader("X-Auth-UserId")).thenReturn("some user id");
+        when(mockHttpServletRequest.getHeader("X-Auth-Username")).thenReturn("some username");
+
+        requestData.preHandle(mockHttpServletRequest, mockHttpServletResponse, mockHandler);
+        requestData.afterCompletion(mockHttpServletRequest, mockHttpServletResponse, mockHandler, null);
+
+        verify(mockHttpServletResponse).setHeader(RequestData.USER_ID_HEADER, "some user id");
+        verify(mockHttpServletResponse).setHeader(RequestData.USERNAME_HEADER, "some username");
+        verify(mockHttpServletResponse).setHeader(RequestData.CORRELATION_ID_HEADER, "some correlation id");
     }
 
 }

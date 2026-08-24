@@ -2,8 +2,13 @@ package uk.gov.digital.ho.hocs.info.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -12,10 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
+import uk.gov.digital.ho.hocs.info.api.dto.UserDto;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 // NB. This sort of test reads the spring properties files.
 @RunWith(SpringRunner.class)
@@ -49,6 +57,22 @@ public class UserResourceRestTest {
             post("/user").content(mapper.writeValueAsString(user)).contentType(APPLICATION_JSON_UTF8)).andExpect(
             status().isBadRequest()).andReturn().getResponse().getContentAsString();
         assertThat(res).isEqualTo("Email domain not supported");
+    }
+
+    @Test
+    public void testGetAllUsersReturnsJsonStream() throws Exception {
+        when(userService.streamAllUsers()).thenReturn(Stream.of(
+            new UserDto("1", "user1", "user1@test.com", "First", "User", true)
+        ));
+
+        MvcResult result = mockMvc.perform(get("/users"))
+            .andExpect(request().asyncStarted())
+            .andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType("application/json"))
+            .andExpect(content().json("[{\"id\":\"1\",\"username\":\"user1\",\"email\":\"user1@test.com\",\"firstName\":\"First\",\"lastName\":\"User\",\"enabled\":true}]"));
     }
 
 }

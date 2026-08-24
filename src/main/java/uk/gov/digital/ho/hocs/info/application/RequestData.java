@@ -51,7 +51,7 @@ public class RequestData implements HandlerInterceptor {
                                 Object handler,
                                 Exception ex) {
         response.setHeader(USER_ID_HEADER, userId());
-        response.setHeader(USERNAME_HEADER, userId());
+        response.setHeader(USERNAME_HEADER, username());
         response.setHeader(CORRELATION_ID_HEADER, correlationId());
         MDC.clear();
     }
