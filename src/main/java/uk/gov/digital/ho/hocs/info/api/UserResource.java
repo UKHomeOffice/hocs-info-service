@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -48,7 +49,9 @@ public class UserResource {
             }
         };
 
-        return ResponseEntity.ok(responseBody);
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(responseBody);
     }
 
     @GetMapping(value = "/user/{userUUID}")
