@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import uk.gov.digital.ho.hocs.info.utils.MdcContext;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserResponse;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateUserDto;
@@ -16,10 +18,12 @@ import uk.gov.digital.ho.hocs.info.api.dto.UserDto;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 
 @Slf4j
 @RestController
@@ -27,6 +31,8 @@ public class UserResource {
 
     private final UserService userService;
     private final ObjectMapper objectMapper;
+
+    private final int FLUSH_INTERVAL = 100;
 
     @Autowired
     public UserResource(UserService userService, ObjectMapper objectMapper) {
@@ -36,14 +42,24 @@ public class UserResource {
 
     @GetMapping(value = "/users", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<StreamingResponseBody> getAllUsers() {
+        final Map<String, String> contextMap = MDC.getCopyOfContextMap();
+
         StreamingResponseBody responseBody = outputStream -> {
-            try (Stream<UserDto> users = userService.streamAllUsers();
-                 var jsonGenerator = objectMapper.getFactory().createGenerator(outputStream)) {
+            try (
+                MdcContext.Scope ignored = MdcContext.use(contextMap);
+                Stream<UserDto> users = userService.streamAllUsers();
+                var jsonGenerator = objectMapper.getFactory().createGenerator(outputStream)
+            ) {
+
+                var counter = 0;
                 jsonGenerator.writeStartArray();
                 Iterator<UserDto> iterator = users.iterator();
                 while (iterator.hasNext()) {
                     jsonGenerator.writeObject(iterator.next());
-                    jsonGenerator.flush();
+                    if (++counter == FLUSH_INTERVAL) {
+                        jsonGenerator.flush();
+                        counter = 0;
+                    }
                 }
                 jsonGenerator.writeEndArray();
             }
@@ -70,8 +86,10 @@ public class UserResource {
     }
 
     @GetMapping(value = "/case/{caseUUID}/stage/{stageUUID}/team/members")
-    public ResponseEntity<List<UserDto>> getUsersForTeamByStage(@PathVariable UUID caseUUID,
-                                                                @PathVariable UUID stageUUID) {
+    public ResponseEntity<List<UserDto>> getUsersForTeamByStage(
+        @PathVariable UUID caseUUID,
+        @PathVariable UUID stageUUID
+    ) {
         List<UserDto> users = userService.getUsersForTeamByStage(caseUUID, stageUUID);
         return ResponseEntity.ok(users);
     }
@@ -83,7 +101,7 @@ public class UserResource {
     }
 
     @PutMapping(value = "/user/{userUUID}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity updateUser(@PathVariable UUID userUUID, @Valid @RequestBody UpdateUserDto updateUserDto) {
+    public ResponseEntity<Void> updateUser(@PathVariable UUID userUUID, @Valid @RequestBody UpdateUserDto updateUserDto) {
         userService.updateUser(userUUID, updateUserDto);
         return ResponseEntity.ok().build();
     }
