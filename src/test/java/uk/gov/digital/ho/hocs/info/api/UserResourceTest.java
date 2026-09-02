@@ -1,23 +1,12 @@
 package uk.gov.digital.ho.hocs.info.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -25,6 +14,16 @@ import uk.gov.digital.ho.hocs.info.api.dto.CreateUserDto;
 import uk.gov.digital.ho.hocs.info.api.dto.CreateUserResponse;
 import uk.gov.digital.ho.hocs.info.api.dto.UpdateUserDto;
 import uk.gov.digital.ho.hocs.info.api.dto.UserDto;
+import uk.gov.digital.ho.hocs.info.application.RequestData;
+
+import java.io.ByteArrayOutputStream;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserResourceTest {
@@ -62,6 +61,30 @@ public class UserResourceTest {
     }
 
     @Test
+    public void shouldPropagateCorrelationIdForStreamingUsers() throws Exception {
+        String correlationId = "corr-123";
+        String userUUID = UUID.randomUUID().toString();
+        UserDto user = new UserDto(userUUID, "some user", "user@noemail.com", "FirstName", "LastName", true);
+
+        when(userService.streamAllUsers()).thenAnswer(invocation -> {
+            assertThat(MDC.get(RequestData.CORRELATION_ID_HEADER)).isEqualTo(correlationId);
+            return Stream.of(user);
+        });
+
+        MDC.put(RequestData.CORRELATION_ID_HEADER, correlationId);
+        ResponseEntity<StreamingResponseBody> result = userResource.getAllUsers();
+        MDC.clear();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        assertThat(result.getBody()).isNotNull();
+        result.getBody().writeTo(outputStream);
+
+        assertThat(outputStream.toString()).contains(userUUID);
+        verify(userService).streamAllUsers();
+        MDC.clear();
+    }
+
+    @Test
     public void shouldGetUserByUUID() {
 
         UUID userUUID = UUID.randomUUID();
@@ -80,15 +103,15 @@ public class UserResourceTest {
         String user2UUID = UUID.randomUUID().toString();
         UUID teamUUID = UUID.randomUUID();
 
-        List<UserDto> users = new ArrayList<>();
         UserDto user1 = new UserDto(user1UUID, "some user", "user1@noemail.com", "FirstName", "LastName", true);
         UserDto user2 = new UserDto(user2UUID, "some user2", "user2@noemail.com", "FirstName2", "LastName2", true);
-        users.addAll(Stream.of(user1, user2).collect(Collectors.toList()));
+        List<UserDto> users = List.of(user1, user2);
 
         when(userService.getUsersForTeam(teamUUID)).thenReturn(users);
 
         ResponseEntity<List<UserDto>> result = userResource.getUsersForTeam(teamUUID);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody()).isNotNull();
         assertThat(result.getBody().size()).isEqualTo(2);
     }
 
@@ -130,7 +153,7 @@ public class UserResourceTest {
         UpdateUserDto updateUserDto = new UpdateUserDto();
 
         //when
-        ResponseEntity response = userResource.updateUser(userUUID, updateUserDto);
+        ResponseEntity<Void> response = userResource.updateUser(userUUID, updateUserDto);
 
         //then
         verify(userService).updateUser(userUUID, updateUserDto);

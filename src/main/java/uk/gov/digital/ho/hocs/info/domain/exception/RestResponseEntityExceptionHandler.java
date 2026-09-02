@@ -7,6 +7,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.PRECONDITION_FAILED;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 import static uk.gov.digital.ho.hocs.info.application.LogEvent.EVENT;
 import static uk.gov.digital.ho.hocs.info.application.LogEvent.EXCEPTION;
 import static uk.gov.digital.ho.hocs.info.application.LogEvent.KEYCLOAK_FAILURE;
@@ -28,6 +29,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import uk.gov.digital.ho.hocs.info.api.dto.TeamDeleteActiveParentTopicsDto;
 import uk.gov.digital.ho.hocs.info.security.KeycloakException;
 
@@ -36,55 +38,55 @@ import uk.gov.digital.ho.hocs.info.security.KeycloakException;
 public class RestResponseEntityExceptionHandler {
 
     @ExceptionHandler(ApplicationExceptions.EntityCreationException.class)
-    public ResponseEntity handle(ApplicationExceptions.EntityCreationException e) {
+    public ResponseEntity<String> handle(ApplicationExceptions.EntityCreationException e) {
         log.error("ApplicationExceptions.EntityCreationException: {}, Event: {}", e.getMessage(),
             value(EVENT, e.getEvent()));
         return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(ApplicationExceptions.EntityAlreadyExistsException.class)
-    public ResponseEntity handle(ApplicationExceptions.EntityAlreadyExistsException e) {
+    public ResponseEntity<String> handle(ApplicationExceptions.EntityAlreadyExistsException e) {
         log.error("ApplicationExceptions.EntityAlreadyExistsException: {}, Event: {}", e.getMessage(),
             value(EVENT, e.getEvent()));
         return new ResponseEntity<>(e.getMessage(), CONFLICT);
     }
 
     @ExceptionHandler(ApplicationExceptions.UserAlreadyExistsException.class)
-    public ResponseEntity handle(ApplicationExceptions.UserAlreadyExistsException e) {
+    public ResponseEntity<String> handle(ApplicationExceptions.UserAlreadyExistsException e) {
         log.info("ApplicationExceptions.UserAlreadyExistsException: {}", e.getMessage(), value(EVENT, e.getEvent()));
         return new ResponseEntity<>(e.getMessage(), CONFLICT);
     }
 
     @ExceptionHandler(ApplicationExceptions.EntityNotFoundException.class)
-    public ResponseEntity handle(ApplicationExceptions.EntityNotFoundException e) {
+    public ResponseEntity<String> handle(ApplicationExceptions.EntityNotFoundException e) {
         log.error("ApplicationExceptions.EntityNotFoundException: {}, Event: {}", e.getMessage(),
             value(EVENT, e.getEvent()));
         return new ResponseEntity<>(e.getMessage(), NOT_FOUND);
     }
 
     @ExceptionHandler(ApplicationExceptions.ResourceServerException.class)
-    public ResponseEntity handle(ApplicationExceptions.ResourceServerException e) {
+    public ResponseEntity<String> handle(ApplicationExceptions.ResourceServerException e) {
         log.error("ApplicationExceptions.ResourceServerException: {}, Event: {}", e.getMessage(),
             value(EVENT, e.getEvent()));
         return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(ApplicationExceptions.ResourceNotFoundException.class)
-    public ResponseEntity handle(ApplicationExceptions.ResourceNotFoundException e) {
+    public ResponseEntity<String> handle(ApplicationExceptions.ResourceNotFoundException e) {
         log.error("ApplicationExceptions.ResourceNotFoundException: {}, Event: {}", e.getMessage(),
             value(EVENT, e.getEvent()));
         return new ResponseEntity<>(e.getMessage(), NOT_FOUND);
     }
 
     @ExceptionHandler(ApplicationExceptions.EntityPermissionException.class)
-    public ResponseEntity handle(ApplicationExceptions.EntityPermissionException e) {
+    public ResponseEntity<String> handle(ApplicationExceptions.EntityPermissionException e) {
         log.error("ApplicationExceptions.EntityPermissionException: {}, Event: {}", e.getMessage(),
             value(EVENT, e.getEvent()));
         return new ResponseEntity<>(e.getMessage(), FORBIDDEN);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity handle(MethodArgumentNotValidException e) {
+    public ResponseEntity<String> handle(MethodArgumentNotValidException e) {
         log.error("MethodArgumentNotValidException: {}, Event: {}", e.getMessage(), value(EVENT, BAD_REQUEST));
         String errorMessage = e.getMessage();
         if (e.getBindingResult().hasErrors()) {
@@ -96,28 +98,36 @@ public class RestResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageConversionException.class)
-    public ResponseEntity handle(HttpMessageConversionException e) {
+    public ResponseEntity<String> handle(HttpMessageConversionException e) {
         log.error("HttpMessageConversionException: {}, Event: {}, Exception: {}", e.getMessage(),
             value(EVENT, BAD_REQUEST), value(EXCEPTION, e));
         return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity handle(HttpMessageNotReadableException e) {
+    public ResponseEntity<String> handle(HttpMessageNotReadableException e) {
         log.error("HttpMessageNotReadableException: {}, Event: {}, Exception: {}", e.getMessage(),
             value(EVENT, BAD_REQUEST), value(EXCEPTION, e));
         return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
     }
 
+    @ExceptionHandler(AsyncRequestTimeoutException.class)
+    public ResponseEntity<String> handle(AsyncRequestTimeoutException e) {
+        String message = "Request processing timed out";
+        log.warn("AsyncRequestTimeoutException: {}, Event: {}, Exception: {}", message,
+            value(EVENT, SERVICE_UNAVAILABLE), value(EXCEPTION, e));
+        return new ResponseEntity<>(message, SERVICE_UNAVAILABLE);
+    }
+
     @ExceptionHandler(ApplicationExceptions.CorrespondentCreationException.class)
-    public ResponseEntity handle(ApplicationExceptions.CorrespondentCreationException e) {
+    public ResponseEntity<String> handle(ApplicationExceptions.CorrespondentCreationException e) {
         log.error("DataIntegrityViolationException: {}, Event: {}, Exception: {}", e.getMessage(),
             value(EVENT, BAD_REQUEST), value(EXCEPTION, e));
         return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
     }
 
     @ExceptionHandler(KeycloakException.class)
-    public ResponseEntity handle(KeycloakException e) {
+    public ResponseEntity<String> handle(KeycloakException e) {
         log.error("Keycloak exception: {}, Event: {}", e.getMessage(), value(EVENT, KEYCLOAK_FAILURE));
         HttpStatus httpStatus = e.getHttpStatus() != null
             ? HttpStatus.valueOf(e.getHttpStatus())
@@ -132,30 +142,34 @@ public class RestResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ApplicationExceptions.TopicCreationException.class)
-    public ResponseEntity handle(ApplicationExceptions.TopicCreationException e) {
+    public ResponseEntity<String> handle(ApplicationExceptions.TopicCreationException e) {
         log.error("TopicCreationException: {}, Event: {}", e.getMessage(), value(EVENT, BAD_REQUEST));
         return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
     }
 
     @ExceptionHandler(ApplicationExceptions.TopicUpdateException.class)
-    public ResponseEntity handle(ApplicationExceptions.TopicUpdateException e) {
-        log.error("TopicCreationException: {}, Event: {}", e.getMessage(), value(EVENT, BAD_REQUEST));
+    public ResponseEntity<String> handle(ApplicationExceptions.TopicUpdateException e) {
+        log.error("TopicUpdateException: {}, Event: {}", e.getMessage(), value(EVENT, BAD_REQUEST));
         return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
     }
 
     @ExceptionHandler(ApplicationExceptions.UserRemoveException.class)
-    public ResponseEntity handle(ApplicationExceptions.UserRemoveException e) {
+    public ResponseEntity<String> handle(ApplicationExceptions.UserRemoveException e) {
         log.error("UserRemoveException: {}, Event: {}", e.getMessage(), value(EVENT, CONFLICT));
         return new ResponseEntity<>(e.getMessage(), CONFLICT);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity handle(Exception e) {
+    public ResponseEntity<String> handle(Exception e) {
         Writer stackTraceWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stackTraceWriter);
         e.printStackTrace(printWriter);
-        log.error("Exception: {}, Event: {}, Stack: {}", e.getMessage(), value(EVENT, UNCAUGHT_EXCEPTION),
-            stackTraceWriter.toString());
+        log.error(
+            "Exception: {}, Event: {}, Stack: {}",
+            e.getMessage(),
+            value(EVENT, UNCAUGHT_EXCEPTION),
+            stackTraceWriter
+        );
         return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }
 

@@ -12,6 +12,8 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
+import uk.gov.digital.ho.hocs.info.api.dto.TeamDeleteActiveParentTopicsDto;
 import uk.gov.digital.ho.hocs.info.security.KeycloakException;
 
 import static junit.framework.TestCase.assertEquals;
@@ -33,7 +35,7 @@ public class RestResponseEntityExceptionHandlerTest {
         ApplicationExceptions.EntityCreationException exception = new ApplicationExceptions.EntityCreationException(
             msg);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 500", 500, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
@@ -46,7 +48,7 @@ public class RestResponseEntityExceptionHandlerTest {
         ApplicationExceptions.EntityAlreadyExistsException exception = new ApplicationExceptions.EntityAlreadyExistsException(
             msg);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 409", 409, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
@@ -59,7 +61,7 @@ public class RestResponseEntityExceptionHandlerTest {
         ApplicationExceptions.EntityNotFoundException exception = new ApplicationExceptions.EntityNotFoundException(
             msg);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 404", 404, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
@@ -72,7 +74,7 @@ public class RestResponseEntityExceptionHandlerTest {
         ApplicationExceptions.ResourceServerException exception = new ApplicationExceptions.ResourceServerException(msg,
             null);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 500", 500, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
@@ -85,7 +87,7 @@ public class RestResponseEntityExceptionHandlerTest {
         ApplicationExceptions.ResourceNotFoundException exception = new ApplicationExceptions.ResourceNotFoundException(
             msg, null);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 404", 404, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
@@ -100,7 +102,7 @@ public class RestResponseEntityExceptionHandlerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         when(exception.getBindingResult()).thenReturn(bindingResult);
         when(bindingResult.hasErrors()).thenReturn(false);
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 400", 400, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
@@ -118,18 +120,18 @@ public class RestResponseEntityExceptionHandlerTest {
         errors.add(new ObjectError("objectName", validationMessage));
         when(bindingResult.getAllErrors()).thenReturn(errors);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 400", 400, result.getStatusCode().value());
         assertEquals("Error msg incorrect", validationMessage, result.getBody());
     }
 
     @Test
-    public void handleHttpmsgConversionException() {
+    public void handleHttpMsgConversionException() {
         String msg = "Test Error msg";
         HttpMessageConversionException exception = new HttpMessageConversionException(msg);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 400", 400, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
@@ -137,16 +139,27 @@ public class RestResponseEntityExceptionHandlerTest {
     }
 
     @Test
-    public void handleHttpmsgNotReadableException() {
+    public void handleHttpMsgNotReadableException() {
         String msg = "Test Error msg";
-        HttpInputMessage httpInputMessage = null;
+        HttpInputMessage httpInputMessage = mock(HttpInputMessage.class);
 
         HttpMessageNotReadableException exception = new HttpMessageNotReadableException(msg, httpInputMessage);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 400", 400, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
+
+    }
+
+    @Test
+    public void handleAsyncRequestTimeoutException() {
+        AsyncRequestTimeoutException exception = new AsyncRequestTimeoutException();
+
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
+
+        assertEquals("Http code should be 503", 503, result.getStatusCode().value());
+        assertEquals("Error msg incorrect", "Request processing timed out", result.getBody());
 
     }
 
@@ -156,7 +169,7 @@ public class RestResponseEntityExceptionHandlerTest {
         ApplicationExceptions.CorrespondentCreationException exception = new ApplicationExceptions.CorrespondentCreationException(
             msg);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 400", 400, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
@@ -168,7 +181,7 @@ public class RestResponseEntityExceptionHandlerTest {
         String msg = "Test Error msg";
         KeycloakException exception = new KeycloakException(msg);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 500", 500, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
@@ -180,7 +193,7 @@ public class RestResponseEntityExceptionHandlerTest {
         int httpStatusCode = 409;
         KeycloakException exception = new KeycloakException(msg, httpStatusCode);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be " + httpStatusCode, httpStatusCode, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
@@ -193,7 +206,7 @@ public class RestResponseEntityExceptionHandlerTest {
 
         ApplicationExceptions.TeamDeleteException exception = new ApplicationExceptions.TeamDeleteException(msg, null);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<TeamDeleteActiveParentTopicsDto> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 412", 412, result.getStatusCode().value());
 
@@ -204,7 +217,7 @@ public class RestResponseEntityExceptionHandlerTest {
         String msg = "Test Error msg";
         ApplicationExceptions.TopicCreationException exception = new ApplicationExceptions.TopicCreationException(msg);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 400", 400, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
@@ -216,7 +229,7 @@ public class RestResponseEntityExceptionHandlerTest {
         String msg = "Test Error msg";
         ApplicationExceptions.TopicUpdateException exception = new ApplicationExceptions.TopicUpdateException(msg);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 400", 400, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
@@ -228,7 +241,7 @@ public class RestResponseEntityExceptionHandlerTest {
         String msg = "Test Error msg";
         ApplicationExceptions.UserRemoveException exception = new ApplicationExceptions.UserRemoveException(msg);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 409", 409, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
@@ -240,7 +253,7 @@ public class RestResponseEntityExceptionHandlerTest {
         String msg = "Test Error msg";
         Exception exception = new Exception(msg);
 
-        ResponseEntity result = restResponseEntityExceptionHandler.handle(exception);
+        ResponseEntity<String> result = restResponseEntityExceptionHandler.handle(exception);
 
         assertEquals("Http code should be 500", 500, result.getStatusCode().value());
         assertEquals("Error msg incorrect", msg, result.getBody());
