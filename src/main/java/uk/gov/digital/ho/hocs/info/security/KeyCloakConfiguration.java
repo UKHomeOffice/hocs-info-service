@@ -28,20 +28,19 @@ public class KeyCloakConfiguration {
                                    @Value("${keycloak.http.connection-request-timeout-ms}") int connectionRequestTimeoutMs,
                                    @Value("${keycloak.http.max-retries}") int maxRetries) {
 
-        if (StringUtils.hasLength(serverUrl)) {
-            throw new BeanCreationException(
-                "Failed to create Keycloak client bean. Need non-blank value for serverUrl");
+        if (!StringUtils.hasText(serverUrl)) {
+            throw new BeanCreationException("Failed to create Keycloak client bean. Need non-blank value for serverUrl");
         }
-        if (StringUtils.hasLength(realm)) {
+        if (!StringUtils.hasText(realm)) {
             throw new BeanCreationException("Failed to create Keycloak client bean. Need non-blank value for realm");
         }
-        if (StringUtils.hasLength(username)) {
+        if (!StringUtils.hasText(username)) {
             throw new BeanCreationException("Failed to create Keycloak client bean. Need non-blank value for username");
         }
-        if (StringUtils.hasLength(password)) {
+        if (!StringUtils.hasText(password)) {
             throw new BeanCreationException("Failed to create Keycloak client bean. Need non-blank value for password");
         }
-        if (StringUtils.hasLength(clientId)) {
+        if (!StringUtils.hasText(clientId)) {
             throw new BeanCreationException("Failed to create Keycloak client bean. Need non-blank value for clientId");
         }
 
@@ -59,9 +58,18 @@ public class KeyCloakConfiguration {
                 .build()
         );
 
-        return KeycloakBuilder.builder().serverUrl(serverUrl).realm(realm).username(username).password(
-            password).clientId(clientId).resteasyClient(
-            ((ResteasyClientBuilder) ClientBuilder.newBuilder()).httpEngine(engine).build()).build();
+        return KeycloakBuilder.builder()
+                              .serverUrl(serverUrl)
+                              .realm(realm)
+                              .username(username)
+                              .password(password)
+                              .clientId(clientId)
+                              .resteasyClient(
+                                  ((ResteasyClientBuilder) ClientBuilder.newBuilder())
+                                      .httpEngine(engine)
+                                      .build()
+                              )
+                              .build();
     }
 
 }
